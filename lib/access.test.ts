@@ -77,3 +77,14 @@ describe("snippet utilities", () => {
     expect(safeFilename("my snippet.liquid")).toBe("my-snippet.liquid");
   });
 });
+
+import { checkoutOpen } from "./checkout-gate";
+
+describe("checkout gate", () => {
+  it("keeps live checkout closed unless explicitly enabled and content is ready", () => {
+    expect(checkoutOpen({ testMode: false, liveEnabled: false, contentReady: true })).toBe(false);
+    expect(checkoutOpen({ testMode: false, liveEnabled: true, contentReady: false })).toBe(false);
+    expect(checkoutOpen({ testMode: false, liveEnabled: true, contentReady: true })).toBe(true);
+    expect(checkoutOpen({ testMode: true, liveEnabled: false, contentReady: false })).toBe(true);
+  });
+});

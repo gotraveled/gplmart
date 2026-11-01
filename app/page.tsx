@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { ArrowRight, BookOpenCheck, Code2, FolderDown, KeyRound, LogIn, ShieldAlert } from "lucide-react";
+import { ArrowRight, BookOpenCheck, Code2, FolderDown, KeyRound, LayoutTemplate, LogIn, Puzzle, ShieldAlert, ShoppingBag } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { Container, Section, SectionHeading } from "@/components/ui/container";
 import { FaqList, type FAQ } from "@/components/ui/faq";
@@ -28,6 +28,13 @@ const included = [
     title: "Your access stays linked to your account",
     text: "Sign in any time to return to both resource areas. You never pay twice for the same access.",
   },
+];
+
+const areas = [
+  { icon: Code2, title: "Shopify Liquid code", text: "Snippets and sections you can search, preview, copy and download." },
+  { icon: ShoppingBag, title: "Shopify themes and templates", text: "Theme and template bundles via the Drive download page." },
+  { icon: LayoutTemplate, title: "WordPress and landing pages", text: "WordPress themes and templates, and landing page templates." },
+  { icon: Puzzle, title: "Plugins", text: "Original plugins may be added in future. None are included yet." },
 ];
 
 const steps = [
@@ -94,6 +101,19 @@ export default function HomePage() {
             once that is recorded. Resources are independent of Shopify and are not official Shopify products.
           </p>
         </div>
+      </Section>
+
+      <Section className="pt-0 sm:pt-0">
+        <SectionHeading eyebrow="Resource areas" title="What the library focuses on" description="Specific files depend on what has been released to members at the time." />
+        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {areas.map(({ icon: Icon, title, text }) => (
+            <li key={title} className="rounded-2xl border border-line bg-ink-900/60 p-5">
+              <Icon aria-hidden className="size-5 text-accent" />
+              <h3 className="mt-3 font-display text-base font-semibold">{title}</h3>
+              <p className="mt-1.5 text-sm text-muted">{text}</p>
+            </li>
+          ))}
+        </ul>
       </Section>
 
       <section id="how-it-works" className="border-y border-line bg-ink-900/50">

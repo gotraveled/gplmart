@@ -18,3 +18,5 @@ export const razorpayWebhookSecret = () => process.env.RAZORPAY_WEBHOOK_SECRET ?
 export function isRazorpayTestMode(): boolean {
   return (process.env.RAZORPAY_KEY_ID ?? "").startsWith("rzp_test_");
 }
+
+export const isLiveCheckoutEnabled = () => process.env.CHECKOUT_LIVE_ENABLED === "true";

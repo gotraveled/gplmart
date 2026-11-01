@@ -20,10 +20,10 @@ npm test           # vitest
 ## Structure
 
 - `app/` routes, layout, sitemap, robots, error and not-found pages
-- `components/layout|products|ui/` shared components
-- supabase/ migrations and demo seed
-- docs/ setup guide
-- `lib/` utilities, catalogue filtering/sorting logic and site config
+- `components/` layout, UI, auth, checkout, library and admin components
+- `supabase/` migrations and demo seed
+- `docs/` setup guide
+- `lib/` auth, payments, access rules, snippet utilities and site config
 
 ## Configuration
 

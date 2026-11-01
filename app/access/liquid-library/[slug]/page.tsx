@@ -29,6 +29,9 @@ export default async function SnippetPage({ params }: { params: Promise<{ slug: 
         ]}
       />
       <Container className="py-10">
+        {snippet.tags.includes("demo") && (
+          <p role="note" className="mb-5 rounded-lg border border-amber-400/30 bg-amber-400/10 p-3 text-sm text-amber-100">Demo snippet: an original example, not part of the real library.</p>
+        )}
         <div className="mb-5 flex flex-wrap gap-2">
           <Badge>{category}</Badge>
           {snippet.tags.map((t) => (

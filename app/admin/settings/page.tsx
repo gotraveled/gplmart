@@ -25,7 +25,7 @@ export default async function SettingsPage({ searchParams }: { searchParams: Pro
           <label className="flex items-start gap-3 text-sm">
             <input type="checkbox" name="content_ready" defaultChecked={s.content_ready === "true"} className="mt-1 size-4" />
             <span>
-              <strong>Content ready for customers.</strong> Only tick once you have confirmed you may distribute these resources. Until then customers cannot open them and live-mode checkout stays closed.
+              <strong>Content ready for customers.</strong> Only tick once the real resources are in place and you have verified redistribution rights for each one. Until then customers cannot open them and live checkout stays closed. A purchase alone does not establish those rights.
             </span>
           </label>
           <Button type="submit">Save settings</Button>

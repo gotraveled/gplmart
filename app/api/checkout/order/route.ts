@@ -1,5 +1,6 @@
 import { getUser, hasActiveEntitlement } from "@/lib/auth";
-import { isRazorpayTestMode, isSupabaseConfigured, razorpayCreds } from "@/lib/env";
+import { isLiveCheckoutEnabled, isRazorpayTestMode, isSupabaseConfigured, razorpayCreds } from "@/lib/env";
+import { checkoutOpen } from "@/lib/checkout-gate";
 import { json, sameOrigin } from "@/lib/http";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { createOrderForUser } from "@/lib/payments/service";
@@ -14,7 +15,8 @@ export async function POST(req: Request) {
   if (!rateLimit(`order:${user.id}:${clientIp(req.headers)}`, 10, 10 * 60_000)) return json({ error: "rate_limited" }, 429);
 
   if (await hasActiveEntitlement(user.id)) return json({ error: "already_active" }, 409);
-  if (!isRazorpayTestMode() && !(await isContentReady())) return json({ error: "not_open" }, 403);
+  const open = checkoutOpen({ testMode: isRazorpayTestMode(), liveEnabled: isLiveCheckoutEnabled(), contentReady: await isContentReady() });
+  if (!open) return json({ error: "not_open" }, 403);
 
   try {
     // Any amount/currency in the request body is deliberately ignored.

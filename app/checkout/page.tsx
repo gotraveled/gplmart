@@ -3,7 +3,8 @@ import { Container } from "@/components/ui/container";
 import { ButtonLink } from "@/components/ui/button";
 import { CheckoutButton } from "@/components/checkout/checkout-button";
 import { hasActiveEntitlement, requireUser } from "@/lib/auth";
-import { isRazorpayTestMode, razorpayCreds } from "@/lib/env";
+import { checkoutOpen } from "@/lib/checkout-gate";
+import { isLiveCheckoutEnabled, isRazorpayTestMode, razorpayCreds } from "@/lib/env";
 import { formatOfferPrice } from "@/lib/offer";
 import { isContentReady } from "@/lib/settings";
 
@@ -38,9 +39,9 @@ export default async function CheckoutPage() {
             <p role="status" className="rounded-lg border border-amber-400/30 bg-amber-400/10 p-3 text-sm text-amber-100">
               Payments are awaiting configuration and are not available yet.
             </p>
-          ) : !ready && !testMode ? (
+          ) : !checkoutOpen({ testMode, liveEnabled: isLiveCheckoutEnabled(), contentReady: ready }) ? (
             <p role="status" className="rounded-lg border border-amber-400/30 bg-amber-400/10 p-3 text-sm text-amber-100">
-              Purchases are not open yet. They open once content distribution rights are confirmed.
+              Purchases are not open yet. They open once the resources are released and testing is complete.
             </p>
           ) : (
             <>

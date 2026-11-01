@@ -32,6 +32,11 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
         crumbs={[{ label: "Resource hub", href: "/access" }, { label: "Liquid library" }]}
       />
       <Container className="py-10">
+        {all.some((s) => s.tags.includes("demo")) && (
+          <p role="note" className="mb-6 rounded-lg border border-amber-400/30 bg-amber-400/10 p-3 text-sm text-amber-100">
+            <strong>Demo content.</strong> Snippets tagged &quot;demo&quot; are small original examples for testing this library. They are not the full code library.
+          </p>
+        )}
         <form role="search" action="/access/liquid-library" className="flex gap-3">
           {category && <input type="hidden" name="category" value={category} />}
           <div className="relative flex-1">
