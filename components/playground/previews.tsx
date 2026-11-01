@@ -502,6 +502,109 @@ function PromoPopup({ v }: P) {
   );
 }
 
+function pad(n: number) {
+  return String(Math.max(0, n)).padStart(2, "0");
+}
+function Countdown({ v }: P) {
+  const [left, setLeft] = useState(47 * 3600 + 23 * 60 + 41); // demo starts at 47:23:41
+  useEffect(() => {
+    const t = setInterval(() => setLeft((s) => (s > 0 ? s - 1 : 0)), 1000);
+    return () => clearInterval(t);
+  }, []);
+  const slot = (n: number, label: string, accent = false) => (
+    <span className="grid gap-1">
+      <b className={`grid h-11 w-14 place-items-center rounded-lg border font-mono text-xl font-extrabold ${accent ? "border-[#c8f54266] text-[#c8f542]" : "border-slate-600/40"} bg-[#020617cc]`}>
+        {pad(n)}
+      </b>
+      <small className="text-center text-[0.55rem] font-bold uppercase tracking-widest text-slate-500">{label}</small>
+    </span>
+  );
+  return (
+    <div className="grid place-items-center p-6">
+      <div className="w-full max-w-sm rounded-2xl bg-slate-900 px-5 py-6 text-center text-white shadow-xl">
+        <span className="inline-block rounded-full border border-amber-400/40 bg-amber-400/10 px-3 py-1 text-[0.65rem] font-extrabold uppercase tracking-widest text-amber-300">
+          {str(v, "badge", 30)}
+        </span>
+        <p className="mt-2 text-sm text-slate-400">{str(v, "heading", 60)}</p>
+        {left > 0 ? (
+          <div className="mt-3.5 flex items-center justify-center gap-2" role="timer">
+            {slot(Math.floor(left / 3600), "Hours")}
+            <span className="pb-4 font-bold text-slate-500">:</span>
+            {slot(Math.floor((left % 3600) / 60), "Mins")}
+            <span className="pb-4 font-bold text-slate-500">:</span>
+            {slot(left % 60, "Secs", true)}
+          </div>
+        ) : (
+          <p className="mt-3.5 text-sm text-slate-400">{str(v, "done", 50)}</p>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function StarRating({ v }: P) {
+  const rating = Number(v.stars) || 0;
+  const pct = (rating / 5) * 100;
+  return (
+    <div className="p-6">
+      <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Organic cotton tee</p>
+      <p className="mt-0.5 text-lg font-semibold">Everyday Crew</p>
+      <div className="mt-1.5 inline-flex items-center gap-2" role="img" aria-label={`Rated ${rating} out of 5 stars`}>
+        <span className="relative inline-block text-base leading-none tracking-widest text-neutral-300">
+          ★★★★★
+          <span className="absolute left-0 top-0 overflow-hidden whitespace-nowrap text-amber-500" style={{ width: `${pct}%` }} aria-hidden>
+            ★★★★★
+          </span>
+        </span>
+        <strong className="text-sm">{rating}</strong>
+        {str(v, "count") && <span className="text-xs text-slate-500">({str(v, "count", 10)} reviews)</span>}
+      </div>
+      <p className="mt-2 text-[0.65rem] text-neutral-400">On a real product the score comes from the reviews metafield - the preview uses the settings on the left.</p>
+    </div>
+  );
+}
+
+function StockPulse({ v }: P) {
+  const max = Number(v.threshold) || 10;
+  const stock = Math.min(6, max); // preview shows the low-stock state
+  return (
+    <div className="p-6">
+      <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Everyday Crew</p>
+      <div className="mt-2 inline-flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-[0.8rem] font-semibold text-red-700">
+        <span className="size-2 animate-pulse rounded-full bg-red-500" aria-hidden />
+        Selling fast - only <strong>{stock}</strong> left in stock
+      </div>
+      <p className="mt-2 text-[0.65rem] text-neutral-400">Shows only when tracked inventory is at or below {max} - the number is real, never random.</p>
+    </div>
+  );
+}
+
+function StickyBuyBar({ v }: P) {
+  const [added, setAdded] = useState(false);
+  return (
+    <div className="relative flex h-64 flex-col justify-end p-0">
+      <div className="p-5">
+        <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Everyday Crew</p>
+        <p className="mt-1 text-sm text-neutral-600">Scroll the product page and this bar stays pinned on mobile.</p>
+      </div>
+      <div className="mt-auto flex items-center justify-between gap-3 border-t border-slate-200 bg-white/95 px-3.5 py-2.5 backdrop-blur">
+        <span className="flex items-baseline gap-1.5">
+          <strong className="text-base font-extrabold">₹499</strong>
+          <s className="text-xs text-slate-400">₹799</s>
+        </span>
+        <button
+          type="button"
+          onClick={() => { setAdded(true); setTimeout(() => setAdded(false), 2000); }}
+          className="rounded-full px-5 py-2 text-sm font-bold text-white"
+          style={{ background: hex(v, "accent") }}
+        >
+          {added ? "Added!" : str(v, "label", 20)}
+        </button>
+      </div>
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -518,6 +621,10 @@ const map: Record<string, (p: P) => ReactNode> = {
   "trust-grid": TrustGrid,
   "price-display": Price,
   "promo-popup": PromoPopup,
+  "countdown-timer": Countdown,
+  "star-rating": StarRating,
+  "stock-pulse": StockPulse,
+  "sticky-buy-bar": StickyBuyBar,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {

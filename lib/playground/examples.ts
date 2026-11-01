@@ -1363,6 +1363,345 @@ ${on(v, "badge") ? `    <span class="gpl-price__off" data-off {% unless save > 0
 if (!customElements.get('gpl-promo-popup')) customElements.define('gpl-promo-popup', GplPromoPopup);`,
     }),
   },
+  {
+    id: "countdown-timer",
+    name: "Countdown timer",
+    description: "A real countdown to a fixed end date set in the theme editor - it does not reset per visitor. Adapted from a real storefront build.",
+    category: "Promotions & banners",
+    kind: "section",
+    controls: [
+      { id: "badge", label: "Badge", type: "text", maxLength: 30 },
+      { id: "heading", label: "Heading", type: "text", maxLength: 60 },
+      { id: "end", label: "Ends (ISO date)", type: "text", maxLength: 25 },
+      { id: "done", label: "Finished text", type: "text", maxLength: 50 },
+    ],
+    defaults: { badge: "Limited time", heading: "The offer ends soon", end: "2030-12-31T23:59:59+05:30", done: "This offer has ended." },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Counts down to a fixed end date you set in the theme editor, so every
+  visitor sees the same honest deadline.
+{%- endcomment -%}
+<gpl-countdown
+  class="gpl-cd"
+  data-end="{{ section.settings.end_date | escape }}"
+  style="--gpl-accent: {{ section.settings.accent }};"
+>
+  <div class="gpl-cd__card">
+    {%- if section.settings.badge != blank -%}
+      <span class="gpl-cd__badge">{{ section.settings.badge | escape }}</span>
+    {%- endif -%}
+    {%- if section.settings.heading != blank -%}
+      <p class="gpl-cd__heading">{{ section.settings.heading | escape }}</p>
+    {%- endif -%}
+    <div class="gpl-cd__clock" role="timer">
+      <span class="gpl-cd__slot"><b data-h>00</b><small>Hours</small></span>
+      <span class="gpl-cd__colon" aria-hidden="true">:</span>
+      <span class="gpl-cd__slot"><b data-m>00</b><small>Mins</small></span>
+      <span class="gpl-cd__colon" aria-hidden="true">:</span>
+      <span class="gpl-cd__slot gpl-cd__slot--accent"><b data-s>00</b><small>Secs</small></span>
+    </div>
+    <p class="gpl-cd__done" data-done hidden>{{ section.settings.finished_text | escape }}</p>
+  </div>
+</gpl-countdown>
+
+{% schema %}
+{
+  "name": "Countdown timer",
+  "settings": [
+    { "type": "text", "id": "badge", "label": "Badge", "default": ${js(str(v, "badge", 30))} },
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading", 60))} },
+    {
+      "type": "text",
+      "id": "end_date",
+      "label": "End date (ISO 8601)",
+      "info": "Example: ${str(v, "end", 25)}. One fixed deadline for all visitors.",
+      "default": ${js(str(v, "end", 25))}
+    },
+    { "type": "text", "id": "finished_text", "label": "Text when finished", "default": ${js(str(v, "done", 50))} },
+    { "type": "color", "id": "accent", "label": "Accent colour", "default": "#c8f542" }
+  ],
+  "presets": [{ "name": "Countdown timer" }]
+}
+{% endschema %}`,
+      css: `.gpl-cd { display: block; }
+.gpl-cd__card {
+  position: relative;
+  max-width: 30rem;
+  margin: 0 auto;
+  padding: 1.25rem 1.5rem;
+  border-radius: 14px;
+  background: #0f172a;
+  color: #fff;
+  text-align: center;
+  overflow: hidden;
+}
+.gpl-cd__card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 15%;
+  right: 15%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gpl-accent), transparent);
+}
+.gpl-cd__badge {
+  display: inline-block;
+  border: 1px solid rgb(251 191 36 / 0.4);
+  background: rgb(245 158 11 / 0.12);
+  color: #fbbf24;
+  border-radius: 999px;
+  padding: 0.2rem 0.7rem;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.gpl-cd__heading { margin: 0.4rem 0 0; color: #94a3b8; font-size: 0.85rem; }
+.gpl-cd__clock { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 0.9rem; }
+.gpl-cd__slot { display: grid; gap: 0.25rem; }
+.gpl-cd__slot b {
+  display: grid;
+  place-items: center;
+  width: 3.4rem;
+  height: 2.9rem;
+  border: 1px solid rgb(148 163 184 / 0.25);
+  border-radius: 9px;
+  background: rgb(2 6 23 / 0.8);
+  font-family: ui-monospace, monospace;
+  font-size: 1.35rem;
+  font-weight: 800;
+}
+.gpl-cd__slot--accent b { border-color: rgb(200 245 66 / 0.5); color: var(--gpl-accent); }
+.gpl-cd__slot small { color: #64748b; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
+.gpl-cd__colon { color: #64748b; font-weight: 700; }
+.gpl-cd__done { margin: 0.9rem 0 0; color: #94a3b8; font-size: 0.9rem; }
+.gpl-cd__done[hidden] { display: none; }`,
+      js: `class GplCountdown extends HTMLElement {
+  connectedCallback() {
+    const end = Date.parse(this.dataset.end || '');
+    const h = this.querySelector('[data-h]');
+    const m = this.querySelector('[data-m]');
+    const s = this.querySelector('[data-s]');
+    const done = this.querySelector('[data-done]');
+    const clock = this.querySelector('.gpl-cd__clock');
+    if (Number.isNaN(end)) return;
+    const pad = (n) => String(n).padStart(2, '0');
+    const tick = () => {
+      const left = Math.max(0, end - Date.now());
+      h.textContent = pad(Math.floor(left / 3600000));
+      m.textContent = pad(Math.floor((left % 3600000) / 60000));
+      s.textContent = pad(Math.floor((left % 60000) / 1000));
+      if (left <= 0) {
+        clearInterval(this.timer);
+        clock.hidden = true;
+        done.hidden = false;
+      }
+    };
+    tick();
+    this.timer = setInterval(tick, 1000);
+  }
+  disconnectedCallback() { clearInterval(this.timer); }
+}
+if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown', GplCountdown);`,
+    }),
+  },
+  {
+    id: "star-rating",
+    name: "Star rating block",
+    description: "Shows the product's real review rating from the standard Shopify metafield - no hardcoded numbers. Adapted from a real storefront build.",
+    category: "Trust & store information",
+    kind: "snippet",
+    controls: [
+      { id: "stars", label: "Preview stars", type: "select", options: [{ value: "4.9", label: "4.9" }, { value: "4.5", label: "4.5" }, { value: "3.5", label: "3.5" }] },
+      { id: "count", label: "Review count", type: "text", maxLength: 10 },
+    ],
+    defaults: { stars: "4.9", count: "1,480" },
+    install: [
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "Install a review app that writes to the standard product.metafields.reviews.rating and rating_count metafields (most review apps do).",
+      "Create snippets/star-rating.liquid, paste the Liquid code, and add the CSS to your theme stylesheet or a {% stylesheet %} tag.",
+      "Render it where you want the rating shown - for example under the product title.",
+      "If a product has no rating metafield, the block renders nothing at all - it never invents a score.",
+    ],
+    files: () => ({
+      liquid: `{%- comment -%}
+  Reads the standard Shopify review metafields (rating + rating_count),
+  which most review apps populate. Renders nothing when there is no data.
+{%- endcomment -%}
+{%- assign rating = product.metafields.reviews.rating.value.rating | plus: 0 -%}
+{%- assign rcount = product.metafields.reviews.rating_count.value | plus: 0 -%}
+{%- if rating > 0 -%}
+  <div class="gpl-stars" role="img" aria-label="Rated {{ rating }} out of 5 stars">
+    <span class="gpl-stars__icons" style="--gpl-rating: {{ rating }};" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+    <strong class="gpl-stars__score">{{ rating }}</strong>
+    {%- if rcount > 0 -%}
+      <span class="gpl-stars__count">({{ rcount }} reviews)</span>
+    {%- endif -%}
+  </div>
+{%- endif -%}`,
+      css: `.gpl-stars { display: inline-flex; align-items: center; gap: 0.5rem; }
+.gpl-stars__icons { position: relative; display: inline-block; color: #d1d5db; letter-spacing: 0.1em; font-size: 1rem; line-height: 1; }
+.gpl-stars__icons::before {
+  content: "\\2605\\2605\\2605\\2605\\2605";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: calc(var(--gpl-rating) / 5 * 100%);
+  overflow: hidden;
+  white-space: nowrap;
+  color: #f59e0b;
+}
+.gpl-stars__score { font-size: 0.9rem; }
+.gpl-stars__count { color: #64748b; font-size: 0.8rem; }`,
+      usage: `{% render 'star-rating', product: product %}`,
+    }),
+  },
+  {
+    id: "stock-pulse",
+    name: "Low stock indicator",
+    description: "An 'only N left' indicator driven by real variant inventory - it only appears when stock is genuinely low. Adapted from a real storefront build.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "threshold", label: "Show below", type: "select", options: [{ value: "5", label: "5 units" }, { value: "10", label: "10 units" }] },
+    ],
+    defaults: { threshold: "10" },
+    install: [
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "In Shopify admin, enable 'Track quantity' on the products where you want the indicator - it only works with real inventory tracking.",
+      "Create snippets/stock-pulse.liquid, paste the Liquid code, and add the CSS to your theme stylesheet or a {% stylesheet %} tag.",
+      "Render it near your add-to-cart button with the usage tag shown in the Usage tab.",
+      "Test both states: it stays hidden when stock is above the threshold or when tracking is off.",
+    ],
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Uses real inventory: hidden unless Shopify tracks quantity AND stock is
+  at or below the threshold, so the scarcity message is always true.
+{%- endcomment -%}
+{%- assign v = product.selected_or_first_available_variant -%}
+{%- assign max = threshold | default: 10 | plus: 0 -%}
+{%- if v and v.inventory_management == 'shopify' and v.inventory_quantity > 0 and v.inventory_quantity <= max -%}
+  <p class="gpl-stock">
+    <span class="gpl-stock__dot" aria-hidden="true"></span>
+    Selling fast - only <strong>{{ v.inventory_quantity }}</strong> left in stock
+  </p>
+{%- endif -%}`,
+      css: `.gpl-stock {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid rgb(239 68 68 / 0.35);
+  border-radius: 9px;
+  background: rgb(239 68 68 / 0.08);
+  color: #b91c1c;
+  font-size: 0.82rem;
+  font-weight: 600;
+}
+.gpl-stock__dot {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #ef4444;
+  animation: gpl-stock-pulse 1.4s ease-in-out infinite;
+}
+@keyframes gpl-stock-pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.45; transform: scale(1.3); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gpl-stock__dot { animation: none; }
+}`,
+      usage: `{% render 'stock-pulse', product: product, threshold: ${v.threshold ?? 10} %}`,
+    }),
+  },
+  {
+    id: "sticky-buy-bar",
+    name: "Mobile sticky buy bar",
+    description: "A mobile-only sticky bar with the live price that taps through to your theme's real add-to-cart button. Adapted from a real storefront build.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "label", label: "Button label", type: "text", maxLength: 20 },
+      { id: "accent", label: "Button colour", type: "color" },
+    ],
+    defaults: { label: "Add to cart", accent: "#111827" },
+    install: [
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "Create snippets/sticky-buy-bar.liquid, paste the Liquid code, and add the CSS + JS to your theme.",
+      "Render it inside your product form area with the usage tag shown in the Usage tab.",
+      "On mobile, the bar clicks your theme's own add-to-cart button, so drawer carts and validation still work.",
+      "Check it does not cover your footer content - some themes need a little bottom padding on the page.",
+    ],
+    files: (v) => ({
+      liquid: `{%- assign v = product.selected_or_first_available_variant -%}
+{%- if v -%}
+  <div class="gpl-buybar" data-gpl-buybar style="--gpl-accent: {{ accent | default: '${hex(v, "accent")}' }};">
+    <div class="gpl-buybar__price">
+      <strong>{{ v.price | money }}</strong>
+      {%- if v.compare_at_price > v.price -%}
+        <s>{{ v.compare_at_price | money }}</s>
+      {%- endif -%}
+    </div>
+    <button type="button" class="gpl-buybar__cta" data-gpl-buy>${str(v, "label", 20)}</button>
+  </div>
+{%- endif -%}`,
+      css: `/* Mobile only - hidden on desktop */
+.gpl-buybar { display: none; }
+@media (max-width: 767px) {
+  .gpl-buybar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.65rem 0.9rem calc(0.65rem + env(safe-area-inset-bottom, 0px));
+    background: rgb(255 255 255 / 0.95);
+    border-top: 1px solid #e2e8f0;
+    backdrop-filter: blur(12px);
+  }
+  .gpl-buybar__price { display: flex; align-items: baseline; gap: 0.4rem; }
+  .gpl-buybar__price strong { font-size: 1.1rem; font-weight: 800; }
+  .gpl-buybar__price s { color: #94a3b8; font-size: 0.8rem; }
+  .gpl-buybar__cta {
+    border: 0;
+    border-radius: 999px;
+    background: var(--gpl-accent);
+    color: #fff;
+    padding: 0.7rem 1.4rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+  }
+}`,
+      js: `document.querySelectorAll('[data-gpl-buybar]').forEach((bar) => {
+  bar.querySelector('[data-gpl-buy]').addEventListener('click', () => {
+    /* Click the theme's own add-to-cart button so validation,
+       cart drawers and analytics keep working. */
+    const selectors = [
+      'form[action*="/cart/add"] button[type="submit"]',
+      'form[action*="/cart/add"] [name="add"]',
+      '.product-form__submit',
+    ];
+    for (const sel of selectors) {
+      const btn = document.querySelector(sel);
+      if (btn && btn !== bar && btn.offsetParent !== null) {
+        btn.click();
+        return;
+      }
+    }
+    document.querySelector('form[action*="/cart/add"]')?.submit();
+  });
+});`,
+      usage: `{% render 'sticky-buy-bar', product: product %}`,
+    }),
+  },
 ];
 
 export function getExample(id: string | undefined): PlaygroundExample {
