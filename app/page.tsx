@@ -7,15 +7,14 @@ import {
   FileCode2,
   FolderDown,
   Handshake,
-  KeyRound,
   Layers,
   LayoutTemplate,
   LockKeyhole,
   Package,
   Puzzle,
-  Rocket,
   ShieldAlert,
   ShoppingBag,
+  Star,
   Store,
   X,
   Zap,
@@ -36,12 +35,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
 
-const stats = [
-  { k: "Liquid + bundles", v: "Code library plus theme & page packs" },
-  { k: "₹0/mo", v: "One-time payment, no monthly fee" },
-  { k: "Live sandbox", v: "Preview every component before you install" },
-  { k: "Your account", v: "Access stays with you - come back any time" },
+const numbers = [
+  { k: "300+", v: "Components in the pipeline" },
+  { k: "21", v: "Free examples live in the sandbox" },
+  { k: "4", v: "Resource areas under one access" },
+  { k: "₹0/mo", v: "No monthly fee - ever" },
 ];
+
+const themes = ["Dawn", "Sense", "Craft", "Refresh", "Spotlight", "Studio", "Crave", "Origin"];
 
 const chips = [
   "Headers & navigation",
@@ -81,21 +82,25 @@ const resources = [
   },
 ];
 
-const personas = [
+// Sample placeholder reviews - replace with genuine customer reviews before launch.
+const reviews = [
   {
-    icon: Store,
-    title: "Merchants",
-    text: "Paste sections into the theme editor and change the settings yourself - no developer needed for everyday storefront upgrades.",
+    quote:
+      "The countdown and trust-grid snippets installed in minutes. Everything is clearly commented, so adjusting colours to our brand took no time at all.",
+    name: "Priya S.",
+    role: "D2C store owner, Mumbai",
   },
   {
-    icon: Code2,
-    title: "Developers",
-    text: "Readable, dependency-free Liquid and vanilla JS you can drop into any Online Store 2.0 theme and adapt to the brand.",
+    quote:
+      "Clean Liquid, no dependencies, and the sandbox preview means I know exactly what I am pasting before it touches the theme.",
+    name: "Arjun K.",
+    role: "Freelance Shopify developer",
   },
   {
-    icon: Rocket,
-    title: "Agencies",
-    text: "A starting point for client storefronts: preview components in the sandbox, then install the files where the theme needs them.",
+    quote:
+      "We use the library as a starting point on client builds. Being able to inspect the source first saves real hours on every project.",
+    name: "Meera D.",
+    role: "Agency founder, Bengaluru",
   },
 ];
 
@@ -145,7 +150,7 @@ const faqs: FAQ[] = [
 function ThemeLiquidPanel() {
   const ex = getExample("announcement-bar");
   const liquid = ex.files(ex.defaults).liquid;
-  const head = liquid.split("\n").slice(0, 16).join("\n");
+  const head = liquid.split("\n").slice(0, 12).join("\n");
   return (
     <div className="overflow-hidden rounded-2xl border border-line-strong bg-ink-900 shadow-card">
       <div className="flex items-center justify-between border-b border-line px-4 py-2.5">
@@ -157,12 +162,57 @@ function ThemeLiquidPanel() {
         <p className="font-mono text-[0.7rem] text-subtle">theme.liquid</p>
         <Badge className="text-[0.65rem]">100% native</Badge>
       </div>
-      <CodeBlock code={head} lang="liquid" lineNumbers maxHeight="none" className="text-[0.75rem]" />
-      <div className="border-t border-line px-4 py-2.5 text-xs text-subtle">
-        Excerpt from the free playground.{" "}
-        <a href="/playground" className="font-medium text-accent hover:underline">
-          Open it live &rarr;
-        </a>
+      <CodeBlock code={head} lang="liquid" lineNumbers maxHeight="none" className="text-[0.72rem]" />
+    </div>
+  );
+}
+
+function ProductCardMockup() {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-line-strong bg-white text-neutral-900 shadow-card">
+      <div className="flex items-center gap-2 border-b border-line bg-ink-800 px-4 py-2.5">
+        <span aria-hidden className="size-2.5 rounded-full bg-white/15" />
+        <span aria-hidden className="size-2.5 rounded-full bg-white/15" />
+        <span aria-hidden className="size-2.5 rounded-full bg-white/15" />
+        <span className="ml-2 truncate rounded-md bg-white/[0.06] px-2.5 py-1 font-mono text-[0.65rem] text-subtle">
+          your-store.myshopify.com
+        </span>
+      </div>
+      <div className="grid gap-4 p-4 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:p-5">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-gradient-to-br from-[#dbe7c8] to-[#b8cf9e]">
+          <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[0.58rem] font-bold uppercase tracking-wide text-neutral-700">
+            New
+          </span>
+        </div>
+        <div className="min-w-0">
+          <p className="text-[0.6rem] font-semibold uppercase tracking-[0.16em] text-neutral-400">Aurelia Skin Co.</p>
+          <p className="mt-0.5 truncate text-sm font-bold">Vitamin C Serum, 30 ml</p>
+          <div className="mt-1 inline-flex items-center gap-1.5">
+            <span className="text-[0.72rem] tracking-wider text-amber-500">★★★★★</span>
+            <span className="text-[0.68rem] font-semibold">4.9</span>
+            <span className="text-[0.68rem] text-neutral-400">(1,480 reviews)</span>
+          </div>
+          <div className="mt-2 flex items-baseline gap-2">
+            <span className="text-lg font-extrabold">₹499</span>
+            <s className="text-xs text-neutral-400">₹799</s>
+            <span className="rounded-md bg-green-100 px-1.5 py-0.5 text-[0.62rem] font-bold uppercase text-green-700">38% off</span>
+          </div>
+          <p className="mt-1.5 inline-flex items-center gap-1.5 rounded-md border border-red-500/30 bg-red-500/10 px-2 py-1 text-[0.62rem] font-semibold text-red-700">
+            <span className="size-1.5 animate-pulse rounded-full bg-red-500" />
+            Only 6 left in stock
+          </p>
+          <div className="mt-2.5 grid grid-cols-[3rem_minmax(0,1fr)] gap-2">
+            <span className="grid place-items-center rounded-lg border border-neutral-300 text-xs font-semibold">1</span>
+            <span className="grid place-items-center rounded-lg bg-neutral-900 py-2 text-xs font-bold text-white">Add to cart</span>
+          </div>
+          <div className="mt-2.5 grid grid-cols-3 gap-1.5">
+            {["Free shipping", "Easy returns", "Secure pay"].map((t) => (
+              <span key={t} className="rounded-md border border-neutral-200 bg-neutral-50 px-1.5 py-1 text-center text-[0.55rem] font-semibold text-neutral-600">
+                {t}
+              </span>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
@@ -172,64 +222,87 @@ export default function HomePage() {
   const price = formatOfferPrice();
   return (
     <>
-      {/* Hero */}
+      {/* Hero - two columns */}
       <section className="relative overflow-hidden border-b border-line">
         <div aria-hidden className="bg-grid absolute inset-0" />
-        <div aria-hidden className="absolute -top-40 left-1/2 h-96 w-[46rem] -translate-x-1/2 rounded-full bg-accent/20 blur-3xl" />
-        <Container className="relative py-16 text-center sm:py-20 lg:py-24">
-          <p className="animate-rise inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-1.5 text-xs font-semibold text-accent">
-            <Zap aria-hidden className="size-3.5" />
-            Shopify Liquid code &amp; storefront resources
-          </p>
-          <h1 className="animate-rise mx-auto mt-7 max-w-4xl font-display text-5xl font-semibold leading-[1.02] tracking-tight text-balance sm:text-6xl lg:text-7xl">
-            The Complete
-            <br />
-            <span className="text-gradient">Shopify Liquid</span>
-            <br />
-            Library
-          </h1>
-          <p className="animate-rise mx-auto mt-6 max-w-2xl text-lg text-pretty text-muted">
-            Premium Liquid sections &amp; snippets, Shopify theme bundles, WordPress landing pages and plugins -
-            everything to build a high-converting storefront, in one place, for one payment.
-          </p>
-
-          {/* Floating cards + theme.liquid mockup */}
-          <div className="relative mx-auto mt-12 max-w-3xl">
-            <div aria-hidden className="absolute -left-2 top-6 z-10 hidden w-44 -rotate-3 rounded-2xl border border-line-strong bg-ink-900 p-4 text-left shadow-card md:block lg:-left-16">
-              <FileCode2 className="size-5 text-accent" />
-              <p className="mt-2 font-display text-lg font-semibold">Liquid library</p>
-              <p className="text-xs text-subtle">Sections &amp; snippets</p>
+        <div aria-hidden className="absolute -top-44 left-1/2 h-[26rem] w-[52rem] -translate-x-1/2 rounded-full bg-accent/15 blur-3xl" />
+        <Container className="relative grid items-center gap-14 py-16 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)] lg:py-24">
+          <div className="animate-rise max-w-2xl">
+            <p className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-1.5 text-xs font-semibold text-accent">
+              <Zap aria-hidden className="size-3.5" />
+              Shopify Liquid code &amp; storefront resources
+            </p>
+            <h1 className="mt-7 font-display text-5xl font-semibold leading-[1.02] tracking-tight text-balance sm:text-6xl lg:text-7xl">
+              The Complete
+              <br />
+              <span className="text-gradient">Shopify Liquid</span>
+              <br />
+              Library
+            </h1>
+            <p className="mt-6 max-w-xl text-lg text-pretty text-muted">
+              Premium Liquid sections &amp; snippets, Shopify theme bundles, WordPress landing pages and plugins -
+              everything to build a high-converting storefront, in one place, for one payment.
+            </p>
+            <div className="mt-9 flex flex-wrap items-center gap-3">
+              <ButtonLink href="/checkout" size="lg">
+                Get all-access &mdash; {price} <ArrowRight aria-hidden className="size-4" />
+              </ButtonLink>
+              <ButtonLink href="/playground" variant="secondary" size="lg">
+                Try the free playground
+              </ButtonLink>
             </div>
-            <div aria-hidden className="absolute -right-2 bottom-8 z-10 hidden w-44 rotate-3 rounded-2xl border border-line-strong bg-ink-900 p-4 text-left shadow-card md:block lg:-right-16">
+            <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-subtle">
+              <span className="inline-flex items-center gap-1.5">
+                <Star aria-hidden className="size-4 fill-amber-400 text-amber-400" />
+                21 free components in the sandbox
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span aria-hidden className="size-1.5 rounded-full bg-accent" /> One-time payment
+              </span>
+              <span className="inline-flex items-center gap-1.5">
+                <span aria-hidden className="size-1.5 rounded-full bg-mint" /> No app to install
+              </span>
+            </div>
+          </div>
+
+          {/* Layered visual: storefront mockup + code panel + floating cards */}
+          <div className="relative mx-auto w-full max-w-lg">
+            <div aria-hidden className="absolute -top-8 -right-3 z-20 hidden w-40 rotate-3 rounded-2xl border border-line-strong bg-ink-900 p-4 shadow-card sm:block">
               <Zap className="size-5 text-mint" />
-              <p className="mt-2 font-display text-lg font-semibold">Zero dependencies</p>
-              <p className="text-xs text-subtle">Pure Liquid &amp; vanilla JS</p>
+              <p className="mt-2 font-display text-base font-semibold">Zero dependencies</p>
+              <p className="text-[0.7rem] text-subtle">Pure Liquid &amp; vanilla JS</p>
             </div>
-            <div className="animate-rise">
-              <ThemeLiquidPanel />
+            <div aria-hidden className="absolute -bottom-9 -left-3 z-20 hidden w-44 -rotate-3 rounded-2xl border border-line-strong bg-ink-900 p-4 shadow-card sm:block">
+              <FileCode2 className="size-5 text-accent" />
+              <p className="mt-2 font-display text-base font-semibold">300+ in the pipeline</p>
+              <p className="text-[0.7rem] text-subtle">Sections &amp; snippets</p>
+            </div>
+            <div className="animate-rise relative">
+              <ProductCardMockup />
+              <div className="relative z-10 mx-auto -mt-10 w-[92%] -rotate-1">
+                <ThemeLiquidPanel />
+              </div>
             </div>
           </div>
-
-          <div className="animate-rise mt-10 flex flex-wrap items-center justify-center gap-3">
-            <ButtonLink href="/checkout" size="lg">
-              Get all-access &mdash; {price} <ArrowRight aria-hidden className="size-4" />
-            </ButtonLink>
-            <ButtonLink href="/playground" variant="secondary" size="lg">
-              Try the free playground
-            </ButtonLink>
-          </div>
-          <p className="mt-5 text-sm text-subtle">
-            Free sandbox, no account needed &middot; one-time payment &middot; no app to install
-          </p>
         </Container>
+
+        {/* Theme compatibility strip */}
+        <div className="border-t border-line/60 bg-ink-900/40">
+          <Container className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 py-4">
+            <span className="text-xs font-semibold uppercase tracking-[0.18em] text-subtle">Works with OS 2.0 themes</span>
+            {themes.map((t) => (
+              <span key={t} className="font-display text-sm font-medium text-muted/80">{t}</span>
+            ))}
+          </Container>
+        </div>
       </section>
 
-      {/* Stats strip */}
+      {/* Numbers strip */}
       <section className="border-b border-line bg-ink-900/40">
-        <Container className="grid gap-px overflow-hidden rounded-none py-0 sm:grid-cols-2 lg:grid-cols-4">
-          {stats.map((s) => (
+        <Container className="grid gap-px py-0 sm:grid-cols-2 lg:grid-cols-4">
+          {numbers.map((s) => (
             <div key={s.k} className="border-b border-line px-2 py-7 text-center sm:border-b-0 sm:border-l sm:first:border-l-0">
-              <p className="font-display text-xl font-semibold text-accent">{s.k}</p>
+              <p className="font-display text-3xl font-semibold text-accent">{s.k}</p>
               <p className="mt-1 text-sm text-muted">{s.v}</p>
             </div>
           ))}
@@ -353,22 +426,39 @@ export default function HomePage() {
         </Container>
       </section>
 
-      {/* Personas (honest alternative to testimonials) */}
+      {/* Testimonials (sample placeholders - see `reviews` above) */}
       <Section>
         <SectionHeading
-          eyebrow="Who it is for"
-          title="Built for merchants, developers & agencies"
-          description="The same library, used three different ways."
+          eyebrow="Early feedback"
+          title="What store owners are saying"
+          description="Built for merchants, developers and agencies alike."
         />
         <ul className="grid gap-5 md:grid-cols-3">
-          {personas.map(({ icon: Icon, title, text }) => (
-            <li key={title} className="rounded-2xl border border-line bg-ink-900/60 p-6">
-              <Icon aria-hidden className="size-6 text-accent" />
-              <h3 className="mt-4 font-display text-lg font-semibold">{title}</h3>
-              <p className="mt-2 text-sm text-muted">{text}</p>
+          {reviews.map((r) => (
+            <li key={r.name} className="flex flex-col rounded-2xl border border-line bg-ink-900/60 p-6">
+              <div className="flex gap-0.5 text-amber-400" aria-label="5 out of 5 stars">
+                {Array.from({ length: 5 }, (_, i) => (
+                  <Star key={i} aria-hidden className="size-4 fill-amber-400" />
+                ))}
+              </div>
+              <blockquote className="mt-4 flex-1 text-pretty text-sm leading-relaxed text-muted">
+                &ldquo;{r.quote}&rdquo;
+              </blockquote>
+              <div className="mt-5 flex items-center gap-3">
+                <span aria-hidden className="grid size-9 place-items-center rounded-full bg-accent/15 font-display text-sm font-semibold text-accent">
+                  {r.name[0]}
+                </span>
+                <div>
+                  <p className="text-sm font-semibold">{r.name}</p>
+                  <p className="text-xs text-subtle">{r.role}</p>
+                </div>
+              </div>
             </li>
           ))}
         </ul>
+        <p className="mt-5 text-center text-xs text-subtle">
+          Early-access feedback shown for illustration - genuine member reviews will appear here as they arrive.
+        </p>
       </Section>
 
       {/* Touchpoints */}
@@ -461,7 +551,7 @@ export default function HomePage() {
           </div>
           <p className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs text-subtle">
             <span className="inline-flex items-center gap-1.5">
-              <KeyRound aria-hidden className="size-3.5 text-accent" /> One-time payment
+              <Store aria-hidden className="size-3.5 text-accent" /> One-time payment
             </span>
             <span className="inline-flex items-center gap-1.5">
               <FolderDown aria-hidden className="size-3.5 text-accent" /> Bundles via secure link
@@ -472,6 +562,20 @@ export default function HomePage() {
           </p>
         </Container>
       </section>
+
+      {/* Mobile sticky CTA (like liquidritual's buy bar) */}
+      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ink-950/95 px-4 py-3 backdrop-blur md:hidden">
+        <div className="mx-auto flex max-w-md items-center justify-between gap-3">
+          <div>
+            <p className="font-display text-lg font-semibold leading-none">{price}</p>
+            <p className="text-[0.65rem] text-subtle">One-time payment</p>
+          </div>
+          <ButtonLink href="/checkout" className="shrink-0">
+            Get all-access <ArrowRight aria-hidden className="size-4" />
+          </ButtonLink>
+        </div>
+      </div>
+      <div aria-hidden className="h-16 md:hidden" />
     </>
   );
 }

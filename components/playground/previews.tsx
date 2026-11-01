@@ -605,6 +605,60 @@ function StickyBuyBar({ v }: P) {
   );
 }
 
+function FreeShipBar({ v }: P) {
+  const goal = Number(v.goal) || 49900;
+  const cart = 29900; // preview cart total in paise
+  const pct = Math.min(100, Math.round((cart / goal) * 100));
+  const left = goal - cart;
+  const money = (p: number) => `₹${(p / 100).toLocaleString("en-IN")}`;
+  return (
+    <div className="p-6">
+      <div className="rounded-xl border border-slate-200 bg-white p-4">
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-neutral-500">Your cart</p>
+        {left > 0 ? (
+          <p className="text-sm">
+            Add <strong style={{ color: hex(v, "accent") }}>{money(left)}</strong> more to unlock free shipping
+          </p>
+        ) : (
+          <p className="text-sm font-bold" style={{ color: hex(v, "accent") }}>You have unlocked free shipping</p>
+        )}
+        <div role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label="Progress to free shipping" className="mt-2.5 h-2 overflow-hidden rounded-full bg-slate-200">
+          <span className="block h-full rounded-full transition-[width]" style={{ width: `${pct}%`, background: hex(v, "accent") }} />
+        </div>
+        <p className="mt-2 text-[0.65rem] text-neutral-400">Preview uses a ₹{money(cart).replace("₹", "")} cart - on the store it reads the real cart total.</p>
+      </div>
+    </div>
+  );
+}
+
+function Marquee({ v }: P) {
+  const itemsx = ["Free shipping", "Easy returns", "Quality checked", "Secure checkout", "COD available"];
+  const speed = Number(v.speed) || 10;
+  const row = (key: string) => (
+    <span key={key} aria-hidden={key === "b"} className="inline-flex items-center gap-6 whitespace-nowrap">
+      {itemsx.map((t, i) => (
+        <span key={t} className="inline-flex items-center gap-6">
+          <span className="text-sm font-semibold">{t}</span>
+          {on(v, "divider") && !(key === "b" && i === itemsx.length - 1) && <span className="text-slate-400">&bull;</span>}
+        </span>
+      ))}
+    </span>
+  );
+  return (
+    <div className="p-6">
+      <div className="overflow-hidden border-y border-slate-200 py-2.5">
+        <div
+          className="inline-flex animate-[gpl-marquee_linear_infinite] items-center gap-6 will-change-transform"
+          style={{ animationDuration: `${speed}s` }}
+        >
+          {row("a")}{row("b")}
+        </div>
+      </div>
+      <p className="mt-2 text-[0.65rem] text-neutral-400">Blocks drive the items; it pauses on hover and respects reduced-motion.</p>
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -625,6 +679,8 @@ const map: Record<string, (p: P) => ReactNode> = {
   "star-rating": StarRating,
   "stock-pulse": StockPulse,
   "sticky-buy-bar": StickyBuyBar,
+  "free-shipping-bar": FreeShipBar,
+  "benefit-marquee": Marquee,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {

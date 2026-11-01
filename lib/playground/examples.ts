@@ -1702,6 +1702,146 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
       usage: `{% render 'sticky-buy-bar', product: product %}`,
     }),
   },
+  {
+    id: "free-shipping-bar",
+    name: "Free shipping progress",
+    description: "A cart progress bar driven by the real cart total - shows exactly how much more unlocks free shipping.",
+    category: "Cart & checkout",
+    kind: "snippet",
+    controls: [
+      { id: "goal", label: "Free shipping at", type: "select", options: [{ value: "49900", label: "Rs. 499" }, { value: "99900", label: "Rs. 999" }, { value: "149900", label: "Rs. 1,499" }] },
+      { id: "accent", label: "Bar colour", type: "color" },
+    ],
+    defaults: { goal: "49900", accent: "#15803d" },
+    install: [
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "Create snippets/free-shipping-bar.liquid, paste the Liquid code, and add the CSS to your theme stylesheet or a {% stylesheet %} tag.",
+      "Render it inside your cart template or cart drawer with the usage tag shown in the Usage tab.",
+      "Set the threshold (in paise) to match the free-shipping rate you actually configured in Shopify shipping settings.",
+    ],
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Driven by cart.total_price, so the message is always accurate.
+  Pass the free-shipping threshold in paise (49900 = Rs. 499).
+{%- endcomment -%}
+{%- assign goal = threshold | default: ${v.goal ?? 49900} -%}
+{%- assign total = cart.total_price | default: 0 -%}
+{%- assign pct = total | times: 100 | divided_by: goal -%}
+{%- if pct > 100 -%}{%- assign pct = 100 -%}{%- endif -%}
+<div class="gpl-ship" style="--gpl-accent: {{ accent | default: '${hex(v, "accent")}' }};">
+  {%- if total >= goal -%}
+    <p class="gpl-ship__msg gpl-ship__msg--done">You have unlocked <strong>free shipping</strong></p>
+  {%- else -%}
+    <p class="gpl-ship__msg">Add <strong>{{ goal | minus: total | money }}</strong> more to unlock free shipping</p>
+  {%- endif -%}
+  <div class="gpl-ship__track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ pct }}" aria-label="Progress to free shipping">
+    <span class="gpl-ship__fill" style="width: {{ pct }}%;"></span>
+  </div>
+</div>`,
+      css: `.gpl-ship { margin: 0.75rem 0; }
+.gpl-ship__msg { margin: 0 0 0.45rem; font-size: 0.85rem; }
+.gpl-ship__msg strong { color: var(--gpl-accent); }
+.gpl-ship__msg--done { color: var(--gpl-accent); font-weight: 700; }
+.gpl-ship__track {
+  height: 0.5rem;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+.gpl-ship__fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--gpl-accent);
+  transition: width 0.4s ease;
+}`,
+      usage: `{% render 'free-shipping-bar', threshold: ${v.goal ?? 49900} %}`,
+    }),
+  },
+  {
+    id: "benefit-marquee",
+    name: "Benefit marquee",
+    description: "A horizontally scrolling strip of short benefits - pauses on hover and respects reduced-motion. Adapted from a real storefront build.",
+    category: "Promotions & banners",
+    kind: "section",
+    controls: [
+      { id: "speed", label: "Scroll speed", type: "select", options: [{ value: "16", label: "Calm" }, { value: "10", label: "Medium" }, { value: "6", label: "Fast" }] },
+      { id: "divider", label: "Show dividers", type: "toggle" },
+    ],
+    defaults: { speed: "10", divider: true },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `{%- if section.blocks.size > 0 -%}
+  <div class="gpl-marquee" style="--gpl-speed: {{ section.settings.speed }}s;" data-gpl-marquee>
+    <div class="gpl-marquee__track">
+      {%- for i in (1..2) -%}
+        {%- for block in section.blocks -%}
+          <span class="gpl-marquee__item" {{ block.shopify_attributes }} {% if i == 2 %}aria-hidden="true"{% endif %}>
+            {{ block.settings.text | escape }}
+          </span>
+          ${on(v, "divider") ? `{%- unless forloop.last and i == 2 -%}
+          <span class="gpl-marquee__dot" aria-hidden="true">&bull;</span>
+          {%- endunless -%}\n          ` : ""}{%- endfor -%}
+      {%- endfor -%}
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Benefit marquee",
+  "settings": [
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Seconds per loop",
+      "min": 4,
+      "max": 30,
+      "step": 2,
+      "default": ${Number(v.speed) || 10}
+    }
+  ],
+  "blocks": [
+    {
+      "type": "item",
+      "name": "Item",
+      "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Free shipping" }]
+    }
+  ],
+  "max_blocks": 12,
+  "presets": [
+    {
+      "name": "Benefit marquee",
+      "blocks": [{ "type": "item" }, { "type": "item" }, { "type": "item" }, { "type": "item" }]
+    }
+  ]
+}
+{% endschema %}`,
+      css: `.gpl-marquee {
+  overflow: hidden;
+  padding: 0.7rem 0;
+  border-top: 1px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+}
+.gpl-marquee__track {
+  display: inline-flex;
+  align-items: center;
+  gap: 1.5rem;
+  white-space: nowrap;
+  animation: gpl-marquee var(--gpl-speed, 10s) linear infinite;
+  will-change: transform;
+}
+.gpl-marquee:hover .gpl-marquee__track { animation-play-state: paused; }
+.gpl-marquee__item { font-size: 0.85rem; font-weight: 600; }
+.gpl-marquee__dot { color: #94a3b8; }
+@keyframes gpl-marquee {
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gpl-marquee__track { animation: none; }
+}`,
+    }),
+  },
 ];
 
 export function getExample(id: string | undefined): PlaygroundExample {
