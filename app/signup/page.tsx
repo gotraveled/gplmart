@@ -16,7 +16,7 @@ export default async function SignupPage({ searchParams }: { searchParams: Promi
       <AuthForm action={signupAction} mode="signup" next={next} />
       <p className="mt-6 text-sm text-muted">
         Already registered?{" "}
-        <Link href={`/login?next=${encodeURIComponent(next)}`} className="text-cyan underline underline-offset-4">
+        <Link href={`/login?next=${encodeURIComponent(next)}`} className="text-mint underline underline-offset-4">
           Sign in
         </Link>
       </p>

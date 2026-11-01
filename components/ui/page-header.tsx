@@ -53,7 +53,7 @@ export function PageHeader({
       <Container className="relative py-12 sm:py-16">
         {crumbs && <Breadcrumbs items={crumbs} />}
         {eyebrow && (
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-cyan">{eyebrow}</p>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-mint">{eyebrow}</p>
         )}
         <h1 className="font-display text-4xl font-semibold tracking-tight text-balance sm:text-5xl">
           {title}

@@ -22,7 +22,7 @@ export default async function PaymentSuccessPage({ searchParams }: { searchParam
     status === "paid"
       ? { Icon: CheckCircle2, color: "text-emerald-400", title: "Payment verified", text: "Your all-access membership is active." }
       : status === "created"
-        ? { Icon: Clock, color: "text-cyan", title: "Confirming your payment", text: "We are waiting for confirmation from Razorpay. This usually takes a few seconds. You can safely close this page; access is added to your account automatically once the payment is confirmed." }
+        ? { Icon: Clock, color: "text-mint", title: "Confirming your payment", text: "We are waiting for confirmation from Razorpay. This usually takes a few seconds. You can safely close this page; access is added to your account automatically once the payment is confirmed." }
         : { Icon: XCircle, color: "text-rose-400", title: "We could not confirm this payment", text: "If money was deducted, it will be reconciled automatically or reversed by your bank. Check your account later or contact us with your order reference." };
 
   return (

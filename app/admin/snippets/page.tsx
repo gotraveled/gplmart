@@ -11,23 +11,24 @@ export default async function AdminSnippets({ searchParams }: { searchParams: Pr
   const [{ msg }, categories, { data }] = await Promise.all([
     searchParams,
     listCategories(),
-    createServiceClient().from("snippets").select("id,slug,title,category_slug,status,updated_at").order("updated_at", { ascending: false }),
+    createServiceClient().from("snippets").select("id,slug,title,category_slug,status,is_demo,license_status,updated_at").order("updated_at", { ascending: false }),
   ]);
   return (
     <>
       <div className="mb-6 flex items-center justify-between">
         <h1 className="font-display text-3xl font-semibold">Snippets</h1>
-        <Link href="/admin/snippets/new" className="rounded-xl bg-accent-strong px-4 py-2 text-sm font-medium">New snippet</Link>
+        <Link href="/admin/snippets/new" className="rounded-xl bg-accent px-4 py-2 text-sm font-medium text-ink-950">New snippet</Link>
       </div>
       <Msg msg={msg} />
-      <Table head={["Title", "Slug", "Category", "Status", ""]}>
+      <Table head={["Title", "Slug", "Category", "Status", "Licence", ""]}>
         {(data ?? []).map((s) => (
           <tr key={s.id}>
-            <td className="px-4 py-3">{s.title}</td>
+            <td className="px-4 py-3">{s.title}{s.is_demo && <span className="ml-2 rounded bg-mint/15 px-1.5 py-0.5 text-xs text-mint">demo</span>}</td>
             <td className="px-4 py-3 font-mono text-xs">{s.slug}</td>
             <td className="px-4 py-3">{s.category_slug}</td>
             <td className="px-4 py-3">{s.status}</td>
-            <td className="px-4 py-3"><Link className="text-cyan underline" href={`/admin/snippets/${s.id}`}>Edit</Link></td>
+            <td className="px-4 py-3">{s.license_status}</td>
+            <td className="px-4 py-3"><Link className="text-mint underline" href={`/admin/snippets/${s.id}`}>Edit</Link></td>
           </tr>
         ))}
       </Table>

@@ -34,7 +34,7 @@ export function SectionHeading({
     <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
       <div className="max-w-2xl">
         {eyebrow && (
-          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-cyan">{eyebrow}</p>
+          <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-mint">{eyebrow}</p>
         )}
         <Tag className="font-display text-3xl font-semibold tracking-tight text-balance sm:text-4xl">
           {title}

@@ -61,7 +61,7 @@ export default async function TemplatesPage() {
             )}
           </div>
           <div className="flex gap-3 rounded-xl border border-line p-4 text-sm text-muted">
-            <Info aria-hidden className="mt-0.5 size-4 shrink-0 text-cyan" />
+            <Info aria-hidden className="mt-0.5 size-4 shrink-0 text-mint" />
             <p>
               This link is for your own use. Please do not share it. GPLMart controls who can see the link on
               this site, but a Google Drive link can be forwarded by anyone who has it, so the files are not

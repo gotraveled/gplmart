@@ -22,7 +22,7 @@ export default async function AccessHub() {
           {areas.map(({ href, icon: Icon, title, text }) => (
             <li key={href}>
               <Link href={href} className="group flex h-full flex-col rounded-2xl border border-line bg-ink-900/70 p-7 transition hover:-translate-y-1 hover:border-accent/50">
-                <Icon aria-hidden className="size-8 text-cyan" />
+                <Icon aria-hidden className="size-8 text-mint" />
                 <h2 className="mt-4 font-display text-2xl font-semibold">{title}</h2>
                 <p className="mt-2 text-muted">{text}</p>
                 <span className="mt-auto inline-flex items-center gap-1 pt-6 text-sm font-medium text-accent">

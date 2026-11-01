@@ -46,7 +46,7 @@ export function AuthForm({
         </p>
       )}
       {state.notice && (
-        <p role="status" className="rounded-lg border border-cyan/30 bg-cyan/10 p-3 text-sm text-fg">
+        <p role="status" className="rounded-lg border border-mint/30 bg-mint/10 p-3 text-sm text-fg">
           {state.notice}
         </p>
       )}

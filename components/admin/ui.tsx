@@ -5,7 +5,7 @@ export const fieldCls = "w-full rounded-xl border border-line-strong bg-ink-900 
 
 export function Msg({ msg }: { msg?: string }) {
   return msg ? (
-    <p role="status" className="mb-6 rounded-lg border border-cyan/30 bg-cyan/10 p-3 text-sm">
+    <p role="status" className="mb-6 rounded-lg border border-mint/30 bg-mint/10 p-3 text-sm">
       {msg}
     </p>
   ) : null;

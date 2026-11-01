@@ -1,7 +1,7 @@
 export const siteConfig = {
   name: "GPLMart",
   description:
-    "GPLMart is a marketplace for digital products and resources for website owners, Shopify merchants, WordPress users and developers.",
+    "GPLMart is a library of reusable Shopify Liquid snippets and theme sections, plus authorised template bundles, for merchants, developers and agencies.",
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://gplmart.com").replace(/\/$/, ""),
   announcement:
     process.env.NEXT_PUBLIC_ANNOUNCEMENT ||
@@ -10,14 +10,16 @@ export const siteConfig = {
 } as const;
 
 export const mainNav = [
-  { href: "/#included", label: "What's included" },
+  { href: "/library", label: "Library" },
+  { href: "/playground", label: "Playground" },
   { href: "/#how-it-works", label: "How it works" },
   { href: "/#faq", label: "FAQ" },
 ] as const;
 
 export const footerLinks = {
   GPLMart: [
-    { href: "/#included", label: "What's included" },
+    { href: "/library", label: "Library" },
+    { href: "/playground", label: "Playground" },
     { href: "/checkout", label: "Get access" },
     { href: "/account", label: "My account" },
     { href: "/login", label: "Sign in" },

@@ -1,6 +1,6 @@
 # GPLMart
 
-GPLMart.com: a one-time INR all-access membership (Google Drive template bundles + protected Shopify Liquid code library). Phase 2 adds Supabase auth, Razorpay payments, entitlements, a protected library and an admin area. See `docs/phase-2-setup.md` for setup and required environment variables.
+GPLMart.com: a one-time INR all-access membership (Google Drive template bundles + protected Shopify Liquid code library). Phase 2 adds Supabase auth, Razorpay payments, entitlements, a protected library and an admin area. Phase 3 adds the product-led homepage, the free `/playground` with original Liquid examples, the public `/library` catalogue, and resource metadata with licence gating (`supabase/migrations/0002_resource_metadata.sql`). See `docs/phase-2-setup.md` for setup and required environment variables.
 
 ## Stack
 

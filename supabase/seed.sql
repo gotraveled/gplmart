@@ -113,3 +113,7 @@ $code${%- if image != blank -%}
 {%- endif -%}$code$,
 $p$<div style="font-family:system-ui;padding:24px"><div style="height:80px;background:#e5e7eb;border-radius:8px;display:grid;place-items:center;color:#6b7280">placeholder</div></div>$p$)
 on conflict (slug) do nothing;
+
+-- Requires migration 0002: mark the demo rows so the constraint that blocks
+-- unreviewed paid content does not apply to these original examples.
+update public.snippets set is_demo = true where 'demo' = any(tags);

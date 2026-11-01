@@ -1,19 +1,22 @@
 @import "tailwindcss";
 
 @theme {
-  --color-ink-950: #060818;
-  --color-ink-900: #0a0e24;
-  --color-ink-800: #11163a;
-  --color-ink-700: #1a2050;
+  --color-paper: #f2f5ea;
+  --color-paper-ink: #0b1220;
+  --color-ink-950: #070b14;
+  --color-ink-900: #0c121f;
+  --color-ink-800: #131b2e;
+  --color-ink-700: #1c2740;
   --color-line: rgb(148 163 255 / 0.14);
   --color-line-strong: rgb(148 163 255 / 0.28);
   --color-fg: #eef0ff;
   --color-muted: #a3aad1;
   --color-subtle: #7c85b3;
-  --color-accent: #8b7cff;
-  --color-accent-strong: #6d5cff;
-  --color-cyan: #38d9f5;
+  --color-accent: #c8f542;
+  --color-accent-strong: #9fd91f;
+  --color-mint: #5eead4;
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, SFMono-Regular, Menlo, monospace;
   --font-display: var(--font-grotesk), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --shadow-card: 0 1px 0 rgb(255 255 255 / 0.04) inset, 0 12px 32px -12px rgb(0 0 0 / 0.6);
   --animate-rise: rise 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
@@ -43,11 +46,11 @@ body {
 }
 
 ::selection {
-  background: rgb(139 124 255 / 0.4);
+  background: rgb(200 245 66 / 0.35);
 }
 
 :focus-visible {
-  outline: 2px solid var(--color-cyan);
+  outline: 2px solid var(--color-mint);
   outline-offset: 3px;
   border-radius: 6px;
 }
@@ -61,7 +64,7 @@ body {
 }
 
 .text-gradient {
-  background: linear-gradient(100deg, #fff 10%, #b9b0ff 50%, #7be8fb 100%);
+  background: linear-gradient(100deg, #f4ffd0 0%, #c8f542 45%, #5eead4 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -78,4 +81,29 @@ body {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+}
+
+.tok-comment { color: #6f7f9c; font-style: italic; }
+.tok-string { color: #f6c177; }
+.tok-keyword { color: #c8f542; }
+.tok-delim { color: #5eead4; }
+.tok-filter { color: #7dd3fc; }
+.tok-number { color: #f0abfc; }
+.tok-tag { color: #fb7185; }
+.tok-attr { color: #93c5fd; }
+.tok-prop { color: #7dd3fc; }
+.tok-punct { color: #8a97b3; }
+
+.caret::after {
+  content: "";
+  display: inline-block;
+  width: 0.5ch;
+  height: 1.1em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background: var(--color-accent);
+  animation: blink 1.1s steps(1) infinite;
+}
+@keyframes blink {
+  50% { opacity: 0; }
 }

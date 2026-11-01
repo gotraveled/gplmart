@@ -46,15 +46,23 @@ export async function saveSnippetAction(fd: FormData) {
     code: String(fd.get("code") ?? ""),
     preview_html: String(fd.get("preview_html") ?? ""),
     source: str(fd, "source"),
+    documentation: String(fd.get("documentation") ?? ""),
+    version: str(fd, "version").slice(0, 40),
+    compatibility: str(fd, "compatibility").slice(0, 120),
+    is_demo: fd.get("is_demo") === "on",
+    license_status: str(fd, "license_status") === "cleared" ? "cleared" : "unreviewed",
     status: fd.get("status") === "published" ? "published" : "draft",
     updated_at: new Date().toISOString(),
   };
   if (!row.slug || !row.title || !row.code || !row.category_slug) back("/admin/snippets", "Slug, title, category and code are required.");
+  if (row.status === "published" && !row.is_demo && row.license_status !== "cleared")
+    back("/admin/snippets", "Paid resources can only be published after licence review. Mark the licence as cleared (with evidence in the source note) or mark this as a demo.");
   const db = createServiceClient();
   const { error } = id ? await db.from("snippets").update(row).eq("id", id) : await db.from("snippets").insert(row);
   if (error) back("/admin/snippets", `Could not save snippet: ${error.message}`);
   await logAudit(admin.id, id ? "snippet.updated" : "snippet.created", row.slug, { status: row.status });
   revalidatePath("/access/liquid-library", "layout");
+  revalidatePath("/library", "layout");
   back("/admin/snippets", "Snippet saved.");
 }
 
@@ -64,6 +72,7 @@ export async function deleteSnippetAction(fd: FormData) {
   const { data } = await createServiceClient().from("snippets").delete().eq("id", id).select("slug").maybeSingle();
   await logAudit(admin.id, "snippet.deleted", data?.slug ?? id);
   revalidatePath("/access/liquid-library", "layout");
+  revalidatePath("/library", "layout");
   back("/admin/snippets", "Snippet deleted.");
 }
 

@@ -21,7 +21,7 @@ export function Prose({ children, draft = false }: { children: React.ReactNode; 
     <Container className="py-12 sm:py-16">
       <div className="max-w-3xl">
         {draft && <DraftNotice />}
-        <div className="space-y-4 leading-relaxed text-muted [&_h2]:mt-10 [&_h2]:font-display [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-fg [&_li]:ml-5 [&_li]:list-disc [&_a]:text-cyan [&_a]:underline [&_a]:underline-offset-4">
+        <div className="space-y-4 leading-relaxed text-muted [&_h2]:mt-10 [&_h2]:font-display [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-fg [&_li]:ml-5 [&_li]:list-disc [&_a]:text-mint [&_a]:underline [&_a]:underline-offset-4">
           {children}
         </div>
       </div>

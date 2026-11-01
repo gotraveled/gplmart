@@ -9,7 +9,7 @@ import { MobileNav } from "./mobile-nav";
 export function AnnouncementBar() {
   if (!siteConfig.announcement) return null;
   return (
-    <div className="border-b border-line bg-gradient-to-r from-accent-strong/30 via-ink-800 to-cyan/20 text-center text-xs text-fg sm:text-sm">
+    <div className="border-b border-line bg-gradient-to-r from-accent/20 via-ink-800 to-mint/15 text-center text-xs text-fg sm:text-sm">
       <Container className="py-2">
         <p>{siteConfig.announcement}</p>
       </Container>
@@ -22,7 +22,7 @@ export function Header() {
     <>
       <a
         href="#main"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-accent-strong focus:px-4 focus:py-2"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:rounded-lg focus:bg-accent focus:text-ink-950 focus:px-4 focus:py-2"
       >
         Skip to content
       </a>

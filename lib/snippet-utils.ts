@@ -4,6 +4,9 @@ export interface SnippetSummary {
   description: string;
   category_slug: string;
   tags: string[];
+  is_demo: boolean;
+  version: string;
+  compatibility: string;
 }
 
 export interface SnippetCategory {

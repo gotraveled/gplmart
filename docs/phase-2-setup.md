@@ -12,7 +12,7 @@
 
 ## Setup steps
 
-1. Create a Supabase project. Run `supabase/migrations/0001_membership.sql` in the SQL editor (or `supabase db push`). Optionally run `supabase/seed.sql` (small ORIGINAL demo snippets, not the real library).
+1. Create a Supabase project. Run `supabase/migrations/0001_membership.sql` and `supabase/migrations/0002_resource_metadata.sql` in the SQL editor (or `supabase db push`). Optionally run `supabase/seed.sql` (small ORIGINAL demo snippets, not the real library).
 2. In Supabase Auth settings add your site URL and `https://<domain>/auth/callback` to the redirect allow-list. Keep email confirmation on.
 3. Make yourself admin (after signing up once):
    ```sql
@@ -30,6 +30,8 @@ Sharing settings: use a folder shared as "Anyone with the link" (viewer), or sha
 ## Importing the real library
 
 Add snippets in `/admin/snippets` or insert rows into `public.snippets` (slug, title, category_slug, code, preview_html, status = `published`). Bulk import: write a SQL/CSV import using the service role. Only publish after rights are confirmed.
+
+Phase 3 additions: `snippets.is_demo` marks GPLMart's own teaching examples (excluded from the public `/library` catalogue but visible to members); `license_status` must be `cleared` before a non-demo snippet can be `published` (enforced by a CHECK constraint and by the admin action); `version`, `compatibility` and `documentation` are shown on public and member pages. The free `/playground` examples live in `lib/playground/examples.ts` and never touch the database.
 
 ## Not yet built
 

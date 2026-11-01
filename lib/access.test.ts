@@ -55,8 +55,8 @@ describe("rate limit", () => {
 describe("snippet utilities", () => {
   const cats = [{ slug: "cart", name: "Cart" }, { slug: "nav", name: "Navigation" }];
   const items = [
-    { slug: "a", title: "Shipping bar", description: "Free shipping", category_slug: "cart", tags: ["progress"] },
-    { slug: "b", title: "Breadcrumbs", description: "Trail", category_slug: "nav", tags: ["a11y"] },
+    { slug: "a", title: "Shipping bar", description: "Free shipping", category_slug: "cart", tags: ["progress"], is_demo: false, version: "", compatibility: "" },
+    { slug: "b", title: "Breadcrumbs", description: "Trail", category_slug: "nav", tags: ["a11y"], is_demo: false, version: "", compatibility: "" },
   ];
   it("searches title, description, category and tags", () => {
     expect(filterSnippets(items, cats, "shipping", "").map((s) => s.slug)).toEqual(["a"]);

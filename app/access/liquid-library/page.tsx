@@ -32,9 +32,9 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
         crumbs={[{ label: "Resource hub", href: "/access" }, { label: "Liquid library" }]}
       />
       <Container className="py-10">
-        {all.some((s) => s.tags.includes("demo")) && (
+        {all.some((s) => s.is_demo) && (
           <p role="note" className="mb-6 rounded-lg border border-amber-400/30 bg-amber-400/10 p-3 text-sm text-amber-100">
-            <strong>Demo content.</strong> Snippets tagged &quot;demo&quot; are small original examples for testing this library. They are not the full code library.
+            <strong>Demo content.</strong> Items marked &quot;Demo&quot; are small original examples for testing this library. They are not the full code library.
           </p>
         )}
         <form role="search" action="/access/liquid-library" className="flex gap-3">
@@ -84,9 +84,15 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
             {items.map((s) => (
               <li key={s.slug}>
                 <Link href={`/access/liquid-library/${s.slug}`} className="group flex h-full flex-col rounded-2xl border border-line bg-ink-900/70 p-5 transition hover:-translate-y-1 hover:border-accent/50">
-                  <Badge className="self-start">{categories.find((c) => c.slug === s.category_slug)?.name ?? s.category_slug}</Badge>
+                  <div className="flex flex-wrap gap-1.5">
+                    <Badge>{categories.find((c) => c.slug === s.category_slug)?.name ?? s.category_slug}</Badge>
+                    {s.is_demo && <Badge className="border-mint/40 text-mint">Demo</Badge>}
+                  </div>
                   <h2 className="mt-3 font-display text-lg font-semibold">{s.title}</h2>
                   <p className="mt-1.5 line-clamp-3 text-sm text-muted">{s.description}</p>
+                  {(s.version || s.compatibility) && (
+                    <p className="mt-2 text-xs text-subtle">{[s.version && `v${s.version}`, s.compatibility].filter(Boolean).join(" · ")}</p>
+                  )}
                   <span className="mt-auto inline-flex items-center gap-1 pt-4 text-sm font-medium text-accent">
                     Inspect code <ArrowRight aria-hidden className="size-4" />
                   </span>

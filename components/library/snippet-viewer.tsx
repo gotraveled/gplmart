@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Check, Copy, Download } from "lucide-react";
 import { Button, ButtonLink } from "@/components/ui/button";
+import { CodeBlock } from "@/components/ui/code-block";
 
 export function SnippetViewer({
   code,
@@ -66,9 +67,7 @@ export function SnippetViewer({
 
       <div id="panel-code" role="tabpanel" aria-labelledby="tab-code" hidden={tab !== "code"}>
         <p className="border-b border-line px-4 py-2 font-mono text-xs text-subtle">{filename}</p>
-        <pre tabIndex={0} className="max-h-[32rem] overflow-auto p-4 text-sm leading-relaxed">
-          <code>{code}</code>
-        </pre>
+        <CodeBlock code={code} lang="liquid" maxHeight="32rem" />
       </div>
       <div id="panel-preview" role="tabpanel" aria-labelledby="tab-preview" hidden={tab !== "preview"}>
         {previewDoc ? (

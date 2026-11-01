@@ -22,7 +22,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       <AuthForm action={loginAction} mode="login" next={next} />
       <p className="mt-6 text-sm text-muted">
         New here?{" "}
-        <Link href={`/signup?next=${encodeURIComponent(next)}`} className="text-cyan underline underline-offset-4">
+        <Link href={`/signup?next=${encodeURIComponent(next)}`} className="text-mint underline underline-offset-4">
           Create an account
         </Link>
       </p>

@@ -28,7 +28,7 @@ export default async function CheckoutPage() {
         <div className="mt-8">
           {active ? (
             <>
-              <p role="status" className="mb-4 rounded-lg border border-cyan/30 bg-cyan/10 p-3 text-sm">
+              <p role="status" className="mb-4 rounded-lg border border-mint/30 bg-mint/10 p-3 text-sm">
                 You already have all-access. No further payment is needed.
               </p>
               <ButtonLink href="/access" size="lg" className="w-full">
