@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Search } from "lucide-react";
+import { UserRound } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/ui/logo";
 import { buttonClasses } from "@/components/ui/button";
@@ -45,8 +45,11 @@ export function Header() {
             </ul>
           </nav>
           <div className="flex items-center gap-2">
-            <Link href="/shop" className={buttonClasses("secondary", "md", "hidden sm:inline-flex")}>
-              <Search aria-hidden className="size-4" /> Browse
+            <Link href="/account" className={buttonClasses("secondary", "md", "hidden sm:inline-flex")}>
+              <UserRound aria-hidden className="size-4" /> Account
+            </Link>
+            <Link href="/checkout" className={buttonClasses("primary", "md", "hidden sm:inline-flex")}>
+              Get access
             </Link>
             <MobileNav />
           </div>

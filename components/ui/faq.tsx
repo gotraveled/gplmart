@@ -1,5 +1,8 @@
 import { ChevronDown } from "lucide-react";
-import type { FAQ } from "@/data/types";
+export interface FAQ {
+  question: string;
+  answer: string;
+}
 
 export function FaqList({ items }: { items: readonly FAQ[] }) {
   return (

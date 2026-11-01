@@ -1,158 +1,152 @@
 import type { Metadata } from "next";
-import Link from "next/link";
-import { ArrowRight, BadgeCheck, Compass, FileText, Gauge, LibraryBig, Search, ShieldCheck, Tags } from "lucide-react";
+import { ArrowRight, BookOpenCheck, Code2, FolderDown, KeyRound, LayoutTemplate, LogIn, Puzzle, ShieldAlert, ShoppingBag } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
 import { Container, Section, SectionHeading } from "@/components/ui/container";
-import { FaqList } from "@/components/ui/faq";
-import { ProductGrid } from "@/components/products/product-card";
-import { categoryIcons } from "@/components/products/product-artwork";
-import { categories } from "@/data/categories";
-import { getBundles, getFeaturedProducts, products } from "@/data/products";
-import type { FAQ } from "@/data/types";
+import { FaqList, type FAQ } from "@/components/ui/faq";
+import { formatOfferPrice } from "@/lib/offer";
 
 export const metadata: Metadata = {
-  title: { absolute: "GPLMart - Digital products and resources marketplace" },
+  title: { absolute: "GPLMart - One-time all-access for Shopify resources" },
+  description:
+    "One payment for access to a Google Drive template bundle library and a searchable Shopify Liquid code library.",
   alternates: { canonical: "/" },
 };
 
-const benefits = [
-  { icon: Compass, title: "Organised by what you build", text: "Shopify, WordPress, HTML and AI prompt resources in clearly separated categories." },
-  { icon: FileText, title: "Clear product information", text: "Every listing is planned to show what is included, compatibility and requirements." },
-  { icon: ShieldCheck, title: "Licensing up front", text: "Licence and source details will be published for each product before it goes on sale." },
-  { icon: Gauge, title: "Fast, lightweight pages", text: "Server-rendered pages with minimal JavaScript so browsing stays quick on any device." },
+const included = [
+  {
+    icon: FolderDown,
+    title: "Template bundle downloads",
+    text: "After payment you get a members-only page with the Google Drive link to the template bundles, plus step-by-step instructions for downloading them.",
+  },
+  {
+    icon: Code2,
+    title: "Shopify Liquid code library",
+    text: "A members-only library of Liquid snippets and sections. Search, filter by category, preview, inspect the code, copy it or download it.",
+  },
+  {
+    icon: KeyRound,
+    title: "Your access stays linked to your account",
+    text: "Sign in any time to return to both resource areas. You never pay twice for the same access.",
+  },
+];
+
+const areas = [
+  { icon: Code2, title: "Shopify Liquid code", text: "Snippets and sections you can search, preview, copy and download." },
+  { icon: ShoppingBag, title: "Shopify themes and templates", text: "Theme and template bundles via the Drive download page." },
+  { icon: LayoutTemplate, title: "WordPress and landing pages", text: "WordPress themes and templates, and landing page templates." },
+  { icon: Puzzle, title: "Plugins", text: "Original plugins may be added in future. None are included yet." },
 ];
 
 const steps = [
-  { icon: Search, title: "Browse", text: "Search the catalogue or explore a category." },
-  { icon: Tags, title: "Review", text: "Check features, included files, compatibility and licence terms." },
-  { icon: LibraryBig, title: "Get access (planned)", text: "After a one-time purchase, resources will be delivered through a protected library. Not live yet." },
+  { icon: LogIn, title: "Create an account", text: "Sign up with your email so your access is tied to you." },
+  { icon: BookOpenCheck, title: "Pay once", text: "Complete a one-time Razorpay payment. We verify it on our server before unlocking anything." },
+  { icon: FolderDown, title: "Open your resource hub", text: "Use the Drive link and the Liquid library whenever you like." },
 ];
 
 const faqs: FAQ[] = [
-  { question: "Can I buy products on GPLMart yet?", answer: "Not yet. The store is in a preview stage and shows demo listings. Checkout, accounts and the resource library are planned for later phases." },
-  { question: "Are the products on the site real?", answer: "The listings you see now are clearly labelled demo placeholders. Real products will only be listed after their licence and source have been verified." },
-  { question: "How will payments work?", answer: "Payments are planned as one-time purchases through a supported payment provider. No payment information is collected on this site today." },
-  { question: "Where can I read the policies?", answer: "Draft licensing, refund, privacy and terms pages are linked in the footer. They are placeholders pending business review." },
+  { question: "Is this a subscription?", answer: "No. It is a single one-time payment for all-access membership. It does not renew." },
+  { question: "What exactly do I get?", answer: "Two things: the Google Drive link to the template bundles, and access to the Shopify Liquid code library on this site." },
+  { question: "Are the files protected after I get the Drive link?", answer: "GPLMart gates who can see the link on this site. A Google Drive link can be forwarded by anyone who has it, so the files themselves are not individually protected once the link is shared. Please do not share it." },
+  { question: "Can I redistribute or resell the resources?", answer: "Do not assume so. Licence terms are published on the licensing page and may differ between resources. That page is a draft pending business review." },
+  { question: "What about refunds, updates and support?", answer: "No refund, update or support commitments have been finalised. They will be set out in the draft policies once reviewed, and are not promised here." },
+  { question: "Is GPLMart affiliated with Shopify?", answer: "No. GPLMart is independent and is not affiliated with or endorsed by Shopify. Shopify and Liquid are the property of their respective owners." },
 ];
 
 export default function HomePage() {
-  const featured = getFeaturedProducts(4);
-  const bundles = getBundles();
+  const price = formatOfferPrice();
   return (
     <>
       <section className="relative overflow-hidden border-b border-line">
         <div aria-hidden className="bg-grid absolute inset-0" />
         <div aria-hidden className="absolute -top-40 left-1/2 h-96 w-[56rem] -translate-x-1/2 rounded-full bg-accent/25 blur-3xl" />
-        <div aria-hidden className="absolute -right-24 top-40 h-72 w-72 rounded-full bg-cyan/10 blur-3xl" />
-        <Container className="relative py-20 sm:py-28 lg:py-36">
+        <Container className="relative py-20 sm:py-28 lg:py-32">
           <div className="max-w-3xl animate-rise">
-            <p className="inline-flex items-center gap-2 rounded-full border border-line-strong bg-white/[0.04] px-3 py-1 text-xs font-medium text-muted">
-              <BadgeCheck aria-hidden className="size-3.5 text-cyan" /> Preview build &middot; demo catalogue
+            <p className="inline-flex rounded-full border border-line-strong bg-white/[0.04] px-3 py-1 text-xs font-medium text-muted">
+              One-time payment &middot; not a subscription
             </p>
             <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-6xl lg:text-7xl">
-              Digital resources for <span className="text-gradient">builders of the web</span>
+              All-access for <span className="text-gradient">Shopify builders</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg text-pretty text-muted sm:text-xl">
-              GPLMart is a marketplace for Shopify, WordPress, HTML and AI prompt resources, with clear
-              details on what you get and how it can be used.
+              Pay once to unlock a Google Drive template bundle library and a searchable library of Shopify
+              Liquid code, kept behind your account.
             </p>
-            <div className="mt-10 flex flex-wrap gap-3">
-              <ButtonLink href="/shop" size="lg">
-                Browse the catalogue <ArrowRight aria-hidden className="size-4" />
+            <div className="mt-10 flex flex-wrap items-center gap-3">
+              <ButtonLink href="/checkout" size="lg">
+                Get all access for {price} <ArrowRight aria-hidden className="size-4" />
               </ButtonLink>
-              <ButtonLink href="/about" variant="secondary" size="lg">
-                How GPLMart works
+              <ButtonLink href="/login" variant="secondary" size="lg">
+                I already have access
               </ButtonLink>
             </div>
           </div>
         </Container>
       </section>
 
-      <Section>
-        <SectionHeading
-          eyebrow="Featured"
-          title="Featured demo products"
-          description="Placeholder listings that show how products will be presented."
-          action={
-            <ButtonLink href="/shop" variant="ghost">
-              View all {products.length} <ArrowRight aria-hidden className="size-4" />
-            </ButtonLink>
-          }
-        />
-        <ProductGrid products={featured} />
-      </Section>
-
-      <Section className="pt-0 sm:pt-0">
-        <SectionHeading eyebrow="Categories" title="Shop by category" description="Find resources for the platform you work with." />
-        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {categories.map((c) => {
-            const Icon = categoryIcons[c.slug];
-            return (
-              <li key={c.slug}>
-                <Link
-                  href={`/categories/${c.slug}`}
-                  className="group flex h-full flex-col rounded-2xl border border-line bg-gradient-to-b from-ink-800/70 to-ink-900/70 p-6 transition duration-300 hover:-translate-y-1 hover:border-accent/50"
-                >
-                  <span className="grid size-11 place-items-center rounded-xl border border-line-strong bg-accent/15 text-accent">
-                    <Icon aria-hidden className="size-5" />
-                  </span>
-                  <h3 className="mt-5 font-display text-lg font-semibold">{c.shortName}</h3>
-                  <p className="mt-1.5 text-sm text-muted">{c.tagline}</p>
-                  <span className="mt-auto inline-flex items-center gap-1 pt-5 text-sm font-medium text-accent transition group-hover:gap-2">
-                    Explore <ArrowRight aria-hidden className="size-4" />
-                  </span>
-                </Link>
-              </li>
-            );
-          })}
-        </ul>
-      </Section>
-
-      <section className="border-y border-line bg-ink-900/50">
-        <Section>
-          <SectionHeading eyebrow="Why GPLMart" title="Built for clarity and speed" />
-          <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {benefits.map(({ icon: Icon, title, text }) => (
-              <li key={title} className="rounded-2xl border border-line bg-ink-950/50 p-6">
-                <Icon aria-hidden className="size-6 text-cyan" />
-                <h3 className="mt-4 font-display text-lg font-semibold">{title}</h3>
-                <p className="mt-2 text-sm text-muted">{text}</p>
-              </li>
-            ))}
-          </ul>
-        </Section>
-      </section>
-
-      <Section>
-        <SectionHeading eyebrow="How it works" title="From browsing to building" />
-        <ol className="grid gap-5 md:grid-cols-3">
-          {steps.map(({ icon: Icon, title, text }, i) => (
-            <li key={title} className="relative rounded-2xl border border-line bg-ink-900/60 p-6">
-              <span className="font-display text-sm font-semibold text-accent">Step {i + 1}</span>
-              <Icon aria-hidden className="mt-3 size-6 text-fg" />
-              <h3 className="mt-3 font-display text-lg font-semibold">{title}</h3>
+      <Section id="included">
+        <SectionHeading eyebrow="What's included" title={`One payment of ${price}, two kinds of access`} />
+        <ul className="grid gap-5 md:grid-cols-3">
+          {included.map(({ icon: Icon, title, text }) => (
+            <li key={title} className="rounded-2xl border border-line bg-ink-900/60 p-6">
+              <Icon aria-hidden className="size-6 text-cyan" />
+              <h3 className="mt-4 font-display text-lg font-semibold">{title}</h3>
               <p className="mt-2 text-sm text-muted">{text}</p>
             </li>
           ))}
-        </ol>
+        </ul>
+        <div role="note" className="mt-8 flex gap-3 rounded-xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-100">
+          <ShieldAlert aria-hidden className="mt-0.5 size-4 shrink-0" />
+          <p>
+            Content availability depends on the owner confirming distribution rights. Access opens only
+            once that is recorded. Resources are independent of Shopify and are not official Shopify products.
+          </p>
+        </div>
       </Section>
 
       <Section className="pt-0 sm:pt-0">
-        <SectionHeading eyebrow="Bundles" title="Featured digital bundles" description="Demo bundle concepts that group related resources together." />
-        <ProductGrid products={bundles} />
+        <SectionHeading eyebrow="Resource areas" title="What the library focuses on" description="Specific files depend on what has been released to members at the time." />
+        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+          {areas.map(({ icon: Icon, title, text }) => (
+            <li key={title} className="rounded-2xl border border-line bg-ink-900/60 p-5">
+              <Icon aria-hidden className="size-5 text-accent" />
+              <h3 className="mt-3 font-display text-base font-semibold">{title}</h3>
+              <p className="mt-1.5 text-sm text-muted">{text}</p>
+            </li>
+          ))}
+        </ul>
       </Section>
 
-      <Section className="pt-0 sm:pt-0">
-        <div className="grid gap-10 lg:grid-cols-[1fr_1.5fr]">
-          <div>
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-cyan">FAQ</p>
-            <h2 id="home-faq" className="font-display text-3xl font-semibold tracking-tight sm:text-4xl">
-              Common questions
-            </h2>
-            <p className="mt-3 text-muted">
-              Still unsure? <Link href="/contact" className="text-cyan underline underline-offset-4">Contact us</Link>.
-            </p>
-          </div>
+      <section id="how-it-works" className="border-y border-line bg-ink-900/50">
+        <Section>
+          <SectionHeading eyebrow="How it works" title="From sign-up to download" />
+          <ol className="grid gap-5 md:grid-cols-3">
+            {steps.map(({ icon: Icon, title, text }, i) => (
+              <li key={title} className="rounded-2xl border border-line bg-ink-950/50 p-6">
+                <span className="font-display text-sm font-semibold text-accent">Step {i + 1}</span>
+                <Icon aria-hidden className="mt-3 size-6" />
+                <h3 className="mt-3 font-display text-lg font-semibold">{title}</h3>
+                <p className="mt-2 text-sm text-muted">{text}</p>
+              </li>
+            ))}
+          </ol>
+        </Section>
+      </section>
+
+      <Section id="price">
+        <div className="mx-auto max-w-xl rounded-3xl border border-line-strong bg-gradient-to-b from-ink-800 to-ink-900 p-8 text-center shadow-card">
+          <p className="text-sm font-medium text-cyan">GPLMart All-Access</p>
+          <p className="mt-3 font-display text-6xl font-semibold">{price}</p>
+          <p className="mt-2 text-sm text-muted">One-time payment in INR. No renewal.</p>
+          <ButtonLink href="/checkout" size="lg" className="mt-8 w-full">
+            Get all access
+          </ButtonLink>
+          <p className="mt-4 text-xs text-subtle">Payments are processed by Razorpay. Card details never touch this site.</p>
+        </div>
+      </Section>
+
+      <Section id="faq" className="pt-0 sm:pt-0">
+        <div className="mx-auto max-w-3xl">
+          <SectionHeading eyebrow="FAQ" title="Common questions" />
           <FaqList items={faqs} />
         </div>
       </Section>

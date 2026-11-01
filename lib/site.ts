@@ -5,25 +5,22 @@ export const siteConfig = {
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://gplmart.com").replace(/\/$/, ""),
   announcement:
     process.env.NEXT_PUBLIC_ANNOUNCEMENT ||
-    "Preview build: the catalogue shows demo products and purchases are not open yet.",
+    "Preview build: purchases open after content licensing is confirmed.",
   contactEmail: null as string | null,
 } as const;
 
 export const mainNav = [
-  { href: "/shop", label: "Shop" },
-  { href: "/categories/shopify", label: "Shopify" },
-  { href: "/categories/wordpress", label: "WordPress" },
-  { href: "/categories/html-templates", label: "HTML Templates" },
-  { href: "/categories/ai-prompts", label: "AI Prompts" },
+  { href: "/#included", label: "What's included" },
+  { href: "/#how-it-works", label: "How it works" },
+  { href: "/#faq", label: "FAQ" },
 ] as const;
 
 export const footerLinks = {
-  Marketplace: [
-    { href: "/shop", label: "All products" },
-    { href: "/categories/shopify", label: "Shopify" },
-    { href: "/categories/wordpress", label: "WordPress" },
-    { href: "/categories/html-templates", label: "HTML Templates" },
-    { href: "/categories/ai-prompts", label: "AI Prompts" },
+  GPLMart: [
+    { href: "/#included", label: "What's included" },
+    { href: "/checkout", label: "Get access" },
+    { href: "/account", label: "My account" },
+    { href: "/login", label: "Sign in" },
   ],
   Company: [
     { href: "/about", label: "About" },
@@ -36,7 +33,6 @@ export const footerLinks = {
     { href: "/terms", label: "Terms" },
   ],
 } as const;
-
 export function absoluteUrl(path = "/"): string {
   return `${siteConfig.url}${path.startsWith("/") ? path : `/${path}`}`;
 }
