@@ -43,7 +43,7 @@ export function MobileNav() {
           className="absolute inset-x-0 top-full border-b border-line bg-ink-950/95 px-4 py-4 shadow-2xl backdrop-blur"
         >
           <ul className="space-y-1">
-            {mainNav.map((item) => (
+            {[...mainNav, { href: "/account", label: "Account" }, { href: "/checkout", label: "Get access" }].map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href} onClick={() => setOpen(false)}

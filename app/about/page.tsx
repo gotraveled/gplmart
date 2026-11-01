@@ -3,7 +3,7 @@ import { InfoPage, infoMetadata } from "@/components/ui/info-page";
 
 export const metadata = infoMetadata(
   "About GPLMart",
-  "GPLMart is a planned marketplace for digital products and resources for website owners, Shopify merchants, WordPress users and developers.",
+  "GPLMart offers one-time all-access membership to a template bundle library and a Shopify Liquid code library.",
   "/about",
 );
 
@@ -11,29 +11,23 @@ export default function AboutPage() {
   return (
     <InfoPage
       title="About GPLMart"
-      description="A planned marketplace for digital products and resources for people who build websites and online stores."
+      description="One payment for a Google Drive template bundle library and a searchable Shopify Liquid code library."
     >
-      <h2>What GPLMart is for</h2>
+      <h2>What GPLMart offers</h2>
       <p>
-        GPLMart is being built as a home for digital resources: Shopify themes, sections and Liquid
-        snippets, WordPress themes and plugins, HTML templates and components, AI prompt packs, and
-        bundles of developer resources.
+        GPLMart currently sells a single offer: a one-time all-access membership. It is not a subscription
+        and it does not renew. Members get a page with the Google Drive link for the template bundles and
+        access to a protected library of Shopify Liquid code.
       </p>
-      <h2>Where the project is today</h2>
+      <h2>Independence</h2>
       <p>
-        This is a preview build. The catalogue contains clearly labelled demo products, purchasing is
-        not available, and there are no customer accounts yet.
+        GPLMart is an independent project. It is not affiliated with or endorsed by Shopify. Product and
+        platform names belong to their respective owners.
       </p>
-      <h2>What is planned</h2>
-      <ul>
-        <li>One-time purchases with a supported payment provider</li>
-        <li>Customer accounts and a protected resource library</li>
-        <li>Email delivery of purchase confirmations</li>
-      </ul>
-      <h2>Our approach to products</h2>
+      <h2>Rights and licensing</h2>
       <p>
-        Product details, including licensing and source information, will be verified before a listing
-        goes live. See the <Link href="/licensing">licensing page</Link> for the draft policy.
+        Resources are released to customers only after the owner has confirmed the right to distribute them.
+        See the <Link href="/licensing">licensing page</Link> for the draft policy.
       </p>
     </InfoPage>
   );

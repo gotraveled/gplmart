@@ -10,8 +10,7 @@ export function Footer() {
         <div>
           <Logo />
           <p className="mt-4 max-w-xs text-sm text-muted">
-            A marketplace for digital products and resources for website owners, Shopify merchants,
-            WordPress users and developers.
+            One-time all-access membership to template bundles and a Shopify Liquid code library.
           </p>
         </div>
         {Object.entries(footerLinks).map(([group, links]) => (
@@ -32,7 +31,7 @@ export function Footer() {
       <div className="border-t border-line">
         <Container className="flex flex-col gap-2 py-6 text-xs text-subtle sm:flex-row sm:justify-between">
           <p>&copy; {new Date().getFullYear()} GPLMart. All rights reserved.</p>
-          <p>Preview build: demo products and draft policies, pending business review.</p>
+          <p>Policies are drafts pending business review.</p>
         </Container>
       </div>
     </footer>

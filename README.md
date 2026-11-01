@@ -1,10 +1,10 @@
 # GPLMart
 
-Storefront for GPLMart.com, a digital products and resources marketplace. Phase 1: static storefront with a demo catalogue (no payments, accounts or downloads).
+GPLMart.com: a one-time INR all-access membership (Google Drive template bundles + protected Shopify Liquid code library). Phase 2 adds Supabase auth, Razorpay payments, entitlements, a protected library and an admin area. See `docs/phase-2-setup.md` for setup and required environment variables.
 
 ## Stack
 
-Next.js (App Router), TypeScript (strict), Tailwind CSS v4, Lucide icons, Vitest.
+Next.js (App Router), TypeScript (strict), Tailwind CSS v4, Supabase, Razorpay, Vitest.
 
 ## Scripts
 
@@ -21,7 +21,8 @@ npm test           # vitest
 
 - `app/` routes, layout, sitemap, robots, error and not-found pages
 - `components/layout|products|ui/` shared components
-- `data/` typed demo categories and products (all placeholder content)
+- supabase/ migrations and demo seed
+- docs/ setup guide
 - `lib/` utilities, catalogue filtering/sorting logic and site config
 
 ## Configuration
