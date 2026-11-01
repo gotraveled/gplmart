@@ -1,8 +1,9 @@
 import type { PlaygroundExample, Values } from "./types";
 
 /**
- * Original demonstration snippets for the free playground. They are teaching
- * examples, NOT the paid library, and are not stored in the database.
+ * Demonstration snippets for the free playground: teaching examples, NOT the
+ * paid library, and not stored in the database. Some are written for this
+ * playground; others are adapted (and de-branded) from real storefront builds.
  */
 
 export const str = (v: Values, id: string, max = 80): string => String(v[id] ?? "").slice(0, max);
@@ -521,6 +522,845 @@ ${on(v, "labels") ? `        <span class="gpl-collections__title">{{ collection.
 .gpl-faq summary::after { content: "+"; float: right; }
 .gpl-faq details[open] summary::after { content: "\\2212"; }
 .gpl-faq__answer { margin-top: 0.6rem; color: #3f4a3a; }`,
+    }),
+  },
+  {
+    id: "responsive-slideshow",
+    name: "Responsive slideshow",
+    description: "Desktop and mobile images per slide with autoplay and arrow navigation. Adapted from a real storefront build.",
+    category: "Storefront sections",
+    kind: "section",
+    controls: [
+      { id: "autoplay", label: "Autoplay", type: "toggle" },
+      { id: "speed", label: "Seconds per slide", type: "select", options: [{ value: "3", label: "3" }, { value: "5", label: "5" }, { value: "7", label: "7" }] },
+      { id: "arrows", label: "Show arrows", type: "toggle" },
+    ],
+    defaults: { autoplay: true, speed: "5", arrows: true },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `{%- comment -%} Each slide can have a different image for desktop and mobile. {%- endcomment -%}
+<gpl-slideshow
+  class="gpl-slides"
+  data-autoplay="{{ section.settings.autoplay }}"
+  data-speed="{{ section.settings.autoplay_speed }}"
+>
+  <div class="gpl-slides__track" data-track>
+    {%- for block in section.blocks -%}
+      <div class="gpl-slides__slide" {{ block.shopify_attributes }}>
+        {%- if block.settings.link != blank -%}<a href="{{ block.settings.link }}">{%- endif -%}
+        {%- if block.settings.image_desktop != blank -%}
+          <picture>
+            {%- if block.settings.image_mobile != blank -%}
+              <source media="(max-width: 767px)" srcset="{{ block.settings.image_mobile | image_url: width: 900 }}">
+            {%- endif -%}
+            <img
+              src="{{ block.settings.image_desktop | image_url: width: 2000 }}"
+              alt="{{ block.settings.image_desktop.alt | escape }}"
+              loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
+            >
+          </picture>
+        {%- else -%}
+          {{ 'lifestyle-' | append: forloop.index | placeholder_svg_tag: 'gpl-slides__placeholder' }}
+        {%- endif -%}
+        {%- if block.settings.link != blank -%}</a>{%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+${on(v, "arrows") ? `  <button type="button" class="gpl-slides__arrow gpl-slides__arrow--prev" data-prev aria-label="Previous slide">&#8249;</button>
+  <button type="button" class="gpl-slides__arrow gpl-slides__arrow--next" data-next aria-label="Next slide">&#8250;</button>\n` : ""}</gpl-slideshow>
+
+{% schema %}
+{
+  "name": "Responsive slideshow",
+  "settings": [
+    { "type": "checkbox", "id": "autoplay", "label": "Autoplay", "default": ${on(v, "autoplay")} },
+    { "type": "range", "id": "autoplay_speed", "label": "Seconds per slide", "min": 2, "max": 10, "step": 1, "default": ${Number(v.speed) || 5} }
+  ],
+  "blocks": [
+    {
+      "type": "slide",
+      "name": "Slide",
+      "settings": [
+        { "type": "image_picker", "id": "image_desktop", "label": "Desktop image" },
+        { "type": "image_picker", "id": "image_mobile", "label": "Mobile image (optional)" },
+        { "type": "url", "id": "link", "label": "Link (optional)" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [{ "name": "Responsive slideshow", "blocks": [{ "type": "slide" }, { "type": "slide" }] }]
+}
+{% endschema %}`,
+      css: `.gpl-slides { position: relative; display: block; overflow: hidden; }
+.gpl-slides__track { display: flex; transition: transform 0.6s ease; }
+.gpl-slides__slide { min-width: 100%; }
+.gpl-slides__slide img,
+.gpl-slides__placeholder { display: block; width: 100%; height: auto; }
+.gpl-slides__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.45);
+  color: #fff;
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+}
+.gpl-slides__arrow--prev { left: 0.75rem; }
+.gpl-slides__arrow--next { right: 0.75rem; }`,
+      js: `class GplSlideshow extends HTMLElement {
+  connectedCallback() {
+    this.track = this.querySelector('[data-track]');
+    this.slides = this.track.children.length;
+    this.index = 0;
+    this.querySelector('[data-prev]')?.addEventListener('click', () => this.go(-1));
+    this.querySelector('[data-next]')?.addEventListener('click', () => this.go(1));
+    if (this.dataset.autoplay === 'true' && this.slides > 1) {
+      this.timer = setInterval(() => this.go(1), Number(this.dataset.speed) * 1000 || 5000);
+    }
+  }
+  disconnectedCallback() {
+    clearInterval(this.timer);
+  }
+  go(step) {
+    this.index = (this.index + step + this.slides) % this.slides;
+    this.track.style.transform = 'translateX(-' + this.index * 100 + '%)';
+  }
+}
+if (!customElements.get('gpl-slideshow')) customElements.define('gpl-slideshow', GplSlideshow);`,
+    }),
+  },
+  {
+    id: "delivery-estimator",
+    name: "Delivery estimate checker",
+    description: "A postcode field that validates input and shows an estimated delivery date. Adapted from a real storefront build.",
+    category: "Trust & store information",
+    kind: "snippet",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 40 },
+      { id: "fast", label: "Fast zone (days)", type: "select", options: [{ value: "2", label: "2" }, { value: "3", label: "3" }] },
+      { id: "slow", label: "Default (days)", type: "select", options: [{ value: "5", label: "5" }, { value: "7", label: "7" }] },
+      { id: "accent", label: "Accent", type: "color" },
+    ],
+    defaults: { heading: "Estimated delivery time", fast: "2", slow: "5", accent: "#0f172a" },
+    install: snippetSteps("delivery-estimator.liquid"),
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Postcode delivery estimate. The day ranges in the JS below are examples —
+  adjust them to match your own courier zones before going live.
+{%- endcomment -%}
+<div
+  class="gpl-delivery"
+  data-gpl-delivery
+  data-fast-days="${v.fast ?? 2}"
+  data-slow-days="${v.slow ?? 5}"
+  style="--gpl-accent: {{ accent | default: '${hex(v, "accent")}' }};"
+>
+  <span class="gpl-delivery__title">${str(v, "heading", 40)}</span>
+  <div class="gpl-delivery__field" data-field>
+    <input
+      type="tel"
+      inputmode="numeric"
+      maxlength="6"
+      placeholder="Enter 6-digit PIN code"
+      autocomplete="postal-code"
+      aria-label="Enter delivery PIN code"
+      data-input
+    >
+    <button type="button" class="gpl-delivery__check" data-check>Check</button>
+  </div>
+  <p class="gpl-delivery__error" data-error role="alert" hidden>Please enter a valid 6-digit PIN code.</p>
+  <div class="gpl-delivery__result" data-result hidden>
+    <span>Estimated delivery <strong data-date></strong></span>
+    <button type="button" class="gpl-delivery__change" data-change>Change</button>
+  </div>
+</div>`,
+      css: `.gpl-delivery { width: 100%; max-width: 36rem; margin: 0.75rem 0; }
+.gpl-delivery__title { display: block; margin-bottom: 0.45rem; font-size: 0.95rem; }
+.gpl-delivery__field {
+  display: flex;
+  overflow: hidden;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  background: #fff;
+}
+.gpl-delivery__field:focus-within { border-color: var(--gpl-accent); box-shadow: 0 0 0 3px rgb(15 23 42 / 0.08); }
+.gpl-delivery__field input { flex: 1; min-width: 0; height: 46px; border: 0; padding: 0 14px; font-size: 0.85rem; outline: 0; }
+.gpl-delivery__check {
+  flex: 0 0 5rem;
+  border: 0;
+  border-left: 1px solid #e2e8f0;
+  background: #f8fafc;
+  font-weight: 600;
+  cursor: pointer;
+}
+.gpl-delivery__check:hover { background: var(--gpl-accent); color: #fff; }
+.gpl-delivery__error { margin: 0.4rem 0 0; color: #b4234d; font-size: 0.75rem; }
+.gpl-delivery__result {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 12px;
+  font-size: 0.85rem;
+}
+.gpl-delivery__change { border: 0; background: none; color: var(--gpl-accent); font-weight: 600; text-decoration: underline; cursor: pointer; }
+.gpl-delivery__result[hidden], .gpl-delivery__error[hidden] { display: none; }`,
+      js: `document.querySelectorAll('[data-gpl-delivery]').forEach((box) => {
+  const input = box.querySelector('[data-input]');
+  const field = box.querySelector('[data-field]');
+  const error = box.querySelector('[data-error]');
+  const result = box.querySelector('[data-result]');
+  const dateEl = box.querySelector('[data-date]');
+  const fast = Number(box.dataset.fastDays) || 2;
+  const slow = Number(box.dataset.slowDays) || 5;
+
+  /* Example zones: adapt these ranges to your courier's service map. */
+  function daysFor(pin) {
+    const p = parseInt(pin, 10);
+    const fastZones = [
+      [110001, 110096], [400001, 400104], [560001, 560110],
+      [700001, 700160], [600001, 600130],
+    ];
+    return fastZones.some(([a, b]) => p >= a && p <= b) ? fast : slow;
+  }
+  function formatDate(days) {
+    const d = new Date();
+    d.setDate(d.getDate() + days);
+    return d.toLocaleDateString('en-IN', { weekday: 'short', day: 'numeric', month: 'short' });
+  }
+  function check() {
+    const pin = input.value.replace(/\\D/g, '').slice(0, 6);
+    input.value = pin;
+    if (pin.length !== 6) {
+      error.hidden = false;
+      return;
+    }
+    error.hidden = true;
+    dateEl.textContent = formatDate(daysFor(pin));
+    field.style.display = 'none';
+    result.hidden = false;
+  }
+  box.querySelector('[data-check]').addEventListener('click', check);
+  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') check(); });
+  input.addEventListener('input', () => { input.value = input.value.replace(/\\D/g, ''); error.hidden = true; });
+  box.querySelector('[data-change]').addEventListener('click', () => {
+    result.hidden = true;
+    field.style.display = 'flex';
+    input.value = '';
+    input.focus();
+  });
+});`,
+      usage: `{% render 'delivery-estimator' %}`,
+    }),
+  },
+  {
+    id: "size-chart-modal",
+    name: "Size chart modal",
+    description: "A Size Chart link that opens a zoomable product metafield image in an accessible modal. Adapted from a real storefront build.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "label", label: "Trigger label", type: "text", maxLength: 30 },
+      { id: "zoom", label: "Click to zoom", type: "toggle" },
+    ],
+    defaults: { label: "Size Chart", zoom: true },
+    install: [
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "In Settings > Custom data > Products, create a metafield custom.size_chart of type File (image) and upload a chart per product.",
+      "Create snippets/size-chart-modal.liquid, paste the Liquid code, and add the JS to your theme or a {% javascript %} tag.",
+      "Render it from your product template with the usage tag shown in the Usage tab.",
+      "Check a product with and without a chart image - the link only appears when the metafield is set.",
+    ],
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Requires product metafield: custom.size_chart (File > Image).
+{%- endcomment -%}
+{%- assign chart = product.metafields.custom.size_chart.value -%}
+{%- if chart != blank -%}
+  <div class="gpl-sizechart" data-gpl-sizechart>
+    <button type="button" class="gpl-sizechart__trigger" data-open aria-haspopup="dialog">
+      ${str(v, "label", 30)} <span aria-hidden="true">&#8599;</span>
+    </button>
+    <div class="gpl-sizechart__overlay" data-overlay role="dialog" aria-modal="true" aria-label="${str(v, "label", 30)}" hidden>
+      <div class="gpl-sizechart__dialog" data-dialog>
+        <button type="button" class="gpl-sizechart__close" data-close aria-label="Close">&times;</button>
+        {{ chart | image_url: width: 1600 | image_tag: loading: 'lazy', class: 'gpl-sizechart__image', alt: 'Size chart' }}
+      </div>
+    </div>
+  </div>
+{%- endif -%}`,
+      css: `.gpl-sizechart__trigger {
+  display: inline-flex;
+  gap: 0.35rem;
+  border: 0;
+  background: none;
+  padding: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.gpl-sizechart__overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.65);
+}
+.gpl-sizechart__overlay[hidden] { display: none; }
+.gpl-sizechart__dialog {
+  position: relative;
+  max-width: min(56rem, 92vw);
+  max-height: 90vh;
+  overflow: auto;
+  border-radius: 12px;
+  background: #fff;
+  padding: 1rem;
+}
+.gpl-sizechart__image { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+.gpl-sizechart__close {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.95);
+  font-size: 1.2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}`,
+      js: `document.querySelectorAll('[data-gpl-sizechart]').forEach((root) => {
+  const overlay = root.querySelector('[data-overlay]');
+  const open = root.querySelector('[data-open]');
+  const close = root.querySelector('[data-close]');
+  const image = root.querySelector('.gpl-sizechart__image');
+  function show() {
+    overlay.hidden = false;
+    document.body.style.overflow = 'hidden';
+    close.focus();
+  }
+  function hide() {
+    overlay.hidden = true;
+    document.body.style.overflow = '';
+    open.focus();
+  }
+  open.addEventListener('click', show);
+  close.addEventListener('click', hide);
+  overlay.addEventListener('click', (e) => { if (e.target === overlay) hide(); });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !overlay.hidden) hide();
+  });
+${on(v, "zoom") ? `  image.addEventListener('click', () => {
+    const zoomed = image.classList.toggle('is-zoomed');
+    image.style.maxWidth = zoomed ? 'none' : '';
+    image.style.width = zoomed ? '160%' : '';
+    image.style.cursor = zoomed ? 'zoom-out' : 'zoom-in';
+  });
+  image.style.cursor = 'zoom-in';` : ""}
+});`,
+      usage: `{% render 'size-chart-modal', product: product %}`,
+    }),
+  },
+  {
+    id: "coupon-cards",
+    name: "Coupon cards",
+    description: "Ticket-style offer cards with tap-to-copy and a confirmation toast, driven by section blocks. Adapted from a real storefront build.",
+    category: "Promotions & banners",
+    kind: "section",
+    controls: [
+      { id: "accent", label: "Accent colour", type: "color" },
+      { id: "notch", label: "Ticket notches", type: "toggle" },
+    ],
+    defaults: { accent: "#c2410c", notch: true },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `{%- if section.blocks.size > 0 -%}
+  <div class="gpl-coupons" style="--gpl-accent: {{ section.settings.accent }};" role="list">
+    {%- for block in section.blocks -%}
+      <div class="gpl-coupon${on(v, "notch") ? "" : " gpl-coupon--flat"}" role="listitem" {{ block.shopify_attributes }}>
+        <div class="gpl-coupon__info">
+          {%- if block.settings.tag != blank -%}
+            <span class="gpl-coupon__tag">{{ block.settings.tag | escape }}</span>
+          {%- endif -%}
+          <h3 class="gpl-coupon__title">{{ block.settings.title | escape }}</h3>
+          {%- if block.settings.subtitle != blank -%}
+            <p class="gpl-coupon__subtitle">{{ block.settings.subtitle | escape }}</p>
+          {%- endif -%}
+        </div>
+        <div class="gpl-coupon__divider" aria-hidden="true"></div>
+        <button type="button" class="gpl-coupon__code" data-code="{{ block.settings.code | escape }}" aria-label="Copy coupon code {{ block.settings.code | escape }}">
+          <span class="gpl-coupon__label" data-label>Tap to copy</span>
+          <span class="gpl-coupon__value">{{ block.settings.code | escape }}</span>
+        </button>
+      </div>
+    {%- endfor -%}
+  </div>
+  <p class="gpl-coupon-toast" data-coupon-toast role="status" hidden>Code copied</p>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Coupon cards",
+  "settings": [
+    { "type": "color", "id": "accent", "label": "Accent colour", "default": ${js(hex(v, "accent"))} }
+  ],
+  "blocks": [
+    {
+      "type": "coupon",
+      "name": "Coupon",
+      "settings": [
+        { "type": "text", "id": "tag", "label": "Tag", "default": "Welcome" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Flat 10% off" },
+        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "For new customers" },
+        { "type": "text", "id": "code", "label": "Discount code", "default": "WELCOME10" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [{ "name": "Coupon cards", "blocks": [{ "type": "coupon" }, { "type": "coupon" }] }]
+}
+{% endschema %}`,
+      css: `.gpl-coupons {
+  display: flex;
+  gap: 0.9rem;
+  overflow-x: auto;
+  padding: 0.5rem 0.25rem 1rem;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.gpl-coupons::-webkit-scrollbar { display: none; }
+.gpl-coupon {
+  flex: 0 0 20rem;
+  scroll-snap-align: start;
+  display: flex;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+  overflow: hidden;
+}
+.gpl-coupon__info { flex: 1; min-width: 0; padding: 0.9rem 1rem; }
+.gpl-coupon__tag {
+  display: inline-block;
+  background: #f1f5f9;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.gpl-coupon__title { margin: 0.4rem 0 0; font-size: 1rem; font-weight: 800; }
+.gpl-coupon__subtitle { margin: 0.2rem 0 0; color: #64748b; font-size: 0.75rem; }
+.gpl-coupon__divider { width: 1px; border-left: 1.5px dashed #cbd5e1; position: relative; }
+.gpl-coupon:not(.gpl-coupon--flat) .gpl-coupon__divider::before,
+.gpl-coupon:not(.gpl-coupon--flat) .gpl-coupon__divider::after {
+  content: "";
+  position: absolute;
+  left: -7px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--gpl-canvas, #fff);
+  border: 1px solid #e2e8f0;
+}
+.gpl-coupon:not(.gpl-coupon--flat) .gpl-coupon__divider::before { top: -7px; }
+.gpl-coupon:not(.gpl-coupon--flat) .gpl-coupon__divider::after { bottom: -7px; }
+.gpl-coupon__code {
+  width: 7.5rem;
+  border: 0;
+  background: #fafaf9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  cursor: pointer;
+}
+.gpl-coupon__label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.05em; color: #94a3b8; text-transform: uppercase; }
+.gpl-coupon__value {
+  border: 1.5px dashed var(--gpl-accent);
+  border-radius: 7px;
+  padding: 0.3rem 0.55rem;
+  color: var(--gpl-accent);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+.gpl-coupon__code.is-copied .gpl-coupon__value { background: #059669; border-color: #059669; color: #fff; border-style: solid; }
+.gpl-coupon-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f172a;
+  color: #fff;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  z-index: 100;
+}
+.gpl-coupon-toast[hidden] { display: none; }`,
+      js: `document.querySelectorAll('.gpl-coupon__code').forEach((btn) => {
+  btn.addEventListener('click', async () => {
+    const code = btn.dataset.code;
+    const label = btn.querySelector('[data-label]');
+    const toast = document.querySelector('[data-coupon-toast]');
+    try {
+      await navigator.clipboard.writeText(code);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+    }
+    btn.classList.add('is-copied');
+    if (label) label.textContent = 'Copied';
+    if (toast) {
+      toast.hidden = false;
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => { toast.hidden = true; }, 2000);
+    }
+    setTimeout(() => {
+      btn.classList.remove('is-copied');
+      if (label) label.textContent = 'Tap to copy';
+    }, 2000);
+  });
+});`,
+    }),
+  },
+  {
+    id: "trust-grid",
+    name: "Trust badge grid",
+    description: "A responsive icon grid for shipping, returns and authenticity claims, driven by section blocks. Adapted from a real storefront build.",
+    category: "Trust & store information",
+    kind: "section",
+    controls: [
+      { id: "accent", label: "Icon colour", type: "color" },
+      { id: "columns", label: "Columns", type: "select", options: [{ value: "2", label: "2" }, { value: "4", label: "4" }] },
+    ],
+    defaults: { accent: "#166534", columns: "2" },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `{%- if section.blocks.size > 0 -%}
+  <ul class="gpl-trustgrid gpl-trustgrid--{{ section.settings.columns }}" style="--gpl-accent: {{ section.settings.accent }};">
+    {%- for block in section.blocks -%}
+      <li class="gpl-trustgrid__card" {{ block.shopify_attributes }}>
+        <span class="gpl-trustgrid__icon" aria-hidden="true">
+          {%- case block.settings.icon -%}
+            {%- when 'truck' -%}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1.5"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            {%- when 'refresh' -%}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+            {%- when 'award' -%}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="6"/><path d="M15.5 12.9 17 22l-5-3-5 3 1.5-9.1"/></svg>
+            {%- else -%}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          {%- endcase -%}
+        </span>
+        <span class="gpl-trustgrid__text">
+          <strong>{{ block.settings.title | escape }}</strong>
+          <span>{{ block.settings.subtitle | escape }}</span>
+        </span>
+      </li>
+    {%- endfor -%}
+  </ul>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Trust badge grid",
+  "settings": [
+    { "type": "color", "id": "accent", "label": "Icon colour", "default": ${js(hex(v, "accent"))} },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns on desktop",
+      "options": [{ "value": "2", "label": "2" }, { "value": "4", "label": "4" }],
+      "default": ${js(str(v, "columns"))}
+    }
+  ],
+  "blocks": [
+    {
+      "type": "badge",
+      "name": "Badge",
+      "settings": [
+        {
+          "type": "select",
+          "id": "icon",
+          "label": "Icon",
+          "options": [
+            { "value": "shield", "label": "Shield" },
+            { "value": "truck", "label": "Delivery" },
+            { "value": "refresh", "label": "Returns" },
+            { "value": "award", "label": "Award" }
+          ],
+          "default": "shield"
+        },
+        { "type": "text", "id": "title", "label": "Title", "default": "Free shipping" },
+        { "type": "text", "id": "subtitle", "label": "Subtitle" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [{ "name": "Trust badge grid", "blocks": [{ "type": "badge" }, { "type": "badge" }, { "type": "badge" }, { "type": "badge" }] }]
+}
+{% endschema %}`,
+      css: `.gpl-trustgrid {
+  list-style: none;
+  margin: 1rem 0;
+  padding: 0;
+  display: grid;
+  gap: 0.75rem;
+  grid-template-columns: repeat(2, 1fr);
+}
+@media (min-width: 750px) {
+  .gpl-trustgrid--4 { grid-template-columns: repeat(4, 1fr); }
+}
+.gpl-trustgrid__card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.8rem 0.95rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  background: #fff;
+}
+.gpl-trustgrid__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.6rem;
+  height: 2.6rem;
+  flex-shrink: 0;
+  border-radius: 10px;
+  color: var(--gpl-accent);
+  background: color-mix(in srgb, var(--gpl-accent) 8%, #fff);
+}
+.gpl-trustgrid__icon svg { width: 1.3rem; height: 1.3rem; }
+.gpl-trustgrid__text { display: grid; min-width: 0; }
+.gpl-trustgrid__text strong { font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.gpl-trustgrid__text span { font-size: 0.75rem; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }`,
+    }),
+  },
+  {
+    id: "price-display",
+    name: "Price & discount block",
+    description: "Price, MRP strike-through and discount percentage that updates when the variant changes. Adapted from a real storefront build.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "note", label: "Tax note", type: "text", maxLength: 40 },
+      { id: "badge", label: "Show % OFF badge", type: "toggle" },
+      { id: "accent", label: "Price colour", type: "color" },
+    ],
+    defaults: { note: "(incl. of all taxes)", badge: true, accent: "#0f172a" },
+    install: snippetSteps("price-display.liquid"),
+    files: (v) => ({
+      liquid: `{%- assign v = product.selected_or_first_available_variant -%}
+{%- if v -%}
+  {%- assign save = v.compare_at_price | minus: v.price -%}
+  {%- assign pct = 0 -%}
+  {%- if save > 0 -%}{%- assign pct = save | times: 100 | divided_by: v.compare_at_price -%}{%- endif -%}
+  <div class="gpl-price" data-gpl-price style="--gpl-accent: {{ accent | default: '${hex(v, "accent")}' }};">
+    <span class="gpl-price__now" data-now>{{ v.price | money }}</span>
+    <span class="gpl-price__was" data-was {% unless save > 0 %}hidden{% endunless %}>
+      <s>{{ v.compare_at_price | money }}</s>
+    </span>
+${on(v, "badge") ? `    <span class="gpl-price__off" data-off {% unless save > 0 %}hidden{% endunless %}>{{ pct }}% off</span>\n` : ""}    <span class="gpl-price__note">${str(v, "note", 40)}</span>
+  </div>
+  <script type="application/json" data-gpl-variants>{{ product.variants | json }}</script>
+{%- endif -%}`,
+      css: `.gpl-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.6rem; padding-bottom: 0.8rem; border-bottom: 1px solid #e2e8f0; }
+.gpl-price__now { color: var(--gpl-accent); font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; }
+.gpl-price__was { color: #94a3b8; font-size: 0.9rem; }
+.gpl-price__off {
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+.gpl-price__note { color: #64748b; font-size: 0.75rem; }
+.gpl-price [hidden] { display: none; }`,
+      js: `document.querySelectorAll('[data-gpl-price]').forEach((box) => {
+  const json = box.parentElement.querySelector('[data-gpl-variants]');
+  if (!json) return;
+  let variants = [];
+  try { variants = JSON.parse(json.textContent); } catch {}
+  const now = box.querySelector('[data-now]');
+  const was = box.querySelector('[data-was]');
+  const off = box.querySelector('[data-off]');
+  const currency = (typeof Shopify !== 'undefined' && Shopify.currency && Shopify.currency.active) || 'INR';
+  const money = (c) =>
+    new Intl.NumberFormat('en-IN', { style: 'currency', currency, maximumFractionDigits: 0 }).format(c / 100);
+  function update(variant) {
+    if (!variant) return;
+    now.textContent = money(variant.price);
+    const compare = variant.compare_at_price || 0;
+    const onSale = compare > variant.price;
+    if (was) { was.hidden = !onSale; if (onSale) was.querySelector('s').textContent = money(compare); }
+    if (off) { off.hidden = !onSale; if (onSale) off.textContent = Math.round(((compare - variant.price) * 100) / compare) + '% off'; }
+  }
+  document.addEventListener('variant:change', (e) => { if (e.detail?.variant) update(e.detail.variant); });
+  /* Fallback for themes that only update ?variant= in the URL */
+  new URLSearchParams(location.search).get('variant') &&
+    update(variants.find((v) => String(v.id) === new URLSearchParams(location.search).get('variant')));
+});`,
+      usage: `{% render 'price-display', product: product %}`,
+    }),
+  },
+  {
+    id: "promo-popup",
+    name: "Promotional popup",
+    description: "A delayed, dismissible popup with a coupon code and tap-to-copy. Adapted from a real storefront build.",
+    category: "Promotions & banners",
+    kind: "section",
+    controls: [
+      { id: "title", label: "Title", type: "text", maxLength: 40 },
+      { id: "text", label: "Text", type: "text", maxLength: 80 },
+      { id: "code", label: "Coupon code", type: "text", maxLength: 20 },
+      { id: "delay", label: "Delay (seconds)", type: "select", options: [{ value: "1", label: "1" }, { value: "5", label: "5" }, { value: "15", label: "15" }] },
+    ],
+    defaults: { title: "Welcome offer", text: "Get a discount on your first order.", code: "WELCOME10", delay: "5" },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<gpl-promo-popup
+  class="gpl-popup"
+  data-delay="{{ section.settings.delay }}"
+  data-key="gpl-popup-{{ section.id }}"
+  hidden
+>
+  <div class="gpl-popup__box" role="dialog" aria-modal="true" aria-label="{{ section.settings.title | escape }}">
+    <button type="button" class="gpl-popup__close" data-close aria-label="Close">&times;</button>
+    {%- if section.settings.title != blank -%}
+      <h2 class="gpl-popup__title">{{ section.settings.title | escape }}</h2>
+    {%- endif -%}
+    {%- if section.settings.text != blank -%}
+      <p class="gpl-popup__text">{{ section.settings.text | escape }}</p>
+    {%- endif -%}
+    {%- if section.settings.code != blank -%}
+      <button type="button" class="gpl-popup__code" data-code="{{ section.settings.code | escape }}">
+        <span data-label>Tap to copy</span>
+        <strong>{{ section.settings.code | escape }}</strong>
+      </button>
+    {%- endif -%}
+    {%- if section.settings.button_label != blank and section.settings.button_link != blank -%}
+      <a class="gpl-popup__cta" href="{{ section.settings.button_link }}">{{ section.settings.button_label | escape }}</a>
+    {%- endif -%}
+  </div>
+</gpl-promo-popup>
+
+{% schema %}
+{
+  "name": "Promotional popup",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": ${js(str(v, "title", 40))} },
+    { "type": "textarea", "id": "text", "label": "Text", "default": ${js(str(v, "text", 80))} },
+    { "type": "text", "id": "code", "label": "Coupon code", "default": ${js(str(v, "code", 20))} },
+    { "type": "range", "id": "delay", "label": "Delay in seconds", "min": 1, "max": 30, "step": 1, "default": ${Number(v.delay) || 5} },
+    { "type": "text", "id": "button_label", "label": "Button label" },
+    { "type": "url", "id": "button_link", "label": "Button link" }
+  ],
+  "presets": [{ "name": "Promotional popup" }]
+}
+{% endschema %}`,
+      css: `.gpl-popup {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  background: rgba(0, 0, 0, 0.5);
+}
+.gpl-popup[hidden] { display: none; }
+.gpl-popup__box {
+  position: relative;
+  width: min(26rem, 100%);
+  border-radius: 16px;
+  background: #fff;
+  padding: 2rem 1.75rem;
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+}
+.gpl-popup__close {
+  position: absolute;
+  top: 0.6rem;
+  right: 0.75rem;
+  border: 0;
+  background: none;
+  font-size: 1.5rem;
+  color: #64748b;
+  cursor: pointer;
+}
+.gpl-popup__title { margin: 0; font-size: 1.4rem; font-weight: 800; }
+.gpl-popup__text { margin: 0.5rem 0 0; color: #475569; font-size: 0.9rem; }
+.gpl-popup__code {
+  margin-top: 1.1rem;
+  border: 1.5px dashed #0f172a;
+  border-radius: 10px;
+  background: #f8fafc;
+  padding: 0.7rem 1rem;
+  cursor: pointer;
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.15rem;
+}
+.gpl-popup__code span { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: #94a3b8; }
+.gpl-popup__code strong { font-size: 1.05rem; letter-spacing: 0.04em; }
+.gpl-popup__code.is-copied { border-style: solid; border-color: #059669; }
+.gpl-popup__cta {
+  display: block;
+  margin-top: 1rem;
+  border-radius: 999px;
+  background: #0f172a;
+  color: #fff;
+  padding: 0.75rem 1rem;
+  font-weight: 600;
+  text-decoration: none;
+}`,
+      js: `class GplPromoPopup extends HTMLElement {
+  connectedCallback() {
+    if (localStorage.getItem(this.dataset.key) === 'dismissed') return;
+    this.timer = setTimeout(() => { this.hidden = false; }, Number(this.dataset.delay) * 1000 || 5000);
+    this.querySelector('[data-close]').addEventListener('click', () => this.dismiss());
+    this.addEventListener('click', (e) => { if (e.target === this) this.dismiss(); });
+    this.querySelector('[data-code]')?.addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      try { await navigator.clipboard.writeText(btn.dataset.code); } catch {}
+      btn.classList.add('is-copied');
+      btn.querySelector('[data-label]').textContent = 'Copied';
+      setTimeout(() => {
+        btn.classList.remove('is-copied');
+        btn.querySelector('[data-label]').textContent = 'Tap to copy';
+      }, 2000);
+    });
+  }
+  disconnectedCallback() { clearTimeout(this.timer); }
+  dismiss() {
+    this.hidden = true;
+    localStorage.setItem(this.dataset.key, 'dismissed');
+  }
+}
+if (!customElements.get('gpl-promo-popup')) customElements.define('gpl-promo-popup', GplPromoPopup);`,
     }),
   },
 ];

@@ -278,15 +278,15 @@ export default function HomePage() {
                 The playground: read the Liquid, see the storefront
               </h2>
               <p className="mt-4 text-pretty text-muted">
-                Eight original examples &mdash; sections and snippets &mdash; with syntax-highlighted code, live
-                storefront previews and adjustable settings. Copy the files and adapt them for your own theme.
+                Working examples &mdash; sections and snippets &mdash; with syntax-highlighted code, live storefront
+                previews and adjustable settings. Copy the files and adapt them for your own theme.
               </p>
               <ButtonLink href="/playground" className="mt-7">
                 Open the playground <ArrowRight aria-hidden className="size-4" />
               </ButtonLink>
             </div>
             <ul className="grid gap-2.5 sm:grid-cols-2">
-              {["Announcement bar", "Product benefit list", "Delivery panel", "Promo banner", "FAQ accordion", "Collection grid"].map(
+              {["Announcement bar", "Product benefit list", "Delivery checker", "Coupon cards", "Promo banner", "FAQ accordion", "Trust grid", "Size chart modal"].map(
                 (name) => (
                   <li
                     key={name}

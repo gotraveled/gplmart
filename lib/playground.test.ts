@@ -27,8 +27,9 @@ describe("tokenize", () => {
 });
 
 describe("playground examples", () => {
-  it("ships at least eight original examples", () => {
-    expect(examples.length).toBeGreaterThanOrEqual(8);
+  it("ships a healthy set of examples with unique ids", () => {
+    expect(examples.length).toBeGreaterThanOrEqual(14);
+    expect(new Set(examples.map((e) => e.id)).size).toBe(examples.length);
   });
   it("every control has a default and every example produces Liquid", () => {
     for (const ex of examples) {
