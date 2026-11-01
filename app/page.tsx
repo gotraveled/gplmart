@@ -131,9 +131,9 @@ const faqs: FAQ[] = [
     answer: "No. It is a single one-time payment for all-access membership. It does not renew and there is no monthly fee.",
   },
   {
-    question: "Which themes do the snippets work with?",
+    question: "Will the snippets match my theme?",
     answer:
-      "They are written as ordinary Liquid, CSS and vanilla JS and target Online Store 2.0 themes such as Dawn and its siblings. Compatibility notes ship with each resource; every theme is a little different.",
+      "They are written for Online Store 2.0 themes such as Dawn and its siblings, using your theme's own font stack and its button/foreground colour variables where sensible - so they blend in instead of looking bolted on. Compatibility notes ship with each resource.",
   },
   {
     question: "When does paid access open?",
@@ -147,41 +147,41 @@ const faqs: FAQ[] = [
   },
 ];
 
-function ThemeLiquidPanel() {
+function ThemeLiquidChip() {
   const ex = getExample("announcement-bar");
-  const liquid = ex.files(ex.defaults).liquid;
-  const head = liquid.split("\n").slice(0, 12).join("\n");
+  const head = ex.files(ex.defaults).liquid.split("\n").slice(0, 7).join("\n");
   return (
-    <div className="overflow-hidden rounded-2xl border border-line-strong bg-ink-900 shadow-card">
-      <div className="flex items-center justify-between border-b border-line px-4 py-2.5">
-        <div className="flex items-center gap-2">
-          <span aria-hidden className="size-2.5 rounded-full bg-[#ff5f57]" />
-          <span aria-hidden className="size-2.5 rounded-full bg-[#febc2e]" />
-          <span aria-hidden className="size-2.5 rounded-full bg-[#28c840]" />
-        </div>
-        <p className="font-mono text-[0.7rem] text-subtle">theme.liquid</p>
-        <Badge className="text-[0.65rem]">100% native</Badge>
+    <div className="overflow-hidden rounded-xl border border-line-strong bg-ink-900 shadow-card">
+      <div className="flex items-center justify-between border-b border-line px-3 py-1.5">
+        <p className="font-mono text-[0.62rem] text-subtle">sections/announcement-bar.liquid</p>
+        <Badge className="px-1.5 py-0 text-[0.58rem]">Liquid</Badge>
       </div>
-      <CodeBlock code={head} lang="liquid" lineNumbers maxHeight="none" className="text-[0.72rem]" />
+      <CodeBlock code={head} lang="liquid" lineNumbers={false} maxHeight="none" className="text-[0.62rem] leading-[1.5]" />
     </div>
   );
 }
 
-function ProductCardMockup() {
+function StorefrontMockup() {
   return (
     <div className="overflow-hidden rounded-2xl border border-line-strong bg-white text-neutral-900 shadow-card">
+      {/* Browser chrome */}
       <div className="flex items-center gap-2 border-b border-line bg-ink-800 px-4 py-2.5">
-        <span aria-hidden className="size-2.5 rounded-full bg-white/15" />
-        <span aria-hidden className="size-2.5 rounded-full bg-white/15" />
-        <span aria-hidden className="size-2.5 rounded-full bg-white/15" />
-        <span className="ml-2 truncate rounded-md bg-white/[0.06] px-2.5 py-1 font-mono text-[0.65rem] text-subtle">
+        <span aria-hidden className="size-2.5 rounded-full bg-[#ff5f57]" />
+        <span aria-hidden className="size-2.5 rounded-full bg-[#febc2e]" />
+        <span aria-hidden className="size-2.5 rounded-full bg-[#28c840]" />
+        <span className="ml-2 flex-1 truncate rounded-md bg-white/[0.06] px-2.5 py-1 text-center font-mono text-[0.65rem] text-subtle">
           your-store.myshopify.com
         </span>
       </div>
-      <div className="grid gap-4 p-4 sm:grid-cols-[6.5rem_minmax(0,1fr)] sm:p-5">
-        <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-gradient-to-br from-[#dbe7c8] to-[#b8cf9e]">
-          <span className="absolute left-2 top-2 rounded-full bg-white/90 px-2 py-0.5 text-[0.58rem] font-bold uppercase tracking-wide text-neutral-700">
-            New
+      {/* Announcement bar */}
+      <p className="bg-[#c8f542] px-4 py-1.5 text-center text-[0.62rem] font-bold uppercase tracking-[0.14em] text-neutral-900">
+        Free shipping on orders over ₹499
+      </p>
+      {/* Product page */}
+      <div className="grid gap-4 p-4 sm:grid-cols-[9rem_minmax(0,1fr)] sm:p-5">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-gradient-to-br from-[#dbe7c8] to-[#a8c48a]">
+          <span className="absolute left-2 top-2 rounded-full bg-neutral-900 px-2 py-0.5 text-[0.55rem] font-bold uppercase tracking-wide text-white">
+            Bestseller
           </span>
         </div>
         <div className="min-w-0">
@@ -192,12 +192,13 @@ function ProductCardMockup() {
             <span className="text-[0.68rem] font-semibold">4.9</span>
             <span className="text-[0.68rem] text-neutral-400">(1,480 reviews)</span>
           </div>
-          <div className="mt-2 flex items-baseline gap-2">
-            <span className="text-lg font-extrabold">₹499</span>
+          <div className="mt-2 flex flex-wrap items-baseline gap-2">
+            <span className="text-xl font-extrabold tracking-tight">₹499</span>
             <s className="text-xs text-neutral-400">₹799</s>
             <span className="rounded-md bg-green-100 px-1.5 py-0.5 text-[0.62rem] font-bold uppercase text-green-700">38% off</span>
+            <span className="text-[0.6rem] text-neutral-400">incl. taxes</span>
           </div>
-          <p className="mt-1.5 inline-flex items-center gap-1.5 rounded-md border border-red-500/30 bg-red-500/10 px-2 py-1 text-[0.62rem] font-semibold text-red-700">
+          <p className="mt-2 inline-flex items-center gap-1.5 rounded-md border border-red-500/30 bg-red-500/10 px-2 py-1 text-[0.62rem] font-semibold text-red-700">
             <span className="size-1.5 animate-pulse rounded-full bg-red-500" />
             Only 6 left in stock
           </p>
@@ -205,8 +206,17 @@ function ProductCardMockup() {
             <span className="grid place-items-center rounded-lg border border-neutral-300 text-xs font-semibold">1</span>
             <span className="grid place-items-center rounded-lg bg-neutral-900 py-2 text-xs font-bold text-white">Add to cart</span>
           </div>
-          <div className="mt-2.5 grid grid-cols-3 gap-1.5">
-            {["Free shipping", "Easy returns", "Secure pay"].map((t) => (
+          <span className="mt-2 grid place-items-center rounded-lg bg-[#166534] py-2 text-xs font-bold text-white">
+            Buy it now
+          </span>
+          <div className="mt-2.5 flex items-center gap-2 rounded-lg border border-neutral-200 bg-neutral-50 px-2.5 py-1.5">
+            <Package aria-hidden className="size-3.5 shrink-0 text-neutral-500" />
+            <p className="text-[0.62rem] text-neutral-600">
+              Order in the next <strong>4 hrs</strong> - delivery by <strong>Thu, 12 Jun</strong>
+            </p>
+          </div>
+          <div className="mt-2 grid grid-cols-3 gap-1.5">
+            {["Free returns", "Secure pay", "COD available"].map((t) => (
               <span key={t} className="rounded-md border border-neutral-200 bg-neutral-50 px-1.5 py-1 text-center text-[0.55rem] font-semibold text-neutral-600">
                 {t}
               </span>
@@ -230,18 +240,19 @@ export default function HomePage() {
           <div className="animate-rise max-w-2xl">
             <p className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-1.5 text-xs font-semibold text-accent">
               <Zap aria-hidden className="size-3.5" />
-              Shopify Liquid code &amp; storefront resources
+              Conversion-focused Shopify components
             </p>
             <h1 className="mt-7 font-display text-5xl font-semibold leading-[1.02] tracking-tight text-balance sm:text-6xl lg:text-7xl">
-              The Complete
+              More sales.
               <br />
-              <span className="text-gradient">Shopify Liquid</span>
+              <span className="text-gradient">Fewer apps.</span>
               <br />
-              Library
+              One library.
             </h1>
             <p className="mt-6 max-w-xl text-lg text-pretty text-muted">
-              Premium Liquid sections &amp; snippets, Shopify theme bundles, WordPress landing pages and plugins -
-              everything to build a high-converting storefront, in one place, for one payment.
+              Not getting the conversions your store deserves? GPLMart gives you conversion-focused Liquid sections
+              &amp; snippets - countdowns, trust badges, delivery ETA, buy bars and more - without stacking
+              high-cost apps. Plus theme bundles, WordPress landing pages and plugins.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-3">
               <ButtonLink href="/checkout" size="lg">
@@ -260,29 +271,31 @@ export default function HomePage() {
                 <span aria-hidden className="size-1.5 rounded-full bg-accent" /> One-time payment
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <span aria-hidden className="size-1.5 rounded-full bg-mint" /> No app to install
+                <span aria-hidden className="size-1.5 rounded-full bg-mint" /> Adapts to any OS 2.0 theme
               </span>
             </div>
           </div>
 
-          {/* Layered visual: storefront mockup + code panel + floating cards */}
-          <div className="relative mx-auto w-full max-w-lg">
-            <div aria-hidden className="absolute -top-8 -right-3 z-20 hidden w-40 rotate-3 rounded-2xl border border-line-strong bg-ink-900 p-4 shadow-card sm:block">
-              <Zap className="size-5 text-mint" />
-              <p className="mt-2 font-display text-base font-semibold">Zero dependencies</p>
-              <p className="text-[0.7rem] text-subtle">Pure Liquid &amp; vanilla JS</p>
-            </div>
-            <div aria-hidden className="absolute -bottom-9 -left-3 z-20 hidden w-44 -rotate-3 rounded-2xl border border-line-strong bg-ink-900 p-4 shadow-card sm:block">
-              <FileCode2 className="size-5 text-accent" />
-              <p className="mt-2 font-display text-base font-semibold">300+ in the pipeline</p>
-              <p className="text-[0.7rem] text-subtle">Sections &amp; snippets</p>
-            </div>
-            <div className="animate-rise relative">
-              <ProductCardMockup />
-              <div className="relative z-10 mx-auto -mt-10 w-[92%] -rotate-1">
-                <ThemeLiquidPanel />
+          {/* Storefront visual - aligned stack with floating chips */}
+          <div className="animate-rise relative mx-auto w-full max-w-lg lg:pt-6">
+            <div aria-hidden className="absolute -top-5 right-2 z-20 flex items-center gap-2 rounded-xl border border-line-strong bg-ink-900 px-3.5 py-2.5 shadow-card">
+              <Zap className="size-4 text-mint" />
+              <div>
+                <p className="text-xs font-semibold leading-none">Zero dependencies</p>
+                <p className="mt-1 text-[0.6rem] leading-none text-subtle">Liquid + vanilla JS</p>
               </div>
             </div>
+            <div aria-hidden className="absolute -bottom-5 left-2 z-20 flex items-center gap-2 rounded-xl border border-line-strong bg-ink-900 px-3.5 py-2.5 shadow-card">
+              <FileCode2 className="size-4 text-accent" />
+              <div>
+                <p className="text-xs font-semibold leading-none">300+ in the pipeline</p>
+                <p className="mt-1 text-[0.6rem] leading-none text-subtle">Sections &amp; snippets</p>
+              </div>
+            </div>
+            <div aria-hidden className="absolute -right-4 bottom-16 z-20 hidden w-52 rotate-2 lg:block">
+              <ThemeLiquidChip />
+            </div>
+            <StorefrontMockup />
           </div>
         </Container>
 
@@ -371,7 +384,7 @@ export default function HomePage() {
           <SectionHeading
             eyebrow="Live previews - click to test drive"
             title="Interactive component sandbox"
-            description="Pick a component to see the actual storefront output, inspect the Liquid and CSS, and copy it in one click."
+            description="Conversion components you can try before you buy. Pick one to see the storefront output, inspect the Liquid, and copy it in one click."
           />
           <HomeSandbox />
         </Section>
@@ -493,6 +506,7 @@ export default function HomePage() {
             <p className="mt-2 text-sm text-muted">One-time payment in INR. Not a subscription.</p>
             <ul className="mx-auto mt-7 max-w-sm space-y-3 text-left text-sm text-muted">
               {[
+                "Conversion-focused components for every storefront touchpoint",
                 "Members-only Liquid code library: source, previews, copy & downloads",
                 "Shopify theme & WordPress page bundles via secure Drive link",
                 "Live sandbox to test components before installing",

@@ -658,7 +658,7 @@ if (!customElements.get('gpl-slideshow')) customElements.define('gpl-slideshow',
   data-gpl-delivery
   data-fast-days="${v.fast ?? 2}"
   data-slow-days="${v.slow ?? 5}"
-  style="--gpl-accent: {{ accent | default: '${hex(v, "accent")}' }};"
+  style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 15 23 42))' }};"
 >
   <span class="gpl-delivery__title">${str(v, "heading", 40)}</span>
   <div class="gpl-delivery__field" data-field>
@@ -1176,7 +1176,7 @@ ${on(v, "zoom") ? `  image.addEventListener('click', () => {
   {%- assign save = v.compare_at_price | minus: v.price -%}
   {%- assign pct = 0 -%}
   {%- if save > 0 -%}{%- assign pct = save | times: 100 | divided_by: v.compare_at_price -%}{%- endif -%}
-  <div class="gpl-price" data-gpl-price style="--gpl-accent: {{ accent | default: '${hex(v, "accent")}' }};">
+  <div class="gpl-price" data-gpl-price style="--gpl-accent: {{ accent | default: 'rgb(var(--color-foreground, 15 23 42))' }};">
     <span class="gpl-price__now" data-now>{{ v.price | money }}</span>
     <span class="gpl-price__was" data-was {% unless save > 0 %}hidden{% endunless %}>
       <s>{{ v.compare_at_price | money }}</s>
@@ -1330,9 +1330,9 @@ ${on(v, "badge") ? `    <span class="gpl-price__off" data-off {% unless save > 0
 .gpl-popup__cta {
   display: block;
   margin-top: 1rem;
-  border-radius: 999px;
-  background: #0f172a;
-  color: #fff;
+  border-radius: var(--buttons-radius, 999px);
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
   padding: 0.75rem 1rem;
   font-weight: 600;
   text-decoration: none;
@@ -1638,7 +1638,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     files: (v) => ({
       liquid: `{%- assign v = product.selected_or_first_available_variant -%}
 {%- if v -%}
-  <div class="gpl-buybar" data-gpl-buybar style="--gpl-accent: {{ accent | default: '${hex(v, "accent")}' }};">
+  <div class="gpl-buybar" data-gpl-buybar style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 17 24 39))' }};">
     <div class="gpl-buybar__price">
       <strong>{{ v.price | money }}</strong>
       {%- if v.compare_at_price > v.price -%}
@@ -1671,9 +1671,9 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   .gpl-buybar__price s { color: #94a3b8; font-size: 0.8rem; }
   .gpl-buybar__cta {
     border: 0;
-    border-radius: 999px;
+    border-radius: var(--buttons-radius, 999px);
     background: var(--gpl-accent);
-    color: #fff;
+    color: rgb(var(--color-button-text, 255 255 255));
     padding: 0.7rem 1.4rem;
     font-size: 0.85rem;
     font-weight: 700;
@@ -1728,7 +1728,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
 {%- assign total = cart.total_price | default: 0 -%}
 {%- assign pct = total | times: 100 | divided_by: goal -%}
 {%- if pct > 100 -%}{%- assign pct = 100 -%}{%- endif -%}
-<div class="gpl-ship" style="--gpl-accent: {{ accent | default: '${hex(v, "accent")}' }};">
+<div class="gpl-ship" style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 21 128 61))' }};">
   {%- if total >= goal -%}
     <p class="gpl-ship__msg gpl-ship__msg--done">You have unlocked <strong>free shipping</strong></p>
   {%- else -%}
