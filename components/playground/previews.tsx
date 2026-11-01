@@ -255,9 +255,14 @@ function Slides({ v }: P) {
 function Delivery({ v }: P) {
   const [pin, setPin] = useState("");
   const [error, setError] = useState(false);
-  const [result, setResult] = useState<string | null>(null);
+  const [days, setDays] = useState<number | null>(null);
   const fast = Number(v.fast) || 2;
   const slow = Number(v.slow) || 5;
+  const fmt = (d: number) => {
+    const dt = new Date();
+    dt.setDate(dt.getDate() + d);
+    return dt.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" });
+  };
   function check() {
     if (pin.length !== 6) {
       setError(true);
@@ -266,40 +271,74 @@ function Delivery({ v }: P) {
     setError(false);
     const zones: [number, number][] = [[110001, 110096], [400001, 400104], [560001, 560110], [700001, 700160], [600001, 600130]];
     const p = parseInt(pin, 10);
-    const days = zones.some(([a, b]) => p >= a && p <= b) ? fast : slow;
-    const d = new Date();
-    d.setDate(d.getDate() + days);
-    setResult(d.toLocaleDateString("en-IN", { weekday: "short", day: "numeric", month: "short" }));
+    setDays(zones.some(([a, b]) => p >= a && p <= b) ? fast : slow);
   }
+  const accent = "#5eead4";
   return (
     <div className="p-6">
-      <span className="text-sm">{str(v, "heading", 40)}</span>
-      {result === null ? (
-        <div className="mt-2 flex overflow-hidden rounded-xl border border-slate-300 bg-white">
-          <input
-            type="tel"
-            inputMode="numeric"
-            maxLength={6}
-            value={pin}
-            placeholder="Enter 6-digit PIN code"
-            aria-label="Enter delivery PIN code"
-            onChange={(e) => { setPin(e.target.value.replace(/\D/g, "")); setError(false); }}
-            onKeyDown={(e) => { if (e.key === "Enter") check(); }}
-            className="h-11 min-w-0 flex-1 px-3.5 text-sm outline-none"
-          />
-          <button type="button" onClick={check} className="w-20 border-l border-slate-200 bg-slate-50 text-sm font-semibold hover:bg-slate-900 hover:text-white">
-            Check
-          </button>
+      <div className="mx-auto max-w-md rounded-2xl border border-teal-300/20 bg-gradient-to-br from-[#101828] to-[#080c1b] p-4 text-white shadow-xl">
+        <div className="flex flex-wrap gap-1.5">
+          {[["✓", "Verified seller"], ["₹", "UPI & cards"], ["↺", "Easy returns"]].map(([b, t]) => (
+            <span key={t} className="inline-flex items-center gap-1 rounded-full border border-slate-400/25 bg-white/5 px-2.5 py-1 text-[0.62rem] font-bold text-slate-300">
+              <b style={{ color: accent }}>{b}</b> {t}
+            </span>
+          ))}
         </div>
-      ) : (
-        <div className="mt-2 flex items-center justify-between rounded-xl border border-slate-300 px-3.5 py-2.5 text-sm">
-          <span>Estimated delivery <strong>{result}</strong></span>
-          <button type="button" onClick={() => { setResult(null); setPin(""); }} className="font-semibold underline" style={{ color: hex(v, "accent") }}>
-            Change
-          </button>
-        </div>
-      )}
-      {error && <p role="alert" className="mt-1.5 text-xs text-[#b4234d]">Please enter a valid 6-digit PIN code.</p>}
+        <p className="mt-3 text-sm font-bold text-slate-200">{str(v, "heading", 40)}</p>
+        {days === null ? (
+          <div className="mt-2 flex overflow-hidden rounded-lg border border-slate-400/30 bg-[#020617b3]">
+            <input
+              type="tel"
+              inputMode="numeric"
+              maxLength={6}
+              value={pin}
+              placeholder="Enter 6-digit PIN code"
+              aria-label="Enter delivery PIN code"
+              onChange={(e) => { setPin(e.target.value.replace(/\D/g, "")); setError(false); }}
+              onKeyDown={(e) => { if (e.key === "Enter") check(); }}
+              className="h-10 min-w-0 flex-1 bg-transparent px-3 text-sm text-white outline-none placeholder:text-slate-500"
+            />
+            <button
+              type="button"
+              onClick={check}
+              className="w-[4.6rem] border-l border-slate-400/25 bg-teal-300/10 text-xs font-bold hover:bg-teal-300/20"
+              style={{ color: accent }}
+            >
+              Check
+            </button>
+          </div>
+        ) : (
+          <>
+            <ol className="mt-3 grid list-none grid-cols-3 gap-1.5 p-0">
+              {[
+                { t: "Order placed", d: fmt(0), on: true },
+                { t: "Shipped", d: fmt(Math.min(2, days - 1)), on: false },
+                { t: "Delivered", d: fmt(days), on: true, final: true },
+              ].map((s) => (
+                <li key={s.t} className="relative pt-3">
+                  <span className="absolute left-1 top-1.5 h-px w-full bg-slate-500/30" aria-hidden />
+                  <span
+                    className="absolute left-0 top-0 size-[0.45rem] rounded-full"
+                    style={s.on ? { background: accent, boxShadow: `0 0 8px ${accent}` } : { background: "#475569" }}
+                    aria-hidden
+                  />
+                  <b className="block text-[0.65rem] font-bold" style={{ color: s.final ? accent : "#e2e8f0" }}>{s.t}</b>
+                  <small className="text-[0.6rem]" style={{ color: s.final ? accent : "#64748b" }}>{s.d}</small>
+                </li>
+              ))}
+            </ol>
+            <button
+              type="button"
+              onClick={() => { setDays(null); setPin(""); }}
+              className="mt-2.5 p-0 text-[0.7rem] font-semibold underline"
+              style={{ color: accent }}
+            >
+              Change PIN code
+            </button>
+          </>
+        )}
+        {error && <p role="alert" className="mt-1.5 text-xs text-red-300">Please enter a valid 6-digit PIN code.</p>}
+      </div>
       <p className="mt-2 text-[0.65rem] text-neutral-400">Try 110001 (metro zone) or another code to see different estimates.</p>
     </div>
   );
@@ -397,21 +436,48 @@ function Coupons({ v }: P) {
 }
 
 function TrustGrid({ v }: P) {
-  const accent = hex(v, "accent");
-  const items = [
-    ["Free shipping", "On prepaid orders"],
-    ["Easy returns", "Within the policy window"],
-    ["Quality checked", "Before dispatch"],
-    ["Secure checkout", "All major methods"],
+  const items: { t: string; s: string; bg: string; fg: string; icon: "shield" | "truck" | "refresh" | "award" }[] = [
+    { t: "Free shipping", s: "On prepaid orders", bg: "#e8f0fe", fg: "#4a6fe3", icon: "truck" },
+    { t: "Easy returns", s: "Within the policy window", bg: "#f3eeff", fg: "#8b5cf6", icon: "refresh" },
+    { t: "Quality checked", s: "Before dispatch", bg: "#fff8e1", fg: "#e6a817", icon: "award" },
+    { t: "Secure checkout", s: "All major methods", bg: "#e6f7f0", fg: "#1a9e6a", icon: "shield" },
   ];
+  const icons = {
+    shield: (
+      <>
+        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        <path d="m9 12 2 2 4-4" />
+      </>
+    ),
+    truck: (
+      <>
+        <rect x="1" y="3" width="15" height="13" rx="1.5" />
+        <path d="M16 8h4l3 3v5h-7V8z" />
+        <circle cx="5.5" cy="18.5" r="2.5" />
+        <circle cx="18.5" cy="18.5" r="2.5" />
+      </>
+    ),
+    refresh: (
+      <>
+        <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" />
+        <path d="M3 3v5h5" />
+      </>
+    ),
+    award: (
+      <>
+        <circle cx="12" cy="8" r="6" />
+        <path d="M15.5 12.9 17 22l-5-3-5 3 1.5-9.1" />
+      </>
+    ),
+  };
   return (
     <div className="p-6">
       <ul className={`grid list-none grid-cols-2 gap-3 p-0 ${str(v, "columns") === "4" ? "@lg:grid-cols-4" : ""}`}>
-        {items.map(([t, s]) => (
+        {items.map(({ t, s, bg, fg, icon }) => (
           <li key={t} className="flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3.5">
-            <span className="grid size-10 shrink-0 place-items-center rounded-lg" style={{ color: accent, background: `${accent}14` }}>
+            <span className="grid size-10 shrink-0 place-items-center rounded-full" style={{ color: fg, background: bg }}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-5" aria-hidden>
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" /><path d="m9 12 2 2 4-4" />
+                {icons[icon]}
               </svg>
             </span>
             <span className="grid min-w-0">
@@ -547,19 +613,33 @@ function StarRating({ v }: P) {
   const pct = (rating / 5) * 100;
   return (
     <div className="p-6">
-      <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Organic cotton tee</p>
-      <p className="mt-0.5 text-lg font-semibold">Everyday Crew</p>
-      <div className="mt-1.5 inline-flex items-center gap-2" role="img" aria-label={`Rated ${rating} out of 5 stars`}>
-        <span className="relative inline-block text-base leading-none tracking-widest text-neutral-300">
+      <div
+        className="inline-flex items-center gap-3 rounded-full border px-5 py-2.5 text-white"
+        style={{ background: "rgba(15, 24, 44, 0.92)", borderColor: "rgb(255 215 0 / 0.3)", boxShadow: "0 8px 24px -8px rgba(0,0,0,0.6), inset 0 1px 0 rgb(255 255 255 / 0.08)" }}
+        role="img"
+        aria-label={`Rated ${rating} out of 5 stars`}
+      >
+        <span className="relative inline-block text-base leading-none tracking-widest" style={{ color: "#3d4a66" }}>
           ★★★★★
-          <span className="absolute left-0 top-0 overflow-hidden whitespace-nowrap text-amber-500" style={{ width: `${pct}%` }} aria-hidden>
+          <span
+            className="absolute left-0 top-0 overflow-hidden whitespace-nowrap text-[#ffb800]"
+            style={{ width: `${pct}%`, textShadow: "0 0 10px rgb(255 184 0 / 0.4)" }}
+            aria-hidden
+          >
             ★★★★★
           </span>
         </span>
-        <strong className="text-sm">{rating}</strong>
-        {str(v, "count") && <span className="text-xs text-slate-500">({str(v, "count", 10)} reviews)</span>}
+        <strong className="text-sm">{rating} / 5</strong>
+        {str(v, "count") && (
+          <>
+            <span className="h-4 w-px bg-white/20" aria-hidden />
+            <span className="text-xs text-slate-400">
+              <b className="text-[#5eead4]">{str(v, "count", 10)}</b> verified reviews
+            </span>
+          </>
+        )}
       </div>
-      <p className="mt-2 text-[0.65rem] text-neutral-400">On a real product the score comes from the reviews metafield - the preview uses the settings on the left.</p>
+      <p className="mt-3 text-[0.65rem] text-neutral-400">On a real product the score comes from the reviews metafield - the preview uses the settings on the left.</p>
     </div>
   );
 }
@@ -570,9 +650,16 @@ function StockPulse({ v }: P) {
   return (
     <div className="p-6">
       <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Everyday Crew</p>
-      <div className="mt-2 inline-flex items-center gap-2 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-[0.8rem] font-semibold text-red-700">
-        <span className="size-2 animate-pulse rounded-full bg-red-500" aria-hidden />
-        Selling fast - only <strong>{stock}</strong> left in stock
+      <div
+        className="mt-2 inline-flex items-center gap-2.5 rounded-lg border px-4 py-3 text-[0.82rem] font-semibold text-[#ffa39e]"
+        style={{
+          borderColor: "rgb(255 77 79 / 0.35)",
+          background: "linear-gradient(145deg, rgba(38, 12, 15, 0.95), rgba(20, 8, 10, 0.98))",
+          boxShadow: "0 8px 24px -8px rgba(0,0,0,0.6), 0 0 18px -4px rgb(255 77 79 / 0.25)",
+        }}
+      >
+        <span className="size-2.5 animate-pulse rounded-full bg-[#ff4d4f]" style={{ boxShadow: "0 0 10px #ff4d4f" }} aria-hidden />
+        Selling fast - only <strong className="text-[#ff4d4f]" style={{ textShadow: "0 0 10px rgb(255 77 79 / 0.5)" }}>{stock}</strong> left in stock
       </div>
       <p className="mt-2 text-[0.65rem] text-neutral-400">Shows only when tracked inventory is at or below {max} - the number is real, never random.</p>
     </div>
@@ -587,16 +674,17 @@ function StickyBuyBar({ v }: P) {
         <p className="text-xs font-semibold uppercase tracking-wide text-neutral-500">Everyday Crew</p>
         <p className="mt-1 text-sm text-neutral-600">Scroll the product page and this bar stays pinned on mobile.</p>
       </div>
-      <div className="mt-auto flex items-center justify-between gap-3 border-t border-slate-200 bg-white/95 px-3.5 py-2.5 backdrop-blur">
+      <div className="mt-auto flex items-center justify-between gap-3 border-t border-teal-300/35 bg-[#080c1bf0] px-3.5 py-2.5 backdrop-blur">
         <span className="flex items-baseline gap-1.5">
-          <strong className="text-base font-extrabold">₹499</strong>
-          <s className="text-xs text-slate-400">₹799</s>
+          <strong className="text-base font-black text-white" style={{ textShadow: "0 0 16px rgb(94 234 212 / 0.4)" }}>₹499</strong>
+          <s className="text-xs text-slate-500">₹799</s>
+          <span className="rounded border border-red-500/35 bg-red-500/15 px-1 py-0.5 text-[0.58rem] font-extrabold text-red-400">38% off</span>
         </span>
         <button
           type="button"
           onClick={() => { setAdded(true); setTimeout(() => setAdded(false), 2000); }}
-          className="rounded-full px-5 py-2 text-sm font-bold text-white"
-          style={{ background: hex(v, "accent") }}
+          className="relative overflow-hidden rounded-full px-5 py-2 text-sm font-black text-[#030712]"
+          style={{ background: "linear-gradient(135deg, #00f0b5, #10b981 50%, #059669)", boxShadow: "0 0 20px rgb(94 234 212 / 0.4), inset 0 1px 0 rgb(255 255 255 / 0.6)" }}
         >
           {added ? "Added!" : str(v, "label", 20)}
         </button>
@@ -623,7 +711,10 @@ function FreeShipBar({ v }: P) {
           <p className="text-sm font-bold" style={{ color: hex(v, "accent") }}>You have unlocked free shipping</p>
         )}
         <div role="progressbar" aria-valuemin={0} aria-valuemax={100} aria-valuenow={pct} aria-label="Progress to free shipping" className="mt-2.5 h-2 overflow-hidden rounded-full bg-slate-200">
-          <span className="block h-full rounded-full transition-[width]" style={{ width: `${pct}%`, background: hex(v, "accent") }} />
+          <span
+            className="block h-full rounded-full transition-[width]"
+            style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${hex(v, "accent")}, #34d399)`, boxShadow: `0 0 10px -2px ${hex(v, "accent")}` }}
+          />
         </div>
         <p className="mt-2 text-[0.65rem] text-neutral-400">Preview uses a ₹{money(cart).replace("₹", "")} cart - on the store it reads the real cart total.</p>
       </div>

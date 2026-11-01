@@ -636,8 +636,8 @@ if (!customElements.get('gpl-slideshow')) customElements.define('gpl-slideshow',
   },
   {
     id: "delivery-estimator",
-    name: "Delivery estimate checker",
-    description: "A postcode field that validates input and shows an estimated delivery date. Adapted from a real storefront build.",
+    name: "Delivery ETA & trust card",
+    description: "A dark premium card with a PIN-code check, a real delivery timeline and a trust row - the kind of block that lifts product-page confidence. Adapted from a real storefront build.",
     category: "Trust & store information",
     kind: "snippet",
     controls: [
@@ -646,78 +646,182 @@ if (!customElements.get('gpl-slideshow')) customElements.define('gpl-slideshow',
       { id: "slow", label: "Default (days)", type: "select", options: [{ value: "5", label: "5" }, { value: "7", label: "7" }] },
       { id: "accent", label: "Accent", type: "color" },
     ],
-    defaults: { heading: "Estimated delivery time", fast: "2", slow: "5", accent: "#0f172a" },
+    defaults: { heading: "Delivery & returns", fast: "2", slow: "5", accent: "#5eead4" },
     install: snippetSteps("delivery-estimator.liquid"),
     files: (v) => ({
       liquid: `{%- comment -%}
-  Postcode delivery estimate. The day ranges in the JS below are examples —
+  PIN-code delivery ETA card. The day ranges in the JS below are examples -
   adjust them to match your own courier zones before going live.
 {%- endcomment -%}
 <div
-  class="gpl-delivery"
+  class="gpl-eta"
   data-gpl-delivery
   data-fast-days="${v.fast ?? 2}"
   data-slow-days="${v.slow ?? 5}"
-  style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 15 23 42))' }};"
+  style="--gpl-accent: {{ accent | default: '#5eead4' }};"
 >
-  <span class="gpl-delivery__title">${str(v, "heading", 40)}</span>
-  <div class="gpl-delivery__field" data-field>
-    <input
-      type="tel"
-      inputmode="numeric"
-      maxlength="6"
-      placeholder="Enter 6-digit PIN code"
-      autocomplete="postal-code"
-      aria-label="Enter delivery PIN code"
-      data-input
-    >
-    <button type="button" class="gpl-delivery__check" data-check>Check</button>
-  </div>
-  <p class="gpl-delivery__error" data-error role="alert" hidden>Please enter a valid 6-digit PIN code.</p>
-  <div class="gpl-delivery__result" data-result hidden>
-    <span>Estimated delivery <strong data-date></strong></span>
-    <button type="button" class="gpl-delivery__change" data-change>Change</button>
+  <div class="gpl-eta__card">
+    <div class="gpl-eta__trust">
+      <span class="gpl-eta__pill"><b>&#10003;</b> Verified seller</span>
+      <span class="gpl-eta__pill"><b>&#8377;</b> UPI &amp; cards</span>
+      <span class="gpl-eta__pill"><b>&#8634;</b> Easy returns</span>
+    </div>
+
+    <p class="gpl-eta__title">${str(v, "heading", 40)}</p>
+    <div class="gpl-eta__field" data-field>
+      <input
+        type="tel"
+        inputmode="numeric"
+        maxlength="6"
+        placeholder="Enter 6-digit PIN code"
+        autocomplete="postal-code"
+        aria-label="Enter delivery PIN code"
+        data-input
+      >
+      <button type="button" class="gpl-eta__check" data-check>Check</button>
+    </div>
+    <p class="gpl-eta__error" data-error role="alert" hidden>Please enter a valid 6-digit PIN code.</p>
+
+    <ol class="gpl-eta__timeline" data-result hidden>
+      <li class="gpl-eta__step gpl-eta__step--done">
+        <span class="gpl-eta__dot"></span>
+        <b>Order placed</b>
+        <small data-order>Today</small>
+      </li>
+      <li class="gpl-eta__step">
+        <span class="gpl-eta__dot"></span>
+        <b>Shipped</b>
+        <small data-ship></small>
+      </li>
+      <li class="gpl-eta__step gpl-eta__step--final">
+        <span class="gpl-eta__dot"></span>
+        <b>Delivered</b>
+        <small data-deliver></small>
+      </li>
+    </ol>
+    <button type="button" class="gpl-eta__change" data-change hidden>Change PIN code</button>
   </div>
 </div>`,
-      css: `.gpl-delivery { width: 100%; max-width: 36rem; margin: 0.75rem 0; }
-.gpl-delivery__title { display: block; margin-bottom: 0.45rem; font-size: 0.95rem; }
-.gpl-delivery__field {
+      css: `.gpl-eta { width: 100%; max-width: 26rem; margin: 0.75rem 0; }
+.gpl-eta__card {
+  position: relative;
+  padding: 1.1rem 1.15rem;
+  border-radius: 14px;
+  background: linear-gradient(145deg, rgba(16, 24, 40, 0.95), rgba(8, 12, 27, 0.98));
+  border: 1px solid rgb(94 234 212 / 0.22);
+  box-shadow: 0 14px 34px -10px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgb(255 255 255 / 0.07);
+  color: #fff;
+  overflow: hidden;
+}
+.gpl-eta__card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 18%; right: 18%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gpl-accent), transparent);
+}
+.gpl-eta__trust { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.gpl-eta__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.22rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid rgb(148 163 184 / 0.25);
+  background: rgb(255 255 255 / 0.04);
+  color: #cbd5e1;
+  font-size: 0.62rem;
+  font-weight: 700;
+}
+.gpl-eta__pill b { color: var(--gpl-accent); font-weight: 800; }
+.gpl-eta__title { margin: 0.7rem 0 0.5rem; font-size: 0.85rem; font-weight: 700; color: #e2e8f0; }
+.gpl-eta__field {
   display: flex;
   overflow: hidden;
-  border: 1px solid #cbd5e1;
-  border-radius: 12px;
-  background: #fff;
+  border: 1px solid rgb(148 163 184 / 0.3);
+  border-radius: 10px;
+  background: rgba(2, 6, 23, 0.7);
 }
-.gpl-delivery__field:focus-within { border-color: var(--gpl-accent); box-shadow: 0 0 0 3px rgb(15 23 42 / 0.08); }
-.gpl-delivery__field input { flex: 1; min-width: 0; height: 46px; border: 0; padding: 0 14px; font-size: 0.85rem; outline: 0; }
-.gpl-delivery__check {
-  flex: 0 0 5rem;
+.gpl-eta__field:focus-within { border-color: var(--gpl-accent); box-shadow: 0 0 0 3px rgb(94 234 212 / 0.12); }
+.gpl-eta__field input {
+  flex: 1;
+  min-width: 0;
+  height: 42px;
   border: 0;
-  border-left: 1px solid #e2e8f0;
-  background: #f8fafc;
-  font-weight: 600;
+  padding: 0 12px;
+  background: transparent;
+  color: #fff;
+  font-size: 0.85rem;
+  outline: 0;
+}
+.gpl-eta__field input::placeholder { color: #64748b; }
+.gpl-eta__check {
+  flex: 0 0 4.6rem;
+  border: 0;
+  border-left: 1px solid rgb(148 163 184 / 0.25);
+  background: rgb(94 234 212 / 0.12);
+  color: var(--gpl-accent);
+  font-weight: 700;
+  font-size: 0.8rem;
   cursor: pointer;
 }
-.gpl-delivery__check:hover { background: var(--gpl-accent); color: #fff; }
-.gpl-delivery__error { margin: 0.4rem 0 0; color: #b4234d; font-size: 0.75rem; }
-.gpl-delivery__result {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.75rem;
-  padding: 0.7rem 0.9rem;
-  border: 1px solid #cbd5e1;
-  border-radius: 12px;
-  font-size: 0.85rem;
+.gpl-eta__check:hover { background: rgb(94 234 212 / 0.22); }
+.gpl-eta__error { margin: 0.4rem 0 0; color: #fca5a5; font-size: 0.72rem; }
+.gpl-eta__error[hidden], .gpl-eta__timeline[hidden], .gpl-eta__change[hidden] { display: none; }
+.gpl-eta__timeline {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.4rem;
+  margin: 0.85rem 0 0;
+  padding: 0;
+  list-style: none;
 }
-.gpl-delivery__change { border: 0; background: none; color: var(--gpl-accent); font-weight: 600; text-decoration: underline; cursor: pointer; }
-.gpl-delivery__result[hidden], .gpl-delivery__error[hidden] { display: none; }`,
+.gpl-eta__step { position: relative; display: grid; gap: 0.15rem; padding-top: 0.7rem; }
+.gpl-eta__step::before {
+  content: "";
+  position: absolute;
+  top: 0.2rem;
+  left: 0.45rem;
+  right: -0.3rem;
+  height: 1px;
+  background: rgb(148 163 184 / 0.25);
+}
+.gpl-eta__step:last-child::before { right: 50%; }
+.gpl-eta__dot {
+  position: absolute;
+  top: 0;
+  width: 0.45rem;
+  height: 0.45rem;
+  border-radius: 50%;
+  background: #475569;
+}
+.gpl-eta__step--done .gpl-eta__dot, .gpl-eta__step--final .gpl-eta__dot {
+  background: var(--gpl-accent);
+  box-shadow: 0 0 8px var(--gpl-accent);
+}
+.gpl-eta__step b { font-size: 0.68rem; font-weight: 700; color: #e2e8f0; }
+.gpl-eta__step small { font-size: 0.62rem; color: #64748b; }
+.gpl-eta__step--final b, .gpl-eta__step--final small { color: var(--gpl-accent); }
+.gpl-eta__change {
+  margin-top: 0.6rem;
+  border: 0;
+  background: none;
+  color: var(--gpl-accent);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}`,
       js: `document.querySelectorAll('[data-gpl-delivery]').forEach((box) => {
   const input = box.querySelector('[data-input]');
   const field = box.querySelector('[data-field]');
   const error = box.querySelector('[data-error]');
   const result = box.querySelector('[data-result]');
-  const dateEl = box.querySelector('[data-date]');
+  const change = box.querySelector('[data-change]');
+  const shipEl = box.querySelector('[data-ship]');
+  const deliverEl = box.querySelector('[data-deliver]');
+  const orderEl = box.querySelector('[data-order]');
   const fast = Number(box.dataset.fastDays) || 2;
   const slow = Number(box.dataset.slowDays) || 5;
 
@@ -743,15 +847,20 @@ if (!customElements.get('gpl-slideshow')) customElements.define('gpl-slideshow',
       return;
     }
     error.hidden = true;
-    dateEl.textContent = formatDate(daysFor(pin));
+    const days = daysFor(pin);
+    orderEl.textContent = formatDate(0);
+    shipEl.textContent = formatDate(Math.min(2, days - 1));
+    deliverEl.textContent = formatDate(days);
     field.style.display = 'none';
     result.hidden = false;
+    change.hidden = false;
   }
   box.querySelector('[data-check]').addEventListener('click', check);
   input.addEventListener('keydown', (e) => { if (e.key === 'Enter') check(); });
   input.addEventListener('input', () => { input.value = input.value.replace(/\\D/g, ''); error.hidden = true; });
-  box.querySelector('[data-change]').addEventListener('click', () => {
+  change.addEventListener('click', () => {
     result.hidden = true;
+    change.hidden = true;
     field.style.display = 'flex';
     input.value = '';
     input.focus();
@@ -1049,18 +1158,15 @@ ${on(v, "zoom") ? `  image.addEventListener('click', () => {
     description: "A responsive icon grid for shipping, returns and authenticity claims, driven by section blocks. Adapted from a real storefront build.",
     category: "Trust & store information",
     kind: "section",
-    controls: [
-      { id: "accent", label: "Icon colour", type: "color" },
-      { id: "columns", label: "Columns", type: "select", options: [{ value: "2", label: "2" }, { value: "4", label: "4" }] },
-    ],
-    defaults: { accent: "#166534", columns: "2" },
+    controls: [{ id: "columns", label: "Columns", type: "select", options: [{ value: "2", label: "2" }, { value: "4", label: "4" }] }],
+    defaults: { columns: "2" },
     install: sectionSteps,
     files: (v) => ({
       liquid: `{%- if section.blocks.size > 0 -%}
-  <ul class="gpl-trustgrid gpl-trustgrid--{{ section.settings.columns }}" style="--gpl-accent: {{ section.settings.accent }};">
+  <ul class="gpl-trustgrid gpl-trustgrid--{{ section.settings.columns }}">
     {%- for block in section.blocks -%}
       <li class="gpl-trustgrid__card" {{ block.shopify_attributes }}>
-        <span class="gpl-trustgrid__icon" aria-hidden="true">
+        <span class="gpl-trustgrid__icon gpl-trustgrid__icon--{{ block.settings.icon }}" aria-hidden="true">
           {%- case block.settings.icon -%}
             {%- when 'truck' -%}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13" rx="1.5"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
@@ -1085,7 +1191,6 @@ ${on(v, "zoom") ? `  image.addEventListener('click', () => {
 {
   "name": "Trust badge grid",
   "settings": [
-    { "type": "color", "id": "accent", "label": "Icon colour", "default": ${js(hex(v, "accent"))} },
     {
       "type": "select",
       "id": "columns",
@@ -1147,10 +1252,13 @@ ${on(v, "zoom") ? `  image.addEventListener('click', () => {
   width: 2.6rem;
   height: 2.6rem;
   flex-shrink: 0;
-  border-radius: 10px;
-  color: var(--gpl-accent);
-  background: color-mix(in srgb, var(--gpl-accent) 8%, #fff);
+  border-radius: 50%;
 }
+/* Each trust type gets its own tint, like the big app icons */
+.gpl-trustgrid__icon--shield { background: #e6f7f0; color: #1a9e6a; }
+.gpl-trustgrid__icon--truck { background: #e8f0fe; color: #4a6fe3; }
+.gpl-trustgrid__icon--refresh { background: #f3eeff; color: #8b5cf6; }
+.gpl-trustgrid__icon--award { background: #fff8e1; color: #e6a817; }
 .gpl-trustgrid__icon svg { width: 1.3rem; height: 1.3rem; }
 .gpl-trustgrid__text { display: grid; min-width: 0; }
 .gpl-trustgrid__text strong { font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -1427,15 +1535,22 @@ if (!customElements.get('gpl-promo-popup')) customElements.define('gpl-promo-pop
       css: `.gpl-cd { display: block; }
 .gpl-cd__card {
   position: relative;
-  max-width: 30rem;
+  width: 100%;
+  max-width: clamp(18rem, 40vw, 28rem);
   margin: 0 auto;
-  padding: 1.25rem 1.5rem;
-  border-radius: 14px;
-  background: #0f172a;
+  padding: clamp(1rem, 3.5vw, 1.4rem) clamp(0.8rem, 4vw, 1.5rem);
+  border-radius: clamp(12px, 3vw, 16px);
+  background: linear-gradient(145deg, rgba(16, 24, 40, 0.95), rgba(8, 12, 27, 0.98));
+  border: 1px solid rgb(94 234 212 / 0.25);
+  box-shadow:
+    0 16px 40px -10px rgba(0, 0, 0, 0.7),
+    0 0 24px -6px rgb(94 234 212 / 0.18),
+    inset 0 1px 0 rgb(255 255 255 / 0.08);
   color: #fff;
   text-align: center;
   overflow: hidden;
 }
+/* Neon edge + ambient sheen */
 .gpl-cd__card::before {
   content: "";
   position: absolute;
@@ -1443,38 +1558,102 @@ if (!customElements.get('gpl-promo-popup')) customElements.define('gpl-promo-pop
   left: 15%;
   right: 15%;
   height: 1px;
-  background: linear-gradient(90deg, transparent, var(--gpl-accent), transparent);
+  background: linear-gradient(90deg, transparent, var(--gpl-accent), #38bdf8, transparent);
+  opacity: 0.9;
+}
+.gpl-cd__card::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -80%;
+  width: 40%;
+  height: 200%;
+  background: linear-gradient(120deg, transparent, rgb(255 255 255 / 0.05), transparent);
+  transform: rotate(25deg);
+  animation: gpl-cd-sheen 5.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes gpl-cd-sheen {
+  0% { left: -80%; }
+  30%, 100% { left: 180%; }
 }
 .gpl-cd__badge {
-  display: inline-block;
-  border: 1px solid rgb(251 191 36 / 0.4);
-  background: rgb(245 158 11 / 0.12);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border: 1px solid rgb(251 191 36 / 0.35);
+  background: rgb(245 158 11 / 0.1);
   color: #fbbf24;
   border-radius: 999px;
-  padding: 0.2rem 0.7rem;
-  font-size: 0.68rem;
+  padding: 0.25rem 0.75rem;
+  font-size: clamp(0.6rem, 2vw, 0.7rem);
   font-weight: 800;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
+  text-shadow: 0 0 10px rgb(245 158 11 / 0.3);
 }
-.gpl-cd__heading { margin: 0.4rem 0 0; color: #94a3b8; font-size: 0.85rem; }
-.gpl-cd__clock { display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 0.9rem; }
-.gpl-cd__slot { display: grid; gap: 0.25rem; }
+.gpl-cd__heading { margin: 0.45rem 0 0; color: #94a3b8; font-size: clamp(0.7rem, 2.3vw, 0.82rem); }
+.gpl-cd__clock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.3rem, 1.8vw, 0.55rem);
+  margin-top: clamp(0.75rem, 2.5vw, 1.1rem);
+}
+.gpl-cd__slot { display: grid; gap: 0.3rem; flex: 1; max-width: 5rem; }
 .gpl-cd__slot b {
+  position: relative;
   display: grid;
   place-items: center;
-  width: 3.4rem;
-  height: 2.9rem;
-  border: 1px solid rgb(148 163 184 / 0.25);
-  border-radius: 9px;
-  background: rgb(2 6 23 / 0.8);
-  font-family: ui-monospace, monospace;
-  font-size: 1.35rem;
+  height: clamp(2.6rem, 12vw, 3.4rem);
+  border: 1px solid rgb(140 170 210 / 0.18);
+  border-radius: clamp(8px, 2vw, 10px);
+  background: rgba(4, 9, 20, 0.85);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 4px 12px rgba(0, 0, 0, 0.4);
+  font-family: ui-monospace, "Roboto Mono", Menlo, monospace;
+  font-size: clamp(1.15rem, 5vw, 1.45rem);
   font-weight: 800;
+  color: #fff;
+  text-shadow: 0 0 12px rgb(255 255 255 / 0.25);
+  overflow: hidden;
 }
-.gpl-cd__slot--accent b { border-color: rgb(200 245 66 / 0.5); color: var(--gpl-accent); }
-.gpl-cd__slot small { color: #64748b; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; }
-.gpl-cd__colon { color: #64748b; font-weight: 700; }
+/* flip-style seam */
+.gpl-cd__slot b::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: rgb(255 255 255 / 0.06);
+}
+.gpl-cd__slot--accent b {
+  border-color: rgb(94 234 212 / 0.5);
+  background: rgba(8, 24, 28, 0.9);
+  color: #5eead4;
+  text-shadow: 0 0 14px rgb(94 234 212 / 0.5);
+  box-shadow: 0 0 18px rgb(94 234 212 / 0.22), inset 0 1px 0 rgb(94 234 212 / 0.35);
+}
+.gpl-cd__slot small {
+  color: #64748b;
+  font-size: clamp(0.55rem, 1.9vw, 0.65rem);
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.gpl-cd__slot--accent small { color: #5eead4; }
+.gpl-cd__colon {
+  font-family: ui-monospace, monospace;
+  font-weight: 700;
+  color: rgb(148 163 184 / 0.55);
+  animation: gpl-cd-blink 1s steps(2, start) infinite;
+}
+@keyframes gpl-cd-blink {
+  50% { opacity: 0.2; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gpl-cd__card::after, .gpl-cd__colon { animation: none; }
+}
 .gpl-cd__done { margin: 0.9rem 0 0; color: #94a3b8; font-size: 0.9rem; }
 .gpl-cd__done[hidden] { display: none; }`,
       js: `class GplCountdown extends HTMLElement {
@@ -1534,14 +1713,25 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
 {%- if rating > 0 -%}
   <div class="gpl-stars" role="img" aria-label="Rated {{ rating }} out of 5 stars">
     <span class="gpl-stars__icons" style="--gpl-rating: {{ rating }};" aria-hidden="true">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
-    <strong class="gpl-stars__score">{{ rating }}</strong>
+    <strong class="gpl-stars__score">{{ rating }} / 5</strong>
     {%- if rcount > 0 -%}
-      <span class="gpl-stars__count">({{ rcount }} reviews)</span>
+      <span class="gpl-stars__sep" aria-hidden="true"></span>
+      <span class="gpl-stars__count"><b>{{ rcount }}</b> verified reviews</span>
     {%- endif -%}
   </div>
 {%- endif -%}`,
-      css: `.gpl-stars { display: inline-flex; align-items: center; gap: 0.5rem; }
-.gpl-stars__icons { position: relative; display: inline-block; color: #d1d5db; letter-spacing: 0.1em; font-size: 1rem; line-height: 1; }
+      css: `.gpl-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 0.65rem 1.35rem;
+  border-radius: 999px;
+  background: rgba(15, 24, 44, 0.92);
+  border: 1px solid rgb(255 215 0 / 0.3);
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgb(255 255 255 / 0.08);
+  color: #fff;
+}
+.gpl-stars__icons { position: relative; display: inline-block; color: #3d4a66; letter-spacing: 0.12em; font-size: 1rem; line-height: 1; }
 .gpl-stars__icons::before {
   content: "\\2605\\2605\\2605\\2605\\2605";
   position: absolute;
@@ -1550,10 +1740,13 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   width: calc(var(--gpl-rating) / 5 * 100%);
   overflow: hidden;
   white-space: nowrap;
-  color: #f59e0b;
+  color: #ffb800;
+  text-shadow: 0 0 10px rgb(255 184 0 / 0.4);
 }
 .gpl-stars__score { font-size: 0.9rem; }
-.gpl-stars__count { color: #64748b; font-size: 0.8rem; }`,
+.gpl-stars__sep { width: 1px; height: 1rem; background: rgb(255 255 255 / 0.2); }
+.gpl-stars__count { color: #94a3b8; font-size: 0.8rem; }
+.gpl-stars__count b { color: #5eead4; font-weight: 700; }`,
       usage: `{% render 'star-rating', product: product %}`,
     }),
   },
@@ -1590,26 +1783,29 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
       css: `.gpl-stock {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.6rem;
   margin: 0.5rem 0;
-  padding: 0.55rem 0.9rem;
-  border: 1px solid rgb(239 68 68 / 0.35);
-  border-radius: 9px;
-  background: rgb(239 68 68 / 0.08);
-  color: #b91c1c;
-  font-size: 0.82rem;
+  padding: 0.7rem 1.15rem;
+  border: 1px solid rgb(255 77 79 / 0.35);
+  border-radius: 10px;
+  background: linear-gradient(145deg, rgba(38, 12, 15, 0.95), rgba(20, 8, 10, 0.98));
+  box-shadow: 0 8px 24px -8px rgba(0, 0, 0, 0.6), 0 0 18px -4px rgb(255 77 79 / 0.25);
+  color: #ffa39e;
+  font-size: 0.85rem;
   font-weight: 600;
 }
+.gpl-stock strong { color: #ff4d4f; font-size: 0.95rem; text-shadow: 0 0 10px rgb(255 77 79 / 0.5); }
 .gpl-stock__dot {
-  width: 0.55rem;
-  height: 0.55rem;
+  width: 0.6rem;
+  height: 0.6rem;
   border-radius: 50%;
-  background: #ef4444;
+  background: #ff4d4f;
+  box-shadow: 0 0 10px #ff4d4f;
   animation: gpl-stock-pulse 1.4s ease-in-out infinite;
 }
 @keyframes gpl-stock-pulse {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.45; transform: scale(1.3); }
+  50% { opacity: 0.4; transform: scale(1.3); }
 }
 @media (prefers-reduced-motion: reduce) {
   .gpl-stock__dot { animation: none; }
@@ -1623,11 +1819,8 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     description: "A mobile-only sticky bar with the live price that taps through to your theme's real add-to-cart button. Adapted from a real storefront build.",
     category: "Product page",
     kind: "snippet",
-    controls: [
-      { id: "label", label: "Button label", type: "text", maxLength: 20 },
-      { id: "accent", label: "Button colour", type: "color" },
-    ],
-    defaults: { label: "Add to cart", accent: "#111827" },
+    controls: [{ id: "label", label: "Button label", type: "text", maxLength: 20 }],
+    defaults: { label: "Add to cart" },
     install: [
       "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
       "Create snippets/sticky-buy-bar.liquid, paste the Liquid code, and add the CSS + JS to your theme.",
@@ -1638,14 +1831,19 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     files: (v) => ({
       liquid: `{%- assign v = product.selected_or_first_available_variant -%}
 {%- if v -%}
-  <div class="gpl-buybar" data-gpl-buybar style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 17 24 39))' }};">
+  <div class="gpl-buybar" data-gpl-buybar>
     <div class="gpl-buybar__price">
       <strong>{{ v.price | money }}</strong>
       {%- if v.compare_at_price > v.price -%}
         <s>{{ v.compare_at_price | money }}</s>
+        {%- assign save_pct = v.compare_at_price | minus: v.price | times: 100 | divided_by: v.compare_at_price -%}
+        <span class="gpl-buybar__off">{{ save_pct }}% off</span>
       {%- endif -%}
     </div>
-    <button type="button" class="gpl-buybar__cta" data-gpl-buy>${str(v, "label", 20)}</button>
+    <button type="button" class="gpl-buybar__cta" data-gpl-buy>
+      <span class="gpl-buybar__shine" aria-hidden="true"></span>
+      ${str(v, "label", 20)}
+    </button>
   </div>
 {%- endif -%}`,
       css: `/* Mobile only - hidden on desktop */
@@ -1662,23 +1860,61 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     justify-content: space-between;
     gap: 0.75rem;
     padding: 0.65rem 0.9rem calc(0.65rem + env(safe-area-inset-bottom, 0px));
-    background: rgb(255 255 255 / 0.95);
-    border-top: 1px solid #e2e8f0;
-    backdrop-filter: blur(12px);
+    background: rgba(8, 12, 27, 0.94);
+    border-top: 1px solid rgb(94 234 212 / 0.35);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
   }
   .gpl-buybar__price { display: flex; align-items: baseline; gap: 0.4rem; }
-  .gpl-buybar__price strong { font-size: 1.1rem; font-weight: 800; }
-  .gpl-buybar__price s { color: #94a3b8; font-size: 0.8rem; }
+  .gpl-buybar__price strong {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 16px rgb(94 234 212 / 0.4);
+  }
+  .gpl-buybar__price s { color: #64748b; font-size: 0.8rem; }
+  .gpl-buybar__off {
+    font-size: 0.62rem;
+    font-weight: 800;
+    color: #f87171;
+    background: rgb(239 68 68 / 0.15);
+    border: 1px solid rgb(239 68 68 / 0.35);
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+  }
   .gpl-buybar__cta {
-    border: 0;
-    border-radius: var(--buttons-radius, 999px);
-    background: var(--gpl-accent);
-    color: rgb(var(--color-button-text, 255 255 255));
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 0.4);
+    border-radius: 999px;
+    background: linear-gradient(135deg, #00f0b5, #10b981 50%, #059669);
+    color: #030712;
     padding: 0.7rem 1.4rem;
     font-size: 0.85rem;
-    font-weight: 700;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    box-shadow: 0 0 20px rgb(94 234 212 / 0.4), inset 0 1px 0 rgb(255 255 255 / 0.6);
     cursor: pointer;
   }
+  .gpl-buybar__cta:active { transform: scale(0.97); }
+  .gpl-buybar__shine {
+    position: absolute;
+    top: -50%;
+    left: -80%;
+    width: 45%;
+    height: 200%;
+    background: linear-gradient(120deg, transparent, rgb(255 255 255 / 0.5), transparent);
+    transform: rotate(25deg);
+    animation: gpl-buybar-sheen 3.5s ease-in-out infinite;
+  }
+  @keyframes gpl-buybar-sheen {
+    0% { left: -80%; }
+    35%, 100% { left: 160%; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gpl-buybar__shine { display: none; }
 }`,
       js: `document.querySelectorAll('[data-gpl-buybar]').forEach((bar) => {
   bar.querySelector('[data-gpl-buy]').addEventListener('click', () => {
@@ -1752,7 +1988,8 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   display: block;
   height: 100%;
   border-radius: 999px;
-  background: var(--gpl-accent);
+  background: linear-gradient(90deg, var(--gpl-accent), #34d399);
+  box-shadow: 0 0 10px -2px var(--gpl-accent);
   transition: width 0.4s ease;
 }`,
       usage: `{% render 'free-shipping-bar', threshold: ${v.goal ?? 49900} %}`,
