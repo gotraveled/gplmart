@@ -1,6 +1,7 @@
 import { ImageResponse } from "next/og";
 import { examples, freeExampleIds } from "@/lib/playground/examples";
 
+export const runtime = "nodejs";
 export const alt = "GPLMart Shopify Liquid snippet";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
