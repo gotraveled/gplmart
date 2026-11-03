@@ -39,7 +39,7 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
     <>
       <PageHeader
         title="Resource library"
-        description="Published Shopify Liquid resources. Browse freely; source code and downloads unlock with membership."
+        description="Every published Shopify Liquid resource. Free samples are fully open; member items show everything except the source."
         crumbs={[{ label: "Library" }]}
       />
       <Container className="py-10">
@@ -99,6 +99,13 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
                 >
                   <div className="flex flex-wrap items-center gap-1.5">
                     <Badge>{categories.find((c) => c.slug === s.category_slug)?.name ?? s.category_slug}</Badge>
+                    {s.is_demo ? (
+                      <Badge className="border-mint/40 bg-mint/10 text-mint">Free</Badge>
+                    ) : (
+                      <Badge className="border-line-strong text-subtle">
+                        <LockKeyhole aria-hidden className="size-3" /> Members
+                      </Badge>
+                    )}
                     {s.version && <Badge>v{s.version}</Badge>}
                   </div>
                   <h2 className="mt-3 font-display text-lg font-semibold">{s.title}</h2>

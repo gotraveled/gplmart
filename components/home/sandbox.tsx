@@ -1,8 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Code2, Eye, Flame, Package, Play, ShieldCheck, ShoppingCart, Sparkles, Star, Ticket, Timer, TrendingUp } from "lucide-react";
-import { getExample } from "@/lib/playground/examples";
+import { Code2, Eye, Flame, Lock, Package, Play, ShieldCheck, ShoppingCart, Sparkles, Star, Ticket, Timer, TrendingUp } from "lucide-react";
+import { freeExampleIds, getExample } from "@/lib/playground/examples";
 import type { ExampleFiles } from "@/lib/playground/types";
 import type { Lang } from "@/lib/highlight";
 import { CodeBlock } from "@/components/ui/code-block";
@@ -34,6 +34,7 @@ function tabs(files: ExampleFiles) {
 export function HomeSandbox() {
   const [id, setId] = useState<string>(items[0].id);
   const ex = useMemo(() => getExample(id), [id]);
+  const locked = !freeExampleIds.has(ex.id);
   const files = useMemo(() => ex.files(ex.defaults), [ex]);
   const fileTabs = useMemo(() => tabs(files), [files]);
   const [file, setFile] = useState("liquid");
@@ -66,6 +67,7 @@ export function HomeSandbox() {
           >
             <Icon aria-hidden className={cn("size-4", cid === id ? "text-accent" : "text-subtle")} />
             {label}
+            {!freeExampleIds.has(cid) && <Lock aria-hidden className="size-3 text-subtle" />}
           </button>
         ))}
       </div>
@@ -100,11 +102,29 @@ export function HomeSandbox() {
                 </button>
               ))}
             </div>
-            <CopyButton text={view === "code" ? active.code : files.liquid} label="Copy" />
+            {!locked && <CopyButton text={view === "code" ? active.code : files.liquid} label="Copy" />}
           </div>
         </div>
 
-        {view === "preview" ? (
+        {locked && view === "code" ? (
+          <div className="grid min-h-[22rem] place-items-center p-8 text-center">
+            <div className="max-w-xs">
+              <span className="mx-auto grid size-12 place-items-center rounded-2xl border border-accent/30 bg-accent/10">
+                <Lock aria-hidden className="size-5 text-accent" />
+              </span>
+              <h3 className="mt-4 font-display text-lg font-semibold">Members-only code</h3>
+              <p className="mt-2 text-sm text-muted">
+                Preview freely - the source unlocks with all-access along with {items.length + freeExampleIds.size - 1}+ more snippets.
+              </p>
+              <a
+                href="/checkout"
+                className="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-ink-950 transition hover:bg-accent-strong"
+              >
+                Unlock all snippets
+              </a>
+            </div>
+          </div>
+        ) : view === "preview" ? (
           <div className="grid min-h-[22rem] place-items-center bg-[#eef1e6] p-5 sm:p-8">
             <div className="w-full max-w-2xl overflow-hidden rounded-xl border border-black/10 bg-white shadow-card">
               <ExamplePreview id={ex.id} values={ex.defaults} />

@@ -2,8 +2,9 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Monitor, Smartphone, Tablet, BookOpen } from "lucide-react";
-import { examples, getExample } from "@/lib/playground/examples";
+import Link from "next/link";
+import { Monitor, Smartphone, Tablet, BookOpen, Lock } from "lucide-react";
+import { examples, freeExampleIds, getExample } from "@/lib/playground/examples";
 import type { ControlDef, ExampleFiles, PlaygroundExample, Values } from "@/lib/playground/types";
 import type { Lang } from "@/lib/highlight";
 import { CodeBlock } from "@/components/ui/code-block";
@@ -100,6 +101,7 @@ export function Workbench({ initialId }: { initialId?: string }) {
   const [darkCanvas, setDarkCanvas] = useState(false);
   const [view, setView] = useState<"preview" | "code">("preview");
 
+  const locked = !freeExampleIds.has(ex.id);
   const files = useMemo(() => ex.files(values), [ex, values]);
   const tabs = useMemo(() => fileTabs(ex, files), [ex, files]);
   const active = tabs.find((t) => t.id === tab) ?? tabs[0]!;
@@ -159,7 +161,30 @@ export function Workbench({ initialId }: { initialId?: string }) {
     </div>
   );
 
-  const codePanel = (
+  const lockedPanel = (
+    <div className="grid min-h-[26rem] place-items-center p-8 text-center">
+      <div className="max-w-xs">
+        <span className="mx-auto grid size-12 place-items-center rounded-2xl border border-accent/30 bg-accent/10">
+          <Lock aria-hidden className="size-5 text-accent" />
+        </span>
+        <h3 className="mt-4 font-display text-lg font-semibold">Members-only code</h3>
+        <p className="mt-2 text-sm text-muted">
+          The preview works freely - the Liquid source, CSS, JS and downloads unlock with all-access.
+        </p>
+        <Link
+          href="/checkout"
+          className="mt-5 inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-ink-950 transition hover:bg-accent-strong"
+        >
+          Unlock all snippets
+        </Link>
+        <p className="mt-3 text-xs text-subtle">5 examples are free - this one is in the members set.</p>
+      </div>
+    </div>
+  );
+
+  const codePanel = locked ? (
+    lockedPanel
+  ) : (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-2 border-b border-line px-3 py-2">
         <div role="tablist" aria-label="Files" className="flex flex-wrap gap-1">
@@ -218,7 +243,10 @@ export function Workbench({ initialId }: { initialId?: string }) {
                       : "border-transparent text-muted hover:border-line-strong hover:bg-white/[0.03] hover:text-fg",
                   )}
                 >
-                  <span className="block font-medium">{e.name}</span>
+                  <span className="flex items-center justify-between gap-2 font-medium">
+                    {e.name}
+                    {!freeExampleIds.has(e.id) && <Lock aria-hidden className="size-3.5 shrink-0 text-subtle" />}
+                  </span>
                   <span className="mt-0.5 block text-xs text-subtle">{e.category}</span>
                 </button>
               </li>

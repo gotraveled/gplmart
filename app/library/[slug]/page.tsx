@@ -5,6 +5,8 @@ import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
+import { CodeBlock } from "@/components/ui/code-block";
+import { CopyButton } from "@/components/ui/copy-button";
 import { isSupabaseConfigured } from "@/lib/env";
 import { getPublicSnippet, listCategories } from "@/lib/snippets";
 import { buildPreviewDoc } from "@/lib/snippet-utils";
@@ -66,6 +68,16 @@ export default async function PublicResourcePage({ params }: { params: Promise<{
               </div>
             )}
 
+            {snippet.code && (
+              <div className="mt-6 overflow-hidden rounded-2xl border border-line-strong bg-ink-900">
+                <div className="flex items-center justify-between border-b border-line px-4 py-2.5">
+                  <p className="font-mono text-[0.7rem] text-subtle">{snippet.filename || `${snippet.slug}.liquid`}</p>
+                  <CopyButton text={snippet.code} label="Copy code" />
+                </div>
+                <CodeBlock code={snippet.code} lang="liquid" maxHeight="26rem" lineNumbers />
+              </div>
+            )}
+
             {snippet.documentation && (
               <div className="mt-6 rounded-2xl border border-line bg-ink-900/60 p-5">
                 <h2 className="font-display text-base font-semibold">Install notes</h2>
@@ -75,18 +87,36 @@ export default async function PublicResourcePage({ params }: { params: Promise<{
           </div>
 
           <aside className="h-fit rounded-2xl border border-line-strong bg-ink-900 p-6 lg:sticky lg:top-24">
-            <LockKeyhole aria-hidden className="size-6 text-accent" />
-            <h2 className="mt-3 font-display text-lg font-semibold">Source code &amp; download</h2>
-            <p className="mt-2 text-sm text-muted">
-              The Liquid source, file name and download are available to members in the Liquid library.
-            </p>
-            <ButtonLink href="/checkout" className="mt-5 w-full">
-              Unlock with all-access &mdash; {formatOfferPrice()}
-            </ButtonLink>
-            <ButtonLink href={`/access/liquid-library/${snippet.slug}`} variant="secondary" className="mt-2.5 w-full">
-              Already a member? Open it <ArrowRight aria-hidden className="size-4" />
-            </ButtonLink>
-            <p className="mt-4 text-xs text-subtle">One-time payment. Access link delivered via WhatsApp.</p>
+            {snippet.code ? (
+              <>
+                <Badge className="border-mint/40 bg-mint/10 text-mint">Free sample</Badge>
+                <h2 className="mt-3 font-display text-lg font-semibold">Open source sample</h2>
+                <p className="mt-2 text-sm text-muted">
+                  This snippet is fully free - copy it above, use it in your theme. The rest of the library is in the members area.
+                </p>
+                <ButtonLink href="/library" variant="secondary" className="mt-5 w-full">
+                  Back to the library
+                </ButtonLink>
+                <ButtonLink href="/checkout" className="mt-2.5 w-full">
+                  Get all-access &mdash; {formatOfferPrice()}
+                </ButtonLink>
+              </>
+            ) : (
+              <>
+                <LockKeyhole aria-hidden className="size-6 text-accent" />
+                <h2 className="mt-3 font-display text-lg font-semibold">Source code &amp; download</h2>
+                <p className="mt-2 text-sm text-muted">
+                  The Liquid source, file name and download are available to members in the Liquid library.
+                </p>
+                <ButtonLink href="/checkout" className="mt-5 w-full">
+                  Unlock with all-access &mdash; {formatOfferPrice()}
+                </ButtonLink>
+                <ButtonLink href={`/access/liquid-library/${snippet.slug}`} variant="secondary" className="mt-2.5 w-full">
+                  Already a member? Open it <ArrowRight aria-hidden className="size-4" />
+                </ButtonLink>
+                <p className="mt-4 text-xs text-subtle">One-time payment. Access link delivered via WhatsApp.</p>
+              </>
+            )}
           </aside>
         </div>
       </Container>

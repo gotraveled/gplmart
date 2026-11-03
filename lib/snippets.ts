@@ -23,13 +23,12 @@ export async function listPublishedSummaries(): Promise<SnippetSummary[]> {
   return (data ?? []) as SnippetSummary[];
 }
 
-/** Public catalogue: demos are excluded so examples never masquerade as paid inventory. */
+/** Public catalogue: every published row lists publicly - demos are flagged free, the rest show everything except code. */
 export async function listPublicSummaries(): Promise<SnippetSummary[]> {
   const { data } = await createServiceClient()
     .from("snippets")
     .select(SUMMARY_COLS)
     .eq("status", "published")
-    .eq("is_demo", false)
     .order("title");
   return (data ?? []) as SnippetSummary[];
 }
@@ -55,17 +54,22 @@ export async function getPublishedSnippet(slug: string): Promise<Snippet | null>
 export interface PublicSnippet extends SnippetSummary {
   preview_html: string;
   documentation: string;
+  /** Source is returned only for free samples (is_demo); empty for paid items so it never reaches the HTML. */
+  code: string;
+  filename: string;
 }
 
-/** Public detail: metadata + static preview only. `code`/`filename` are never selected. */
+/** Public detail: metadata + preview for all; `code` only for demo rows. */
 export async function getPublicSnippet(slug: string): Promise<PublicSnippet | null> {
   if (!SLUG.test(slug)) return null;
   const { data } = await createServiceClient()
     .from("snippets")
-    .select(`${SUMMARY_COLS},preview_html,documentation`)
+    .select(`${SUMMARY_COLS},preview_html,documentation,code,filename`)
     .eq("slug", slug)
     .eq("status", "published")
-    .eq("is_demo", false)
     .maybeSingle();
-  return (data as PublicSnippet | null) ?? null;
+  if (!data) return null;
+  const row = data as PublicSnippet;
+  if (!row.is_demo) return { ...row, code: "", filename: "" };
+  return row;
 }

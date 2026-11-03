@@ -26,6 +26,15 @@ const snippetSteps = (file: string) => [
   "Preview the product, collection or cart page and test on mobile before publishing.",
 ];
 
+/** Free samples: fully open in the playground. Everything else previews freely but the code is for members. */
+export const freeExampleIds: ReadonlySet<string> = new Set([
+  "countdown-timer",
+  "star-rating",
+  "free-shipping-bar",
+  "trust-grid",
+  "quantity-breaks",
+]);
+
 export const examples: readonly PlaygroundExample[] = [
   {
     id: "announcement-bar",
@@ -2426,6 +2435,380 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   text-decoration: none;
 }`,
       usage: `{% render 'sold-out-notify' %}`,
+    }),
+  },
+  {
+    id: "back-to-top",
+    name: "Back to top button",
+    description: "A floating button that fades in after the shopper scrolls, then smoothly returns them to the top of the page.",
+    category: "Utilities",
+    kind: "snippet",
+    controls: [
+      { id: "position", label: "Position", type: "select", options: [{ value: "right", label: "Bottom right" }, { value: "left", label: "Bottom left" }] },
+      { id: "bg", label: "Button colour", type: "color" },
+    ],
+    defaults: { position: "right", bg: "#0b1220" },
+    install: snippetSteps("back-to-top.liquid"),
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Render once near the end of theme.liquid (or a layout file) so it works on
+  every page. Pure CSS + a tiny scroll listener.
+{%- endcomment -%}
+<button type="button" class="gpl-totop gpl-totop--${v.position}" data-gpl-totop aria-label="Back to top" hidden>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+</button>`,
+      css: `.gpl-totop {
+  position: fixed;
+  bottom: 1.25rem;
+  ${v.position === "left" ? "left: 1.25rem;" : "right: 1.25rem;"}
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(var(--color-button, 11 18 32));
+  color: rgb(var(--color-button-text, 255 255 255));
+  box-shadow: 0 10px 24px -8px rgb(0 0 0 / 0.35);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(0.5rem);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.gpl-totop.is-visible { opacity: 1; transform: translateY(0); }
+.gpl-totop[hidden] { display: none; }
+.gpl-totop svg { width: 1.1rem; height: 1.1rem; }
+@media (prefers-reduced-motion: reduce) {
+  .gpl-totop { transition: none; }
+}`,
+      js: `document.querySelectorAll('[data-gpl-totop]').forEach((btn) => {
+  btn.hidden = false;
+  const onScroll = () => btn.classList.toggle('is-visible', window.scrollY > 480);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  btn.addEventListener('click', () => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+  });
+});`,
+      usage: `{% render 'back-to-top' %}`,
+    }),
+  },
+  {
+    id: "scroll-progress",
+    name: "Scroll progress bar",
+    description: "A thin bar pinned to the top of the page that fills as the visitor scrolls - subtle cue that keeps people reading.",
+    category: "Utilities",
+    kind: "snippet",
+    controls: [{ id: "color", label: "Bar colour", type: "color" }],
+    defaults: { color: "#c8f542" },
+    install: snippetSteps("scroll-progress.liquid"),
+    files: (v) => ({
+      liquid: `<div class="gpl-progress" data-gpl-progress aria-hidden="true"><span class="gpl-progress__fill"></span></div>`,
+      css: `.gpl-progress {
+  position: fixed;
+  inset: 0 0 auto 0;
+  height: 3px;
+  z-index: 70;
+  pointer-events: none;
+}
+.gpl-progress__fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background: ${hex(v, "color")};
+  transition: width 0.05s linear;
+}`,
+      js: `(function () {
+  const fill = document.querySelector('.gpl-progress__fill');
+  if (!fill) return;
+  const update = () => {
+    const max = document.documentElement.scrollHeight - window.innerHeight;
+    fill.style.width = max > 0 ? ((window.scrollY / max) * 100).toFixed(1) + '%' : '0%';
+  };
+  window.addEventListener('scroll', update, { passive: true });
+  window.addEventListener('resize', update);
+  update();
+})();`,
+      usage: `{% render 'scroll-progress' %}`,
+    }),
+  },
+  {
+    id: "cookie-consent",
+    name: "Cookie consent banner",
+    description: "A slim bottom banner that asks for consent once, remembers the choice in the browser, and stays away afterwards.",
+    category: "Utilities",
+    kind: "snippet",
+    controls: [
+      { id: "text", label: "Message", type: "text", maxLength: 120 },
+      { id: "accent", label: "Button colour", type: "color" },
+    ],
+    defaults: { text: "We use cookies to improve your experience and analyse traffic.", accent: "#c8f542" },
+    install: [
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "Create snippets/cookie-consent.liquid, paste the code, and render it once in your layout file (e.g. before </body> in theme.liquid).",
+      "Point the policy link at your real privacy policy page.",
+      "NOTE: this stores a preference flag only - if you run ads/analytics, make sure those scripts actually respect the choice.",
+    ],
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Shows once until the visitor accepts or declines. The choice lives in
+  localStorage - nothing is sent to a server.
+{%- endcomment -%}
+<div class="gpl-cookies" data-gpl-cookies role="region" aria-label="Cookie consent" hidden>
+  <p class="gpl-cookies__text">{{ text | default: '${v.text}' | escape }} <a href="/pages/privacy-policy">Privacy policy</a></p>
+  <div class="gpl-cookies__actions">
+    <button type="button" class="gpl-cookies__btn gpl-cookies__btn--accept" data-gpl-cookies="accept">Accept</button>
+    <button type="button" class="gpl-cookies__btn gpl-cookies__btn--decline" data-gpl-cookies="decline">Decline</button>
+  </div>
+</div>`,
+      css: `.gpl-cookies {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 80;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.9rem 1.25rem;
+  background: #0b1220;
+  color: #e2e8f0;
+  border-top: 1px solid rgb(255 255 255 / 0.12);
+  font-size: 0.8rem;
+}
+.gpl-cookies[hidden] { display: none; }
+.gpl-cookies__text { margin: 0; }
+.gpl-cookies__text a { color: inherit; text-decoration: underline; }
+.gpl-cookies__actions { display: flex; gap: 0.5rem; }
+.gpl-cookies__btn {
+  padding: 0.45rem 1rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.gpl-cookies__btn--accept { border: 0; background: ${hex(v, "accent")}; color: #0b1220; }
+.gpl-cookies__btn--decline { border: 1px solid rgb(255 255 255 / 0.25); background: transparent; color: inherit; }`,
+      js: `(function () {
+  const KEY = 'gpl_consent';
+  const el = document.querySelector('[data-gpl-cookies]');
+  if (!el) return;
+  if (localStorage.getItem(KEY)) return;
+  el.hidden = false;
+  el.querySelectorAll('[data-gpl-cookies]').forEach((b) => {
+    b.addEventListener('click', () => {
+      try { localStorage.setItem(KEY, b.getAttribute('data-gpl-cookies')); } catch (e) {}
+      el.hidden = true;
+    });
+  });
+})();`,
+      usage: `{% render 'cookie-consent' %}`,
+    }),
+  },
+  {
+    id: "sale-badge",
+    name: "Sale badge with saving %",
+    description: "A 'Save X%' badge computed from compare_at_price - drops onto product cards or the product page and never lies about the discount.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [{ id: "accent", label: "Badge colour", type: "color" }],
+    defaults: { accent: "#e11d48" },
+    install: snippetSteps("sale-badge.liquid"),
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Real maths: the percentage is derived from the variant's own prices, so it
+  is always the true saving - no made-up numbers.
+{%- endcomment -%}
+{%- assign v = product.selected_or_first_available_variant | default: product -%}
+{%- if v.compare_at_price > v.price -%}
+  {%- assign saving = v.compare_at_price | minus: v.price | times: 100 | divided_by: v.compare_at_price -%}
+  <span class="gpl-sale" style="--gpl-accent: {{ accent | default: '${hex(v, "accent")}' }};">
+    Save {{ saving }}%
+  </span>
+{%- endif -%}`,
+      css: `.gpl-sale {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  background: var(--gpl-accent);
+  color: #fff;
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 4px 14px -4px var(--gpl-accent);
+}`,
+      usage: `{% render 'sale-badge' %}`,
+    }),
+  },
+  {
+    id: "product-tabs",
+    name: "Product info tabs",
+    description: "Tabs for description, shipping and returns on the product page - keeps long content tidy and scannable.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "tab1", label: "Tab 1 title", type: "text", maxLength: 24 },
+      { id: "tab2", label: "Tab 2 title", type: "text", maxLength: 24 },
+      { id: "tab3", label: "Tab 3 title", type: "text", maxLength: 24 },
+    ],
+    defaults: { tab1: "Description", tab2: "Shipping", tab3: "Returns" },
+    install: snippetSteps("product-tabs.liquid"),
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Accessible tab pattern: buttons drive panels, arrow keys move between tabs.
+  Wire the shipping/returns panels to metafields or hard-code your policies.
+{%- endcomment -%}
+<div class="gpl-tabs" data-gpl-tabs>
+  <div class="gpl-tabs__bar" role="tablist" aria-label="Product information">
+    <button type="button" role="tab" id="gpl-tab-1" aria-controls="gpl-panel-1" aria-selected="true" class="gpl-tabs__btn is-active">{{ tab1 | default: '${v.tab1}' | escape }}</button>
+    <button type="button" role="tab" id="gpl-tab-2" aria-controls="gpl-panel-2" aria-selected="false" tabindex="-1" class="gpl-tabs__btn">{{ tab2 | default: '${v.tab2}' | escape }}</button>
+    <button type="button" role="tab" id="gpl-tab-3" aria-controls="gpl-panel-3" aria-selected="false" tabindex="-1" class="gpl-tabs__btn">{{ tab3 | default: '${v.tab3}' | escape }}</button>
+  </div>
+  <div id="gpl-panel-1" role="tabpanel" aria-labelledby="gpl-tab-1" class="gpl-tabs__panel">
+    {{ product.description }}
+  </div>
+  <div id="gpl-panel-2" role="tabpanel" aria-labelledby="gpl-tab-2" class="gpl-tabs__panel" hidden>
+    <p>{{ product.metafields.custom.shipping_info | default: 'Ships in 2-4 business days. Free shipping thresholds apply at checkout.' | escape }}</p>
+  </div>
+  <div id="gpl-panel-3" role="tabpanel" aria-labelledby="gpl-tab-3" class="gpl-tabs__panel" hidden>
+    <p>{{ product.metafields.custom.return_info | default: 'Easy 30-day returns on unused items in original packaging.' | escape }}</p>
+  </div>
+</div>`,
+      css: `.gpl-tabs { margin: 1.25rem 0; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.15); border-radius: 0.85rem; overflow: hidden; }
+.gpl-tabs__bar { display: flex; border-bottom: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.15); background: rgb(var(--color-foreground, 148 163 184) / 0.04); }
+.gpl-tabs__btn {
+  flex: 1;
+  padding: 0.75rem 0.5rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  opacity: 0.65;
+  transition: opacity 0.15s ease;
+}
+.gpl-tabs__btn.is-active { opacity: 1; border-bottom-color: rgb(var(--color-button, 200 245 66)); }
+.gpl-tabs__panel { padding: 1rem 1.1rem; font-size: 0.9rem; line-height: 1.6; }
+.gpl-tabs__panel[hidden] { display: none; }`,
+      js: `document.querySelectorAll('[data-gpl-tabs]').forEach((root) => {
+  const tabs = Array.from(root.querySelectorAll('[role="tab"]'));
+  const panels = Array.from(root.querySelectorAll('[role="tabpanel"]'));
+  const activate = (i) => {
+    tabs.forEach((t, j) => {
+      const on = i === j;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      panels[j].hidden = !on;
+    });
+    tabs[i].focus();
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => activate(i));
+    t.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') activate((i + 1) % tabs.length);
+      if (e.key === 'ArrowLeft') activate((i - 1 + tabs.length) % tabs.length);
+    });
+  });
+});`,
+      usage: `{% render 'product-tabs' %}`,
+    }),
+  },
+  {
+    id: "logo-marquee",
+    name: "Logo / 'as seen in' marquee",
+    description: "A scrolling strip of press or partner marks. Ships with text placeholders - swap in your real logos as images.",
+    category: "Promotions & banners",
+    kind: "section",
+    controls: [
+      { id: "items", label: "Logos (separate with |)", type: "text", maxLength: 120 },
+      { id: "speed", label: "Scroll speed", type: "select", options: [{ value: "24", label: "Calm" }, { value: "16", label: "Medium" }, { value: "10", label: "Fast" }] },
+    ],
+    defaults: { items: "Times of India|YourStory|Inc42|Economic Times|Mint", speed: "16" },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Uses image blocks for real logos; text renders as a fallback wordmark so the
+  layout still works before assets are uploaded.
+{%- endcomment -%}
+{%- if section.blocks.size > 0 -%}
+  <div class="gpl-logos" style="--gpl-speed: {{ section.settings.speed }}s;">
+    <p class="gpl-logos__eyebrow">{{ section.settings.eyebrow | escape }}</p>
+    <div class="gpl-logos__mask">
+      <div class="gpl-logos__track">
+        {%- for i in (1..2) -%}
+          {%- for block in section.blocks -%}
+            <span class="gpl-logos__item" {{ block.shopify_attributes }} {% if i == 2 %}aria-hidden="true"{% endif %}>
+              {%- if block.settings.image != blank -%}
+                {{ block.settings.image | image_url: height: 48 | image_tag: loading: 'lazy', class: 'gpl-logos__img', alt: block.settings.name }}
+              {%- else -%}
+                <span class="gpl-logos__word">{{ block.settings.name | escape }}</span>
+              {%- endif -%}
+            </span>
+          {%- endfor -%}
+        {%- endfor -%}
+      </div>
+    </div>
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Logo marquee",
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Small heading", "default": "As featured in" },
+    {
+      "type": "range",
+      "id": "speed",
+      "label": "Seconds per loop",
+      "min": 6,
+      "max": 40,
+      "step": 2,
+      "default": ${Number(v.speed) || 16}
+    }
+  ],
+  "blocks": [
+    {
+      "type": "logo",
+      "name": "Logo",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Logo image" },
+        { "type": "text", "id": "name", "label": "Name (fallback text)", "default": "Press name" }
+      ]
+    }
+  ],
+  "max_blocks": 14,
+  "presets": [{ "name": "Logo marquee", "blocks": [{ "type": "logo" }, { "type": "logo" }, { "type": "logo" }, { "type": "logo" }] }]
+}
+{% endschema %}`,
+      css: `.gpl-logos { padding: 1.5rem 0; text-align: center; }
+.gpl-logos__eyebrow { margin: 0 0 1rem; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; opacity: 0.55; }
+.gpl-logos__mask { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent); }
+.gpl-logos__track {
+  display: inline-flex;
+  align-items: center;
+  gap: 3rem;
+  white-space: nowrap;
+  animation: gpl-logos var(--gpl-speed, 16s) linear infinite;
+  will-change: transform;
+}
+.gpl-logos:hover .gpl-logos__track { animation-play-state: paused; }
+.gpl-logos__item { display: inline-flex; align-items: center; }
+.gpl-logos__img { height: 1.75rem; width: auto; opacity: 0.7; }
+.gpl-logos__word { font-size: 1rem; font-weight: 700; opacity: 0.55; letter-spacing: 0.02em; }
+@keyframes gpl-logos { to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) {
+  .gpl-logos__track { animation: none; }
+}`,
     }),
   },
 ];

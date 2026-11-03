@@ -38,9 +38,8 @@ export default async function PlaygroundPage({
         <p role="note" className="mb-8 flex gap-3 rounded-xl border border-mint/30 bg-mint/10 p-4 text-sm">
           <FlaskConical aria-hidden className="mt-0.5 size-4 shrink-0 text-mint" />
           <span>
-            These are free educational examples &mdash; written for this playground or adapted from real storefront
-            builds. They are <strong>not</strong> the paid library &mdash; member resources live behind sign-in and are
-            only released after licensing is confirmed.
+            5 examples are fully open - inspect and copy the code freely. Everything else <strong>previews live</strong>{" "}
+            but the source unlocks with all-access, the same deal as the paid library.
           </span>
         </p>
         <Workbench initialId={example} />

@@ -862,6 +862,151 @@ function SoldOutNotify({ v }: P) {
   );
 }
 
+function BackToTop({ v }: P) {
+  return (
+    <div className="relative h-56 overflow-hidden p-6">
+      <div className="space-y-2">
+        {[80, 60, 90, 45, 70].map((w) => (
+          <div key={w} className="h-3 rounded-full bg-slate-200" style={{ width: `${w}%` }} />
+        ))}
+      </div>
+      <button
+        type="button"
+        className={`absolute bottom-5 grid size-11 place-items-center rounded-full bg-slate-900 text-white shadow-lg ${str(v, "position") === "left" ? "left-5" : "right-5"}`}
+        aria-label="Back to top"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="size-4">
+          <path d="M12 19V5" /><path d="m5 12 7-7 7 7" />
+        </svg>
+      </button>
+      <p className="absolute inset-x-0 bottom-6 text-center text-[0.65rem] text-neutral-400">Appears after ~480px of scroll</p>
+    </div>
+  );
+}
+
+function ScrollProgress({ v }: P) {
+  const [pct, setPct] = useState(35);
+  return (
+    <div className="relative">
+      <div className="h-[3px] w-full bg-transparent">
+        <span className="block h-full transition-[width]" style={{ width: `${pct}%`, background: hex(v, "color") }} />
+      </div>
+      <div className="space-y-2 p-6">
+        {[85, 65, 90, 50, 75].map((w) => (
+          <div key={w} className="h-3 rounded-full bg-slate-200" style={{ width: `${w}%` }} />
+        ))}
+      </div>
+      <button type="button" onClick={() => setPct((p) => (p >= 95 ? 10 : p + 20))} className="absolute bottom-3 right-4 rounded-full border border-slate-300 px-2.5 py-1 text-[0.65rem] font-medium text-neutral-500">
+        Simulate scroll
+      </button>
+    </div>
+  );
+}
+
+function CookieConsent({ v }: P) {
+  const [show, setShow] = useState(true);
+  if (!show)
+    return (
+      <div className="p-6 text-center text-xs text-neutral-500">
+        Choice saved.{" "}
+        <button type="button" className="underline" onClick={() => setShow(true)}>Show banner again</button>
+      </div>
+    );
+  return (
+    <div className="flex items-end">
+      <div className="mt-auto w-full flex-wrap items-center justify-between gap-3 rounded-t-xl border-t border-white/10 bg-slate-900 px-5 py-4 text-slate-100 sm:flex">
+        <p className="m-0 text-xs">
+          {str(v, "text", 120)} <span className="underline">Privacy policy</span>
+        </p>
+        <div className="mt-3 flex gap-2 sm:mt-0">
+          <button type="button" onClick={() => setShow(false)} className="rounded-full px-4 py-1.5 text-xs font-semibold" style={{ background: hex(v, "accent"), color: "#0b1220" }}>
+            Accept
+          </button>
+          <button type="button" onClick={() => setShow(false)} className="rounded-full border border-white/25 px-4 py-1.5 text-xs font-semibold">
+            Decline
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function SaleBadge({ v }: P) {
+  return (
+    <div className="p-6">
+      <div className="flex items-start gap-4">
+        <span className="block h-20 w-20 rounded-xl bg-gradient-to-br from-slate-200 to-slate-100" />
+        <div>
+          <p className="m-0 text-sm font-semibold">Linen overshirt</p>
+          <p className="m-0 mt-1 text-sm">
+            <span className="font-bold">Rs. 1,749</span>{" "}
+            <span className="text-neutral-400 line-through">Rs. 2,499</span>
+          </p>
+          <span
+            className="mt-2 inline-flex items-center rounded-full px-2.5 py-1 text-[0.68rem] font-extrabold uppercase tracking-wide text-white"
+            style={{ background: hex(v, "accent"), boxShadow: `0 4px 14px -4px ${hex(v, "accent")}` }}
+          >
+            Save 30%
+          </span>
+        </div>
+      </div>
+      <p className="m-0 mt-3 text-[0.65rem] text-neutral-400">On the store the % is computed from compare_at_price - always the true saving.</p>
+    </div>
+  );
+}
+
+function ProductTabs({ v }: P) {
+  const [tab, setTab] = useState(0);
+  const tabs = [str(v, "tab1", 24) || "Description", str(v, "tab2", 24) || "Shipping", str(v, "tab3", 24) || "Returns"];
+  const panels = [
+    "Soft, breathable linen with a relaxed everyday cut. Prewashed so it keeps its shape.",
+    "Ships in 2-4 business days. Free shipping thresholds apply at checkout.",
+    "Easy 30-day returns on unused items in original packaging.",
+  ];
+  return (
+    <div className="p-6">
+      <div className="overflow-hidden rounded-xl border border-slate-200">
+        <div className="flex border-b border-slate-200 bg-slate-50/70">
+          {tabs.map((t, i) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => setTab(i)}
+              className={`flex-1 border-b-2 px-2 py-2.5 text-[0.8rem] font-semibold transition ${tab === i ? "border-accent text-fg" : "border-transparent text-neutral-500"}`}
+            >
+              {t}
+            </button>
+          ))}
+        </div>
+        <p className="m-0 p-4 text-sm leading-relaxed text-neutral-700">{panels[tab]}</p>
+      </div>
+    </div>
+  );
+}
+
+function LogoMarquee({ v }: P) {
+  const items = str(v, "items", 120).split("|").map((s) => s.trim()).filter(Boolean);
+  const speed = Number(v.speed) || 16;
+  const row = (key: string) => (
+    <span key={key} aria-hidden={key === "b"} className="inline-flex items-center gap-12">
+      {items.map((i) => (
+        <span key={i} className="text-base font-bold tracking-wide text-neutral-400">{i}</span>
+      ))}
+    </span>
+  );
+  return (
+    <div className="p-6 text-center">
+      <p className="m-0 mb-4 text-[0.7rem] font-bold uppercase tracking-[0.14em] text-neutral-400">As featured in</p>
+      <div className="overflow-hidden [mask-image:linear-gradient(90deg,transparent,#000_10%,#000_90%,transparent)]">
+        <div className="inline-flex animate-[gpl-marquee_linear_infinite] items-center gap-12 whitespace-nowrap will-change-transform" style={{ animationDuration: `${speed}s` }}>
+          {row("a")}{row("b")}
+        </div>
+      </div>
+      <p className="m-0 mt-3 text-[0.65rem] text-neutral-400">Blocks take real logo images; text shows until assets are uploaded.</p>
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -889,6 +1034,12 @@ const map: Record<string, (p: P) => ReactNode> = {
   "guarantee-strip": Guarantee,
   "recently-viewed": RecentlyViewed,
   "sold-out-notify": SoldOutNotify,
+  "back-to-top": BackToTop,
+  "scroll-progress": ScrollProgress,
+  "cookie-consent": CookieConsent,
+  "sale-badge": SaleBadge,
+  "product-tabs": ProductTabs,
+  "logo-marquee": LogoMarquee,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {
