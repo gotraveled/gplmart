@@ -7,13 +7,13 @@ import { Workbench } from "@/components/playground/workbench";
 import { freeExampleIds } from "@/lib/playground/examples";
 
 export const metadata: Metadata = {
-  title: "Free Shopify Liquid Playground - Preview 200+ Snippets & Sections",
+  title: "Shopify Liquid Codes - 200+ Free Snippets & Sections Library",
   description:
-    "Try 200+ original Shopify Liquid snippets and sections in the browser - inspect the code, preview the storefront output and tweak settings live. Free, no account needed.",
+    "Browse 200+ original Shopify Liquid codes - snippets and theme sections with live previews, copyable source and install guides. Free, no account needed.",
   alternates: { canonical: "/playground" },
   openGraph: {
-    title: "Free Shopify Liquid Playground - Preview 200+ Snippets & Sections",
-    description: "Live previews of 200+ Shopify Liquid snippets and sections. Inspect code, tweak settings, copy free samples.",
+    title: "Shopify Liquid Codes - 200+ Free Snippets & Sections",
+    description: "200+ Shopify Liquid codes with live previews. Inspect, customize and copy free samples - no account needed.",
   },
 };
 
@@ -28,10 +28,10 @@ export default async function PlaygroundPage({
   return (
     <>
       <PageHeader
-        eyebrow="Free playground"
-        title="Read the Liquid. See the storefront."
-        description="Original, working examples of Shopify sections and snippets. Inspect the code, preview the output, copy the files and adapt them for your own theme. No account needed."
-        crumbs={[{ label: "Playground" }]}
+        eyebrow="Shopify Liquid code library"
+        title="Shopify Liquid Codes"
+        description="Original, working Liquid codes for Shopify sections and snippets. Inspect the code, preview the output, copy the files and adapt them for your own theme. No account needed."
+        crumbs={[{ label: "Shopify Liquid Codes" }]}
       >
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <ButtonLink href="/library" variant="secondary">

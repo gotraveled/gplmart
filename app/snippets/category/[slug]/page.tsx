@@ -58,7 +58,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
     collectionJsonLd(items.map((e) => ({ name: e.name, url: `/snippets/${e.id}` }))),
     breadcrumbJsonLd([
       { name: "Home", url: "/" },
-      { name: "Snippets", url: "/snippets" },
+      { name: "Shopify Liquid codes", url: "/playground" },
       { name: cat.name, url: `/snippets/category/${slug}` },
     ]),
   );
@@ -71,7 +71,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         description={PITCH[cat.slug] ?? `${items.length} Liquid components with live previews and install guides.`}
         crumbs={[
           { label: "Home", href: "/" },
-          { label: "Snippets", href: "/snippets" },
+          { label: "Shopify Liquid codes", href: "/playground" },
           { label: cat.name },
         ]}
       />
@@ -105,7 +105,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
           ))}
         </ul>
         <p className="mt-8 text-sm text-subtle">
-          {items.length} components in this category - <Link href="/snippets" className="text-accent underline">browse all {examples.length} snippets</Link>
+          {items.length} components in this category - <Link href="/playground" className="text-accent underline">browse all {examples.length} in the playground</Link>
         </p>
       </Container>
     </>

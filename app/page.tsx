@@ -577,8 +577,8 @@ export default function HomePage() {
           ))}
         </div>
         <div className="mt-6 text-center">
-          <ButtonLink href="/snippets" variant="secondary">
-            Browse all {examples.length} snippets <ArrowRight aria-hidden className="size-4" />
+          <ButtonLink href="/playground" variant="secondary">
+            Browse all {examples.length} in the playground <ArrowRight aria-hidden className="size-4" />
           </ButtonLink>
         </div>
       </Section>

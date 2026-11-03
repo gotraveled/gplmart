@@ -172,6 +172,8 @@ export function Workbench({ initialId }: { initialId?: string }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ex?.id]);
 
+  const [category, setCategory] = useState<string>("all");
+
   const free = examples.filter((e) => freeExampleIds.has(e.id));
   const members = examples.filter((e) => !freeExampleIds.has(e.id));
   const categoryOrder = ["Product page", "Cart & checkout", "Trust & social proof", "Headers & navigation", "Content", "Marketing", "SEO & performance", "Utility"];
@@ -179,39 +181,87 @@ export function Workbench({ initialId }: { initialId?: string }) {
     ...categoryOrder.filter((c) => members.some((e) => e.category === c)),
     ...[...new Set(members.map((e) => e.category))].filter((c) => !categoryOrder.includes(c)),
   ];
+  const filtered = category === "all" ? null : examples.filter((e) => e.category === category);
   const grid = (
-    <div className="grid gap-10">
-      <section>
-        <h2 className="mb-4 flex items-baseline gap-3 font-display text-lg font-semibold">
-          Free samples - copy the code
-          <span className="text-sm font-normal text-subtle">{free.length}</span>
-        </h2>
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {free.map((e) => (
-            <li key={e.id}>
-              <Card ex={e} onPick={pick} />
-            </li>
-          ))}
-        </ul>
-      </section>
-      {categories.map((cat) => {
-        const items = members.filter((e) => e.category === cat);
-        return (
-          <section key={cat}>
-            <h2 className="mb-4 flex items-baseline gap-3 font-display text-lg font-semibold">
-              {cat}
-              <span className="text-sm font-normal text-subtle">{items.length}</span>
+    <div>
+      {/* Category filter */}
+      <div className="mb-10 flex flex-wrap gap-2" role="group" aria-label="Filter by category">
+        <button
+          type="button"
+          onClick={() => setCategory("all")}
+          aria-pressed={category === "all"}
+          className={cn(
+            "rounded-full border px-4 py-2 text-sm font-medium transition",
+            category === "all" ? "border-accent bg-accent text-ink-950" : "border-line-strong text-muted hover:border-accent/50 hover:text-fg",
+          )}
+        >
+          All {examples.length}
+        </button>
+        {categories.map((cat) => (
+          <button
+            key={cat}
+            type="button"
+            onClick={() => setCategory(cat)}
+            aria-pressed={category === cat}
+            className={cn(
+              "rounded-full border px-4 py-2 text-sm font-medium transition",
+              category === cat ? "border-accent bg-accent text-ink-950" : "border-line-strong text-muted hover:border-accent/50 hover:text-fg",
+            )}
+          >
+            {cat}
+          </button>
+        ))}
+      </div>
+
+      {filtered ? (
+        <section>
+          <h2 className="mb-5 flex items-baseline gap-3 font-display text-2xl font-semibold text-accent">
+            {category}
+            <span className="text-sm font-normal text-subtle">{filtered.length}</span>
+          </h2>
+          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {filtered.map((e) => (
+              <li key={e.id}>
+                <Card ex={e} onPick={pick} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : (
+        <div className="grid gap-10">
+          <section>
+            <h2 className="mb-5 flex items-baseline gap-3 font-display text-2xl font-semibold text-accent">
+              Free samples - copy the code
+              <span className="text-sm font-normal text-subtle">{free.length}</span>
             </h2>
-            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {items.map((e) => (
+            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {free.map((e) => (
                 <li key={e.id}>
                   <Card ex={e} onPick={pick} />
                 </li>
               ))}
             </ul>
           </section>
-        );
-      })}
+          {categories.map((cat) => {
+            const items = members.filter((e) => e.category === cat);
+            return (
+              <section key={cat}>
+                <h2 className="mb-5 flex items-baseline gap-3 font-display text-2xl font-semibold text-accent">
+                  {cat}
+                  <span className="text-sm font-normal text-subtle">{items.length}</span>
+                </h2>
+                <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {items.map((e) => (
+                    <li key={e.id}>
+                      <Card ex={e} onPick={pick} />
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 

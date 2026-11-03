@@ -43,13 +43,14 @@ export default async function SnippetPage({ params }: Params) {
   const free = freeExampleIds.has(ex.id);
   const files = ex.files(ex.defaults);
   const related = examples.filter((e) => e.category === ex.category && e.id !== ex.id).slice(0, 6);
+  const catSlug = ex.category.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
   const fileName = `${ex.id}.liquid`;
 
   const jsonLd = jsonLdPayload(
     codeJsonLd({ id: ex.id, name: ex.name, description: ex.description, kind: ex.kind, code: files.liquid }),
     breadcrumbJsonLd([
       { name: "Home", url: "/" },
-      { name: "Snippets", url: "/snippets" },
+      { name: ex.category, url: `/snippets/category/${catSlug}` },
       { name: ex.name, url: `/snippets/${ex.id}` },
     ]),
   );
@@ -62,7 +63,7 @@ export default async function SnippetPage({ params }: Params) {
         description={snippetHook(ex)}
         crumbs={[
           { label: "Home", href: "/" },
-          { label: "Snippets", href: "/snippets" },
+          { label: ex.category, href: `/snippets/category/${catSlug}` },
           { label: ex.name },
         ]}
       />
@@ -174,8 +175,8 @@ export default async function SnippetPage({ params }: Params) {
                     </li>
                   ))}
                 </ul>
-                <Link href="/snippets" className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-accent">
-                  Browse all {examples.length} snippets <ArrowRight aria-hidden className="size-3" />
+                <Link href={`/snippets/category/${catSlug}`} className="mt-3 inline-flex items-center gap-1 text-xs font-medium text-accent">
+                  All {ex.category.toLowerCase()} snippets <ArrowRight aria-hidden className="size-3" />
                 </Link>
               </div>
             )}

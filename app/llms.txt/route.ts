@@ -20,8 +20,8 @@ export function GET() {
     ``,
     `## Key pages`,
     `- Home: ${siteConfig.url}`,
-    `- Snippet library: ${siteConfig.url}/snippets`,
-    `- Live playground: ${siteConfig.url}/playground`,
+    `- Shopify Liquid codes (live playground): ${siteConfig.url}/playground`,
+    `- Snippet category pages: ${siteConfig.url}/snippets/category/product-page`,
     `- How it works: ${siteConfig.url}/how-it-works`,
     `- Install guide: ${siteConfig.url}/install`,
     `- Guides: ${siteConfig.url}/guides`,
@@ -35,7 +35,7 @@ export function GET() {
     `- India: Ramanashree Arcade, 18, Mahatma Gandhi Rd, Craig Park Layout, Ashok Nagar, Bengaluru, Karnataka 560001`,
     `- USA: Westwood Street, Hayward, California 94544`,
     ``,
-    `Free code samples: ${siteConfig.url}/snippets (examples marked Free show complete source)`,
+    `Free code samples: ${siteConfig.url}/playground (examples marked Free show complete source)`,
   ];
   return new Response(lines.join("\n"), {
     headers: { "Content-Type": "text/plain; charset=utf-8", "Cache-Control": "public, max-age=86400" },

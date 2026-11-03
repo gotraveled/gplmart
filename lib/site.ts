@@ -8,8 +8,8 @@ export const siteConfig = {
 } as const;
 
 export const mainNav = [
-  { href: "/snippets", label: "Snippets" },
-  { href: "/playground", label: "Playground" },
+  { href: "/playground", label: "Shopify Liquid Codes" },
+  { href: "/install", label: "Install guide" },
   { href: "/library", label: "Library" },
   { href: "/how-it-works", label: "How it works" },
   { href: "/faq", label: "FAQ" },
@@ -17,9 +17,8 @@ export const mainNav = [
 
 export const footerLinks = {
   GPLMart: [
-    { href: "/snippets", label: "Snippets" },
+    { href: "/playground", label: "Shopify Liquid codes" },
     { href: "/library", label: "Library" },
-    { href: "/playground", label: "Playground" },
     { href: "/prompts", label: "Free prompts" },
     { href: "/install", label: "Install guide" },
     { href: "/checkout", label: "Get access" },
