@@ -38,7 +38,7 @@ function loadScript(): Promise<boolean> {
 
 const messages: Record<string, string> = {
   invalid_details: "Please check your name, email and phone number.",
-  not_open: "Purchases are not open yet.",
+  not_open: "Checkout is unavailable right now - please try again shortly.",
   rate_limited: "Too many attempts. Please wait a few minutes.",
 };
 

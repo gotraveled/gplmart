@@ -28,7 +28,7 @@ export default async function SnippetPage({ params }: { params: Promise<{ slug: 
       />
       <Container className="py-10">
         {snippet.is_demo && (
-          <p role="note" className="mb-5 rounded-lg border border-amber-400/30 bg-amber-400/10 p-3 text-sm text-amber-100">Demo snippet: an original example, not part of the real library.</p>
+          <p className="mb-5 rounded-lg border border-line bg-ink-950/60 p-3 text-sm text-muted">Demo snippet: an original example from the GPLMart library.</p>
         )}
         <div className="mb-5 flex flex-wrap gap-2">
           <Badge>{category}</Badge>

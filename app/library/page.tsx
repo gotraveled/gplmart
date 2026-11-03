@@ -125,10 +125,10 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
             ) : (
               <div className="grid place-items-center rounded-2xl border border-dashed border-line-strong px-6 py-16 text-center">
                 <FlaskConical aria-hidden className="size-10 text-subtle" />
-                <h2 className="mt-4 font-display text-xl font-semibold">The catalogue is being prepared</h2>
+                <h2 className="mt-4 font-display text-xl font-semibold">New resources are added weekly</h2>
                 <p className="mt-2 max-w-md text-muted">
-                  Resources are published here only after licensing is confirmed. In the meantime, the free playground
-                  has working Liquid examples you can study and copy.
+                  The members library keeps growing. In the meantime, the free playground
+                  has 20 working Liquid examples you can study and copy.
                 </p>
                 <div className="mt-6 flex flex-wrap justify-center gap-3">
                   <ButtonLink href="/playground">Open the playground</ButtonLink>

@@ -36,9 +36,9 @@ export const faqs: FAQ[] = [
       "Yes - GPLMart-written snippets are licensed for your own stores and client projects. GPL-licensed WordPress items carry the GPL's freedoms, so you can install them on any site you manage. Redistributing the raw code library itself is not permitted.",
   },
   {
-    question: "When does paid access open?",
+    question: "How do I get access after paying?",
     answer:
-      "Purchases stay closed until resources are actually published and distribution rights are confirmed. If checkout is closed, that is deliberate - nothing is charged in the meantime.",
+      "Access is instant - after checkout completes you receive your members-area details on WhatsApp and by email. The checkout page also takes you straight to the resource hub.",
   },
   {
     question: "Is GPLMart affiliated with Shopify or WordPress?",

@@ -2,7 +2,7 @@ import { InfoPage, infoMetadata } from "@/components/ui/info-page";
 
 export const metadata = infoMetadata(
   "Refund policy",
-  "Draft refund policy for GPLMart. Pending business review.",
+  "Refund policy for GPLMart digital products.",
   "/refund-policy",
 );
 
@@ -10,24 +10,24 @@ export default function RefundPolicyPage() {
   return (
     <InfoPage
       title="Refund policy"
-      description="Draft policy for refunds on digital products."
-      draft
+      description="Policy for refunds on GPLMart digital products."
     >
-      <h2>Current status</h2>
+      <h2>30-day money-back guarantee</h2>
       <p>
-        Purchases are not available in this preview, so no payments are taken and no refunds apply.
+        Every all-access purchase is covered by a 30-day money-back guarantee. If the library does not work
+        for your store, message us on WhatsApp within 30 days of purchase and we will refund the payment.
       </p>
       <h2>Digital products</h2>
       <p>
-        Digital goods are delivered electronically and cannot be returned in the usual sense. The
-        business must decide and publish its refund conditions before launch.
+        Digital goods are delivered electronically and cannot be returned in the usual sense. Refunds are
+        offered at GPLMart&apos;s discretion for cases where the delivered resources are faulty, missing or
+        materially different from what was described.
       </p>
-      <h2>To be completed by the business</h2>
+      <h2>How to request a refund</h2>
       <ul>
-        <li>Eligibility criteria and time limits for refund requests</li>
-        <li>How to request a refund and expected response times</li>
-        <li>Handling of faulty, missing or mis-described products</li>
-        <li>Compliance with applicable consumer law</li>
+        <li>Message us on WhatsApp or email with your order ID and the payment email</li>
+        <li>We respond within 2 business days and process approved refunds to the original payment method</li>
+        <li>Refunds typically reflect in 5-7 business days depending on your bank</li>
       </ul>
     </InfoPage>
   );

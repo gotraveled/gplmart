@@ -31,7 +31,7 @@ export function Footer() {
       <div className="border-t border-line">
         <Container className="flex flex-col gap-2 py-6 text-xs text-subtle sm:flex-row sm:justify-between">
           <p>&copy; {new Date().getFullYear()} GPLMart. All rights reserved.</p>
-          <p>Policies are drafts pending business review.</p>
+          <p>Made for Shopify merchants and creators.</p>
         </Container>
       </div>
     </footer>

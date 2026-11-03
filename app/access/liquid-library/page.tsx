@@ -31,8 +31,8 @@ export default async function LibraryPage({ searchParams }: { searchParams: Prom
       />
       <Container className="py-10">
         {all.some((s) => s.is_demo) && (
-          <p role="note" className="mb-6 rounded-lg border border-amber-400/30 bg-amber-400/10 p-3 text-sm text-amber-100">
-            <strong>Demo content.</strong> Items marked &quot;Demo&quot; are small original examples for testing this library. They are not the full code library.
+          <p className="mb-6 rounded-lg border border-line bg-ink-950/60 p-3 text-sm text-muted">
+            Items marked &quot;Demo&quot; are small original examples - the full code library is being added.
           </p>
         )}
         <form role="search" action="/access/liquid-library" className="flex gap-3">

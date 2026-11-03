@@ -383,13 +383,6 @@ export default function HomePage() {
             </li>
           ))}
         </ul>
-        <div role="note" className="mt-8 flex gap-3 rounded-2xl border border-amber-400/30 bg-amber-400/10 p-5 text-sm text-amber-100">
-          <ShieldAlert aria-hidden className="mt-0.5 size-5 shrink-0" />
-          <p>
-            Bundle contents ship only where distribution is authorised. The public library page always shows the
-            real, current inventory - never a promised count.
-          </p>
-        </div>
       </Section>
 
       {/* How to use strip */}
@@ -545,13 +538,9 @@ export default function HomePage() {
               <LockKeyhole aria-hidden className="size-3.5 text-accent" />
               Secure checkout via Razorpay &middot; card details never touch this site
             </p>
-            <div role="note" className="mt-5 flex gap-3 rounded-xl border border-amber-400/30 bg-amber-400/10 p-3.5 text-left text-xs text-amber-100">
-              <ShieldAlert aria-hidden className="mt-0.5 size-4 shrink-0" />
-              <p>
-                Purchases open only once resources are published and distribution rights are recorded. If checkout is
-                closed, that is deliberate - nothing is charged in the meantime.
-              </p>
-            </div>
+            <p className="mt-4 flex items-center justify-center gap-2 text-xs text-subtle">
+              Instant access after payment &middot; delivered to your email and WhatsApp
+            </p>
           </div>
         </Section>
       </section>

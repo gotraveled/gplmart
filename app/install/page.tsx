@@ -137,7 +137,7 @@ export default function InstallPage() {
         ))}
       </ol>
 
-      <div className="not-prose mt-10 flex items-start gap-3 rounded-xl border border-amber-400/30 bg-amber-400/10 p-4 text-sm text-amber-100">
+      <div className="not-prose mt-10 flex items-start gap-3 rounded-xl border border-line bg-ink-900/60 p-4 text-sm text-muted">
         <Package aria-hidden className="mt-0.5 size-5 shrink-0" />
         <p>
           Stuck mid-install? The library item&apos;s install notes cover its specific quirks, and members can reach

@@ -9,12 +9,10 @@ export function infoMetadata(title: string, description: string, path: string): 
 export function InfoPage({
   title,
   description,
-  draft = false,
   children,
 }: {
   title: string;
   description: string;
-  draft?: boolean;
   children: React.ReactNode;
 }) {
   return (
@@ -24,7 +22,7 @@ export function InfoPage({
         description={description}
         crumbs={[{ label: "Home", href: "/" }, { label: title }]}
       />
-      <Prose draft={draft}>{children}</Prose>
+      <Prose>{children}</Prose>
     </>
   );
 }

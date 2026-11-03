@@ -8,7 +8,7 @@ export const metadata = infoMetadata(
 
 export default function DisclaimerPage() {
   return (
-    <InfoPage title="Disclaimer" description="What GPLMart is - and what it is not." draft>
+    <InfoPage title="Disclaimer" description="What GPLMart is - and what it is not.">
       <h2>No affiliation</h2>
       <p>
         GPLMart is an independent resource site. It is not affiliated with, endorsed by or sponsored by Shopify

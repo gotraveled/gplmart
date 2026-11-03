@@ -8,7 +8,7 @@ export const metadata = infoMetadata(
 
 export default function CopyrightPage() {
   return (
-    <InfoPage title="Copyright & takedowns" description="Our approach to intellectual property - and how to report a concern." draft>
+    <InfoPage title="Copyright & takedowns" description="Our approach to intellectual property - and how to report a concern.">
       <h2>Our commitment</h2>
       <p>
         GPLMart only publishes or distributes resources where it holds the rights - original content created for

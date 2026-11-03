@@ -51,8 +51,8 @@ export default async function TemplatesPage() {
                 </ButtonLink>
               </>
             ) : (
-              <p role="status" className="text-sm text-amber-200">
-                The Drive link has not been configured yet. Please check back soon.
+              <p className="text-sm text-muted">
+                The Drive link is being finalised - message us on WhatsApp and we will send it directly.
               </p>
             )}
           </div>
@@ -90,7 +90,7 @@ export default async function TemplatesPage() {
                       className={
                         i.status === "live"
                           ? "border-mint/40 bg-mint/10 text-mint"
-                          : "border-amber-400/40 bg-amber-400/10 text-amber-200"
+                          : "border-line-strong text-subtle"
                       }
                     >
                       {i.status === "live" ? "In bundle" : "Sourcing"}

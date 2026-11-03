@@ -2,13 +2,13 @@ import { InfoPage, infoMetadata } from "@/components/ui/info-page";
 
 export const metadata = infoMetadata(
   "Licensing",
-  "Draft licensing information for GPLMart all-access resources. Pending business review.",
+  "Licensing information for GPLMart all-access resources.",
   "/licensing",
 );
 
 export default function LicensingPage() {
   return (
-    <InfoPage title="Licensing" description="How licensing applies to GPLMart all-access resources." draft>
+    <InfoPage title="Licensing" description="How licensing applies to GPLMart all-access resources.">
       <h2>Your access is personal</h2>
       <p>
         All-access membership is linked to your account. Do not assume it lets you redistribute, resell or
@@ -49,12 +49,6 @@ export default function LicensingPage() {
       </p>
       <h2>Release of content</h2>
       <p>Resources are made available only after the owner has recorded evidence of the right to distribute them.</p>
-      <h2>To be completed by the business</h2>
-      <ul>
-        <li>Permitted and prohibited uses, including client projects</li>
-        <li>Redistribution and resale rules for GPLMart-original content</li>
-        <li>Per-product licence notes where they differ from the general terms</li>
-      </ul>
     </InfoPage>
   );
 }
