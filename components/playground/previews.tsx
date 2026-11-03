@@ -2748,6 +2748,213 @@ function A11yToolbar() {
   );
 }
 
+function PreorderButton({ v }: P) {
+  return (
+    <div className="p-4">
+      <button type="button" className="w-full rounded-xl bg-neutral-900 py-2.5 text-xs font-extrabold text-white">{str(v, "label") || "Pre-order"} - ships {str(v, "date") || "soon"}</button>
+      <p className="m-0 mt-1.5 text-[0.6rem] text-neutral-400">Pay now, ships on {str(v, "date")}. Cancel anytime before dispatch.</p>
+    </div>
+  );
+}
+
+function PredictiveSearch({ v }: P) {
+  const [q, setQ] = useState("");
+  const items: [string, string][] = [["Linen overshirt", "#e0e7ff"], ["Cotton chinos", "#fbcfe8"], ["Canvas tote", "#bbf7d0"], ["Linen shirt", "#fde68a"], ["Denim jacket", "#e0e7ff"]];
+  const hits = items.filter(([n]) => !q || n.toLowerCase().includes(q.toLowerCase())).slice(0, Number(str(v, "limit")) || 5);
+  return (
+    <div className="relative p-4">
+      <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder={str(v, "placeholder") || "Search…"} className="w-full rounded-full border border-neutral-300 px-4 py-2.5 text-[0.78rem] outline-none" />
+      {q.length >= 2 && (
+        <div className="absolute inset-x-4 top-full z-10 mt-1 overflow-hidden rounded-xl border border-neutral-200 bg-white shadow-lg">
+          {hits.map(([n = "", c]) => (
+            <a key={n} href="#" className="flex items-center gap-2.5 px-3 py-2 text-[0.72rem] hover:bg-neutral-50">
+              <span className="size-8 rounded-md" style={{ background: c }} />
+              {n}
+            </a>
+          ))}
+          {!hits.length && <p className="p-3 text-center text-[0.65rem] text-neutral-400">No matches</p>}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ReviewSubmitForm({ v }: P) {
+  const [stars, setStars] = useState(0);
+  const [sent, setSent] = useState(false);
+  return (
+    <div className="m-4 rounded-xl border border-neutral-200 p-4">
+      <p className="m-0 mb-2 text-[0.78rem] font-extrabold">{str(v, "heading") || "Share your experience"}</p>
+      <div className="mb-2.5 flex gap-1">
+        {[1, 2, 3, 4, 5].map((n) => (
+          <button key={n} type="button" onClick={() => setStars(n)} className={`p-0 text-xl ${n <= stars ? "text-amber-500" : "text-neutral-300"}`}>&#9733;</button>
+        ))}
+      </div>
+      {sent ? (
+        <p className="m-0 text-[0.72rem] font-bold text-emerald-600">Thanks - review received</p>
+      ) : (
+        <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="grid gap-2">
+          <input required placeholder="Your name" className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.7rem] outline-none" />
+          <textarea required rows={2} placeholder="What did you think?" className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.7rem] outline-none" />
+          <button type="submit" className="w-fit rounded-lg bg-neutral-900 px-4 py-1.5 text-[0.65rem] font-bold text-white">Submit review</button>
+        </form>
+      )}
+    </div>
+  );
+}
+
+function AskQuestion({ v }: P) {
+  const [sent, setSent] = useState(false);
+  return (
+    <div className="m-4 rounded-lg border border-neutral-200 p-3.5">
+      <p className="m-0 mb-2 text-[0.7rem] font-bold">{str(v, "heading") || "Have a question?"}</p>
+      {sent ? (
+        <p className="m-0 text-[0.68rem] font-bold text-emerald-600">Question sent - we&apos;ll email the answer</p>
+      ) : (
+        <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="grid gap-1.5">
+          <input required type="email" placeholder="Your email" className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.68rem] outline-none" />
+          <input required placeholder="Ask about this product" className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.68rem] outline-none" />
+          <button type="submit" className="w-fit rounded-lg bg-neutral-900 px-3.5 py-1.5 text-[0.62rem] font-bold text-white">Ask</button>
+        </form>
+      )}
+    </div>
+  );
+}
+
+function ModelInfo({ v }: P) {
+  return (
+    <div className="flex items-center gap-1.5 p-4 text-[0.68rem] text-neutral-600">
+      <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      {str(v, "text") || "Model info"}
+    </div>
+  );
+}
+
+function SimilarProducts({ v }: P) {
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2.5 text-[0.72rem] font-extrabold">{str(v, "heading") || "Similar styles"}</p>
+      <div className="grid grid-cols-4 gap-2 max-sm:grid-cols-2">
+        {["Alt 1", "Alt 2", "Alt 3", "Alt 4"].map((t, i) => (
+          <div key={t}>
+            <div className="aspect-square rounded-lg" style={{ background: `linear-gradient(${135 + i * 50}deg,#e0e7ff,#fbcfe8)` }} />
+            <p className="m-0 mt-1 text-[0.62rem] font-semibold">{t}</p>
+            <p className="m-0 text-[0.55rem] text-neutral-400">₹{1499 + i * 200}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function PrepaidDiscount({ v }: P) {
+  return (
+    <div className="m-4 flex items-start gap-2.5 rounded-lg bg-emerald-50 p-3">
+      <svg className="mt-0.5 size-4 shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+      <div>
+        <p className="m-0 text-[0.7rem] font-bold">Pay online - save {str(v, "pct") || "5"}% extra</p>
+        <p className="m-0 mt-0.5 text-[0.6rem] text-neutral-500">{str(v, "codfee")}</p>
+      </div>
+    </div>
+  );
+}
+
+function CompatibilityChecker({ v }: P) {
+  const [sel, setSel] = useState("");
+  const opts = str(v, "options").split(",").map((s) => s.trim()).filter(Boolean).slice(0, 6);
+  return (
+    <div className="p-4">
+      <label className="mb-1.5 block text-[0.68rem] font-semibold">{str(v, "label") || "Check compatibility"}</label>
+      <select value={sel} onChange={(e) => setSel(e.target.value)} className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-[0.72rem] outline-none">
+        <option value="">Select model…</option>
+        {opts.map((o) => <option key={o}>{o}</option>)}
+      </select>
+      {sel && <p className="m-0 mt-1.5 text-[0.65rem] font-bold text-emerald-600">Fits {sel} - you&apos;re good to go</p>}
+    </div>
+  );
+}
+
+function FileUpload({ v }: P) {
+  const [file, setFile] = useState("");
+  return (
+    <div className="p-4">
+      <label className="mb-1.5 block text-[0.68rem] font-semibold">{str(v, "label") || "Upload your file"}</label>
+      <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-neutral-300 p-3 text-[0.68rem] text-neutral-500">
+        <span className="rounded-md border border-neutral-300 px-2.5 py-1 font-semibold">Choose file</span>
+        {file || "No file chosen"}
+        <input type="file" accept="image/*" className="hidden" onChange={(e) => setFile(e.target.files?.[0]?.name ?? "")} />
+      </label>
+      <p className="m-0 mt-1 text-[0.55rem] text-neutral-400">JPG/PNG, max 20MB - prints exactly as uploaded</p>
+    </div>
+  );
+}
+
+function NutritionFacts({ v }: P) {
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 6);
+  return (
+    <div className="m-4 rounded border-2 border-neutral-900 p-3 text-[0.7rem]">
+      <p className="m-0 border-b-4 border-neutral-900 pb-1 text-base font-black">Nutrition Facts</p>
+      <p className="m-0 border-b-2 border-neutral-900 py-1 text-[0.6rem]">Serving size: {str(v, "serving")}</p>
+      {rows.map((r) => {
+        const [n, val, dv] = r.split("|").map((s) => s.trim());
+        return (
+          <div key={r} className="flex gap-2 border-b border-neutral-200 py-1">
+            <b className="flex-1">{n}</b>
+            <span>{val}</span>
+            {dv && <span className="font-bold">{dv}%</span>}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function RestockDate({ v }: P) {
+  return (
+    <div className="flex items-center gap-1.5 p-4 text-[0.7rem] text-neutral-600">
+      <svg className="size-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+      Restocking <b>{str(v, "date") || "soon"}</b> - join the waitlist
+    </div>
+  );
+}
+
+function PriceMatch({ v }: P) {
+  return (
+    <div className="flex items-center gap-1.5 p-4 text-[0.7rem] text-neutral-600">
+      <svg className="size-3.5 shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      {str(v, "text") || "Found it cheaper? We'll match it"}
+    </div>
+  );
+}
+
+function LoyaltyTiers({ v }: P) {
+  const cur = Number(str(v, "current")) || 0;
+  const needed = Number(str(v, "needed")) || 1;
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2 text-[0.7rem]">You&apos;re <b>₹{needed - cur}</b> away from <b>{str(v, "next") || "Gold"}</b></p>
+      <div className="h-1.5 overflow-hidden rounded-full bg-neutral-200">
+        <div className="h-full rounded-full bg-amber-500" style={{ width: `${Math.min(100, (cur / needed) * 100)}%` }} />
+      </div>
+      <div className="mt-1 flex justify-between text-[0.55rem] text-neutral-400">
+        <span>Bronze</span><span>Silver</span><span>{str(v, "next") || "Gold"}</span>
+      </div>
+    </div>
+  );
+}
+
+function CollectionFilters({ v }: P) {
+  const [active, setActive] = useState("");
+  const tags = str(v, "tags").split(",").map((s) => s.trim()).filter(Boolean).slice(0, 6);
+  return (
+    <div className="flex flex-wrap gap-2 p-4">
+      {tags.map((t) => (
+        <button key={t} type="button" onClick={() => setActive(t === active ? "" : t)} className={`rounded-full border px-3 py-1.5 text-[0.65rem] font-semibold ${active === t ? "border-transparent bg-neutral-900 text-white" : "border-neutral-300"}`}>{t}</button>
+      ))}
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -2881,6 +3088,20 @@ const map: Record<string, (p: P) => ReactNode> = {
   "referral-card": ReferralCard,
   "donation-checkbox": DonationCheckbox,
   "a11y-toolbar": A11yToolbar,
+  "preorder-button": PreorderButton,
+  "predictive-search": PredictiveSearch,
+  "review-submit-form": ReviewSubmitForm,
+  "ask-question": AskQuestion,
+  "model-info": ModelInfo,
+  "similar-products": SimilarProducts,
+  "prepaid-discount": PrepaidDiscount,
+  "compatibility-checker": CompatibilityChecker,
+  "file-upload": FileUpload,
+  "nutrition-facts": NutritionFacts,
+  "restock-date": RestockDate,
+  "price-match": PriceMatch,
+  "loyalty-tiers": LoyaltyTiers,
+  "collection-filters": CollectionFilters,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {

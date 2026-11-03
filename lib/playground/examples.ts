@@ -8094,6 +8094,532 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
       usage: `{% render 'a11y-toolbar' %}`,
     }),
   },
+  {
+    id: "preorder-button",
+    name: "Pre-order button",
+    description: "Switches the buy button to 'Pre-order - ships X' for made-to-order and upcoming drops.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "date", label: "Ship date", type: "text", maxLength: 30 },
+      { id: "label", label: "Button label", type: "text", maxLength: 30 },
+    ],
+    defaults: { date: "March 15", label: "Pre-order now" },
+    install: [
+      ...snippetSteps("preorder-button.liquid"),
+      "Show when inventory is 0 but you're taking orders - the date is a real promise, keep it honest.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-pre">
+  <button type="button" class="gpl-pre__btn" data-preorder data-vid="{{ product.selected_or_first_available_variant.id }}" data-date="{{ date | default: '' }}">
+    {{ label | default: 'Pre-order' }} - ships {{ date | default: 'soon' }}
+  </button>
+  <p class="gpl-pre__note">Pay now, ships on {{ date | default: 'release day' }}. Cancel anytime before dispatch.</p>
+</div>`,
+      css: `.gpl-pre { margin: 0.75rem 0; }
+.gpl-pre__btn {
+  width: 100%;
+  padding: 0.85rem;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.gpl-pre__note { margin: 0.4rem 0 0; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+      js: `document.querySelectorAll('[data-preorder]').forEach((btn) => {
+  btn.addEventListener('click', async () => {
+    await fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: [{ id: Number(btn.dataset.vid), quantity: 1, properties: { 'Pre-order': 'Ships ' + btn.dataset.date } }] }),
+    });
+    window.location.href = '/cart';
+  });
+});`,
+      usage: `{% render 'preorder-button', product: product, date: ${js(str(v, "date"))}, label: ${js(str(v, "label"))} %}`,
+    }),
+  },
+  {
+    id: "predictive-search",
+    name: "Predictive search",
+    description: "Live product suggestions as you type - powered by Shopify's real /search/suggest.json endpoint.",
+    category: "Headers & navigation",
+    kind: "snippet",
+    controls: [
+      { id: "placeholder", label: "Placeholder", type: "text", maxLength: 40 },
+      { id: "limit", label: "Max results", type: "text", maxLength: 2 },
+    ],
+    defaults: { placeholder: "Search products…", limit: "5" },
+    install: [
+      ...snippetSteps("predictive-search.liquid"),
+      "Render in the header or search section - hits Shopify's native suggest endpoint, no app needed.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-search2 class="gpl-ps" data-limit="{{ limit | default: 5 }}">
+  <input type="search" class="gpl-ps__input" placeholder="{{ placeholder | default: 'Search products…' }}" data-input autocomplete="off" aria-label="Search">
+  <div class="gpl-ps__drop" hidden data-drop></div>
+</gpl-search2>`,
+      css: `.gpl-ps { position: relative; display: block; }
+.gpl-ps__input {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 0.85rem;
+}
+.gpl-ps__drop {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  z-index: 30;
+  margin-top: 0.4rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2);
+  border-radius: 12px;
+  background: rgb(var(--color-background, 255 255 255));
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.12);
+  overflow: hidden;
+}
+.gpl-ps__item { display: flex; align-items: center; gap: 0.7rem; padding: 0.6rem 0.9rem; text-decoration: none; color: inherit; font-size: 0.78rem; }
+.gpl-ps__item:hover { background: rgb(var(--color-foreground, 148 163 184) / 0.06); }
+.gpl-ps__thumb { width: 2.2rem; height: 2.2rem; border-radius: 6px; object-fit: cover; }
+.gpl-ps__none { padding: 0.8rem; text-align: center; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+      js: `document.querySelectorAll('gpl-search2').forEach((el) => {
+  const input = el.querySelector('[data-input]');
+  const drop = el.querySelector('[data-drop]');
+  let t;
+  input.addEventListener('input', () => {
+    clearTimeout(t);
+    const q = input.value.trim();
+    if (q.length < 2) { drop.hidden = true; return; }
+    t = setTimeout(async () => {
+      const res = await fetch('/search/suggest.json?q=' + encodeURIComponent(q) + '&resources[type]=product&resources[limit]=' + (el.dataset.limit || 5)).then((r) => r.json());
+      const ps = res.resources.results.products;
+      drop.innerHTML = ps.length
+        ? ps.map((p) => '<a class="gpl-ps__item" href="' + p.url + '"><img class="gpl-ps__thumb" src="' + (p.image || '') + '" alt="">' + p.title + '</a>').join('')
+        : '<p class="gpl-ps__none">No matches - try different words</p>';
+      drop.hidden = false;
+    }, 220);
+  });
+  document.addEventListener('click', (e) => { if (!el.contains(e.target)) drop.hidden = true; });
+});`,
+      usage: `{% render 'predictive-search', placeholder: ${js(str(v, "placeholder"))}, limit: ${js(str(v, "limit"))} %}`,
+    }),
+  },
+  {
+    id: "review-submit-form",
+    name: "Write a review form",
+    description: "Star picker + review text that posts as a contact form tagged 'review' - collects feedback without an app.",
+    category: "Trust & social proof",
+    kind: "snippet",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+    ],
+    defaults: { heading: "Share your experience" },
+    install: [
+      ...snippetSteps("review-submit-form.liquid"),
+      "Submissions arrive as contact messages tagged 'review' - publish the good ones yourself or wire to a review app.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-revform class="gpl-rf">
+  <p class="gpl-rf__heading">{{ heading | default: 'Share your experience' }}</p>
+  <div class="gpl-rf__stars" data-stars>
+    {%- for i in (1..5) -%}
+      <button type="button" data-star="{{ i }}" aria-label="{{ i }} stars">&#9733;</button>
+    {%- endfor -%}
+  </div>
+  {%- form 'contact', class: 'gpl-rf__form' -%}
+    <input type="hidden" name="contact[tags]" value="review-{{ product.handle }}">
+    <input type="hidden" name="contact[rating]" value="" data-rating>
+    <input type="text" name="contact[name]" placeholder="Your name" required>
+    <textarea name="contact[body]" rows="3" placeholder="What did you think?" required></textarea>
+    <button type="submit">Submit review</button>
+  {%- endform -%}
+</gpl-revform>`,
+      css: `.gpl-rf { display: block; margin: 1rem 0; padding: 1rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2); border-radius: 12px; }
+.gpl-rf__heading { margin: 0 0 0.75rem; font-size: 0.85rem; font-weight: 800; }
+.gpl-rf__stars { display: flex; gap: 0.25rem; margin-bottom: 0.75rem; }
+.gpl-rf__stars button { border: 0; background: none; font-size: 1.3rem; cursor: pointer; color: rgb(var(--color-foreground, 148 163 184) / 0.3); padding: 0; }
+.gpl-rf__stars button.is-on { color: rgb(var(--color-button, 245 158 11)); }
+.gpl-rf__form { display: grid; gap: 0.5rem; }
+.gpl-rf__form input[type="text"], .gpl-rf__form textarea { padding: 0.6rem 0.8rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 8px; font: inherit; font-size: 0.78rem; }
+.gpl-rf__form button[type="submit"] { padding: 0.65rem 1.25rem; border: 0; border-radius: 8px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-weight: 700; font-size: 0.75rem; cursor: pointer; justify-self: start; }`,
+      js: `document.querySelectorAll('gpl-revform').forEach((el) => {
+  const stars = [...el.querySelectorAll('[data-star]')];
+  const input = el.querySelector('[data-rating]');
+  stars.forEach((s) => s.addEventListener('click', () => {
+    const n = Number(s.dataset.star);
+    input.value = n;
+    stars.forEach((x) => x.classList.toggle('is-on', Number(x.dataset.star) <= n));
+  }));
+});`,
+      usage: `{% render 'review-submit-form', product: product, heading: ${js(str(v, "heading"))} %}`,
+    }),
+  },
+  {
+    id: "ask-question",
+    name: "Ask a question box",
+    description: "Amazon-style 'have a question?' box - question arrives as a contact message with the product tagged.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 40 },
+    ],
+    defaults: { heading: "Have a question?" },
+    install: snippetSteps("ask-question.liquid"),
+    files: (v) => ({
+      liquid: `<div class="gpl-ask">
+  <p class="gpl-ask__heading">{{ heading | default: 'Have a question?' }}</p>
+  {%- form 'contact', class: 'gpl-ask__form' -%}
+    <input type="hidden" name="contact[tags]" value="question-{{ product.handle }}">
+    <input type="email" name="contact[email]" placeholder="Your email" required>
+    <input type="text" name="contact[body]" placeholder="Ask about {{ product.title }}" required>
+    <button type="submit">Ask</button>
+  {%- endform -%}
+</div>`,
+      css: `.gpl-ask { margin: 1rem 0; padding: 0.9rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2); border-radius: 10px; }
+.gpl-ask__heading { margin: 0 0 0.6rem; font-size: 0.75rem; font-weight: 700; }
+.gpl-ask__form { display: grid; gap: 0.5rem; }
+.gpl-ask__form input { padding: 0.55rem 0.75rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 8px; font-size: 0.78rem; }
+.gpl-ask__form button { padding: 0.6rem 1.25rem; border: 0; border-radius: 8px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-weight: 700; font-size: 0.72rem; cursor: pointer; justify-self: start; }`,
+      usage: `{% render 'ask-question', product: product, heading: ${js(str(v, "heading"))} %}`,
+    }),
+  },
+  {
+    id: "model-info",
+    name: "Model size info",
+    description: "'Model is 5\'9\" and wears M' - the two-line context every fashion PDP needs under the size picker.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "text", label: "Model info", type: "text", maxLength: 80 },
+    ],
+    defaults: { text: "Model is 5'9\" and wears size M" },
+    install: [
+      ...snippetSteps("model-info.liquid"),
+      "Update per shoot - wrong model info generates size-related returns.",
+    ],
+    files: (v) => ({
+      liquid: `<p class="gpl-model">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  {{ text | default: 'Model info' }}
+</p>`,
+      css: `.gpl-model { display: flex; align-items: center; gap: 0.45rem; margin: 0.4rem 0; font-size: 0.7rem; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
+.gpl-model svg { width: 0.85rem; height: 0.85rem; }`,
+      usage: `{% render 'model-info', text: ${js(str(v, "text"))} %}`,
+    }),
+  },
+  {
+    id: "similar-products",
+    name: "Sold out - similar items",
+    description: "When a product is unavailable, show 4 related picks instead of a dead end - recovers the sale.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+    ],
+    defaults: { heading: "Sold out - similar styles" },
+    install: [
+      ...snippetSteps("similar-products.liquid"),
+      "Render on the PDP - it only shows when the product is unavailable.",
+    ],
+    files: (v) => ({
+      liquid: `{%- unless product.available -%}
+<div class="gpl-sim">
+  <p class="gpl-sim__heading">{{ heading | default: 'Similar styles' }}</p>
+  <div class="gpl-sim__grid">
+    {%- for p in product.collections.first.products limit: 5 -%}
+      {%- if p.id != product.id and p.available -%}
+        <a class="gpl-sim__card" href="{{ p.url }}">
+          {{ p.featured_image | image_url: width: 300 | image_tag: class: 'gpl-sim__img', loading: 'lazy' }}
+          <span class="gpl-sim__title">{{ p.title }}</span>
+          <span class="gpl-sim__price">{{ p.price | money }}</span>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>
+{%- endunless -%}`,
+      css: `.gpl-sim { margin: 1rem 0; }
+.gpl-sim__heading { margin: 0 0 0.75rem; font-size: 0.8rem; font-weight: 800; }
+.gpl-sim__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.7rem; }
+@media (max-width: 640px) { .gpl-sim__grid { grid-template-columns: repeat(2, 1fr); } }
+.gpl-sim__card { text-decoration: none; color: inherit; }
+.gpl-sim__img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 9px; display: block; }
+.gpl-sim__title { display: block; margin-top: 0.4rem; font-size: 0.68rem; font-weight: 600; }
+.gpl-sim__price { display: block; font-size: 0.62rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+      usage: `{% render 'similar-products', product: product, heading: ${js(str(v, "heading"))} %}`,
+    }),
+  },
+  {
+    id: "prepaid-discount",
+    name: "Prepaid savings note",
+    description: "'Pay online, save X% + skip COD fee' - the nudge that shifts Indian shoppers off COD.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "pct", label: "Discount %", type: "text", maxLength: 3 },
+      { id: "codfee", label: "COD fee text", type: "text", maxLength: 40 },
+    ],
+    defaults: { pct: "5", codfee: "COD orders have a ₹49 handling fee" },
+    install: [
+      ...snippetSteps("prepaid-discount.liquid"),
+      "The discount must exist - set up a payment-method discount in Shopify admin first.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-prepaid">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+  <div>
+    <p class="gpl-prepaid__title">Pay online - save {{ pct | default: '5' }}% extra</p>
+    {%- if codfee != blank -%}
+      <p class="gpl-prepaid__sub">{{ codfee }}</p>
+    {%- endif -%}
+  </div>
+</div>`,
+      css: `.gpl-prepaid { display: flex; align-items: flex-start; gap: 0.6rem; margin: 0.75rem 0; padding: 0.8rem; border-radius: 10px; background: rgb(var(--color-button, 21 128 61) / 0.07); }
+.gpl-prepaid svg { width: 1rem; height: 1rem; color: #16a34a; margin-top: 0.1rem; flex-shrink: 0; }
+.gpl-prepaid__title { margin: 0; font-size: 0.75rem; font-weight: 700; }
+.gpl-prepaid__sub { margin: 0.2rem 0 0; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+      usage: `{% render 'prepaid-discount', pct: ${js(str(v, "pct"))}, codfee: ${js(str(v, "codfee"))} %}`,
+    }),
+  },
+  {
+    id: "compatibility-checker",
+    name: "Compatibility checker",
+    description: "'Does it fit?' - pick your device/vehicle/model and confirm fit before buying. Big for cases, parts, accessories.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "label", label: "Selector label", type: "text", maxLength: 40 },
+      { id: "options", label: "Compatible models (comma separated)", type: "text", maxLength: 200 },
+    ],
+    defaults: { label: "Check your device", options: "iPhone 15, iPhone 14, iPhone 13, Galaxy S24, Pixel 8" },
+    install: [
+      ...snippetSteps("compatibility-checker.liquid"),
+      "List every model the product actually fits - a wrong 'fits' is a guaranteed return.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-compat class="gpl-compat">
+  <label class="gpl-compat__label" for="gpl-compat-sel">{{ label | default: 'Check compatibility' }}</label>
+  <select id="gpl-compat-sel" class="gpl-compat__sel" data-sel>
+    <option value="">Select model…</option>
+    {%- assign opts = options | split: ',' -%}
+    {%- for o in opts -%}
+      <option>{{ o | strip }}</option>
+    {%- endfor -%}
+  </select>
+  <p class="gpl-compat__result" hidden data-result></p>
+</gpl-compat>`,
+      css: `.gpl-compat { margin: 0.75rem 0; }
+.gpl-compat__label { display: block; font-size: 0.72rem; font-weight: 600; margin-bottom: 0.4rem; }
+.gpl-compat__sel { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 9px; background: transparent; font-size: 0.8rem; }
+.gpl-compat__result { margin: 0.5rem 0 0; font-size: 0.72rem; font-weight: 700; color: #16a34a; }`,
+      js: `document.querySelectorAll('gpl-compat').forEach((el) => {
+  const sel = el.querySelector('[data-sel]');
+  const res = el.querySelector('[data-result]');
+  sel.addEventListener('change', () => {
+    if (sel.value) {
+      res.textContent = 'Fits ' + sel.value + ' - you\\'re good to go';
+      res.hidden = false;
+    } else res.hidden = true;
+  });
+});`,
+      usage: `{% render 'compatibility-checker', label: ${js(str(v, "label"))}, options: ${js(str(v, "options"))} %}`,
+    }),
+  },
+  {
+    id: "file-upload",
+    name: "Custom image upload",
+    description: "Customer uploads a photo for printing/engraving - lands as a line-item property on the order.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "label", label: "Label", type: "text", maxLength: 50 },
+    ],
+    defaults: { label: "Upload your photo" },
+    install: [
+      ...snippetSteps("file-upload.liquid"),
+      "Render inside the product form - file uploads as a property link on the order.",
+      "Requires the form to have enctype multipart - most themes do by default.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-upload">
+  <label class="gpl-upload__label" for="gpl-upload-field">{{ label | default: 'Upload your file' }}</label>
+  <input id="gpl-upload-field" class="gpl-upload__input" type="file" name="properties[{{ label | default: 'Upload' }}]" accept="image/*" required>
+  <p class="gpl-upload__hint">JPG/PNG, max 20MB - we print exactly what you upload.</p>
+</div>`,
+      css: `.gpl-upload { margin: 0.75rem 0; }
+.gpl-upload__label { display: block; font-size: 0.72rem; font-weight: 600; margin-bottom: 0.4rem; }
+.gpl-upload__input { width: 100%; font-size: 0.75rem; }
+.gpl-upload__input::file-selector-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 8px;
+  background: transparent;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+.gpl-upload__hint { margin: 0.4rem 0 0; font-size: 0.62rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+      usage: `{% render 'file-upload', label: ${js(str(v, "label"))} %}`,
+    }),
+  },
+  {
+    id: "nutrition-facts",
+    name: "Nutrition facts label",
+    description: "FDA-style nutrition panel - standard layout for food, supplements and protein products.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "serving", label: "Serving size", type: "text", maxLength: 30 },
+      { id: "items", label: "Nutrients (name|value|dv% per line)", type: "text", maxLength: 400 },
+    ],
+    defaults: { serving: "1 scoop (30g)", items: "Calories|120|\nProtein|24g|48\nCarbs|2g|1\nFat|1.5g|2\nSodium|95mg|4" },
+    install: [
+      ...snippetSteps("nutrition-facts.liquid"),
+      "Copy values from your real lab report or supplier COA - made-up nutrition facts are a liability.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-nut">
+  <p class="gpl-nut__title">Nutrition Facts</p>
+  <p class="gpl-nut__serving">Serving size: {{ serving | default: '1 serving' }}</p>
+  {%- assign rows = items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <div class="gpl-nut__row">
+      <b>{{ parts[0] | strip }}</b>
+      <span>{{ parts[1] | strip }}</span>
+      {%- if parts[2] != blank -%}
+        <span class="gpl-nut__dv">{{ parts[2] | strip }}%</span>
+      {%- endif -%}
+    </div>
+  {%- endfor -%}
+</div>`,
+      css: `.gpl-nut { margin: 0.75rem 0; padding: 0.9rem; border: 2px solid rgb(var(--color-foreground, 15 23 42)); border-radius: 4px; font-size: 0.75rem; }
+.gpl-nut__title { margin: 0; font-size: 1.1rem; font-weight: 900; border-bottom: 6px solid rgb(var(--color-foreground, 15 23 42)); padding-bottom: 0.3rem; }
+.gpl-nut__serving { margin: 0.3rem 0; font-size: 0.68rem; border-bottom: 3px solid rgb(var(--color-foreground, 15 23 42)); padding-bottom: 0.3rem; }
+.gpl-nut__row { display: flex; gap: 0.5rem; padding: 0.3rem 0; border-bottom: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); }
+.gpl-nut__row b { flex: 1; }
+.gpl-nut__dv { font-weight: 700; }`,
+      usage: `{% render 'nutrition-facts', serving: ${js(str(v, "serving"))}, items: ${js(str(v, "items"))} %}`,
+    }),
+  },
+  {
+    id: "restock-date",
+    name: "Restock date badge",
+    description: "'Restocking Jan 15' - keeps sold-out traffic warm instead of losing it to a competitor.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "date", label: "Restock date", type: "text", maxLength: 30 },
+    ],
+    defaults: { date: "January 15" },
+    install: snippetSteps("restock-date.liquid"),
+    files: (v) => ({
+      liquid: `<p class="gpl-restock">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+  Restocking <b>{{ date | default: 'soon' }}</b> - join the waitlist above
+</p>`,
+      css: `.gpl-restock { display: flex; align-items: center; gap: 0.45rem; margin: 0.5rem 0; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
+.gpl-restock svg { width: 0.85rem; height: 0.85rem; color: rgb(var(--color-button, 21 128 61)); }
+.gpl-restock b { font-weight: 800; }`,
+      usage: `{% render 'restock-date', date: ${js(str(v, "date"))} %}`,
+    }),
+  },
+  {
+    id: "price-match",
+    name: "Price match promise",
+    description: "'Found it cheaper? We'll match it' - signals pricing confidence on comparison-shopped products.",
+    category: "Trust & social proof",
+    kind: "snippet",
+    controls: [
+      { id: "text", label: "Promise text", type: "text", maxLength: 80 },
+    ],
+    defaults: { text: "Found it cheaper elsewhere? We'll match the price" },
+    install: [
+      ...snippetSteps("price-match.liquid"),
+      "Only offer this if you'll actually honour it - screenshot the competitor price before matching.",
+    ],
+    files: (v) => ({
+      liquid: `<p class="gpl-match">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+  {{ text | default: 'Found it cheaper? We\\'ll match it' }}
+</p>`,
+      css: `.gpl-match { display: flex; align-items: center; gap: 0.45rem; margin: 0.5rem 0; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
+.gpl-match svg { width: 0.85rem; height: 0.85rem; color: #16a34a; flex-shrink: 0; }`,
+      usage: `{% render 'price-match', text: ${js(str(v, "text"))} %}`,
+    }),
+  },
+  {
+    id: "loyalty-tiers",
+    name: "Loyalty tier progress",
+    description: "Bronze &gt; Silver &gt; Gold progress bar - gamifies the next purchase.",
+    category: "Marketing",
+    kind: "snippet",
+    controls: [
+      { id: "current", label: "Current spend", type: "text", maxLength: 8 },
+      { id: "next", label: "Next tier", type: "text", maxLength: 30 },
+      { id: "needed", label: "Amount to next tier", type: "text", maxLength: 8 },
+    ],
+    defaults: { current: "3200", next: "Gold", needed: "5000" },
+    install: [
+      ...snippetSteps("loyalty-tiers.liquid"),
+      "Wire 'current' to the customer's real lifetime spend via customer.total_spent on the account page.",
+    ],
+    files: (v) => ({
+      liquid: `{%- assign pct = current | plus: 0 | times: 100 | divided_by: needed | plus: 0 -%}
+<div class="gpl-tier">
+  <p class="gpl-tier__line">You're <b>{{ needed | minus: current | plus: 0 }}</b> away from <b>{{ next | default: 'Gold' }}</b></p>
+  <div class="gpl-tier__bar"><span style="width: {{ pct | at_most: 100 }}%"></span></div>
+  <div class="gpl-tier__labels"><span>Bronze</span><span>Silver</span><span>{{ next | default: 'Gold' }}</span></div>
+</div>`,
+      css: `.gpl-tier { margin: 1rem 0; }
+.gpl-tier__line { margin: 0 0 0.5rem; font-size: 0.75rem; }
+.gpl-tier__line b { font-weight: 800; }
+.gpl-tier__bar { height: 0.45rem; border-radius: 999px; background: rgb(var(--color-foreground, 148 163 184) / 0.15); overflow: hidden; }
+.gpl-tier__bar span { display: block; height: 100%; background: rgb(var(--color-button, 245 158 11)); border-radius: 999px; }
+.gpl-tier__labels { display: flex; justify-content: space-between; margin-top: 0.3rem; font-size: 0.58rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+      usage: `{% render 'loyalty-tiers', current: ${js(str(v, "current"))}, next: ${js(str(v, "next"))}, needed: ${js(str(v, "needed"))} %}`,
+    }),
+  },
+  {
+    id: "collection-filters",
+    name: "Tag filter chips",
+    description: "Filter the collection by product tags as clickable chips - no app, uses Shopify's native tag filters.",
+    category: "Headers & navigation",
+    kind: "snippet",
+    controls: [
+      { id: "tags", label: "Tags to show (comma separated)", type: "text", maxLength: 150 },
+    ],
+    defaults: { tags: "cotton, linen, oversized, slim, printed" },
+    install: [
+      ...snippetSteps("collection-filters.liquid"),
+      "Render on the collection page - links use the native ?filter.p.tag= URL Shopify already understands.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-fchips">
+  {%- assign ts = tags | split: ',' -%}
+  {%- for t in ts -%}
+    {%- assign tag = t | strip -%}
+    <a class="gpl-fchips__chip{% if current_tags contains tag %} is-active{% endif %}" href="{{ collection.url }}?filter.p.tag={{ tag | url_encode }}">{{ tag }}</a>
+  {%- endfor -%}
+</div>`,
+      css: `.gpl-fchips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.75rem 0; }
+.gpl-fchips__chip {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  text-decoration: none;
+  color: inherit;
+}
+.gpl-fchips__chip.is-active { background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); border-color: transparent; }`,
+      usage: `{% render 'collection-filters', collection: collection, current_tags: current_tags, tags: ${js(str(v, "tags"))} %}`,
+    }),
+  },
 ];
 
 export function getExample(id: string | undefined): PlaygroundExample {
