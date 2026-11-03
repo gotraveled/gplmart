@@ -1,7 +1,0 @@
-<p class="gpl-limited">#{{ num | default: '1' }} <span class="gpl-limited__of">of</span> {{ total | default: '500' }} <span class="gpl-limited__tag">limited edition</span></p>
-
-{% stylesheet %}
-.gpl-limited { display: inline-flex; align-items: baseline; gap: 0.3rem; margin: 0.4rem 0; font-size: 0.8rem; font-weight: 800; }
-.gpl-limited__of { font-size: 0.62rem; font-weight: 400; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
-.gpl-limited__tag { margin-left: 0.4rem; padding: 0.15rem 0.5rem; border-radius: 999px; background: rgb(var(--color-button, 245 158 11) / 0.15); font-size: 0.55rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #b45309; }
-{% endstylesheet %}

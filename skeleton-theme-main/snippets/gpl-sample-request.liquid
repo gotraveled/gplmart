@@ -1,8 +1,0 @@
-<a class="gpl-sample" href="/products/sample-{{ product.handle }}">
-  {{ label | default: 'Order a sample' }} - {{ price | default: '' }}
-</a>
-
-{% stylesheet %}
-.gpl-sample { display: inline-block; margin: 0.4rem 0; padding: 0.55rem 1.15rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 999px; font-size: 0.72rem; font-weight: 700; text-decoration: none; color: inherit; }
-.gpl-sample:hover { border-color: rgb(var(--color-button, 21 128 61)); color: rgb(var(--color-button, 21 128 61)); }
-{% endstylesheet %}
