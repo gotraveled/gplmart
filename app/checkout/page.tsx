@@ -45,49 +45,49 @@ export default async function CheckoutPage() {
                 </p>
               )}
               <CheckoutForm label={`Pay ${price} securely`} />
-
-              {/* Trust stack */}
-              <div className="mt-5 rounded-xl border border-mint/30 bg-mint/10 p-4">
-                <p className="flex items-center gap-2 text-sm font-semibold">
-                  <ShieldCheck aria-hidden className="size-4 text-mint" /> 30-day money-back guarantee
-                </p>
-                <p className="mt-1 text-xs text-muted">
-                  If the library does not work for your store, message us on WhatsApp - refund per the{" "}
-                  <a href="/refund-policy" className="underline">refund policy</a>.
-                </p>
-              </div>
-
-              <div className="mt-3 flex flex-wrap items-center gap-1.5" aria-label="Payment methods">
-                {[
-                  { label: "UPI", icon: Smartphone },
-                  { label: "Cards", icon: CreditCard },
-                  { label: "Net banking", icon: Wallet },
-                  { label: "Wallets", icon: Wallet },
-                ].map(({ label, icon: Icon }) => (
-                  <span
-                    key={label}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-white/[0.04] px-2.5 py-1 text-[0.68rem] font-semibold text-muted"
-                  >
-                    <Icon aria-hidden className="size-3.5 text-mint" />
-                    {label}
-                  </span>
-                ))}
-              </div>
-
-              <ul className="mt-4 space-y-1.5 text-xs text-subtle">
-                {[
-                  "Payment handled by Razorpay - card details never touch this site",
-                  "Access link arrives on WhatsApp after payment",
-                  "30-day access via your paid email - no signup",
-                ].map((t) => (
-                  <li key={t} className="flex items-center gap-2">
-                    <Check aria-hidden className="size-3.5 text-mint" />
-                    {t}
-                  </li>
-                ))}
-              </ul>
             </>
           )}
+
+          {/* Trust stack - shown whether checkout is open or closed */}
+          <div className="mt-5 rounded-xl border border-mint/30 bg-mint/10 p-4">
+            <p className="flex items-center gap-2 text-sm font-semibold">
+              <ShieldCheck aria-hidden className="size-4 text-mint" /> 30-day money-back guarantee
+            </p>
+            <p className="mt-1 text-xs text-muted">
+              If the library does not work for your store, message us on WhatsApp - refund per the{" "}
+              <a href="/refund-policy" className="underline">refund policy</a>.
+            </p>
+          </div>
+
+          <div className="mt-3 flex flex-wrap items-center gap-1.5" aria-label="Payment methods">
+            {[
+              { label: "UPI", icon: Smartphone },
+              { label: "Cards", icon: CreditCard },
+              { label: "Net banking", icon: Wallet },
+              { label: "Wallets", icon: Wallet },
+            ].map(({ label, icon: Icon }) => (
+              <span
+                key={label}
+                className="inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-white/[0.04] px-2.5 py-1 text-[0.68rem] font-semibold text-muted"
+              >
+                <Icon aria-hidden className="size-3.5 text-mint" />
+                {label}
+              </span>
+            ))}
+          </div>
+
+          <ul className="mt-4 space-y-1.5 text-xs text-subtle">
+            {[
+              "Payment handled by Razorpay - card details never touch this site",
+              "Access link arrives on WhatsApp after payment",
+              "30-day access via your paid email - no signup",
+            ].map((t) => (
+              <li key={t} className="flex items-center gap-2">
+                <Check aria-hidden className="size-3.5 text-mint" />
+                {t}
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
     </Container>
