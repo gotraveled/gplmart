@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { CodeBlock } from "@/components/ui/code-block";
 import { ButtonLink } from "@/components/ui/button";
 import { ExamplePreview } from "@/components/playground/previews";
-import { examples, freeExampleIds } from "@/lib/playground/examples";
+import { completeFile, examples, freeExampleIds } from "@/lib/playground/examples";
 import { absoluteUrl } from "@/lib/site";
 import { breadcrumbJsonLd, codeJsonLd, jsonLdPayload } from "@/lib/seo";
 import { snippetBenefits, snippetHook } from "@/lib/snippet-copy";
@@ -122,9 +122,7 @@ export default async function SnippetPage({ params }: Params) {
               </div>
               {free ? (
                 <div className="mt-4 space-y-4">
-                  <CodeBlock code={files.liquid} lang="liquid" lineNumbers />
-                  {files.css && <CodeBlock code={files.css} lang="css" />}
-                  {files.js && <CodeBlock code={files.js} lang="js" />}
+                  <CodeBlock code={completeFile(files)} lang="liquid" lineNumbers />
                   {files.usage && (
                     <div className="rounded-xl border border-line bg-ink-900/60 p-4">
                       <p className="text-xs font-semibold uppercase tracking-wider text-subtle">Usage</p>

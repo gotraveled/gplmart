@@ -28,7 +28,7 @@ import {
   Timer,
   TrendingUp,
 } from "lucide-react";
-import { examples, freeExampleIds, getExample } from "@/lib/playground/examples";
+import { completeFile, examples, freeExampleIds, getExample } from "@/lib/playground/examples";
 import type { ExampleFiles } from "@/lib/playground/types";
 import type { Lang } from "@/lib/highlight";
 import { CodeBlock } from "@/components/ui/code-block";
@@ -60,9 +60,7 @@ const items = [
 ] as const;
 
 function tabs(files: ExampleFiles) {
-  const t: { id: string; label: string; code: string; lang: Lang }[] = [{ id: "liquid", label: "Liquid", code: files.liquid, lang: "liquid" }];
-  if (files.css) t.push({ id: "css", label: "CSS", code: files.css, lang: "css" });
-  if (files.js) t.push({ id: "js", label: "JS", code: files.js, lang: "js" });
+  const t: { id: string; label: string; code: string; lang: Lang }[] = [{ id: "liquid", label: "Liquid", code: completeFile(files), lang: "liquid" }];
   if (files.usage) t.push({ id: "usage", label: "Usage", code: files.usage, lang: "liquid" });
   return t;
 }

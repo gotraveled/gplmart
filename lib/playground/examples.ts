@@ -1,4 +1,4 @@
-import type { PlaygroundExample, Values } from "./types";
+import type { ExampleFiles, PlaygroundExample, Values } from "./types";
 
 /**
  * Demonstration snippets for the free playground: teaching examples, NOT the
@@ -14,14 +14,14 @@ const js = (s: string) => JSON.stringify(s);
 const sectionSteps = [
   "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
   "Open Online Store > Themes > Edit code and create a new file under Sections using the file name shown above.",
-  "Paste the Liquid code, then add the CSS to your theme's base stylesheet or into a {% stylesheet %} tag at the end of the same file.",
+  "Paste the complete file - markup, styles and JavaScript are already inside the single file, nothing else to install.",
   "Open the theme editor, add the section to a template, and replace the example values using the section settings.",
   "Preview the storefront and test it on a phone-sized screen before publishing.",
 ];
 const snippetSteps = (file: string) => [
   "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
   `Open Online Store > Themes > Edit code and create a new file under Snippets named ${file}.`,
-  "Paste the Liquid code and add the CSS to your theme's base stylesheet.",
+  "Paste the complete file - markup, styles and JavaScript are already inside the single file, nothing else to install.",
   "Call the snippet from the template or section where it should appear using the render tag shown in the Usage tab.",
   "Preview the product, collection or cart page and test on mobile before publishing.",
 ];
@@ -10570,4 +10570,16 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
 
 export function getExample(id: string | undefined): PlaygroundExample {
   return examples.find((e) => e.id === id) ?? examples[0]!;
+}
+
+/**
+ * One-file install: merges the generated CSS/JS into the Liquid via Shopify's
+ * {% stylesheet %} / {% javascript %} tags (supported in sections and snippets).
+ * This is the file users copy - identical pattern to LaunchTip's sections.
+ */
+export function completeFile(files: ExampleFiles): string {
+  let out = files.liquid.replace(/\s+$/, "");
+  if (files.css) out += `\n\n{% stylesheet %}\n${files.css.replace(/\s+$/, "")}\n{% endstylesheet %}`;
+  if (files.js) out += `\n\n{% javascript %}\n${files.js.replace(/\s+$/, "")}\n{% endjavascript %}`;
+  return `${out}\n`;
 }

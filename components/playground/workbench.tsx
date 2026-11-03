@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Monitor, Smartphone, Tablet, BookOpen, Lock, X, Search } from "lucide-react";
-import { examples, freeExampleIds, getExample } from "@/lib/playground/examples";
+import { completeFile, examples, freeExampleIds, getExample } from "@/lib/playground/examples";
 import type { ControlDef, ExampleFiles, PlaygroundExample, Values } from "@/lib/playground/types";
 import type { Lang } from "@/lib/highlight";
 import { CodeBlock } from "@/components/ui/code-block";
@@ -24,10 +24,8 @@ interface FileTab {
 function fileTabs(ex: PlaygroundExample, files: ExampleFiles): FileTab[] {
   const dir = ex.kind === "section" ? "sections" : "snippets";
   const tabs: FileTab[] = [
-    { id: "liquid", label: "Liquid", filename: `${dir}/${ex.id}.liquid`, code: files.liquid, lang: "liquid" },
+    { id: "liquid", label: "Complete file", filename: `${dir}/${ex.id}.liquid`, code: completeFile(files), lang: "liquid" },
   ];
-  if (files.css) tabs.push({ id: "css", label: "CSS", filename: `assets/gpl-${ex.id}.css`, code: files.css, lang: "css" });
-  if (files.js) tabs.push({ id: "js", label: "JS", filename: `assets/gpl-${ex.id}.js`, code: files.js, lang: "js" });
   if (files.usage) tabs.push({ id: "usage", label: "Usage", filename: "usage.liquid", code: files.usage, lang: "liquid" });
   return tabs;
 }
