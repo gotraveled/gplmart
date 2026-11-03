@@ -206,16 +206,16 @@ export default function HomePage() {
       <section className="relative overflow-hidden border-b border-line">
         <div aria-hidden className="bg-grid absolute inset-0" />
         <div aria-hidden className="absolute -top-44 left-1/2 h-[26rem] w-[52rem] -translate-x-1/2 rounded-full bg-accent/15 blur-3xl" />
-        <Container className="relative grid items-center gap-12 py-10 sm:py-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)] lg:py-14">
-          <div className="animate-rise max-w-2xl">
+        <Container className="relative grid items-center gap-12 py-10 sm:py-12 lg:grid-cols-[minmax(0,1.25fr)_minmax(0,30rem)] lg:py-14">
+          <div className="animate-rise max-w-3xl">
             <p className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-1.5 text-xs font-semibold text-accent">
               <Zap aria-hidden className="size-3.5" />
               Shopify conversion code + WordPress resources
             </p>
-            <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.02] tracking-tight text-balance sm:text-6xl lg:text-7xl">
-              Shopify Liquid
+            <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.02] tracking-tight text-balance sm:text-5xl lg:text-6xl">
+              <span className="whitespace-nowrap">Shopify Liquid Codes.</span>
               <br />
-              <span className="text-gradient">Codes.</span>
+              <span className="text-gradient">WordPress bundles.</span>
               <br />
               One payment.
             </h1>
