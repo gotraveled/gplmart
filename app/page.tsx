@@ -225,7 +225,7 @@ export default function HomePage() {
               Shopify conversion code + WordPress resources
             </p>
             <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.02] tracking-tight text-balance sm:text-5xl lg:text-6xl">
-              <span className="whitespace-nowrap">Shopify Liquid Codes.</span>
+              <span className="sm:whitespace-nowrap">Shopify Liquid Codes.</span>
               <br />
               <span className="text-gradient">WordPress/Shopify Themes</span>
               <br />

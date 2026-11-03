@@ -4,6 +4,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { Workbench } from "@/components/playground/workbench";
+import { freeExampleIds } from "@/lib/playground/examples";
 
 export const metadata: Metadata = {
   title: "Free Shopify Liquid Playground - Preview 200+ Snippets & Sections",
@@ -45,7 +46,7 @@ export default async function PlaygroundPage({
         <p role="note" className="mb-8 flex gap-3 rounded-xl border border-mint/30 bg-mint/10 p-4 text-sm">
           <FlaskConical aria-hidden className="mt-0.5 size-4 shrink-0 text-mint" />
           <span>
-            5 examples are fully open - inspect and copy the code freely. Everything else <strong>previews live</strong>{" "}
+            {freeExampleIds.size} examples are fully open - inspect and copy the code freely. Everything else <strong>previews live</strong>{" "}
             but the source unlocks with all-access, the same deal as the paid library.
           </span>
         </p>

@@ -84,7 +84,7 @@ export default async function SnippetPage({ params }: Params) {
             <span className="flex items-center gap-1.5">
               <FlaskConical aria-hidden className="size-3.5" /> Live preview
             </span>
-            <ButtonLink href="/playground" variant="secondary" className="!text-black">
+            <ButtonLink href={`/playground?example=${ex.id}`} variant="secondary" className="!text-black">
               Customize in playground
             </ButtonLink>
           </div>
