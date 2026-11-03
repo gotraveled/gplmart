@@ -12,8 +12,8 @@ export const siteConfig = {
 export const mainNav = [
   { href: "/library", label: "Library" },
   { href: "/playground", label: "Playground" },
-  { href: "/#how-it-works", label: "How it works" },
-  { href: "/#faq", label: "FAQ" },
+  { href: "/how-it-works", label: "How it works" },
+  { href: "/faq", label: "FAQ" },
 ] as const;
 
 export const footerLinks = {

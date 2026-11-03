@@ -1,7 +1,28 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Code2, Eye, Flame, Lock, Package, Play, ShieldCheck, ShoppingCart, Sparkles, Star, Ticket, Timer, TrendingUp } from "lucide-react";
+import {
+  BadgePercent,
+  BookOpen,
+  Clock,
+  Code2,
+  CreditCard,
+  Eye,
+  Flame,
+  GitCompareArrows,
+  Layers,
+  Lock,
+  MessageSquareQuote,
+  Package,
+  Play,
+  ShieldCheck,
+  ShoppingCart,
+  Sparkles,
+  Star,
+  Ticket,
+  Timer,
+  TrendingUp,
+} from "lucide-react";
 import { freeExampleIds, getExample } from "@/lib/playground/examples";
 import type { ExampleFiles } from "@/lib/playground/types";
 import type { Lang } from "@/lib/highlight";
@@ -11,15 +32,22 @@ import { ExamplePreview } from "@/components/playground/previews";
 import { cn } from "@/lib/cn";
 
 const items = [
-  { id: "delivery-estimator", label: "Delivery ETA", icon: Package },
   { id: "countdown-timer", label: "Countdown", icon: Timer },
   { id: "star-rating", label: "Star rating", icon: Star },
-  { id: "stock-pulse", label: "Stock pulse", icon: Flame },
   { id: "free-shipping-bar", label: "Free ship bar", icon: TrendingUp },
+  { id: "trust-grid", label: "Trust grid", icon: ShieldCheck },
+  { id: "quantity-breaks", label: "Bundle & save", icon: Layers },
+  { id: "delivery-estimator", label: "Delivery ETA", icon: Package },
+  { id: "stock-pulse", label: "Stock pulse", icon: Flame },
   { id: "sticky-buy-bar", label: "Buy bar", icon: ShoppingCart },
   { id: "coupon-cards", label: "Coupons", icon: Ticket },
-  { id: "trust-grid", label: "Trust grid", icon: ShieldCheck },
   { id: "benefit-marquee", label: "Marquee", icon: Sparkles },
+  { id: "payment-badges", label: "Payment row", icon: CreditCard },
+  { id: "sale-badge", label: "Sale badge", icon: BadgePercent },
+  { id: "cutoff-timer", label: "Dispatch cutoff", icon: Clock },
+  { id: "testimonial-slider", label: "Testimonials", icon: MessageSquareQuote },
+  { id: "before-after", label: "Before / after", icon: GitCompareArrows },
+  { id: "product-tabs", label: "Info tabs", icon: BookOpen },
 ] as const;
 
 function tabs(files: ExampleFiles) {
@@ -49,26 +77,38 @@ export function HomeSandbox() {
 
   return (
     <div>
-      {/* Component chips */}
-      <div role="tablist" aria-label="Sandbox components" className="mb-7 flex flex-wrap justify-center gap-2">
-        {items.map(({ id: cid, label, icon: Icon }) => (
-          <button
-            key={cid}
-            type="button"
-            role="tab"
-            aria-selected={cid === id}
-            onClick={() => pick(cid)}
-            className={cn(
-              "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition",
-              cid === id
-                ? "border-accent/60 bg-accent/15 text-fg"
-                : "border-line-strong bg-white/[0.03] text-muted hover:border-line hover:text-fg",
-            )}
-          >
-            <Icon aria-hidden className={cn("size-4", cid === id ? "text-accent" : "text-subtle")} />
-            {label}
-            {!freeExampleIds.has(cid) && <Lock aria-hidden className="size-3 text-subtle" />}
-          </button>
+      {/* Component chips - free vs members */}
+      <div className="mb-7 grid gap-5 sm:grid-cols-2" role="tablist" aria-label="Sandbox components">
+        {(
+          [
+            { title: "Free - full code", items: items.filter((i) => freeExampleIds.has(i.id)) },
+            { title: "Members - preview, source locked", items: items.filter((i) => !freeExampleIds.has(i.id)) },
+          ] as const
+        ).map(({ title, items: group }) => (
+          <div key={title} className="rounded-2xl border border-line bg-ink-900/50 p-4">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-subtle">{title}</p>
+            <div className="flex flex-wrap gap-2">
+              {group.map(({ id: cid, label, icon: Icon }) => (
+                <button
+                  key={cid}
+                  type="button"
+                  role="tab"
+                  aria-selected={cid === id}
+                  onClick={() => pick(cid)}
+                  className={cn(
+                    "inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition",
+                    cid === id
+                      ? "border-accent/60 bg-accent/15 text-fg"
+                      : "border-line-strong bg-white/[0.03] text-muted hover:border-line hover:text-fg",
+                  )}
+                >
+                  <Icon aria-hidden className={cn("size-4", cid === id ? "text-accent" : "text-subtle")} />
+                  {label}
+                  {!freeExampleIds.has(cid) && <Lock aria-hidden className="size-3 text-subtle" />}
+                </button>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
 

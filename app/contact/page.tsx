@@ -1,25 +1,79 @@
 import Link from "next/link";
+import { HelpCircle, MessageCircle, Scale, Wallet } from "lucide-react";
 import { InfoPage, infoMetadata } from "@/components/ui/info-page";
+import { ButtonLink } from "@/components/ui/button";
 
 export const metadata = infoMetadata(
   "Contact",
-  "How to get in touch with GPLMart. Contact channels will be published before launch.",
+  "How to reach GPLMart - support, sales and licensing questions.",
   "/contact",
 );
 
+const whatsapp = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "";
+const waUrl = whatsapp.length > 5 ? `https://wa.me/${whatsapp}?text=${encodeURIComponent("Hi GPLMart - ")}` : null;
+
+const topics = [
+  {
+    icon: HelpCircle,
+    title: "Pre-purchase questions",
+    text: "Theme compatibility, what's inside the bundle, whether a specific snippet fits your use case - ask before paying.",
+  },
+  {
+    icon: Wallet,
+    title: "Orders & access",
+    text: "Payment confirmation, access codes, WhatsApp handoff - include your order reference (the ID shown after payment).",
+  },
+  {
+    icon: Scale,
+    title: "Licensing & takedowns",
+    text: "Questions about GPL redistribution, or a rights concern with any listing - see the copyright page or write to us.",
+  },
+];
+
 export default function ContactPage() {
   return (
-    <InfoPage title="Contact" description="Contact channels will be published before launch." draft>
-      <h2>Get in touch</h2>
+    <InfoPage title="Contact" description="Reach GPLMart for support, sales or licensing questions.">
+      <h2>Fastest: WhatsApp</h2>
       <p>
-        Official contact details (such as a support email address) have not been confirmed yet and will be
-        added here by the business before launch. No contact form is active in this preview.
+        The quickest way to reach us is WhatsApp - we reply during Indian business hours. Paying customers get the
+        same channel after checkout, so you already know the number.
       </p>
-      <h2>In the meantime</h2>
-      <p>
-        You can read the <Link href="/refund-policy">refund policy</Link>, <Link href="/licensing">licensing</Link>{" "}
-        and <Link href="/terms">terms</Link> drafts, or <Link href="/">return to the offer</Link>.
+      {waUrl && (
+        <ButtonLink href={waUrl} target="_blank" rel="noopener noreferrer" className="mt-4">
+          <MessageCircle aria-hidden className="size-4" /> Message us on WhatsApp
+        </ButtonLink>
+      )}
+      <p className="mt-3 text-sm text-muted">
+        Email: <a href="mailto:info@gplmart.com">info@gplmart.com</a>
       </p>
+
+      <h2>Pick your topic</h2>
+      <div className="not-prose mt-4 grid gap-4 sm:grid-cols-3">
+        {topics.map(({ icon: Icon, title, text }) => (
+          <div key={title} className="rounded-2xl border border-line bg-ink-900/60 p-5">
+            <Icon aria-hidden className="size-5 text-accent" />
+            <h3 className="mt-3 font-display text-sm font-semibold">{title}</h3>
+            <p className="mt-1.5 text-xs text-muted">{text}</p>
+          </div>
+        ))}
+      </div>
+
+      <h2>Useful links</h2>
+      <ul>
+        <li>
+          <Link href="/faq">FAQ</Link> - most questions are answered there already
+        </li>
+        <li>
+          <Link href="/how-it-works">How it works</Link> - the exact purchase-to-access flow
+        </li>
+        <li>
+          <Link href="/refund-policy">Refund policy</Link> &middot; <Link href="/licensing">Licensing</Link> &middot;{" "}
+          <Link href="/terms">Terms</Link>
+        </li>
+        <li>
+          <Link href="/copyright">Copyright &amp; takedowns</Link> - report a rights concern
+        </li>
+      </ul>
     </InfoPage>
   );
 }

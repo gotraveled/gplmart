@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Monitor, Smartphone, Tablet, BookOpen, Lock } from "lucide-react";
+import { ArrowLeft, Monitor, Smartphone, Tablet, BookOpen, Lock } from "lucide-react";
 import { examples, freeExampleIds, getExample } from "@/lib/playground/examples";
 import type { ControlDef, ExampleFiles, PlaygroundExample, Values } from "@/lib/playground/types";
 import type { Lang } from "@/lib/highlight";
@@ -91,20 +91,53 @@ const devices = [
   { id: "full", icon: Monitor, label: "Full width", width: "100%" },
 ] as const;
 
+function Card({ ex, onPick }: { ex: PlaygroundExample; onPick: (id: string) => void }) {
+  const free = freeExampleIds.has(ex.id);
+  return (
+    <button
+      type="button"
+      onClick={() => onPick(ex.id)}
+      className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-ink-900/70 text-left transition hover:-translate-y-1 hover:border-accent/50"
+    >
+      <div className="pointer-events-none relative h-36 overflow-hidden border-b border-line bg-[#eef1e6]">
+        <div className="absolute inset-x-0 top-0 origin-top scale-[0.55]">
+          <ExamplePreview id={ex.id} values={ex.defaults} />
+        </div>
+        {!free && (
+          <span className="absolute right-2.5 top-2.5 grid size-7 place-items-center rounded-lg border border-line-strong bg-ink-900/90">
+            <Lock aria-hidden className="size-3.5 text-accent" />
+          </span>
+        )}
+      </div>
+      <div className="flex flex-1 flex-col p-4">
+        <div className="flex flex-wrap items-center gap-1.5">
+          <Badge className="px-1.5 py-0 text-[0.6rem]">{ex.kind === "section" ? "Section" : "Snippet"}</Badge>
+          <Badge className="px-1.5 py-0 text-[0.6rem]">{ex.category}</Badge>
+          <Badge className={cn("px-1.5 py-0 text-[0.6rem]", free ? "border-mint/40 bg-mint/10 text-mint" : "text-subtle")}>
+            {free ? "Free" : "Members"}
+          </Badge>
+        </div>
+        <h3 className="mt-2.5 font-display text-sm font-semibold group-hover:text-accent">{ex.name}</h3>
+        <p className="mt-1 line-clamp-2 flex-1 text-xs text-muted">{ex.description}</p>
+      </div>
+    </button>
+  );
+}
+
 export function Workbench({ initialId }: { initialId?: string }) {
   const router = useRouter();
-  const [id, setId] = useState(getExample(initialId).id);
-  const ex = useMemo(() => examples.find((e) => e.id === id) ?? examples[0]!, [id]);
-  const [values, setValues] = useState<Values>(ex.defaults);
+  const [id, setId] = useState<string | null>(initialId ? getExample(initialId).id : null);
+  const ex = useMemo(() => (id ? examples.find((e) => e.id === id) ?? null : null), [id]);
+  const [values, setValues] = useState<Values>(ex?.defaults ?? {});
   const [tab, setTab] = useState("liquid");
   const [device, setDevice] = useState<(typeof devices)[number]["id"]>("full");
   const [darkCanvas, setDarkCanvas] = useState(false);
   const [view, setView] = useState<"preview" | "code">("preview");
 
-  const locked = !freeExampleIds.has(ex.id);
-  const files = useMemo(() => ex.files(values), [ex, values]);
-  const tabs = useMemo(() => fileTabs(ex, files), [ex, files]);
-  const active = tabs.find((t) => t.id === tab) ?? tabs[0]!;
+  const locked = ex ? !freeExampleIds.has(ex.id) : false;
+  const files = useMemo(() => (ex ? ex.files(values) : null), [ex, values]);
+  const tabs = useMemo(() => (ex && files ? fileTabs(ex, files) : []), [ex, files]);
+  const active = tabs.find((t) => t.id === tab) ?? tabs[0];
   const width = devices.find((d) => d.id === device)!.width;
 
   function pick(next: string) {
@@ -114,6 +147,40 @@ export function Workbench({ initialId }: { initialId?: string }) {
     setValues(nextEx.defaults);
     setTab("liquid");
     router.replace(`/playground?example=${encodeURIComponent(next)}`, { scroll: false });
+  }
+
+  function back() {
+    setId(null);
+    router.replace("/playground", { scroll: false });
+  }
+
+  if (!ex) {
+    const free = examples.filter((e) => freeExampleIds.has(e.id));
+    const members = examples.filter((e) => !freeExampleIds.has(e.id));
+    return (
+      <div className="grid gap-10">
+        {(
+          [
+            { title: "Free samples - copy the code", items: free },
+            { title: "Members library - live preview, source locked", items: members },
+          ] as const
+        ).map(({ title, items }) => (
+          <section key={title}>
+            <h2 className="mb-4 flex items-baseline gap-3 font-display text-lg font-semibold">
+              {title}
+              <span className="text-sm font-normal text-subtle">{items.length}</span>
+            </h2>
+            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {items.map((e) => (
+                <li key={e.id}>
+                  <Card ex={e} onPick={pick} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))}
+      </div>
+    );
   }
 
   function setValue(ctl: string, v: string | boolean) {
@@ -193,21 +260,21 @@ export function Workbench({ initialId }: { initialId?: string }) {
               key={t.id}
               type="button"
               role="tab"
-              aria-selected={active.id === t.id}
+              aria-selected={active?.id === t.id}
               onClick={() => setTab(t.id)}
               className={cn(
                 "rounded-lg px-3 py-1.5 text-xs font-medium transition",
-                active.id === t.id ? "bg-white/10 text-fg" : "text-muted hover:text-fg",
+                active?.id === t.id ? "bg-white/10 text-fg" : "text-muted hover:text-fg",
               )}
             >
               {t.label}
             </button>
           ))}
         </div>
-        <CopyButton text={active.code} label="Copy file" />
+        <CopyButton text={active?.code ?? ""} label="Copy file" />
       </div>
-      <p className="border-b border-line px-4 py-1.5 font-mono text-[0.7rem] text-subtle">{active.filename}</p>
-      <CodeBlock code={active.code} lang={active.lang} maxHeight="30rem" lineNumbers />
+      <p className="border-b border-line px-4 py-1.5 font-mono text-[0.7rem] text-subtle">{active?.filename}</p>
+      <CodeBlock code={active?.code ?? ""} lang={active?.lang ?? "liquid"} maxHeight="30rem" lineNumbers />
     </div>
   );
 
@@ -215,12 +282,19 @@ export function Workbench({ initialId }: { initialId?: string }) {
     <div className="grid gap-6 lg:grid-cols-[16rem_minmax(0,1fr)]">
       {/* Example selector */}
       <div>
+        <button
+          type="button"
+          onClick={back}
+          className="mb-4 inline-flex items-center gap-1.5 rounded-lg border border-line-strong px-3 py-1.5 text-xs font-medium text-muted transition hover:border-accent/50 hover:text-fg"
+        >
+          <ArrowLeft aria-hidden className="size-3.5" /> All components
+        </button>
         <label htmlFor="example-select" className="mb-2 block text-xs font-semibold uppercase tracking-[0.16em] text-mint lg:sr-only">
           Choose an example
         </label>
         <select
           id="example-select"
-          value={id}
+          value={id ?? ""}
           onChange={(e) => pick(e.target.value)}
           className="w-full rounded-xl border border-line-strong bg-ink-900 px-3 py-2.5 text-sm lg:hidden"
         >

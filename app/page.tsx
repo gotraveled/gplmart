@@ -24,8 +24,9 @@ import { ButtonLink } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Container, Section, SectionHeading } from "@/components/ui/container";
 import { CodeBlock } from "@/components/ui/code-block";
-import { FaqList, type FAQ } from "@/components/ui/faq";
+import { FaqList } from "@/components/ui/faq";
 import { HomeSandbox } from "@/components/home/sandbox";
+import { faqs } from "@/lib/faq";
 import { getExample } from "@/lib/playground/examples";
 import { formatOfferPrice } from "@/lib/offer";
 
@@ -114,38 +115,6 @@ const touchpoints = [
   { icon: ShieldAlert, title: "Trust & social proof", text: "Badges, ratings and guarantees" },
   { icon: LayoutTemplate, title: "Marketing", text: "Countdowns, coupons and popups" },
   { icon: Puzzle, title: "Utility", text: "Miscellaneous theme components" },
-];
-
-const faqs: FAQ[] = [
-  {
-    question: "Do I need coding experience?",
-    answer:
-      "No. Open the Shopify theme editor, add a Custom Liquid block (or a theme section), paste the code and save. If you can copy-paste text, you can install most components in under a minute.",
-  },
-  {
-    question: "What exactly do members get?",
-    answer:
-      "Access to the members-only Liquid code library (full source, previews, copy and downloads) plus the Google Drive link to authorised Shopify theme bundles, WordPress themes, landing-page templates and GPL-licensed WordPress plugins - delivered right after payment.",
-  },
-  {
-    question: "Is this a subscription?",
-    answer: "No. It is a single one-time payment for all-access membership. It does not renew and there is no monthly fee.",
-  },
-  {
-    question: "Will the snippets match my theme?",
-    answer:
-      "They are written for Online Store 2.0 themes such as Dawn and its siblings, using your theme's own font stack and its button/foreground colour variables where sensible - so they blend in instead of looking bolted on. Compatibility notes ship with each resource.",
-  },
-  {
-    question: "When does paid access open?",
-    answer:
-      "Purchases stay closed until resources are actually published and distribution rights are confirmed. If checkout is closed, that is deliberate - nothing is charged in the meantime.",
-  },
-  {
-    question: "Is GPLMart affiliated with Shopify?",
-    answer:
-      "No. GPLMart is independent and is not affiliated with or endorsed by Shopify. Shopify and Liquid are the property of their respective owners.",
-  },
 ];
 
 function ThemeLiquidChip() {

@@ -1,0 +1,86 @@
+{
+  "updated": "2026-11-03",
+  "notes": [
+    "status 'live' = file is in the Drive bundle now. 'sourcing' = verified as distributable, being acquired - shows here so members see what is coming, not as a promise of a date.",
+    "GPL items ship complete files with the vendor license.txt preserved - the GPL requires it. Vendor licence keys, activation, auto-updates and official vendor support are never included.",
+    "Cloud/template-library features that phone home to vendor servers may not work without a key bought from the vendor.",
+    "Shopify themes are NOT GPL - only GPLMart-original or explicitly-licensed themes belong in that group."
+  ],
+  "groups": [
+    {
+      "id": "wp-plugins-builders",
+      "title": "WordPress - page building",
+      "license": "GPL-2.0+",
+      "items": [
+        { "name": "Elementor Pro", "vendor": "Pojo Me Digital", "status": "sourcing", "source": "elementor.com" },
+        { "name": "Ultimate Addons for Elementor", "vendor": "Brainstorm Force", "status": "sourcing", "source": "uaelementor.com" },
+        { "name": "Essential Addons", "vendor": "WPDeveloper", "status": "sourcing", "source": "essential-addons.com" },
+        { "name": "GenerateBlocks Pro", "vendor": "GeneratePress", "status": "sourcing", "source": "generateblocks.com" },
+        { "name": "JetEngine", "vendor": "Crocoblock", "status": "sourcing", "source": "crocoblock.com" }
+      ]
+    },
+    {
+      "id": "wp-plugins-seo-speed",
+      "title": "WordPress - SEO & performance",
+      "license": "GPL-2.0+",
+      "items": [
+        { "name": "Rank Math SEO Pro", "vendor": "Rank Math", "status": "sourcing", "source": "rankmath.com" },
+        { "name": "Yoast SEO Premium", "vendor": "Yoast", "status": "sourcing", "source": "yoast.com" },
+        { "name": "WP Rocket", "vendor": "WP Rocket", "status": "sourcing", "source": "wp-rocket.me" },
+        { "name": "Perfmatters", "vendor": "forgemedia", "status": "sourcing", "source": "perfmatters.io" }
+      ]
+    },
+    {
+      "id": "wp-plugins-forms",
+      "title": "WordPress - forms & workflow",
+      "license": "GPL-2.0+",
+      "items": [
+        { "name": "Gravity Forms", "vendor": "Rocketgenius", "status": "sourcing", "source": "gravityforms.com" },
+        { "name": "WPForms Pro", "vendor": "WPForms", "status": "sourcing", "source": "wpforms.com" },
+        { "name": "Fluent Forms Pro", "vendor": "WPManageNinja", "status": "sourcing", "source": "fluentforms.com" },
+        { "name": "Formidable Forms Pro", "vendor": "Strategy11", "status": "sourcing", "source": "formidableforms.com" },
+        { "name": "ACF Pro", "vendor": "WP Engine", "status": "sourcing", "source": "advancedcustomfields.com" }
+      ]
+    },
+    {
+      "id": "wp-plugins-infra",
+      "title": "WordPress - security, backup & e-commerce",
+      "license": "GPL-2.0+",
+      "items": [
+        { "name": "Wordfence Premium", "vendor": "Defiant", "status": "sourcing", "source": "wordfence.com" },
+        { "name": "UpdraftPlus", "vendor": "Updraft", "status": "sourcing", "source": "updraftplus.com" },
+        { "name": "Duplicator Pro", "vendor": "Snap Creek", "status": "sourcing", "source": "snapcreek.com" },
+        { "name": "WP Mail SMTP Pro", "vendor": "WP Mail SMTP", "status": "sourcing", "source": "wpmailsmtp.com" },
+        { "name": "WooCommerce Stripe", "vendor": "WooCommerce", "status": "sourcing", "source": "woocommerce.com" }
+      ]
+    },
+    {
+      "id": "wp-themes",
+      "title": "WordPress - themes",
+      "license": "GPL-2.0+",
+      "items": [
+        { "name": "Astra Pro + Premium Starter Templates", "vendor": "Brainstorm Force", "status": "sourcing", "source": "wpastra.com" },
+        { "name": "GeneratePress Premium", "vendor": "GeneratePress", "status": "sourcing", "source": "generatepress.com" },
+        { "name": "Kadence Theme package", "vendor": "StellarWP", "status": "sourcing", "source": "kadencewp.com" },
+        { "name": "Blocksy Pro", "vendor": "CreativeThemes", "status": "sourcing", "source": "creativethemes.com" }
+      ]
+    },
+    {
+      "id": "landing-pages",
+      "title": "WordPress - landing-page templates",
+      "license": "GPL-2.0+",
+      "items": [
+        { "name": "Astra Premium Starter Templates", "vendor": "Brainstorm Force", "status": "sourcing", "source": "startertemplates.com" },
+        { "name": "Kadence Starter Templates", "vendor": "StellarWP", "status": "sourcing", "source": "kadencewp.com" }
+      ]
+    },
+    {
+      "id": "shopify-themes",
+      "title": "Shopify - themes",
+      "license": "GPLMart licence",
+      "items": [
+        { "name": "GPLMart original themes", "vendor": "GPLMart", "status": "sourcing", "source": "in-house" }
+      ]
+    }
+  ]
+}

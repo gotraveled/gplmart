@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { ExternalLink, Info } from "lucide-react";
+import manifest from "@/data/bundle-manifest.json";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
+import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { isSupabaseConfigured } from "@/lib/env";
 import { getSetting } from "@/lib/settings";
@@ -63,6 +65,46 @@ export default async function TemplatesPage() {
             </p>
           </div>
         </aside>
+      </Container>
+      <Container className="pb-14">
+        <h2 className="font-display text-xl font-semibold">Bundle contents</h2>
+        <p className="mt-1.5 text-sm text-muted">
+          Everything inside the Drive bundle, by group. GPL-licensed WordPress items ship complete files with the
+          vendor licence preserved - keys, auto-updates and official support are not included.
+        </p>
+        <div className="mt-6 grid gap-6 lg:grid-cols-2">
+          {manifest.groups.map((g) => (
+            <section key={g.id} className="rounded-2xl border border-line bg-ink-900/60 p-5">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <h3 className="font-display text-base font-semibold">{g.title}</h3>
+                <Badge>{g.license}</Badge>
+              </div>
+              <ul className="mt-4 space-y-2.5">
+                {g.items.map((i) => (
+                  <li key={i.name} className="flex items-center justify-between gap-3 text-sm">
+                    <span>
+                      <span className="font-medium">{i.name}</span>
+                      <span className="ml-2 text-xs text-subtle">{i.vendor}</span>
+                    </span>
+                    <Badge
+                      className={
+                        i.status === "live"
+                          ? "border-mint/40 bg-mint/10 text-mint"
+                          : "border-amber-400/40 bg-amber-400/10 text-amber-200"
+                      }
+                    >
+                      {i.status === "live" ? "In bundle" : "Sourcing"}
+                    </Badge>
+                  </li>
+                ))}
+              </ul>
+            </section>
+          ))}
+        </div>
+        <p className="mt-5 text-xs text-subtle">
+          &quot;Sourcing&quot; items are verified as legally distributable and are being added to the bundle as they
+          are acquired. Updated {manifest.updated}.
+        </p>
       </Container>
     </>
   );
