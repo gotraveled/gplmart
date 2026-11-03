@@ -6,7 +6,7 @@ import { listPublicSummaries } from "@/lib/snippets";
 export const dynamic = "force-dynamic";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base: MetadataRoute.Sitemap = ["/", "/playground", "/library", "/about", "/contact", "/licensing", "/refund-policy", "/privacy-policy", "/terms"].map(
+  const base: MetadataRoute.Sitemap = ["/", "/playground", "/library", "/about", "/contact", "/licensing", "/refund-policy", "/privacy-policy", "/terms", "/disclaimer", "/copyright"].map(
     (p) => ({ url: absoluteUrl(p), priority: p === "/" ? 1 : 0.6 }),
   );
   if (!isSupabaseConfigured()) return base;

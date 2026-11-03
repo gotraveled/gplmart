@@ -32,6 +32,8 @@ export const footerLinks = {
     { href: "/refund-policy", label: "Refund policy" },
     { href: "/privacy-policy", label: "Privacy policy" },
     { href: "/terms", label: "Terms" },
+    { href: "/disclaimer", label: "Disclaimer" },
+    { href: "/copyright", label: "Copyright" },
   ],
 } as const;
 export function absoluteUrl(path = "/"): string {

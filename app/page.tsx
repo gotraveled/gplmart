@@ -4,6 +4,7 @@ import {
   ArrowRight,
   Check,
   Code2,
+  Eye,
   FileCode2,
   FolderDown,
   Handshake,
@@ -487,6 +488,55 @@ export default function HomePage() {
               <Icon aria-hidden className="size-5 text-mint" />
               <h3 className="mt-3 font-display text-base font-semibold">{title}</h3>
               <p className="mt-1 text-sm text-muted">{text}</p>
+            </li>
+          ))}
+        </ul>
+      </Section>
+
+      {/* Feature grid */}
+      <Section className="pt-0 sm:pt-0">
+        <SectionHeading
+          eyebrow="What members get"
+          title="Built to be used, not just browsed"
+          description="Every piece of the library is designed to go from 'that looks useful' to 'live on my store' in minutes."
+        />
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            {
+              icon: Eye,
+              title: "Live preview before you install",
+              text: "Every component renders in a live sandbox first - see exactly what customers will see before touching your theme.",
+            },
+            {
+              icon: Code2,
+              title: "Readable, commented source",
+              text: "Full Liquid, CSS and JS with install notes - written to be understood and customised, not minified into a black box.",
+            },
+            {
+              icon: Layers,
+              title: "Theme-agnostic by design",
+              text: "Built for OS 2.0 themes with CSS-variable fallbacks - works on Dawn, Dawn-based and custom themes without fighting your styles.",
+            },
+            {
+              icon: FolderDown,
+              title: "Bundles alongside the code",
+              text: "Shopify themes, WordPress landing pages and plugins ship together via a secure Drive link - one payment, one library.",
+            },
+            {
+              icon: Zap,
+              title: "No app tax",
+              text: "Snippets run on Shopify's own servers - no external scripts, no recurring fees, no slowing your storefront down.",
+            },
+            {
+              icon: Handshake,
+              title: "Honest licensing, always",
+              text: "Nothing ships until redistribution rights are confirmed. If it's not cleared, it's not published - that is the whole point.",
+            },
+          ].map(({ icon: Icon, title, text }) => (
+            <li key={title} className="rounded-2xl border border-line bg-ink-900/60 p-5 transition hover:border-accent/40">
+              <Icon aria-hidden className="size-5 text-accent" />
+              <h3 className="mt-3 font-display text-base font-semibold">{title}</h3>
+              <p className="mt-1.5 text-sm text-muted">{text}</p>
             </li>
           ))}
         </ul>
