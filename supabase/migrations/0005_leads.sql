@@ -10,3 +10,7 @@ create unique index if not exists leads_email_source_key on public.leads (email,
 
 -- Only the server (service role) writes. No client read needed.
 alter table public.leads enable row level security;
+
+-- RLS blocks anon/authenticated entirely; the service role still needs table grants.
+grant select, insert, update, delete on table public.leads to service_role;
+revoke all on table public.leads from anon, authenticated;
