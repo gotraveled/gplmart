@@ -13,13 +13,13 @@ export default function PaymentFailedPage() {
         <h1 className="mt-5 font-display text-3xl font-semibold">Payment was not completed</h1>
         <p className="mt-3 text-muted">
           No access has been granted. You can try again with the same or a different payment method. If money
-          was deducted, your bank normally reverses failed payments automatically. If your account later shows
-          active access, no further action is needed.
+          was deducted, your bank normally reverses failed payments automatically. If a payment went through
+          but you were not redirected, contact us with your order reference.
         </p>
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           <ButtonLink href="/checkout">Retry payment</ButtonLink>
-          <ButtonLink href="/account" variant="secondary">
-            View my account
+          <ButtonLink href="/" variant="secondary">
+            Back to home
           </ButtonLink>
         </div>
       </div>

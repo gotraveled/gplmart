@@ -37,9 +37,10 @@ export type VerifyOutcome = "paid" | "pending" | "failed" | "invalid_signature" 
 /** Server-side verification of a Checkout success callback. Access is never granted from the client claim alone. */
 export async function verifyCheckoutPayment(args: {
   input: CheckoutInput;
-  userId: string;
+  /** Null for guest orders - any verified payment for the order fulfils it. */
+  userId: string | null;
   keySecret: string;
-  getOrder: (razorpayOrderId: string) => Promise<{ userId: string; amountPaise: number; currency: string } | null>;
+  getOrder: (razorpayOrderId: string) => Promise<{ userId: string | null; amountPaise: number; currency: string } | null>;
   fetchPayment: (paymentId: string) => Promise<PaymentLike>;
   fulfil: Fulfil;
 }): Promise<VerifyOutcome> {
@@ -48,7 +49,7 @@ export async function verifyCheckoutPayment(args: {
     return "invalid_signature";
   }
   const order = await args.getOrder(input.razorpay_order_id);
-  if (!order || order.userId !== userId) return "forbidden";
+  if (!order || (order.userId !== null && order.userId !== userId)) return "forbidden";
 
   const payment = await args.fetchPayment(input.razorpay_payment_id);
   if (

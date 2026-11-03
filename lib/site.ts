@@ -21,8 +21,7 @@ export const footerLinks = {
     { href: "/library", label: "Library" },
     { href: "/playground", label: "Playground" },
     { href: "/checkout", label: "Get access" },
-    { href: "/account", label: "My account" },
-    { href: "/login", label: "Sign in" },
+    { href: "/access", label: "Members area" },
   ],
   Company: [
     { href: "/about", label: "About" },

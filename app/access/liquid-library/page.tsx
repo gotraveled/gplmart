@@ -6,7 +6,6 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
-import { requireAccess } from "@/lib/auth";
 import { listCategories, listPublishedSummaries } from "@/lib/snippets";
 import { filterSnippets } from "@/lib/snippet-utils";
 import { cn } from "@/lib/cn";
@@ -14,7 +13,6 @@ import { cn } from "@/lib/cn";
 export const metadata: Metadata = { title: "Liquid code library", robots: { index: false } };
 
 export default async function LibraryPage({ searchParams }: { searchParams: Promise<{ q?: string; category?: string }> }) {
-  await requireAccess("/access/liquid-library");
   const sp = await searchParams;
   const q = (sp.q ?? "").trim().slice(0, 100);
   const [all, categories] = await Promise.all([listPublishedSummaries(), listCategories()]);

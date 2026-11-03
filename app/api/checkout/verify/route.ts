@@ -1,4 +1,3 @@
-import { getUser } from "@/lib/auth";
 import { isSupabaseConfigured, razorpayCreds } from "@/lib/env";
 import { json, sameOrigin } from "@/lib/http";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
@@ -12,10 +11,7 @@ export async function POST(req: Request) {
   if (!sameOrigin(req)) return json({ error: "forbidden" }, 403);
   const creds = razorpayCreds();
   if (!isSupabaseConfigured() || !creds) return json({ error: "not_configured" }, 503);
-
-  const user = await getUser();
-  if (!user) return json({ error: "unauthenticated" }, 401);
-  if (!rateLimit(`verify:${user.id}:${clientIp(req.headers)}`, 20, 10 * 60_000)) return json({ error: "rate_limited" }, 429);
+  if (!rateLimit(`verify:${clientIp(req.headers)}`, 20, 10 * 60_000)) return json({ error: "rate_limited" }, 429);
 
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
   const input = {
@@ -30,7 +26,7 @@ export async function POST(req: Request) {
   try {
     const outcome = await verifyCheckoutPayment({
       input,
-      userId: user.id,
+      userId: null,
       keySecret: creds.keySecret,
       getOrder: getOrderForVerification,
       fetchPayment,

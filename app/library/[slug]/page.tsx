@@ -86,7 +86,7 @@ export default async function PublicResourcePage({ params }: { params: Promise<{
             <ButtonLink href={`/access/liquid-library/${snippet.slug}`} variant="secondary" className="mt-2.5 w-full">
               Already a member? Open it <ArrowRight aria-hidden className="size-4" />
             </ButtonLink>
-            <p className="mt-4 text-xs text-subtle">One-time payment. Access stays linked to your account.</p>
+            <p className="mt-4 text-xs text-subtle">One-time payment. Access link delivered via WhatsApp.</p>
           </aside>
         </div>
       </Container>

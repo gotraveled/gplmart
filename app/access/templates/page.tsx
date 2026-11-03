@@ -3,10 +3,7 @@ import { ExternalLink, Info } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { ButtonLink } from "@/components/ui/button";
-import { deliveryUrlFor } from "@/lib/access-rules";
-import { getAccessState, requireUser } from "@/lib/auth";
 import { getSetting } from "@/lib/settings";
-import { redirect } from "next/navigation";
 
 export const metadata: Metadata = { title: "Template bundles", robots: { index: false } };
 
@@ -19,12 +16,8 @@ const steps = [
 ];
 
 export default async function TemplatesPage() {
-  const user = await requireUser("/access/templates");
-  const state = await getAccessState(user);
-  if (state === "no_entitlement") redirect("/checkout");
-  if (state === "content_pending") redirect("/access/pending");
-  // The URL is only read after the authorisation decision above.
-  const url = await deliveryUrlFor(state, () => getSetting("drive_url"));
+  // The layout's password gate is the only thing standing between visitors and this URL.
+  const url = (await getSetting("drive_url")).trim();
 
   return (
     <>

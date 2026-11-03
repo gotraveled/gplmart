@@ -12,7 +12,7 @@ insert into public.snippet_categories (slug, name, sort_order) values
   ('utilities', 'Utilities', 7)
 on conflict do nothing;
 
-insert into public.snippets (slug, title, description, category_slug, tags, filename, source, status, code, preview_html) values
+insert into public.snippets (slug, title, description, category_slug, tags, filename, source, status, code, preview_html, is_demo) values
 ('free-shipping-progress', 'Free shipping progress bar',
  'Shows how much more a customer must spend to reach a free shipping threshold.',
  'cart', array['cart','shipping','progress','demo'], 'free-shipping-progress.liquid', 'GPLMart demo (original)', 'published',
@@ -26,7 +26,7 @@ $code${%- assign threshold = 5000 | times: 100 -%}
     <p>You have unlocked free shipping.</p>
   {%- endif -%}
 </div>$code$,
-$p$<div style="font-family:system-ui;padding:24px"><p>Add Rs. 1,200.00 more for free shipping.</p><progress max="500000" value="380000" style="width:100%"></progress></div>$p$),
+$p$<div style="font-family:system-ui;padding:24px"><p>Add Rs. 1,200.00 more for free shipping.</p><progress max="500000" value="380000" style="width:100%"></progress></div>$p$, true),
 
 ('product-badges', 'Product badges',
  'Renders Sale and Sold out badges from product data.',
@@ -36,7 +36,7 @@ $code${%- if product.available == false -%}
 {%- elsif product.compare_at_price > product.price -%}
   <span class="badge badge--sale">Sale</span>
 {%- endif -%}$code$,
-$p$<div style="font-family:system-ui;padding:24px"><span style="background:#e11d48;color:#fff;padding:4px 10px;border-radius:999px;font-size:12px">Sale</span> <span style="background:#475569;color:#fff;padding:4px 10px;border-radius:999px;font-size:12px">Sold out</span></div>$p$),
+$p$<div style="font-family:system-ui;padding:24px"><span style="background:#e11d48;color:#fff;padding:4px 10px;border-radius:999px;font-size:12px">Sale</span> <span style="background:#475569;color:#fff;padding:4px 10px;border-radius:999px;font-size:12px">Sold out</span></div>$p$, true),
 
 ('breadcrumbs', 'Breadcrumb navigation',
  'Accessible breadcrumbs for product, collection and page templates.',
@@ -52,7 +52,7 @@ $code$<nav aria-label="Breadcrumb">
     {%- endif -%}
   </ol>
 </nav>$code$,
-$p$<div style="font-family:system-ui;padding:24px;font-size:14px">Home / Summer / <strong>Linen shirt</strong></div>$p$),
+$p$<div style="font-family:system-ui;padding:24px;font-size:14px">Home / Summer / <strong>Linen shirt</strong></div>$p$, true),
 
 ('announcement-bar', 'Announcement bar section',
  'A theme section with editable text and link for a top-of-page message.',
@@ -72,7 +72,7 @@ $code$<div class="announcement" style="background: {{ section.settings.bg }}">
   ]
 }
 {% endschema %}$code$,
-$p$<div style="font-family:system-ui;background:#111827;color:#fff;text-align:center;padding:10px;font-size:14px">Welcome to our store</div>$p$),
+$p$<div style="font-family:system-ui;background:#111827;color:#fff;text-align:center;padding:10px;font-size:14px">Welcome to our store</div>$p$, true),
 
 ('collection-product-count', 'Collection product count',
  'Displays the number of products in the current collection with correct pluralisation.',
@@ -81,7 +81,7 @@ $code$<p class="collection-count">
   {{ collection.products_count }}
   {% if collection.products_count == 1 %}product{% else %}products{% endif %}
 </p>$code$,
-$p$<div style="font-family:system-ui;padding:24px">24 products</div>$p$),
+$p$<div style="font-family:system-ui;padding:24px">24 products</div>$p$, true),
 
 ('featured-product-section', 'Featured product section',
  'A section that highlights a chosen product with image, title, price and button.',
@@ -101,7 +101,7 @@ $code${%- assign p = section.settings.product -%}
   "settings": [{ "type": "product", "id": "product", "label": "Product" }]
 }
 {% endschema %}$code$,
-$p$<div style="font-family:system-ui;padding:24px"><div style="height:80px;background:#e5e7eb;border-radius:8px"></div><h3>Linen shirt</h3><p>Rs. 2,499.00</p><a style="background:#111827;color:#fff;padding:8px 14px;border-radius:6px;display:inline-block">View product</a></div>$p$),
+$p$<div style="font-family:system-ui;padding:24px"><div style="height:80px;background:#e5e7eb;border-radius:8px"></div><h3>Linen shirt</h3><p>Rs. 2,499.00</p><a style="background:#111827;color:#fff;padding:8px 14px;border-radius:6px;display:inline-block">View product</a></div>$p$, true),
 
 ('safe-image-or-placeholder', 'Image with placeholder fallback',
  'Outputs a responsive image or a placeholder SVG when no image is set.',
@@ -111,7 +111,7 @@ $code${%- if image != blank -%}
 {%- else -%}
   {{ 'product-1' | placeholder_svg_tag: 'placeholder' }}
 {%- endif -%}$code$,
-$p$<div style="font-family:system-ui;padding:24px"><div style="height:80px;background:#e5e7eb;border-radius:8px;display:grid;place-items:center;color:#6b7280">placeholder</div></div>$p$)
+$p$<div style="font-family:system-ui;padding:24px"><div style="height:80px;background:#e5e7eb;border-radius:8px;display:grid;place-items:center;color:#6b7280">placeholder</div></div>$p$, true)
 on conflict (slug) do nothing;
 
 -- Requires migration 0002: mark the demo rows so the constraint that blocks

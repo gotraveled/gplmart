@@ -3,7 +3,6 @@ import Link from "next/link";
 import { ArrowRight, Code2, FolderDown } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
-import { requireAccess } from "@/lib/auth";
 
 export const metadata: Metadata = { title: "Resource hub", robots: { index: false } };
 
@@ -13,7 +12,6 @@ const areas = [
 ];
 
 export default async function AccessHub() {
-  await requireAccess("/access");
   return (
     <>
       <PageHeader title="Your resource hub" description="Everything included in your all-access membership. No further payment is required." />

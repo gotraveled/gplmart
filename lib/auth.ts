@@ -38,7 +38,7 @@ export const isAdmin = cache(async (userId: string): Promise<boolean> => {
 
 export async function requireAdmin(): Promise<SessionUser> {
   const user = await requireUser("/admin");
-  if (!(await isAdmin(user.id))) redirect("/account");
+  if (!(await isAdmin(user.id))) redirect("/");
   return user;
 }
 

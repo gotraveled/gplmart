@@ -1,7 +1,9 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 
-const PROTECTED = ["/account", "/access", "/checkout", "/admin", "/payment"];
+// Only /admin still requires a Supabase session. Buyers check out anonymously and
+// the /access hub is protected by a shared password (see lib/access-gate.ts).
+const PROTECTED = ["/admin"];
 
 /**
  * Refreshes the Supabase session cookie and redirects anonymous visitors away from

@@ -20,3 +20,9 @@ export function isRazorpayTestMode(): boolean {
 }
 
 export const isLiveCheckoutEnabled = () => process.env.CHECKOUT_LIVE_ENABLED === "true";
+
+/** Shared password that unlocks the /access resource hub (delivered to buyers manually). */
+export const accessPassword = () => process.env.ACCESS_PASSWORD ?? "";
+
+/** WhatsApp number buyers are sent to after payment, e.g. "919876543210". */
+export const whatsappNumber = () => (process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "").replace(/\D/g, "");

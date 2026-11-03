@@ -124,7 +124,7 @@ const faqs: FAQ[] = [
   {
     question: "What exactly do members get?",
     answer:
-      "Access to the members-only Liquid code library (full source, previews, copy and downloads) plus the Google Drive link to authorised Shopify theme bundles and WordPress landing-page packs - all through your account.",
+      "Access to the members-only Liquid code library (full source, previews, copy and downloads) plus the Google Drive link to authorised Shopify theme bundles and WordPress landing-page packs - delivered right after payment.",
   },
   {
     question: "Is this a subscription?",
@@ -510,7 +510,7 @@ export default function HomePage() {
                 "Members-only Liquid code library: source, previews, copy & downloads",
                 "Shopify theme & WordPress page bundles via secure Drive link",
                 "Live sandbox to test components before installing",
-                "Account-based access - sign in any time, on any device",
+                "Instant access after payment - no account or signup needed",
               ].map((t) => (
                 <li key={t} className="flex gap-3">
                   <Check aria-hidden className="mt-0.5 size-4 shrink-0 text-accent" />

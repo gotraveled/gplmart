@@ -4,7 +4,6 @@ import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
 import { SnippetViewer } from "@/components/library/snippet-viewer";
-import { requireAccess } from "@/lib/auth";
 import { getPublishedSnippet, listCategories } from "@/lib/snippets";
 import { buildPreviewDoc } from "@/lib/snippet-utils";
 
@@ -12,7 +11,6 @@ export const metadata: Metadata = { title: "Snippet", robots: { index: false } }
 
 export default async function SnippetPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  await requireAccess(`/access/liquid-library/${slug}`);
   const [snippet, categories] = await Promise.all([getPublishedSnippet(slug), listCategories()]);
   if (!snippet) notFound();
   const category = categories.find((c) => c.slug === snippet.category_slug)?.name ?? snippet.category_slug;
