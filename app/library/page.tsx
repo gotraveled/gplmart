@@ -1,145 +1,112 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, FlaskConical, LockKeyhole, Search } from "lucide-react";
+import { ArrowRight, Code2, FileCode2, Layers, LockKeyhole, MessageSquareQuote, Puzzle, ShoppingBag } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
-import { Button, ButtonLink } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
-import { isSupabaseConfigured } from "@/lib/env";
-import { listCategories, listPublicSummaries } from "@/lib/snippets";
-import { filterSnippets } from "@/lib/snippet-utils";
-import { cn } from "@/lib/cn";
+import { ButtonLink } from "@/components/ui/button";
+import { examples } from "@/lib/playground/examples";
 
 export const metadata: Metadata = {
   title: "Resource library",
   description:
-    "Browse GPLMart's published Shopify Liquid resources: descriptions, categories, versions and previews. Source code and downloads are for members.",
+    "Everything included in GPLMart all-access: Shopify Liquid snippets and sections, theme bundles, WordPress themes, plugins and AI prompts.",
   alternates: { canonical: "/library" },
 };
 
-export const dynamic = "force-dynamic";
+const sections = [
+  {
+    icon: Code2,
+    title: "Shopify Liquid code & snippets",
+    tag: `${examples.length} components`,
+    text: "Original sections and snippets - product pages, cart, checkout, trust, marketing and navigation. Preview live in the playground, copy clean Liquid with install guides, paste into any OS 2.0 theme.",
+    href: "/playground",
+    cta: "Open the playground",
+    accent: true,
+  },
+  {
+    icon: ShoppingBag,
+    title: "Shopify themes",
+    tag: "Members",
+    text: "Storefront themes packaged for Shopify stores - picked for speed, mobile layout and conversion structure. Delivered through the members resource hub.",
+    href: "/access/templates",
+    cta: "Members area",
+  },
+  {
+    icon: Layers,
+    title: "WordPress themes",
+    tag: "GPL-licensed",
+    text: "GPL-licensed WordPress themes with the vendor licence preserved - install on unlimited sites including client projects. Complete files, no keys required.",
+    href: "/access/templates",
+    cta: "Members area",
+  },
+  {
+    icon: Puzzle,
+    title: "Shopify plugins",
+    tag: "Members",
+    text: "Plugin and extension bundles for storefront functionality - delivered with the same one-time access. No monthly app fees.",
+    href: "/access/templates",
+    cta: "Members area",
+  },
+  {
+    icon: MessageSquareQuote,
+    title: "AI prompts",
+    tag: "Free",
+    text: "Battle-tested prompts for store copy, product descriptions, marketing and support - free for everyone, no account needed.",
+    href: "/prompts",
+    cta: "Get free prompts",
+    accent: true,
+  },
+] as const;
 
-export default async function LibraryPage({ searchParams }: { searchParams: Promise<{ q?: string; category?: string }> }) {
-  const sp = await searchParams;
-  const q = (sp.q ?? "").trim().slice(0, 100);
-  const [all, categories] = isSupabaseConfigured()
-    ? await Promise.all([listPublicSummaries(), listCategories()])
-    : [[], []];
-  const category = categories.some((c) => c.slug === sp.category) ? (sp.category as string) : "";
-  const items = filterSnippets(all, categories, q, category);
-  const href = (cat: string) => `/library?${new URLSearchParams({ ...(q && { q }), ...(cat && { category: cat }) })}`;
-  const chip = (on: boolean) =>
-    cn(
-      "rounded-full border px-3.5 py-1.5 text-sm font-medium transition",
-      on ? "border-accent bg-accent/20" : "border-line-strong text-muted hover:bg-white/[0.06] hover:text-fg",
-    );
-
+export default function LibraryPage() {
   return (
     <>
       <PageHeader
         title="Resource library"
-        description="Every published Shopify Liquid resource. Free samples are fully open; member items show everything except the source."
+        description="Everything included in GPLMart all-access - code you can preview, and bundles delivered through the members area."
         crumbs={[{ label: "Library" }]}
       />
       <Container className="py-10">
-        <form role="search" action="/library" className="flex gap-3">
-          {category && <input type="hidden" name="category" value={category} />}
-          <div className="relative flex-1">
-            <label htmlFor="q" className="sr-only">
-              Search resources
-            </label>
-            <Search aria-hidden className="pointer-events-none absolute left-3 top-3.5 size-4 text-subtle" />
-            <input
-              id="q"
-              name="q"
-              type="search"
-              defaultValue={q}
-              maxLength={100}
-              placeholder="Search by title, description, category or tag"
-              className="h-11 w-full rounded-xl border border-line-strong bg-ink-900 pl-9 pr-3 text-sm"
-            />
-          </div>
-          <Button type="submit" className="h-11">
-            Search
-          </Button>
-        </form>
-
-        {categories.length > 0 && (
-          <nav aria-label="Categories" className="mt-5">
-            <ul className="flex flex-wrap gap-2">
-              <li>
-                <Link href={href("")} className={chip(!category)}>
-                  All
-                </Link>
-              </li>
-              {categories.map((c) => (
-                <li key={c.slug}>
-                  <Link href={href(c.slug)} className={chip(category === c.slug)}>
-                    {c.name}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </nav>
-        )}
-
-        {all.length > 0 && (
-          <p role="status" className="my-6 text-sm text-subtle">
-            {items.length} {items.length === 1 ? "resource" : "resources"}
-          </p>
-        )}
-        {items.length ? (
-          <ul className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {items.map((s) => (
-              <li key={s.slug}>
-                <Link
-                  href={`/library/${s.slug}`}
-                  className="group flex h-full flex-col rounded-2xl border border-line bg-ink-900/70 p-5 transition hover:-translate-y-1 hover:border-accent/50"
-                >
-                  <div className="flex flex-wrap items-center gap-1.5">
-                    <Badge>{categories.find((c) => c.slug === s.category_slug)?.name ?? s.category_slug}</Badge>
-                    {s.is_demo ? (
-                      <Badge className="border-mint/40 bg-mint/10 text-mint">Free</Badge>
-                    ) : (
-                      <Badge className="border-line-strong text-subtle">
-                        <LockKeyhole aria-hidden className="size-3" /> Members
-                      </Badge>
-                    )}
-                    {s.version && <Badge>v{s.version}</Badge>}
-                  </div>
-                  <h2 className="mt-3 font-display text-lg font-semibold">{s.title}</h2>
-                  <p className="mt-1.5 line-clamp-3 text-sm text-muted">{s.description}</p>
-                  {s.compatibility && <p className="mt-2 text-xs text-subtle">{s.compatibility}</p>}
-                  <span className="mt-auto inline-flex items-center gap-1.5 pt-4 text-sm font-medium text-accent">
-                    View details <ArrowRight aria-hidden className="size-4" />
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <div className="mt-8">
-            {all.length ? (
-              <EmptyState title="No resources match" description="Try a different search or category." href="/library" cta="Clear filters" />
-            ) : (
-              <div className="grid place-items-center rounded-2xl border border-dashed border-line-strong px-6 py-16 text-center">
-                <FlaskConical aria-hidden className="size-10 text-subtle" />
-                <h2 className="mt-4 font-display text-xl font-semibold">New resources are added weekly</h2>
-                <p className="mt-2 max-w-md text-muted">
-                  The members library keeps growing. In the meantime, the free playground
-                  has 20 working Liquid examples you can study and copy.
-                </p>
-                <div className="mt-6 flex flex-wrap justify-center gap-3">
-                  <ButtonLink href="/playground">Open the playground</ButtonLink>
-                  <ButtonLink href="/checkout" variant="secondary">
-                    <LockKeyhole aria-hidden className="size-4" /> About membership
-                  </ButtonLink>
-                </div>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          {sections.map((s) => (
+            <Link
+              key={s.title}
+              href={s.href}
+              className="group flex h-full flex-col rounded-2xl border border-line bg-ink-900/70 p-6 transition hover:-translate-y-1 hover:border-accent/50"
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className="grid size-11 place-items-center rounded-xl border border-accent/30 bg-accent/10 text-accent">
+                  <s.icon aria-hidden className="size-5" />
+                </span>
+                <Badge className={"accent" in s && s.accent ? "border-mint/40 bg-mint/10 text-mint" : "border-line-strong text-subtle"}>
+                  {s.tag !== "Members" && s.tag !== "Free" ? s.tag : s.tag === "Free" ? "Free" : <><LockKeyhole aria-hidden className="size-3" /> Members</>}
+                </Badge>
               </div>
-            )}
+              <h2 className="mt-4 font-display text-lg font-semibold group-hover:text-accent">{s.title}</h2>
+              <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">{s.text}</p>
+              <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-medium text-accent">
+                {s.cta} <ArrowRight aria-hidden className="size-4 transition group-hover:translate-x-0.5" />
+              </span>
+            </Link>
+          ))}
+
+          <div className="flex h-full flex-col rounded-2xl border border-accent/40 bg-accent/10 p-6">
+            <div className="flex items-center justify-between gap-2">
+              <span className="grid size-11 place-items-center rounded-xl border border-accent/40 bg-accent/15 text-accent">
+                <FileCode2 aria-hidden className="size-5" />
+              </span>
+            </div>
+            <h2 className="mt-4 font-display text-lg font-semibold">One payment. Everything.</h2>
+            <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">
+              All-access unlocks every snippet, section, theme bundle, plugin and future drop - in your local
+              currency, with a 30-day money-back guarantee.
+            </p>
+            <ButtonLink href="/checkout" className="mt-5 w-full">
+              Get all-access
+            </ButtonLink>
           </div>
-        )}
+        </div>
       </Container>
     </>
   );

@@ -16,7 +16,8 @@ import {
 import { InfoPage, infoMetadata } from "@/components/ui/info-page";
 import { ButtonLink } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { formatOfferPrice } from "@/lib/offer";
+import { GeoPrice } from "@/components/ui/geo-price";
+import { freeExampleIds } from "@/lib/playground/examples";
 
 export const metadata = infoMetadata(
   "How it works",
@@ -28,12 +29,12 @@ const steps = [
   {
     icon: Eye,
     title: "Preview in the sandbox",
-    text: "Every Liquid component renders live in the playground before you buy. Tweak colours, text and settings, watch the storefront output change, and inspect the code structure. Five examples are fully open - copy them free.",
+    text: `Every Liquid component renders live in the playground before you buy. Tweak colours, text and settings, watch the storefront output change, and inspect the code structure. ${freeExampleIds.size} examples are fully open - copy them free.`,
   },
   {
     icon: CreditCard,
     title: "One-time payment",
-    text: `Checkout is a single ${formatOfferPrice()} Razorpay payment - enter your name, email and WhatsApp number. No account, no signup, no subscription. Your card details never touch our servers.`,
+    text: "Checkout is a single secure payment in your local currency - enter your name, email and WhatsApp number. No account, no signup, no subscription. Your card details never touch our servers.",
   },
   {
     icon: MessageCircle,
@@ -164,7 +165,7 @@ export default function HowItWorksPage() {
           code, valid for 30 days.
         </li>
         <li>
-          <strong>Not a subscription</strong> - {formatOfferPrice()} once. No renewal, no monthly charge.
+          <strong>Not a subscription</strong> - <GeoPrice fallback="₹499" /> once, in your local currency. No renewal, no monthly charge.
         </li>
       </ul>
 
@@ -176,7 +177,7 @@ export default function HowItWorksPage() {
           Try the free playground <ArrowRight aria-hidden className="size-4" />
         </ButtonLink>
         <ButtonLink href="/checkout">
-          Get all-access &mdash; {formatOfferPrice()} <ArrowRight aria-hidden className="size-4" />
+          Get all-access &mdash; <GeoPrice fallback="₹499" /> <ArrowRight aria-hidden className="size-4" />
         </ButtonLink>
       </div>
     </InfoPage>

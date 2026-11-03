@@ -1,17 +1,43 @@
 import Link from "next/link";
+import { MapPin } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Logo } from "@/components/ui/logo";
 import { footerLinks } from "@/lib/site";
 
+const addresses = [
+  {
+    label: "India",
+    lines: ["Ramanashree Arcade, 18, Mahatma Gandhi Rd,", "Craig Park Layout, Ashok Nagar,", "Bengaluru, Karnataka 560001"],
+  },
+  {
+    label: "USA",
+    lines: ["Westwood Street,", "Hayward, California 94544"],
+  },
+];
+
 export function Footer() {
   return (
     <footer className="mt-12 border-t border-line bg-ink-900/60">
-      <Container className="grid gap-10 py-14 md:grid-cols-[1.4fr_repeat(3,1fr)]">
+      <Container className="grid gap-10 py-14 md:grid-cols-[1.6fr_repeat(3,1fr)]">
         <div>
           <Logo />
-          <p className="mt-4 max-w-xs text-sm text-muted">
-            Shopify Liquid code and storefront components, plus authorised template bundles. One-time all-access membership.
+          <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted">
+            GPLMart is an independent library of original Shopify Liquid snippets, theme sections and authorised
+            template bundles for merchants, developers and agencies. One payment, everything included - no
+            subscriptions, no per-item fees, no vendor lock-in.
           </p>
+          <div className="mt-6 grid gap-5 sm:grid-cols-2">
+            {addresses.map((a) => (
+              <div key={a.label} className="text-xs text-subtle">
+                <p className="flex items-center gap-1.5 font-semibold text-fg">
+                  <MapPin aria-hidden className="size-3.5 text-accent" /> {a.label}
+                </p>
+                {a.lines.map((l) => (
+                  <p key={l} className="mt-1 leading-relaxed">{l}</p>
+                ))}
+              </div>
+            ))}
+          </div>
         </div>
         {Object.entries(footerLinks).map(([group, links]) => (
           <nav key={group} aria-label={group}>

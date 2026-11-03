@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { razorpayCreds } from "@/lib/env";
 import { OFFER } from "@/lib/offer";
+import { geoPrice } from "@/lib/geo";
 import { createRazorpayOrder, fetchOrderPayments, fetchRazorpayPayment } from "./razorpay";
 import type { Fulfil, FulfilResult, WebhookStore } from "./fulfil";
 
@@ -48,14 +49,15 @@ export async function createOrderForUser(userId: string) {
 /** Guest checkout: no account required. Contact details are stored for reconciliation and manual fulfilment. */
 export async function createOrderForCustomer(
   customer: { name: string; email: string; phone: string },
-  opts: { extended?: boolean } = {},
+  opts: { extended?: boolean; country?: string | null } = {},
 ) {
   const creds = requireCreds();
   const db = createServiceClient();
-  const amountPaise = OFFER.pricePaise + (opts.extended ? OFFER.extendedAddonPaise : 0);
+  const tier = geoPrice(opts.country);
+  const amountUnits = tier.units + (opts.extended ? tier.addonUnits : 0);
   const order = await createRazorpayOrder(creds, {
-    amountPaise,
-    currency: OFFER.currency,
+    amountPaise: amountUnits,
+    currency: tier.currency,
     receipt: `gpl_${randomUUID().replace(/-/g, "").slice(0, 30)}`,
     notes: {
       plan: OFFER.plan,
@@ -67,15 +69,15 @@ export async function createOrderForCustomer(
   const { error } = await db.from("orders").insert({
     plan: OFFER.plan,
     razorpay_order_id: order.id,
-    amount_paise: amountPaise,
-    currency: OFFER.currency,
+    amount_paise: amountUnits,
+    currency: tier.currency,
     customer_name: customer.name,
     customer_email: customer.email,
     customer_phone: customer.phone,
     addon: opts.extended ? OFFER.extendedAddon : null,
   });
   if (error) throw new Error("could not record order");
-  return { orderId: order.id, amountPaise, currency: OFFER.currency, keyId: creds.keyId };
+  return { orderId: order.id, amountPaise: amountUnits, currency: tier.currency, keyId: creds.keyId };
 }
 
 export async function getOrderForVerification(razorpayOrderId: string) {

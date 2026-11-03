@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { GeoAddonPrice } from "@/components/ui/geo-price";
 
 interface RazorpayInstance {
   open(): void;
@@ -117,7 +118,7 @@ export function CheckoutForm({ label }: { label: string }) {
           className="mt-0.5 size-4 accent-[#c8f542]"
         />
         <span>
-          <span className="font-semibold">Extend to 12 months — +₹499</span>
+          <span className="font-semibold">Extend to 12 months — <GeoAddonPrice /></span>
           <span className="mt-0.5 block text-xs text-muted">
             Standard access is 30 days. This extends your members-area access to a full year - including every new
             snippet and bundle added in that time.

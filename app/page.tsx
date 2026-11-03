@@ -29,6 +29,7 @@ import { HomeSandbox } from "@/components/home/sandbox";
 import { faqs } from "@/lib/faq";
 import { getExample } from "@/lib/playground/examples";
 import { formatOfferPrice } from "@/lib/offer";
+import { GeoPrice } from "@/components/ui/geo-price";
 
 export const metadata: Metadata = {
   title: { absolute: "GPLMart - Shopify Liquid code & storefront components" },
@@ -40,7 +41,7 @@ export const metadata: Metadata = {
 const numbers = [
   { k: "200", v: "Components in the sandbox" },
   { k: "20", v: "Free examples live in the sandbox" },
-  { k: "4", v: "Resource areas under one access" },
+  { k: "5", v: "Resource areas under one access" },
   { k: "₹0/mo", v: "No monthly fee - ever" },
 ];
 
@@ -227,7 +228,7 @@ export default function HomePage() {
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-3">
               <ButtonLink href="/checkout" size="lg">
-                Get all-access &mdash; {price} <ArrowRight aria-hidden className="size-4" />
+                Get all-access &mdash; <GeoPrice fallback={price} /> <ArrowRight aria-hidden className="size-4" />
               </ButtonLink>
               <ButtonLink href="/playground" variant="secondary" size="lg">
                 Try the free playground
@@ -322,7 +323,7 @@ export default function HomePage() {
             <h3 className="font-display text-lg font-semibold">The GPLMart approach</h3>
             <ul className="mt-5 space-y-3.5 text-sm text-muted">
               {[
-                `One-time ${price} - full access, zero recurring charges`,
+                `One payment - full access, zero recurring charges`,
                 "Liquid code library plus theme & WordPress bundles",
                 "Native components - they run on Shopify's own servers",
                 "Readable source you customise in the theme editor",
@@ -515,7 +516,7 @@ export default function HomePage() {
           />
           <div className="mx-auto max-w-xl rounded-3xl border border-accent/35 bg-gradient-to-b from-ink-800 to-ink-900 p-8 text-center shadow-card sm:p-10">
             <p className="text-sm font-medium text-mint">All-access membership</p>
-            <p className="mt-3 font-display text-7xl font-semibold">{price}</p>
+            <p className="mt-3 font-display text-7xl font-semibold"><GeoPrice fallback={price} /></p>
             <p className="mt-2 text-sm text-muted">One-time payment in INR. Not a subscription.</p>
             <ul className="mx-auto mt-7 max-w-sm space-y-3 text-left text-sm text-muted">
               {[
@@ -532,7 +533,7 @@ export default function HomePage() {
               ))}
             </ul>
             <ButtonLink href="/checkout" size="lg" className="mt-8 w-full">
-              Get all-access &mdash; {price} <ArrowRight aria-hidden className="size-4" />
+              Get all-access &mdash; <GeoPrice fallback={price} /> <ArrowRight aria-hidden className="size-4" />
             </ButtonLink>
             <p className="mt-4 flex items-center justify-center gap-2 text-xs text-subtle">
               <LockKeyhole aria-hidden className="size-3.5 text-accent" />
@@ -566,7 +567,7 @@ export default function HomePage() {
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <ButtonLink href="/checkout" size="lg">
-              Get all-access &mdash; {price} <ArrowRight aria-hidden className="size-4" />
+              Get all-access &mdash; <GeoPrice fallback={price} /> <ArrowRight aria-hidden className="size-4" />
             </ButtonLink>
             <ButtonLink href="/playground" variant="secondary" size="lg">
               Open the playground
@@ -590,7 +591,7 @@ export default function HomePage() {
       <div className="fixed inset-x-0 bottom-0 z-40 border-t border-line bg-ink-950/95 px-4 py-3 backdrop-blur md:hidden">
         <div className="mx-auto flex max-w-md items-center justify-between gap-3">
           <div>
-            <p className="font-display text-lg font-semibold leading-none">{price}</p>
+            <p className="font-display text-lg font-semibold leading-none"><GeoPrice fallback={price} /></p>
             <p className="text-[0.65rem] text-subtle">One-time payment</p>
           </div>
           <ButtonLink href="/checkout" className="shrink-0">

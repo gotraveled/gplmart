@@ -3,6 +3,7 @@ import { checkoutOpen } from "@/lib/checkout-gate";
 import { json, sameOrigin } from "@/lib/http";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { createOrderForCustomer } from "@/lib/payments/service";
+import { countryFromHeaders } from "@/lib/geo";
 import { isContentReady } from "@/lib/settings";
 
 const text = (v: unknown, max: number) => (typeof v === "string" ? v.trim().slice(0, max) : "");
@@ -29,7 +30,9 @@ export async function POST(req: Request) {
 
   try {
     // Any amount/currency in the request body is deliberately ignored.
-    return json(await createOrderForCustomer(customer, { extended: body?.extended === true }));
+    return json(
+      await createOrderForCustomer(customer, { extended: body?.extended === true, country: countryFromHeaders(req.headers) }),
+    );
   } catch (e) {
     console.error("order creation failed", e instanceof Error ? e.message : e);
     return json({ error: "order_failed" }, 502);

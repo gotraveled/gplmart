@@ -28,7 +28,7 @@ export const faqs: FAQ[] = [
   {
     question: "How do I get access after paying?",
     answer:
-      "No account or signup is needed. Pay on Razorpay, then you are directed to WhatsApp with your order reference. Access to the members area is granted through your paid email - you request a one-time code on the access page and you are in for 30 days.",
+      "Access is instant - after checkout completes you receive your members-area details on WhatsApp and by email. The checkout page also takes you straight to the resource hub. No account or signup is needed; the members area opens with your paid email or the access password.",
   },
   {
     question: "Can I use snippets on client stores?",
@@ -36,9 +36,24 @@ export const faqs: FAQ[] = [
       "Yes - GPLMart-written snippets are licensed for your own stores and client projects. GPL-licensed WordPress items carry the GPL's freedoms, so you can install them on any site you manage. Redistributing the raw code library itself is not permitted.",
   },
   {
-    question: "How do I get access after paying?",
+    question: "What currency will I be charged in?",
     answer:
-      "Access is instant - after checkout completes you receive your members-area details on WhatsApp and by email. The checkout page also takes you straight to the resource hub.",
+      "The price is shown in your local currency automatically - INR for visitors in India, USD everywhere else (US, Canada, UK, EU and the rest of the world). The amount on the checkout page is the amount charged.",
+  },
+  {
+    question: "Is GPLMart available worldwide?",
+    answer:
+      "Yes. The site sells globally - pricing is localised by your location and international cards work through the same secure checkout. Delivery is fully digital, so there is no shipping or region restriction.",
+  },
+  {
+    question: "How long does access last?",
+    answer:
+      "Standard all-access is 30 days. The optional order bump at checkout extends it to a full 12 months - including every new snippet and bundle published in that period. Downloaded files remain usable under the licence after access ends.",
+  },
+  {
+    question: "What if the snippets don't work for me?",
+    answer:
+      "Every purchase is covered by a 30-day money-back guarantee - message us on WhatsApp and we refund the payment. Details are on the refund policy page.",
   },
   {
     question: "Is GPLMart affiliated with Shopify or WordPress?",

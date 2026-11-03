@@ -5,6 +5,7 @@ import { CheckoutForm } from "@/components/checkout/checkout-button";
 import { checkoutOpen } from "@/lib/checkout-gate";
 import { isLiveCheckoutEnabled, isRazorpayTestMode, razorpayCreds } from "@/lib/env";
 import { formatOfferPrice } from "@/lib/offer";
+import { GeoPrice } from "@/components/ui/geo-price";
 import { isContentReady } from "@/lib/settings";
 
 export const metadata: Metadata = { title: "Checkout", robots: { index: false } };
@@ -20,12 +21,12 @@ export default async function CheckoutPage() {
       <div className="w-full max-w-lg rounded-2xl border border-line-strong bg-ink-900/70 p-8 shadow-card">
         <h1 className="font-display text-3xl font-semibold">GPLMart All-Access</h1>
         <p className="mt-2 text-muted">One-time payment. Includes the Drive template bundles and the Liquid code library.</p>
-        <p className="mt-6 font-display text-5xl font-semibold">{price}</p>
-        <p className="mt-1 text-sm text-subtle">INR, one-time. No account needed.</p>
+        <p className="mt-6 font-display text-5xl font-semibold"><GeoPrice fallback={price} /></p>
+        <p className="mt-1 text-sm text-subtle">One-time, in your local currency. No account needed.</p>
 
         <p className="mt-4 rounded-lg border border-line bg-ink-950/60 p-3 text-xs text-muted">
-          The average conversion app costs <strong className="text-fg">₹1,500–3,000 per year</strong>. GPLMart is{" "}
-          <strong className="text-accent">{price} once</strong> - no renewals, no monthly fees.
+          The average conversion app costs <strong className="text-fg">$20-40 per year</strong>. GPLMart is{" "}
+          <strong className="text-accent"><GeoPrice fallback={price} /> once</strong> - no renewals, no monthly fees.
         </p>
 
         <div className="mt-8">
@@ -40,7 +41,7 @@ export default async function CheckoutPage() {
                   Razorpay <strong className="text-fg">test mode</strong>: no real money is charged.
                 </p>
               )}
-              <CheckoutForm label={`Pay ${price} securely`} />
+              <CheckoutForm label="Pay securely" />
             </>
           )}
 
