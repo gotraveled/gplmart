@@ -1599,6 +1599,307 @@ function FaqSchema({ v }: P) {
   );
 }
 
+function ImageWithText({ v }: P) {
+  return (
+    <div className="grid gap-4 p-4 sm:grid-cols-2 sm:items-center">
+      <div className={`aspect-[4/3] rounded-xl bg-[linear-gradient(135deg,#e0e7ff,#fbcfe8)] ${on(v, "flip") ? "sm:order-2" : ""}`} />
+      <div>
+        <p className="m-0 text-lg font-extrabold">{str(v, "heading") || "Heading"}</p>
+        <p className="m-0 mt-2 text-xs leading-relaxed text-neutral-600">{str(v, "text")}</p>
+        <button type="button" className="mt-3.5 rounded-full bg-neutral-900 px-5 py-2 text-xs font-bold text-white">Shop now</button>
+      </div>
+    </div>
+  );
+}
+
+function FeatureIcons({ v }: P) {
+  const accent = hex(v, "accent");
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 4);
+  return (
+    <div className="grid grid-cols-2 gap-4 p-4 text-center sm:grid-cols-4">
+      {rows.map((r) => {
+        const [t, c] = r.split("|").map((s) => s.trim());
+        return (
+          <div key={r}>
+            <svg className="mx-auto size-6" style={{ color: accent }} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+            <p className="m-0 mt-1.5 text-[0.72rem] font-bold">{t}</p>
+            <p className="m-0 mt-0.5 text-[0.6rem] text-neutral-500">{c}</p>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function ProductScroller({ v }: P) {
+  const items = [["Overshirt", "₹2,499"], ["Chinos", "₹1,799"], ["Sneakers", "₹2,199"], ["Cap", "₹499"], ["Tote", "₹899"]];
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2.5 text-sm font-extrabold">{str(v, "heading") || "You may also like"}</p>
+      <div className="flex gap-3 overflow-x-auto pb-1" style={{ scrollbarWidth: "none" }}>
+        {items.map(([t, pr], i) => (
+          <div key={t} className="w-28 shrink-0">
+            <div className="aspect-square rounded-xl" style={{ background: `linear-gradient(${135 + i * 50}deg,#e0e7ff,#fbcfe8,#bbf7d0)` }} />
+            <p className="m-0 mt-1.5 text-[0.68rem] font-semibold">{t}</p>
+            <p className="m-0 text-[0.62rem] text-neutral-500">{pr}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function StorySlider({ v }: P) {
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 6);
+  return (
+    <div className="flex gap-4 overflow-x-auto p-4" style={{ scrollbarWidth: "none" }}>
+      {rows.map((r) => {
+        const label = r.split("|")[0]?.trim() ?? "";
+        return (
+          <div key={r} className="flex shrink-0 flex-col items-center gap-1.5">
+            <span className="grid size-16 place-items-center rounded-full border-2 border-emerald-600 bg-neutral-100 text-xl font-extrabold">
+              {label.slice(0, 1)}
+            </span>
+            <span className="text-[0.6rem] font-semibold">{label}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function BulkOrder({ v }: P) {
+  const [qty, setQty] = useState<Record<string, number>>({});
+  const variants = [["S", "₹899"], ["M", "₹899"], ["L", "₹949"], ["XL", "₹949"]];
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2.5 text-sm font-extrabold">{str(v, "heading") || "Quick order"}</p>
+      <table className="w-full border-collapse text-[0.7rem]">
+        <thead><tr>{["Variant", "Price", "Qty"].map((h) => <th key={h} className="pb-1.5 text-left text-[0.58rem] uppercase tracking-wide text-neutral-400">{h}</th>)}</tr></thead>
+        <tbody>
+          {variants.map(([t = "", pr = ""]) => (
+            <tr key={t} className="border-t border-neutral-100">
+              <td className="py-1.5">{t}</td>
+              <td className="py-1.5">{pr}</td>
+              <td className="py-1.5">
+                <input type="number" min="0" value={qty[t] ?? 0} onChange={(e) => setQty({ ...qty, [t]: Number(e.target.value) })} className="w-14 rounded border border-neutral-300 px-1.5 py-1" />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <button type="button" className="mt-3 rounded-xl bg-neutral-900 px-5 py-2.5 text-xs font-extrabold text-white">Add to cart</button>
+    </div>
+  );
+}
+
+function TimelineSection({ v }: P) {
+  const accent = hex(v, "accent");
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 5);
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-3 text-sm font-extrabold">{str(v, "heading") || "How it works"}</p>
+      <ol className="m-0 p-0">
+        {rows.map((r, i) => {
+          const [t, c] = r.split("|").map((s) => s.trim());
+          return (
+            <li key={r} className="relative flex gap-3 pb-5 last:pb-0">
+              {i < rows.length - 1 && <span className="absolute left-3.5 top-7 bottom-0 w-0.5 bg-neutral-200" />}
+              <span className="grid size-7 shrink-0 place-items-center rounded-full text-[0.65rem] font-extrabold text-white" style={{ background: accent }}>{i + 1}</span>
+              <div>
+                <p className="m-0 text-[0.75rem] font-bold">{t}</p>
+                <p className="m-0 mt-0.5 text-[0.65rem] text-neutral-500">{c}</p>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
+function RatingStrip({ v }: P) {
+  return (
+    <div className="flex items-center gap-2 p-4 text-[0.72rem]">
+      <span className="tracking-widest text-amber-500">&#9733;&#9733;&#9733;&#9733;&#9733;</span>
+      <span className="font-extrabold">{str(v, "rating") || "0.0"}</span>
+      <span className="text-neutral-500 underline">{str(v, "count")} reviews</span>
+    </div>
+  );
+}
+
+function BundleSave({ v }: P) {
+  return (
+    <div className="m-4 rounded-xl border border-dashed border-emerald-400 bg-emerald-50/50 p-4">
+      <p className="m-0 mb-2 text-[0.65rem] font-bold uppercase tracking-wider text-emerald-600">Bundle &amp; save</p>
+      <div className="flex flex-wrap items-center gap-1.5 text-[0.72rem]">
+        <span>This product</span>
+        <span className="font-extrabold opacity-50">+</span>
+        <span>Organic cotton tee</span>
+        <span className="rounded-full bg-emerald-600 px-2 py-0.5 text-[0.6rem] font-extrabold text-white">{str(v, "save") || "Save"}</span>
+      </div>
+      <button type="button" className="mt-3 w-full rounded-xl bg-neutral-900 py-2.5 text-xs font-extrabold text-white">Add both - ₹3,298</button>
+    </div>
+  );
+}
+
+function NewsletterDiscount({ v }: P) {
+  const [email, setEmail] = useState("");
+  const [done, setDone] = useState(false);
+  return (
+    <div className="p-5 text-center">
+      <p className="m-0 text-lg font-extrabold">{str(v, "heading") || "Get 10% off"}</p>
+      <p className="m-0 mx-auto mt-1.5 max-w-80 text-[0.7rem] text-neutral-500">{str(v, "offer")}</p>
+      {done ? (
+        <p className="m-0 mt-3.5 text-sm font-bold text-emerald-600">You&apos;re in - check your inbox</p>
+      ) : (
+        <form onSubmit={(e) => { e.preventDefault(); setDone(true); }} className="mx-auto mt-3.5 flex max-w-80 gap-2">
+          <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Your email" className="flex-1 rounded-xl border border-neutral-300 px-3.5 py-2.5 text-sm outline-none" />
+          <button type="submit" className="rounded-xl bg-neutral-900 px-4 py-2.5 text-xs font-extrabold text-white">Subscribe</button>
+        </form>
+      )}
+    </div>
+  );
+}
+
+function VideoBanner({ v }: P) {
+  return (
+    <div className="p-4">
+      <div className="relative aspect-[21/9] overflow-hidden rounded-xl bg-[linear-gradient(135deg,#1e293b,#334155,#475569)]">
+        <div className="absolute inset-0 grid place-items-center">
+          <span className="grid size-12 place-items-center rounded-full bg-white/20 text-xl text-white backdrop-blur">&#9654;</span>
+        </div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+        <div className="absolute inset-0 flex flex-col justify-end p-5 text-white">
+          <p className="m-0 text-xl font-extrabold">{str(v, "heading") || "Made to move with you"}</p>
+          <p className="m-0 mt-1 text-[0.72rem] opacity-90">{str(v, "sub")}</p>
+          <button type="button" className="mt-3 w-fit rounded-full bg-white px-5 py-2 text-xs font-bold text-neutral-900">Shop now</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TestimonialWall({ v }: P) {
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 6);
+  return (
+    <div className="grid grid-cols-2 gap-3 p-4 sm:grid-cols-3">
+      {rows.map((r) => {
+        const [q, n] = r.split("|").map((s) => s.trim());
+        return (
+          <figure key={r} className="m-0 rounded-xl border border-neutral-200 bg-neutral-50 p-3.5">
+            <blockquote className="m-0 text-[0.72rem] leading-relaxed">&ldquo;{q}&rdquo;</blockquote>
+            <figcaption className="mt-2 text-[0.6rem] font-bold">{n}</figcaption>
+          </figure>
+        );
+      })}
+    </div>
+  );
+}
+
+function CollapsibleDetails({ v }: P) {
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 5);
+  return (
+    <div className="p-4">
+      {rows.map((r) => {
+        const [t, c] = r.split("|").map((s) => s.trim());
+        return (
+          <details key={r} className="border-b border-neutral-200 last:border-0">
+            <summary className="flex cursor-pointer justify-between py-3 text-[0.78rem] font-semibold">{t}<span className="text-neutral-400">+</span></summary>
+            <p className="m-0 pb-3 text-[0.7rem] leading-relaxed text-neutral-600">{c}</p>
+          </details>
+        );
+      })}
+    </div>
+  );
+}
+
+function UspUnderAtc({ v }: P) {
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 4);
+  return (
+    <div className="flex flex-wrap gap-x-4 gap-y-1.5 p-4">
+      {rows.map((r) => (
+        <span key={r} className="flex items-center gap-1 text-[0.65rem] text-neutral-600">
+          <svg className="size-3 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+          {r}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function VsCompetitor({ v }: P) {
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 5);
+  return (
+    <div className="p-4">
+      <div className="grid grid-cols-[1.4fr_0.7fr_1fr] gap-2 py-1.5 text-[0.6rem] font-bold uppercase tracking-wide">
+        <span /><span className="text-emerald-600">{str(v, "brand") || "Us"}</span><span className="text-neutral-400">Others</span>
+      </div>
+      {rows.map((r) => {
+        const [us, them] = r.split("|").map((s) => s.trim());
+        return (
+          <div key={r} className="grid grid-cols-[1.4fr_0.7fr_1fr] items-center gap-2 border-t border-neutral-100 py-2 text-[0.7rem]">
+            <span className="font-semibold">{us}</span>
+            <span className="font-extrabold text-emerald-600">&#10003;</span>
+            <span className="text-[0.65rem] text-neutral-400">{them}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function GalleryGrid({ v }: P) {
+  const cols = Number(str(v, "cols")) || 3;
+  return (
+    <div className="grid gap-2.5 p-4" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
+      {Array.from({ length: cols * 2 }, (_, i) => (
+        <div key={i} className="aspect-square rounded-xl" style={{ background: `linear-gradient(${135 + i * 45}deg,#e0e7ff,#fbcfe8,#bbf7d0)` }} />
+      ))}
+    </div>
+  );
+}
+
+function CartNotes({ v }: P) {
+  return (
+    <div className="p-4">
+      <label className="mb-1.5 block text-[0.72rem] font-semibold">{str(v, "label") || "Order instructions"}</label>
+      <textarea rows={3} placeholder={str(v, "placeholder")} className="w-full resize-y rounded-lg border border-neutral-300 p-2.5 text-[0.75rem] outline-none" />
+      <p className="m-0 mt-1 text-[0.6rem] text-neutral-400">Saves to order.note automatically</p>
+    </div>
+  );
+}
+
+function PillsNav({ v }: P) {
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 6);
+  return (
+    <div className="flex gap-2 overflow-x-auto p-4" style={{ scrollbarWidth: "none" }}>
+      {rows.map((r, i) => {
+        const label = r.split("|")[0]?.trim() ?? "";
+        return (
+          <span key={r} className={`shrink-0 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-[0.68rem] font-semibold ${i === 0 ? "border-transparent bg-neutral-900 text-white" : "border-neutral-300"}`}>
+            {label}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
+function CheckoutTrust({ v }: P) {
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 4);
+  return (
+    <div className="flex flex-wrap justify-center gap-x-5 gap-y-1.5 p-4">
+      {rows.map((r) => (
+        <span key={r} className="flex items-center gap-1 text-[0.62rem] text-neutral-500">
+          <svg className="size-3 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          {r}
+        </span>
+      ))}
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -1659,6 +1960,24 @@ const map: Record<string, (p: P) => ReactNode> = {
   "stats-counter": StatsCounter,
   "wishlist-button": WishlistButton,
   "faq-schema": FaqSchema,
+  "image-with-text": ImageWithText,
+  "feature-icons": FeatureIcons,
+  "product-scroller": ProductScroller,
+  "story-slider": StorySlider,
+  "bulk-order": BulkOrder,
+  "timeline": TimelineSection,
+  "rating-strip": RatingStrip,
+  "bundle-save": BundleSave,
+  "newsletter-discount": NewsletterDiscount,
+  "video-banner": VideoBanner,
+  "testimonial-wall": TestimonialWall,
+  "collapsible-details": CollapsibleDetails,
+  "usp-under-atc": UspUnderAtc,
+  "vs-competitor": VsCompetitor,
+  "gallery-grid": GalleryGrid,
+  "cart-notes": CartNotes,
+  "pills-nav": PillsNav,
+  "checkout-trust": CheckoutTrust,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {

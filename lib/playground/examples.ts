@@ -4502,6 +4502,967 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
 .gpl-faqs__item p { margin: 0.5rem 0 0; font-size: 0.78rem; color: rgb(var(--color-foreground, 100 116 139) / 0.8); }`,
     }),
   },
+  {
+    id: "image-with-text",
+    name: "Image + text split",
+    description: "The single most-installed section type - image one side, copy + CTA the other, desktop/mobile stacked.",
+    category: "Content",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 60 },
+      { id: "text", label: "Text", type: "text", maxLength: 240 },
+      { id: "flip", label: "Image right", type: "toggle" },
+    ],
+    defaults: { heading: "Built for everyday wear", text: "Cut from heavyweight organic cotton, pre-shrunk and garment-washed so it keeps its shape wash after wash.", flip: false },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-iwt${on(v, "flip") ? " gpl-iwt--flip" : ""}">
+  <div class="gpl-iwt__media">
+    {%- if section.settings.image -%}
+      {{ section.settings.image | image_url: width: 900 | image_tag: class: 'gpl-iwt__img', loading: 'lazy' }}
+    {%- endif -%}
+  </div>
+  <div class="gpl-iwt__body">
+    <h2 class="gpl-iwt__heading">{{ section.settings.heading }}</h2>
+    <p class="gpl-iwt__text">{{ section.settings.text }}</p>
+    {%- if section.settings.cta != blank -%}
+      <a class="gpl-iwt__btn" href="{{ section.settings.link }}">{{ section.settings.cta }}</a>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Image with text",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} },
+    { "type": "textarea", "id": "text", "label": "Text", "default": ${js(str(v, "text"))} },
+    { "type": "text", "id": "cta", "label": "Button label" },
+    { "type": "url", "id": "link", "label": "Button link" },
+    { "type": "checkbox", "id": "flip", "label": "Image on right", "default": false }
+  ],
+  "presets": [{ "name": "Image with text" }]
+}
+{% endschema %}`,
+      css: `.gpl-iwt { display: grid; gap: 1.5rem; align-items: center; padding: 1.5rem 0; }
+@media (min-width: 750px) {
+  .gpl-iwt { grid-template-columns: 1fr 1fr; gap: 3rem; }
+  .gpl-iwt--flip .gpl-iwt__media { order: 2; }
+}
+.gpl-iwt__img { width: 100%; border-radius: 14px; display: block; }
+.gpl-iwt__heading { margin: 0; font-size: 1.5rem; font-weight: 800; }
+.gpl-iwt__text { margin: 0.75rem 0 0; color: rgb(var(--color-foreground, 100 116 139) / 0.8); line-height: 1.6; }
+.gpl-iwt__btn {
+  display: inline-block;
+  margin-top: 1.25rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 999px;
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
+  text-decoration: none;
+  font-weight: 700;
+}`,
+    }),
+  },
+  {
+    id: "feature-icons",
+    name: "Feature icon row",
+    description: "Multicolumn icon + title + caption grid - the 'why us' strip on almost every winning homepage.",
+    category: "Content",
+    kind: "section",
+    controls: [
+      { id: "items", label: "Features (title|caption per line)", type: "text", maxLength: 400 },
+      { id: "accent", label: "Icon colour", type: "color" },
+    ],
+    defaults: {
+      items: "Free shipping|On all prepaid orders\n7-day returns|No questions asked\nSecure checkout|UPI, cards & wallets\nMade in India|Small-batch production",
+      accent: "#15803d",
+    },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-icons" style="--gpl-accent: {{ section.settings.accent }};">
+  {%- assign rows = section.settings.items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <div class="gpl-icons__item">
+      <svg class="gpl-icons__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+      <p class="gpl-icons__title">{{ parts[0] | strip }}</p>
+      {%- if parts[1] != blank -%}
+        <p class="gpl-icons__cap">{{ parts[1] | strip }}</p>
+      {%- endif -%}
+    </div>
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Feature icons",
+  "settings": [
+    { "type": "textarea", "id": "items", "label": "Features (title|caption per line)", "default": ${js(str(v, "items"))} },
+    { "type": "color", "id": "accent", "label": "Icon colour", "default": ${js(hex(v, "accent"))} }
+  ],
+  "presets": [{ "name": "Feature icons" }]
+}
+{% endschema %}`,
+      css: `.gpl-icons { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 1.25rem; padding: 1.5rem 0; text-align: center; }
+.gpl-icons__icon { width: 1.6rem; height: 1.6rem; color: var(--gpl-accent); margin: 0 auto; }
+.gpl-icons__title { margin: 0.5rem 0 0; font-size: 0.82rem; font-weight: 700; }
+.gpl-icons__cap { margin: 0.25rem 0 0; font-size: 0.7rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+    }),
+  },
+  {
+    id: "product-scroller",
+    name: "Horizontal product scroller",
+    description: "A swipeable row of product cards - featured collection without the grid layout.",
+    category: "Content",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+    ],
+    defaults: { heading: "You may also like" },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-scroller">
+  <p class="gpl-scroller__heading">{{ section.settings.heading }}</p>
+  <div class="gpl-scroller__track">
+    {%- assign col = collections[section.settings.collection] | default: collections.all -%}
+    {%- for p in col.products limit: 8 -%}
+      <a class="gpl-scroller__card" href="{{ p.url }}">
+        {{ p.featured_image | image_url: width: 400 | image_tag: class: 'gpl-scroller__img', loading: 'lazy' }}
+        <p class="gpl-scroller__title">{{ p.title }}</p>
+        <p class="gpl-scroller__price">{{ p.price | money }}</p>
+      </a>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Product scroller",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} },
+    { "type": "collection", "id": "collection", "label": "Collection" }
+  ],
+  "presets": [{ "name": "Product scroller" }]
+}
+{% endschema %}`,
+      css: `.gpl-scroller { padding: 1.5rem 0; }
+.gpl-scroller__heading { margin: 0 0 1rem; font-size: 1rem; font-weight: 800; }
+.gpl-scroller__track {
+  display: flex;
+  gap: 0.9rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  padding-bottom: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+}
+.gpl-scroller__card {
+  flex: 0 0 9.5rem;
+  scroll-snap-align: start;
+  text-decoration: none;
+  color: inherit;
+}
+.gpl-scroller__img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; display: block; }
+.gpl-scroller__title { margin: 0.5rem 0 0; font-size: 0.75rem; font-weight: 600; }
+.gpl-scroller__price { margin: 0.15rem 0 0; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+    }),
+  },
+  {
+    id: "story-slider",
+    name: "Story circles slider",
+    description: "Instagram-style circular story links - tap-through categories that feel native to shoppers.",
+    category: "Headers & navigation",
+    kind: "section",
+    controls: [
+      { id: "items", label: "Circles (label|collection per line)", type: "text", maxLength: 200 },
+    ],
+    defaults: { items: "New in|new-arrivals\nBestsellers|bestsellers\nSale|sale\nUnder \u20b9999|under-999\nSets|sets" },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-stories">
+  {%- assign rows = section.settings.items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <a class="gpl-stories__item" href="{{ routes.collections_url }}/{{ parts[1] | strip | handleize }}">
+      <span class="gpl-stories__ring">
+        <span class="gpl-stories__letter">{{ parts[0] | strip | slice: 0 }}</span>
+      </span>
+      <span class="gpl-stories__label">{{ parts[0] | strip }}</span>
+    </a>
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Story circles",
+  "settings": [
+    { "type": "textarea", "id": "items", "label": "Circles (label|collection per line)", "default": ${js(str(v, "items"))} }
+  ],
+  "presets": [{ "name": "Story circles" }]
+}
+{% endschema %}`,
+      css: `.gpl-stories { display: flex; gap: 1rem; overflow-x: auto; padding: 1rem 0.5rem; scrollbar-width: none; }
+.gpl-stories::-webkit-scrollbar { display: none; }
+.gpl-stories__item { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; text-decoration: none; color: inherit; flex: 0 0 auto; }
+.gpl-stories__ring {
+  display: grid;
+  place-items: center;
+  width: 4rem;
+  height: 4rem;
+  border-radius: 999px;
+  border: 2px solid rgb(var(--color-button, 21 128 61));
+  padding: 0.2rem;
+}
+.gpl-stories__letter {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.12);
+  font-weight: 800;
+  font-size: 1.2rem;
+}
+.gpl-stories__label { font-size: 0.62rem; font-weight: 600; }`,
+    }),
+  },
+  {
+    id: "bulk-order",
+    name: "B2B quick-order table",
+    description: "Variant rows with quantity inputs and one 'add all' - the $31 section B2B and wholesale stores pay for.",
+    category: "Cart & checkout",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+    ],
+    defaults: { heading: "Quick order" },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<gpl-bulk class="gpl-bulk">
+  <p class="gpl-bulk__heading">{{ section.settings.heading }}</p>
+  {%- assign p = all_products[section.settings.product] -%}
+  {%- if p -%}
+    <table class="gpl-bulk__table">
+      <thead><tr><th>Variant</th><th>Price</th><th>Qty</th></tr></thead>
+      <tbody>
+        {%- for variant in p.variants -%}
+          <tr>
+            <td>{{ variant.title }}{% unless variant.available %} <em>(sold out)</em>{% endunless %}</td>
+            <td>{{ variant.price | money }}</td>
+            <td><input type="number" min="0" value="0" data-variant="{{ variant.id }}" {% unless variant.available %}disabled{% endunless %}></td>
+          </tr>
+        {%- endfor -%}
+      </tbody>
+    </table>
+    <button type="button" class="gpl-bulk__add" data-bulk-add>Add to cart</button>
+  {%- else -%}
+    <p class="gpl-bulk__hint">Pick a product in the section settings.</p>
+  {%- endif -%}
+</gpl-bulk>
+
+{% schema %}
+{
+  "name": "Quick order",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} },
+    { "type": "product", "id": "product", "label": "Product" }
+  ],
+  "presets": [{ "name": "Quick order" }]
+}
+{% endschema %}`,
+      css: `.gpl-bulk { padding: 1.5rem 0; }
+.gpl-bulk__heading { margin: 0 0 1rem; font-size: 1rem; font-weight: 800; }
+.gpl-bulk__table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+.gpl-bulk__table th { text-align: left; padding: 0.5rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-bulk__table td { padding: 0.5rem; border-top: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.18); }
+.gpl-bulk__table input {
+  width: 4rem;
+  padding: 0.35rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 7px;
+}
+.gpl-bulk__add {
+  margin-top: 1rem;
+  padding: 0.75rem 1.75rem;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
+  font-weight: 800;
+  cursor: pointer;
+}`,
+      js: `document.querySelectorAll('gpl-bulk').forEach((el) => {
+  el.querySelector('[data-bulk-add]').addEventListener('click', async () => {
+    const items = [...el.querySelectorAll('input[data-variant]')]
+      .map((i) => ({ id: Number(i.dataset.variant), quantity: Number(i.value) }))
+      .filter((i) => i.quantity > 0);
+    if (!items.length) return;
+    await fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items }),
+    });
+    window.location.href = '/cart';
+  });
+});`,
+    }),
+  },
+  {
+    id: "timeline",
+    name: "Process / story timeline",
+    description: "Numbered steps down a vertical line - 'how it works', brand story or delivery process.",
+    category: "Content",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+      { id: "items", label: "Steps (title|caption per line)", type: "text", maxLength: 400 },
+      { id: "accent", label: "Dot colour", type: "color" },
+    ],
+    defaults: {
+      heading: "From our workshop to your door",
+      items: "Order placed|Cut and packed within 24 hours\nShips|Traced courier, tracking shared instantly\nDelivered|3-6 business days, COD or prepaid\nAfter the sale|7-day returns, real support on WhatsApp",
+      accent: "#5eead4",
+    },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-tl" style="--gpl-accent: {{ section.settings.accent }};">
+  {%- if section.settings.heading != blank -%}
+    <h2 class="gpl-tl__heading">{{ section.settings.heading }}</h2>
+  {%- endif -%}
+  <ol class="gpl-tl__list">
+    {%- assign rows = section.settings.items | newline_to_br | split: '<br />' -%}
+    {%- for row in rows -%}
+      {%- assign parts = row | strip | split: '|' -%}
+      <li class="gpl-tl__step">
+        <span class="gpl-tl__num">{{ forloop.index }}</span>
+        <div>
+          <p class="gpl-tl__title">{{ parts[0] | strip }}</p>
+          <p class="gpl-tl__cap">{{ parts[1] | strip }}</p>
+        </div>
+      </li>
+    {%- endfor -%}
+  </ol>
+</div>
+
+{% schema %}
+{
+  "name": "Timeline",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} },
+    { "type": "textarea", "id": "items", "label": "Steps (title|caption per line)", "default": ${js(str(v, "items"))} },
+    { "type": "color", "id": "accent", "label": "Dot colour", "default": ${js(hex(v, "accent"))} }
+  ],
+  "presets": [{ "name": "Timeline" }]
+}
+{% endschema %}`,
+      css: `.gpl-tl { padding: 1.5rem 0; }
+.gpl-tl__heading { margin: 0 0 1.25rem; font-size: 1rem; font-weight: 800; }
+.gpl-tl__list { margin: 0; padding: 0; list-style: none; }
+.gpl-tl__step {
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  position: relative;
+}
+.gpl-tl__step:last-child { padding-bottom: 0; }
+.gpl-tl__step::before {
+  content: "";
+  position: absolute;
+  left: 0.85rem;
+  top: 1.9rem;
+  bottom: 0;
+  width: 2px;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.2);
+}
+.gpl-tl__step:last-child::before { display: none; }
+.gpl-tl__num {
+  display: grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 999px;
+  background: var(--gpl-accent);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.gpl-tl__title { margin: 0; font-weight: 700; font-size: 0.82rem; }
+.gpl-tl__cap { margin: 0.25rem 0 0; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+    }),
+  },
+  {
+    id: "rating-strip",
+    name: "Rating strip near title",
+    description: "A single line under the product title - stars, count, 'read reviews' anchor link. Small, high-impact.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "rating", label: "Rating", type: "text", maxLength: 3 },
+      { id: "count", label: "Review count", type: "text", maxLength: 8 },
+    ],
+    defaults: { rating: "4.8", count: "1243" },
+    install: [
+      ...snippetSteps("rating-strip.liquid"),
+      "Render it right under the product title in the main-product section - shoppers decide in the first scroll.",
+    ],
+    files: (v) => ({
+      liquid: `<a class="gpl-rate" href="#reviews" aria-label="Rated {{ rating }} out of 5 - read reviews">
+  <span class="gpl-rate__stars">
+    {%- assign full = rating | plus: 0 | floor -%}
+    {%- for i in (1..5) -%}{%- if i <= full -%}&#9733;{%- else -%}&#9734;{%- endif -%}{%- endfor -%}
+  </span>
+  <span class="gpl-rate__num">{{ rating }}</span>
+  <span class="gpl-rate__count">{{ count }} reviews</span>
+</a>`,
+      css: `.gpl-rate {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  text-decoration: none;
+  color: inherit;
+  font-size: 0.75rem;
+}
+.gpl-rate__stars { color: rgb(var(--color-button, 245 158 11)); letter-spacing: 0.1em; font-size: 0.8rem; }
+.gpl-rate__num { font-weight: 800; }
+.gpl-rate__count { color: rgb(var(--color-foreground, 100 116 139) / 0.75); text-decoration: underline; }`,
+      usage: `{% render 'rating-strip', rating: ${js(str(v, "rating"))}, count: ${js(str(v, "count"))} %}`,
+    }),
+  },
+  {
+    id: "bundle-save",
+    name: "Bundle & save offer",
+    description: "'Buy these two together, save X' with a savings pill - the simplest AOV lift that works.",
+    category: "Cart & checkout",
+    kind: "snippet",
+    controls: [
+      { id: "handle", label: "Second product handle", type: "text", maxLength: 60 },
+      { id: "save", label: "Savings text", type: "text", maxLength: 20 },
+    ],
+    defaults: { handle: "your-product-handle", save: "Save ₹200" },
+    install: [
+      ...snippetSteps("bundle-save.liquid"),
+      "Render inside the product template - pick a genuinely complementary product, not a random upsell.",
+    ],
+    files: (v) => ({
+      liquid: `{%- assign other = all_products[handle] -%}
+{%- if other -%}
+<div class="gpl-bundle">
+  <p class="gpl-bundle__heading">Bundle &amp; save</p>
+  <div class="gpl-bundle__row">
+    <span class="gpl-bundle__item">This product</span>
+    <span class="gpl-bundle__plus">+</span>
+    <span class="gpl-bundle__item">{{ other.title }}</span>
+    <span class="gpl-bundle__save">{{ save | default: 'Save' }}</span>
+  </div>
+  <button type="button" class="gpl-bundle__add" data-bundle data-v1="{{ product.selected_or_first_available_variant.id }}" data-v2="{{ other.selected_or_first_available_variant.id }}">
+    Add both - <span>{{ product.price | plus: other.price | money }}</span>
+  </button>
+</div>
+{%- endif -%}`,
+      css: `.gpl-bundle { margin: 0.75rem 0; padding: 1rem; border: 1px dashed rgb(var(--color-button, 21 128 61) / 0.5); border-radius: 12px; background: rgb(var(--color-button, 21 128 61) / 0.05); }
+.gpl-bundle__heading { margin: 0 0 0.6rem; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(var(--color-button, 21 128 61)); }
+.gpl-bundle__row { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; font-size: 0.75rem; }
+.gpl-bundle__plus { font-weight: 800; opacity: 0.5; }
+.gpl-bundle__save {
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgb(var(--color-button, 21 128 61));
+  color: #fff;
+  font-size: 0.62rem;
+  font-weight: 800;
+}
+.gpl-bundle__add {
+  margin-top: 0.8rem;
+  width: 100%;
+  padding: 0.75rem;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
+  font-weight: 800;
+  font-size: 0.82rem;
+  cursor: pointer;
+}`,
+      js: `document.querySelectorAll('[data-bundle]').forEach((btn) => {
+  btn.addEventListener('click', async () => {
+    await fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: [
+        { id: Number(btn.dataset.v1), quantity: 1 },
+        { id: Number(btn.dataset.v2), quantity: 1 },
+      ]}),
+    });
+    window.location.href = '/cart';
+  });
+});`,
+      usage: `{% render 'bundle-save', product: product, handle: ${js(str(v, "handle"))}, save: ${js(str(v, "save"))} %}`,
+    }),
+  },
+  {
+    id: "newsletter-discount",
+    name: "Newsletter + discount note",
+    description: "Email signup with an honest incentive line - converts better than a bare 'subscribe' field.",
+    category: "Marketing",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 60 },
+      { id: "offer", label: "Incentive line", type: "text", maxLength: 80 },
+    ],
+    defaults: { heading: "Get 10% off your first order", offer: "Plus early access to drops and restocks. No spam - one useful email a week." },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-news">
+  <h2 class="gpl-news__heading">{{ section.settings.heading }}</h2>
+  {%- if section.settings.offer != blank -%}
+    <p class="gpl-news__offer">{{ section.settings.offer }}</p>
+  {%- endif -%}
+  {%- form 'customer', class: 'gpl-news__form' -%}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+    <input type="email" name="contact[email]" class="gpl-news__input" placeholder="Your email" required>
+    <button type="submit" class="gpl-news__btn">Subscribe</button>
+  {%- endform -%}
+</div>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} },
+    { "type": "text", "id": "offer", "label": "Incentive line", "default": ${js(str(v, "offer"))} }
+  ],
+  "presets": [{ "name": "Newsletter" }]
+}
+{% endschema %}`,
+      css: `.gpl-news { padding: 2rem 0; text-align: center; }
+.gpl-news__heading { margin: 0; font-size: 1.3rem; font-weight: 800; }
+.gpl-news__offer { margin: 0.5rem auto 0; max-width: 30rem; font-size: 0.8rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-news__form { display: flex; gap: 0.5rem; max-width: 26rem; margin: 1.25rem auto 0; }
+.gpl-news__input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 10px;
+  background: transparent;
+  font-size: 0.85rem;
+}
+.gpl-news__btn {
+  padding: 0.75rem 1.5rem;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
+  font-weight: 800;
+  cursor: pointer;
+}`,
+    }),
+  },
+  {
+    id: "video-banner",
+    name: "Video banner hero",
+    description: "Full-width video or YouTube background hero - motion sells, and most themes ship static banners only.",
+    category: "Content",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 60 },
+      { id: "sub", label: "Subheading", type: "text", maxLength: 100 },
+    ],
+    defaults: { heading: "Made to move with you", sub: "See the collection in action" },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-vb">
+  <div class="gpl-vb__media">
+    {%- if section.settings.video != blank -%}
+      <video class="gpl-vb__vid" src="{{ section.settings.video }}" autoplay muted loop playsinline poster="{{ section.settings.image | image_url: width: 1600 }}"></video>
+    {%- elsif section.settings.image -%}
+      {{ section.settings.image | image_url: width: 1600 | image_tag: class: 'gpl-vb__vid', loading: 'eager' }}
+    {%- endif -%}
+    <div class="gpl-vb__overlay"></div>
+  </div>
+  <div class="gpl-vb__body">
+    <h2 class="gpl-vb__heading">{{ section.settings.heading }}</h2>
+    {%- if section.settings.sub != blank -%}
+      <p class="gpl-vb__sub">{{ section.settings.sub }}</p>
+    {%- endif -%}
+    {%- if section.settings.cta != blank -%}
+      <a class="gpl-vb__btn" href="{{ section.settings.link }}">{{ section.settings.cta }}</a>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Video banner",
+  "settings": [
+    { "type": "video", "id": "video", "label": "Video" },
+    { "type": "image_picker", "id": "image", "label": "Fallback image" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} },
+    { "type": "text", "id": "sub", "label": "Subheading", "default": ${js(str(v, "sub"))} },
+    { "type": "text", "id": "cta", "label": "Button label" },
+    { "type": "url", "id": "link", "label": "Button link" }
+  ],
+  "presets": [{ "name": "Video banner" }]
+}
+{% endschema %}`,
+      css: `.gpl-vb { position: relative; border-radius: 16px; overflow: hidden; }
+.gpl-vb__media { aspect-ratio: 21/9; }
+.gpl-vb__vid { width: 100%; height: 100%; object-fit: cover; display: block; }
+.gpl-vb__overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgb(0 0 0 / 0.6), transparent 60%); }
+.gpl-vb__body { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem; color: #fff; }
+.gpl-vb__heading { margin: 0; font-size: 1.8rem; font-weight: 800; }
+.gpl-vb__sub { margin: 0.4rem 0 0; opacity: 0.9; }
+.gpl-vb__btn {
+  display: inline-block;
+  margin-top: 1.25rem;
+  align-self: flex-start;
+  padding: 0.75rem 1.75rem;
+  border-radius: 999px;
+  background: #fff;
+  color: #111;
+  text-decoration: none;
+  font-weight: 700;
+}`,
+    }),
+  },
+  {
+    id: "testimonial-wall",
+    name: "Testimonial wall",
+    description: "A masonry grid of short customer quotes - more convincing than one polished testimonial.",
+    category: "Trust & social proof",
+    kind: "section",
+    controls: [
+      { id: "items", label: "Quotes (text|name per line)", type: "text", maxLength: 600 },
+    ],
+    defaults: {
+      items: "Quality is genuinely better than the photos|Riya S.\nOrdered Tuesday, delivered Friday|Arjun K.\nSecond purchase this month|Meera D.\nThe size chart was spot on|Dev P.\nPackaging felt premium|Sana W.\nCOD worked perfectly|Kabir M.",
+    },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-wall">
+  {%- assign rows = section.settings.items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <figure class="gpl-wall__card">
+      <blockquote class="gpl-wall__quote">&ldquo;{{ parts[0] | strip }}&rdquo;</blockquote>
+      <figcaption class="gpl-wall__name">{{ parts[1] | strip }}</figcaption>
+    </figure>
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Testimonial wall",
+  "settings": [
+    { "type": "textarea", "id": "items", "label": "Quotes (text|name per line)", "default": ${js(str(v, "items"))} }
+  ],
+  "presets": [{ "name": "Testimonial wall" }]
+}
+{% endschema %}`,
+      css: `.gpl-wall { columns: 3; column-gap: 1rem; padding: 1.5rem 0; }
+@media (max-width: 750px) { .gpl-wall { columns: 1; } }
+@media (min-width: 750px) and (max-width: 1024px) { .gpl-wall { columns: 2; } }
+.gpl-wall__card {
+  break-inside: avoid;
+  margin: 0 0 1rem;
+  padding: 1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.16);
+  border-radius: 12px;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.04);
+}
+.gpl-wall__quote { margin: 0; font-size: 0.82rem; line-height: 1.55; }
+.gpl-wall__name { margin-top: 0.6rem; font-size: 0.68rem; font-weight: 700; }`,
+    }),
+  },
+  {
+    id: "collapsible-details",
+    name: "Collapsible product details",
+    description: "Metafield-driven accordion - materials, care, sizing, shipping - keeps the PDP clean and scannable.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "items", label: "Sections (title|content per line)", type: "text", maxLength: 500 },
+    ],
+    defaults: {
+      items: "Materials|100% organic cotton, 240 GSM\nCare|Machine wash cold, tumble dry low\nShipping|Dispatched in 24h, 3-6 day delivery\nReturns|7-day easy returns",
+    },
+    install: [
+      ...snippetSteps("collapsible-details.liquid"),
+      "For real catalogs, drive the rows from product.metafields.custom.details - one line per detail.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-cd2">
+  {%- assign rows = items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <details class="gpl-cd2__item">
+      <summary>{{ parts[0] | strip }}<span class="gpl-cd2__chev">+</span></summary>
+      <p class="gpl-cd2__content">{{ parts[1] | strip }}</p>
+    </details>
+  {%- endfor -%}
+</div>`,
+      css: `.gpl-cd2__item { border-bottom: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.18); }
+.gpl-cd2__item summary {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 0;
+  cursor: pointer;
+  font-size: 0.82rem;
+  font-weight: 600;
+  list-style: none;
+}
+.gpl-cd2__item summary::-webkit-details-marker { display: none; }
+.gpl-cd2__chev { font-size: 1rem; transition: transform 0.2s; }
+.gpl-cd2__item[open] .gpl-cd2__chev { transform: rotate(45deg); }
+.gpl-cd2__content { margin: 0 0 0.9rem; font-size: 0.78rem; color: rgb(var(--color-foreground, 100 116 139) / 0.8); line-height: 1.6; }`,
+      usage: `{% render 'collapsible-details', items: ${js(str(v, "items"))} %}`,
+    }),
+  },
+  {
+    id: "usp-under-atc",
+    name: "USP icons under buy button",
+    description: "Three micro-benefits under Add to Cart - the last thing a shopper sees before deciding.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "items", label: "USPs (one per line)", type: "text", maxLength: 120 },
+    ],
+    defaults: { items: "Ships in 24h\nCOD available\n7-day returns" },
+    install: [
+      ...snippetSteps("usp-under-atc.liquid"),
+      "Render directly under the buy buttons in the main-product section - placement is the whole point.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-usp">
+  {%- assign rows = items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    <span class="gpl-usp__item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      {{ row | strip }}
+    </span>
+  {%- endfor -%}
+</div>`,
+      css: `.gpl-usp { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin-top: 0.6rem; }
+.gpl-usp__item { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.68rem; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
+.gpl-usp__item svg { width: 0.8rem; height: 0.8rem; color: #16a34a; flex-shrink: 0; }`,
+      usage: `{% render 'usp-under-atc', items: ${js(str(v, "items"))} %}`,
+    }),
+  },
+  {
+    id: "vs-competitor",
+    name: "Us vs them table",
+    description: "A two-column comparison against 'other brands' - frame the choice honestly.",
+    category: "Product page",
+    kind: "section",
+    controls: [
+      { id: "items", label: "Points (us|them per line)", type: "text", maxLength: 400 },
+      { id: "brand", label: "Our column header", type: "text", maxLength: 30 },
+    ],
+    defaults: {
+      items: "7-day easy returns|Complicated RMA\nCOD on most pincodes|Prepaid only\nShips in 24h|3-5 day dispatch\nReal WhatsApp support|Ticket-only",
+      brand: "Us",
+    },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-vs">
+  <div class="gpl-vs__head">
+    <span></span><span class="gpl-vs__us">{{ section.settings.brand }}</span><span class="gpl-vs__them">Others</span>
+  </div>
+  {%- assign rows = section.settings.items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <div class="gpl-vs__row">
+      <span class="gpl-vs__point">{{ parts[0] | strip }}</span>
+      <span class="gpl-vs__yes">&#10003;</span>
+      <span class="gpl-vs__no">{{ parts[1] | strip }}</span>
+    </div>
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Us vs others",
+  "settings": [
+    { "type": "text", "id": "brand", "label": "Our column header", "default": ${js(str(v, "brand"))} },
+    { "type": "textarea", "id": "items", "label": "Points (us|them per line)", "default": ${js(str(v, "items"))} }
+  ],
+  "presets": [{ "name": "Us vs others" }]
+}
+{% endschema %}`,
+      css: `.gpl-vs { padding: 1.5rem 0; }
+.gpl-vs__head { display: grid; grid-template-columns: 1.4fr 0.7fr 1fr; gap: 0.5rem; padding: 0.6rem 0.8rem; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
+.gpl-vs__us { color: #16a34a; }
+.gpl-vs__row {
+  display: grid;
+  grid-template-columns: 1.4fr 0.7fr 1fr;
+  gap: 0.5rem;
+  padding: 0.7rem 0.8rem;
+  border-top: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.18);
+  font-size: 0.75rem;
+  align-items: center;
+}
+.gpl-vs__yes { color: #16a34a; font-weight: 800; }
+.gpl-vs__no { color: rgb(var(--color-foreground, 100 116 139) / 0.7); font-size: 0.72rem; }`,
+    }),
+  },
+  {
+    id: "gallery-grid",
+    name: "Photo gallery grid",
+    description: "A clean responsive photo grid - lookbook, room inspo, product-in-context shots.",
+    category: "Content",
+    kind: "section",
+    controls: [
+      { id: "cols", label: "Columns", type: "select", options: [{ value: "2", label: "2" }, { value: "3", label: "3" }, { value: "4", label: "4" }] },
+    ],
+    defaults: { cols: "3" },
+    install: sectionSteps,
+    files: () => ({
+      liquid: `<div class="gpl-gal" style="--gpl-cols: {{ section.settings.cols }};">
+  <div class="gpl-gal__grid">
+    {%- for block in section.blocks -%}
+      <div class="gpl-gal__item" {{ block.shopify_attributes }}>
+        {%- if block.settings.image -%}
+          {{ block.settings.image | image_url: width: 600 | image_tag: class: 'gpl-gal__img', loading: 'lazy' }}
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Photo gallery",
+  "settings": [
+    { "type": "range", "id": "cols", "label": "Columns", "min": 2, "max": 4, "step": 1, "default": 3 }
+  ],
+  "blocks": [
+    { "type": "image", "name": "Photo", "settings": [{ "type": "image_picker", "id": "image", "label": "Image" }] }
+  ],
+  "presets": [{ "name": "Photo gallery" }]
+}
+{% endschema %}`,
+      css: `.gpl-gal { padding: 1.5rem 0; }
+.gpl-gal__grid { display: grid; grid-template-columns: repeat(var(--gpl-cols, 3), 1fr); gap: 0.75rem; }
+.gpl-gal__img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; display: block; }
+@media (max-width: 640px) { .gpl-gal__grid { grid-template-columns: repeat(2, 1fr); } }`,
+    }),
+  },
+  {
+    id: "cart-notes",
+    name: "Order notes field",
+    description: "A 'special instructions' textarea on the cart - saves support pings and makes gifting easy.",
+    category: "Cart & checkout",
+    kind: "snippet",
+    controls: [
+      { id: "label", label: "Label", type: "text", maxLength: 40 },
+      { id: "placeholder", label: "Placeholder", type: "text", maxLength: 80 },
+    ],
+    defaults: { label: "Order instructions (optional)", placeholder: "Delivery notes, gift message, landmark..." },
+    install: [
+      ...snippetSteps("cart-notes.liquid"),
+      "Render inside the cart form - the note saves to order.note automatically, no extra wiring.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-note">
+  <label class="gpl-note__label" for="gpl-cart-note">{{ label | default: 'Order instructions' }}</label>
+  <textarea id="gpl-cart-note" name="note" class="gpl-note__area" rows="3" placeholder="{{ placeholder | default: '' }}">{{ cart.note }}</textarea>
+</div>`,
+      css: `.gpl-note { margin: 1rem 0; }
+.gpl-note__label { display: block; font-size: 0.72rem; font-weight: 600; margin-bottom: 0.4rem; }
+.gpl-note__area {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 9px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.8rem;
+  resize: vertical;
+}`,
+      usage: `{% render 'cart-notes', label: ${js(str(v, "label"))}, placeholder: ${js(str(v, "placeholder"))} %}`,
+    }),
+  },
+  {
+    id: "pills-nav",
+    name: "Pills filter bar",
+    description: "Scrollable chip-style nav - filter links that look native on mobile.",
+    category: "Headers & navigation",
+    kind: "section",
+    controls: [
+      { id: "items", label: "Pills (label|url per line)", type: "text", maxLength: 300 },
+    ],
+    defaults: { items: "All|/\nNew in|/collections/new\nBestsellers|/collections/bestsellers\nSale|/collections/sale\nUnder ₹999|/collections/under-999" },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<nav class="gpl-pills" aria-label="Quick filters">
+  {%- assign rows = section.settings.items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <a class="gpl-pills__pill{% if forloop.first %} is-active{% endif %}" href="{{ parts[1] | strip }}">{{ parts[0] | strip }}</a>
+  {%- endfor -%}
+</nav>
+
+{% schema %}
+{
+  "name": "Pills nav",
+  "settings": [
+    { "type": "textarea", "id": "items", "label": "Pills (label|url per line)", "default": ${js(str(v, "items"))} }
+  ],
+  "presets": [{ "name": "Pills nav" }]
+}
+{% endschema %}`,
+      css: `.gpl-pills { display: flex; gap: 0.5rem; overflow-x: auto; padding: 0.75rem 0.5rem; scrollbar-width: none; }
+.gpl-pills::-webkit-scrollbar { display: none; }
+.gpl-pills__pill {
+  flex: 0 0 auto;
+  padding: 0.45rem 1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: inherit;
+  white-space: nowrap;
+}
+.gpl-pills__pill.is-active {
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
+  border-color: transparent;
+}`,
+    }),
+  },
+  {
+    id: "checkout-trust",
+    name: "Checkout trust strip",
+    description: "A reassurance row for cart/checkout pages - secure payment, returns, support in one line.",
+    category: "Cart & checkout",
+    kind: "snippet",
+    controls: [
+      { id: "items", label: "Trust points (one per line)", type: "text", maxLength: 150 },
+    ],
+    defaults: { items: "Secure payment - UPI, cards, net banking\n7-day easy returns\nSupport on WhatsApp" },
+    install: [
+      ...snippetSteps("checkout-trust.liquid"),
+      "Render under the checkout button in the cart - the last reassurance before paying.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-ctrust">
+  {%- assign rows = items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    <span class="gpl-ctrust__item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      {{ row | strip }}
+    </span>
+  {%- endfor -%}
+</div>`,
+      css: `.gpl-ctrust { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.4rem 1.25rem; padding: 0.75rem 0; }
+.gpl-ctrust__item { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.8); }
+.gpl-ctrust__item svg { width: 0.8rem; height: 0.8rem; color: #16a34a; }`,
+      usage: `{% render 'checkout-trust', items: ${js(str(v, "items"))} %}`,
+    }),
+  },
 ];
 
 export function getExample(id: string | undefined): PlaygroundExample {
