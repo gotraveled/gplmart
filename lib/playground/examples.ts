@@ -8620,6 +8620,565 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
       usage: `{% render 'collection-filters', collection: collection, current_tags: current_tags, tags: ${js(str(v, "tags"))} %}`,
     }),
   },
+  {
+    id: "reorder-button",
+    name: "Buy again button",
+    description: "'Reorder in one tap' on the account page - the highest-converting retention feature for consumables.",
+    category: "Cart & checkout",
+    kind: "snippet",
+    controls: [
+      { id: "label", label: "Button label", type: "text", maxLength: 30 },
+    ],
+    defaults: { label: "Buy again" },
+    install: [
+      ...snippetSteps("reorder-button.liquid"),
+      "Render in the order history on the account page - loops the order's line items back into the cart.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-reorder class="gpl-reorder" data-order="{{ order.id }}">
+  <button type="button" class="gpl-reorder__btn" data-reorder>{{ label | default: 'Buy again' }}</button>
+</gpl-reorder>`,
+      css: `.gpl-reorder { display: inline-block; }
+.gpl-reorder__btn {
+  padding: 0.55rem 1.25rem;
+  border: 1px solid rgb(var(--color-button, 15 23 42));
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.gpl-reorder__btn:hover { background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); }`,
+      js: `document.querySelectorAll('gpl-reorder').forEach((el) => {
+  el.querySelector('[data-reorder]').addEventListener('click', async () => {
+    // Order items live in the rendered table - grab variant ids from data attributes your theme puts on rows,
+    // or render this inside the order's line_items loop where variant.id is available.
+    const vids = el.dataset.vids ? el.dataset.vids.split(',') : [];
+    if (!vids.length) { window.location.href = '/account/orders/' + el.dataset.order; return; }
+    await fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: vids.map((id) => ({ id: Number(id), quantity: 1 })) }),
+    });
+    window.location.href = '/cart';
+  });
+});`,
+      usage: `{% render 'reorder-button', order: order, label: ${js(str(v, "label"))} %}`,
+    }),
+  },
+  {
+    id: "warranty-registration",
+    name: "Warranty registration form",
+    description: "Activate warranty with order number + serial - turns a sale into an owned customer relationship.",
+    category: "Utility",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+      { id: "term", label: "Warranty term", type: "text", maxLength: 30 },
+    ],
+    defaults: { heading: "Activate your warranty", term: "1-year" },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-warreg">
+  <h2 class="gpl-warreg__heading">{{ section.settings.heading }}</h2>
+  <p class="gpl-warreg__sub">Register within 30 days of delivery for the full {{ section.settings.term }} coverage.</p>
+  {%- form 'contact', class: 'gpl-warreg__form' -%}
+    <input type="hidden" name="contact[tags]" value="warranty-registration">
+    {%- if form.posted_successfully? -%}
+      <p class="gpl-warreg__ok">Registered - keep this confirmation.</p>
+    {%- endif -%}
+    <input type="text" name="contact[order]" placeholder="Order number" required>
+    <input type="text" name="contact[serial]" placeholder="Serial / product code" required>
+    <input type="email" name="contact[email]" placeholder="Email" required>
+    <button type="submit">Register warranty</button>
+  {%- endform -%}
+</div>
+
+{% schema %}
+{
+  "name": "Warranty registration",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} },
+    { "type": "text", "id": "term", "label": "Warranty term", "default": ${js(str(v, "term"))} }
+  ],
+  "presets": [{ "name": "Warranty registration" }]
+}
+{% endschema %}`,
+      css: `.gpl-warreg { padding: 1.5rem 0; max-width: 28rem; }
+.gpl-warreg__heading { margin: 0; font-size: 1.1rem; font-weight: 800; }
+.gpl-warreg__sub { margin: 0.4rem 0 1rem; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-warreg__form { display: grid; gap: 0.6rem; }
+.gpl-warreg__form input {
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 9px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.82rem;
+}
+.gpl-warreg__form button {
+  padding: 0.75rem 1.75rem;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
+  font-weight: 800;
+  cursor: pointer;
+  justify-self: start;
+}
+.gpl-warreg__ok { margin: 0; color: #16a34a; font-size: 0.8rem; font-weight: 700; }`,
+    }),
+  },
+  {
+    id: "call-order-button",
+    name: "Call to order button",
+    description: "'Prefer to call? Order on the phone' - converts older and B2B buyers who don't want to check out online.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "phone", label: "Phone number", type: "text", maxLength: 15 },
+      { id: "label", label: "Button label", type: "text", maxLength: 30 },
+    ],
+    defaults: { phone: "+919876543210", label: "Call to order" },
+    install: snippetSteps("call-order-button.liquid"),
+    files: (v) => ({
+      liquid: `<a class="gpl-call" href="tel:{{ phone | remove: ' ' }}">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+  {{ label | default: 'Call to order' }} - {{ phone }}
+</a>`,
+      css: `.gpl-call { display: inline-flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0; padding: 0.6rem 1.25rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 999px; font-size: 0.75rem; font-weight: 700; text-decoration: none; color: inherit; }
+.gpl-call svg { width: 0.9rem; height: 0.9rem; }
+.gpl-call:hover { border-color: rgb(var(--color-button, 21 128 61)); color: rgb(var(--color-button, 21 128 61)); }`,
+      usage: `{% render 'call-order-button', phone: ${js(str(v, "phone"))}, label: ${js(str(v, "label"))} %}`,
+    }),
+  },
+  {
+    id: "discount-progress",
+    name: "Discount unlock progress",
+    description: "'Add ₹X more for 15% off' in the cart - real cart-goal progress driven by live cart total, not a fixed bar.",
+    category: "Cart & checkout",
+    kind: "snippet",
+    controls: [
+      { id: "threshold", label: "Unlock at ₹", type: "text", maxLength: 8 },
+      { id: "reward", label: "Reward text", type: "text", maxLength: 40 },
+    ],
+    defaults: { threshold: "5000", reward: "15% off" },
+    install: [
+      ...snippetSteps("discount-progress.liquid"),
+      "Render in the cart - reads the live cart total via /cart.js and updates on add/remove.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-dprog class="gpl-dprog" data-threshold="{{ threshold | plus: 0 | times: 100 }}">
+  <p class="gpl-dprog__line" data-line></p>
+  <div class="gpl-dprog__bar"><span data-fill style="width:0%"></span></div>
+  <p class="gpl-dprog__unlock">Unlock <b>{{ reward | default: 'a discount' }}</b> at {{ threshold | prepend: '₹' }}</p>
+</gpl-dprog>`,
+      css: `.gpl-dprog { display: block; margin: 1rem 0; padding: 0.9rem; border: 1px dashed rgb(var(--color-button, 21 128 61) / 0.4); border-radius: 10px; }
+.gpl-dprog__line { margin: 0 0 0.5rem; font-size: 0.75rem; font-weight: 600; }
+.gpl-dprog__bar { height: 0.45rem; border-radius: 999px; background: rgb(var(--color-foreground, 148 163 184) / 0.15); overflow: hidden; }
+.gpl-dprog__bar span { display: block; height: 100%; background: rgb(var(--color-button, 21 128 61)); border-radius: 999px; transition: width 0.3s; }
+.gpl-dprog__unlock { margin: 0.5rem 0 0; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+      js: `document.querySelectorAll('gpl-dprog').forEach(async (el) => {
+  const threshold = Number(el.dataset.threshold);
+  try {
+    const cart = await fetch('/cart.js').then((r) => r.json());
+    const cur = cart.total_price;
+    const pct = Math.min(100, (cur / threshold) * 100);
+    el.querySelector('[data-fill]').style.width = pct + '%';
+    el.querySelector('[data-line]').textContent = cur >= threshold
+      ? 'Unlocked - discount applies at checkout'
+      : 'Add ₹' + ((threshold - cur) / 100).toFixed(0) + ' more';
+  } catch {}
+});`,
+      usage: `{% render 'discount-progress', threshold: ${js(str(v, "threshold"))}, reward: ${js(str(v, "reward"))} %}`,
+    }),
+  },
+  {
+    id: "vip-signup",
+    name: "VIP early access signup",
+    description: "'Join the drop list' - exclusive-access email capture for launches and limited releases.",
+    category: "Marketing",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 60 },
+      { id: "text", label: "Pitch", type: "text", maxLength: 100 },
+    ],
+    defaults: { heading: "Get first access", text: "Drops sell out in hours. Members see it 24h early." },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-vip">
+  <h2 class="gpl-vip__heading">{{ section.settings.heading }}</h2>
+  {%- if section.settings.text != blank -%}
+    <p class="gpl-vip__text">{{ section.settings.text }}</p>
+  {%- endif -%}
+  {%- form 'customer', class: 'gpl-vip__form' -%}
+    <input type="hidden" name="contact[tags]" value="vip">
+    <input type="email" name="contact[email]" placeholder="Your email" required>
+    <button type="submit">Join the list</button>
+  {%- endform -%}
+</div>
+
+{% schema %}
+{
+  "name": "VIP signup",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} },
+    { "type": "text", "id": "text", "label": "Pitch", "default": ${js(str(v, "text"))} }
+  ],
+  "presets": [{ "name": "VIP signup" }]
+}
+{% endschema %}`,
+      css: `.gpl-vip { padding: 2rem 1rem; text-align: center; border-radius: 14px; background: rgb(var(--color-button, 21 128 61) / 0.06); }
+.gpl-vip__heading { margin: 0; font-size: 1.2rem; font-weight: 800; }
+.gpl-vip__text { margin: 0.5rem auto 0; max-width: 26rem; font-size: 0.78rem; color: rgb(var(--color-foreground, 100 116 139) / 0.8); }
+.gpl-vip__form { display: flex; gap: 0.5rem; max-width: 24rem; margin: 1.25rem auto 0; }
+.gpl-vip__form input { flex: 1; padding: 0.7rem 1rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 999px; background: transparent; font-size: 0.8rem; }
+.gpl-vip__form button { padding: 0.7rem 1.4rem; border: 0; border-radius: 999px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-weight: 700; cursor: pointer; }`,
+    }),
+  },
+  {
+    id: "event-banner",
+    name: "Live event / drop banner",
+    description: "'Live sale Sunday 7pm' sticky strip with a join link - builds anticipation for scheduled events.",
+    category: "Marketing",
+    kind: "snippet",
+    controls: [
+      { id: "text", label: "Event text", type: "text", maxLength: 80 },
+      { id: "cta", label: "CTA label", type: "text", maxLength: 30 },
+      { id: "url", label: "CTA link", type: "text", maxLength: 120 },
+    ],
+    defaults: { text: "Live drop Sunday 7pm - 50 new pieces", cta: "Set a reminder", url: "/pages/drops" },
+    install: snippetSteps("event-banner.liquid"),
+    files: (v) => ({
+      liquid: `<a class="gpl-event" href="{{ url | default: '#' }}">
+  <span class="gpl-event__dot"></span>
+  <span class="gpl-event__text">{{ text | default: 'Live event' }}</span>
+  <span class="gpl-event__cta">{{ cta | default: 'Join' }} &rarr;</span>
+</a>`,
+      css: `.gpl-event { display: flex; align-items: center; gap: 0.6rem; padding: 0.65rem 1rem; border-radius: 999px; background: rgb(var(--color-button, 220 38 38)); color: #fff; text-decoration: none; font-size: 0.72rem; }
+.gpl-event__dot { width: 0.5rem; height: 0.5rem; border-radius: 999px; background: #fff; animation: gpl-pulse 1.4s infinite; }
+@keyframes gpl-pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+.gpl-event__text { flex: 1; font-weight: 600; }
+.gpl-event__cta { font-weight: 800; white-space: nowrap; }`,
+      usage: `{% render 'event-banner', text: ${js(str(v, "text"))}, cta: ${js(str(v, "cta"))}, url: ${js(str(v, "url"))} %}`,
+    }),
+  },
+  {
+    id: "made-in-badge",
+    name: "Made-in / origin badge",
+    description: "'Made in India' chip with flag styling - regional pride that converts especially on artisan products.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "text", label: "Origin text", type: "text", maxLength: 40 },
+      { id: "flag", label: "Flag emoji", type: "text", maxLength: 4 },
+    ],
+    defaults: { text: "Made in India", flag: "🇮🇳" },
+    install: snippetSteps("made-in-badge.liquid"),
+    files: (v) => ({
+      liquid: `<span class="gpl-origin">{{ flag | default: '' }} {{ text | default: 'Made in India' }}</span>`,
+      css: `.gpl-origin {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25);
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+}`,
+      usage: `{% render 'made-in-badge', text: ${js(str(v, "text"))}, flag: ${js(str(v, "flag"))} %}`,
+    }),
+  },
+  {
+    id: "care-icons",
+    name: "Wash care icons",
+    description: "Laundry symbols row (wash/dry/iron/don't bleach) - answers the care question before it becomes a return.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "items", label: "Care instructions (one per line)", type: "text", maxLength: 200 },
+    ],
+    defaults: { items: "Machine wash cold\nDo not bleach\nTumble dry low\nIron medium" },
+    install: snippetSteps("care-icons.liquid"),
+    files: (v) => ({
+      liquid: `<div class="gpl-care">
+  {%- assign rows = items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    <span class="gpl-care__item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+      {{ row | strip }}
+    </span>
+  {%- endfor -%}
+</div>`,
+      css: `.gpl-care { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin: 0.6rem 0; }
+.gpl-care__item { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
+.gpl-care__item svg { width: 0.85rem; height: 0.85rem; }`,
+      usage: `{% render 'care-icons', items: ${js(str(v, "items"))} %}`,
+    }),
+  },
+  {
+    id: "download-manual",
+    name: "Manual / spec sheet download",
+    description: "A PDF link card - 'download the full spec sheet' for technical products.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "label", label: "Button label", type: "text", maxLength: 40 },
+      { id: "file", label: "File URL or metafield", type: "text", maxLength: 120 },
+    ],
+    defaults: { label: "Download spec sheet (PDF)", file: "/files/spec-sheet.pdf" },
+    install: [
+      ...snippetSteps("download-manual.liquid"),
+      "Upload the PDF to Settings > Files, then link it - or drive it from product.metafields.custom.manual.",
+    ],
+    files: (v) => ({
+      liquid: `{%- assign f = product.metafields.custom.manual.value | default: file -%}
+{%- if f -%}
+<a class="gpl-manual" href="{{ f }}" target="_blank" rel="noopener">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+  {{ label | default: 'Download file' }}
+</a>
+{%- endif -%}`,
+      css: `.gpl-manual { display: inline-flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0; padding: 0.55rem 1.1rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 9px; font-size: 0.72rem; font-weight: 700; text-decoration: none; color: inherit; }
+.gpl-manual svg { width: 0.9rem; height: 0.9rem; }
+.gpl-manual:hover { border-color: rgb(var(--color-button, 21 128 61)); color: rgb(var(--color-button, 21 128 61)); }`,
+      usage: `{% render 'download-manual', product: product, label: ${js(str(v, "label"))}, file: ${js(str(v, "file"))} %}`,
+    }),
+  },
+  {
+    id: "request-quote",
+    name: "Request a quote button",
+    description: "B2B 'get a quote' CTA that opens a compact form - for bulk/wholesale pricing conversations.",
+    category: "Marketing",
+    kind: "snippet",
+    controls: [
+      { id: "label", label: "Button label", type: "text", maxLength: 30 },
+    ],
+    defaults: { label: "Request a quote" },
+    install: snippetSteps("request-quote.liquid"),
+    files: (v) => ({
+      liquid: `<gpl-rfq class="gpl-rfq">
+  <button type="button" class="gpl-rfq__btn" data-open>{{ label | default: 'Request a quote' }}</button>
+  <div class="gpl-rfq__pop" hidden>
+    <p class="gpl-rfq__title">Get bulk pricing</p>
+    {%- form 'contact', class: 'gpl-rfq__form' -%}
+      <input type="hidden" name="contact[tags]" value="rfq">
+      <input type="text" name="contact[name]" placeholder="Name" required>
+      <input type="email" name="contact[email]" placeholder="Email" required>
+      <input type="text" name="contact[body]" placeholder="What do you need? (product + qty)" required>
+      <button type="submit">Send request</button>
+    {%- endform -%}
+  </div>
+</gpl-rfq>`,
+      css: `.gpl-rfq { position: relative; display: inline-block; }
+.gpl-rfq__btn { padding: 0.65rem 1.5rem; border: 1px solid rgb(var(--color-button, 15 23 42)); border-radius: 999px; background: transparent; color: inherit; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+.gpl-rfq__pop { position: absolute; top: 110%; left: 0; z-index: 10; width: 16rem; padding: 1rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2); border-radius: 12px; background: rgb(var(--color-background, 255 255 255)); box-shadow: 0 10px 30px rgb(0 0 0 / 0.15); }
+.gpl-rfq__title { margin: 0 0 0.6rem; font-weight: 800; font-size: 0.8rem; }
+.gpl-rfq__form { display: grid; gap: 0.4rem; }
+.gpl-rfq__form input { padding: 0.5rem 0.7rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 7px; font-size: 0.72rem; }
+.gpl-rfq__form button { padding: 0.5rem 1rem; border: 0; border-radius: 7px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-size: 0.7rem; font-weight: 700; cursor: pointer; }`,
+      js: `document.querySelectorAll('gpl-rfq').forEach((el) => {
+  el.querySelector('[data-open]').addEventListener('click', () => {
+    const pop = el.querySelector('.gpl-rfq__pop');
+    pop.hidden = !pop.hidden;
+  });
+});`,
+      usage: `{% render 'request-quote', label: ${js(str(v, "label"))} %}`,
+    }),
+  },
+  {
+    id: "ugc-submit",
+    name: "Share your look prompt",
+    description: "'Tag us or upload a photo' - turns buyers into UGC creators with a real submission path.",
+    category: "Trust & social proof",
+    kind: "snippet",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+      { id: "handle", label: "IG handle", type: "text", maxLength: 30 },
+    ],
+    defaults: { heading: "Show us how you style it", handle: "@yourstore" },
+    install: [
+      ...snippetSteps("ugc-submit.liquid"),
+      "Collects photo links via a contact form - photos themselves go to your DM/inbox, not a database.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-ugc2">
+  <p class="gpl-ugc2__heading">{{ heading | default: 'Show us your style' }}</p>
+  <p class="gpl-ugc2__sub">Tag {{ handle | default: '@us' }} on Instagram or send a pic - we feature the best ones.</p>
+  {%- form 'contact', class: 'gpl-ugc2__form' -%}
+    <input type="hidden" name="contact[tags]" value="ugc-{{ product.handle }}">
+    <input type="text" name="contact[body]" placeholder="Link to your post or photo">
+    <input type="email" name="contact[email]" placeholder="Email (to credit you)" required>
+    <button type="submit">Share</button>
+  {%- endform -%}
+</div>`,
+      css: `.gpl-ugc2 { margin: 1rem 0; padding: 1rem; border: 1px dashed rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 10px; }
+.gpl-ugc2__heading { margin: 0; font-size: 0.82rem; font-weight: 800; }
+.gpl-ugc2__sub { margin: 0.3rem 0 0; font-size: 0.68rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-ugc2__form { display: grid; gap: 0.4rem; margin-top: 0.75rem; }
+.gpl-ugc2__form input { padding: 0.5rem 0.7rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 7px; font-size: 0.72rem; }
+.gpl-ugc2__form button { padding: 0.5rem 1.1rem; border: 0; border-radius: 7px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-size: 0.7rem; font-weight: 700; cursor: pointer; justify-self: start; }`,
+      usage: `{% render 'ugc-submit', product: product, heading: ${js(str(v, "heading"))}, handle: ${js(str(v, "handle"))} %}`,
+    }),
+  },
+  {
+    id: "video-player-section",
+    name: "Native video player",
+    description: "A real hosted video with controls - not a YouTube iframe, for when you want it to feel native to the store.",
+    category: "Content",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+    ],
+    defaults: { heading: "See it in action" },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-vid">
+  {%- if section.settings.heading != blank -%}
+    <h2 class="gpl-vid__heading">{{ section.settings.heading }}</h2>
+  {%- endif -%}
+  {%- if section.settings.video != blank -%}
+    <video class="gpl-vid__player" controls playsinline poster="{{ section.settings.poster | image_url: width: 1200 }}">
+      <source src="{{ section.settings.video }}" type="video/mp4">
+    </video>
+  {%- else -%}
+    <div class="gpl-vid__empty">Upload a video in the section settings.</div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Video player",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} },
+    { "type": "video", "id": "video", "label": "Video" },
+    { "type": "image_picker", "id": "poster", "label": "Poster image" }
+  ],
+  "presets": [{ "name": "Video player" }]
+}
+{% endschema %}`,
+      css: `.gpl-vid { padding: 1.5rem 0; }
+.gpl-vid__heading { margin: 0 0 1rem; font-size: 1rem; font-weight: 800; }
+.gpl-vid__player { width: 100%; border-radius: 14px; display: block; background: #000; }
+.gpl-vid__empty { padding: 3rem; border: 1px dashed rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 14px; text-align: center; font-size: 0.78rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+    }),
+  },
+  {
+    id: "ambassador-signup",
+    name: "Ambassador program signup",
+    description: "'Become an ambassador' - IG handle + follower count + why, tagged for the collab pipeline.",
+    category: "Marketing",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+      { id: "text", label: "Pitch", type: "text", maxLength: 120 },
+    ],
+    defaults: { heading: "Join the ambassador crew", text: "Free product + commission for creators who genuinely use what we make." },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-amb">
+  <h2 class="gpl-amb__heading">{{ section.settings.heading }}</h2>
+  {%- if section.settings.text != blank -%}
+    <p class="gpl-amb__text">{{ section.settings.text }}</p>
+  {%- endif -%}
+  {%- form 'contact', class: 'gpl-amb__form' -%}
+    <input type="hidden" name="contact[tags]" value="ambassador">
+    <input type="text" name="contact[name]" placeholder="Name" required>
+    <input type="text" name="contact[ig]" placeholder="Instagram handle" required>
+    <input type="text" name="contact[followers]" placeholder="Follower count (approx)">
+    <input type="email" name="contact[email]" placeholder="Email" required>
+    <textarea name="contact[body]" rows="2" placeholder="Why you? (one line)"></textarea>
+    <button type="submit">Apply</button>
+  {%- endform -%}
+</div>
+
+{% schema %}
+{
+  "name": "Ambassador signup",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} },
+    { "type": "textarea", "id": "text", "label": "Pitch", "default": ${js(str(v, "text"))} }
+  ],
+  "presets": [{ "name": "Ambassador signup" }]
+}
+{% endschema %}`,
+      css: `.gpl-amb { padding: 1.5rem 0; max-width: 28rem; }
+.gpl-amb__heading { margin: 0; font-size: 1.1rem; font-weight: 800; }
+.gpl-amb__text { margin: 0.4rem 0 0; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.8); }
+.gpl-amb__form { display: grid; gap: 0.6rem; margin-top: 1rem; }
+.gpl-amb__form input, .gpl-amb__form textarea {
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 9px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.82rem;
+}
+.gpl-amb__form button { padding: 0.75rem 1.75rem; border: 0; border-radius: 10px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-weight: 800; cursor: pointer; justify-self: start; }`,
+    }),
+  },
+  {
+    id: "collection-notify",
+    name: "Drop notification signup",
+    description: "'Get notified when [collection] drops' - per-collection waitlist for launches.",
+    category: "Marketing",
+    kind: "snippet",
+    controls: [
+      { id: "label", label: "Collection name", type: "text", maxLength: 40 },
+    ],
+    defaults: { label: "the summer drop" },
+    install: snippetSteps("collection-notify.liquid"),
+    files: (v) => ({
+      liquid: `<div class="gpl-cnotify">
+  <p class="gpl-cnotify__text">Get notified when <b>{{ label | default: 'the drop' }}</b> goes live</p>
+  {%- form 'customer', class: 'gpl-cnotify__form' -%}
+    <input type="hidden" name="contact[tags]" value="drop-{{ label | default: 'drop' | handleize }}">
+    <input type="email" name="contact[email]" placeholder="Your email" required>
+    <button type="submit">Notify me</button>
+  {%- endform -%}
+</div>`,
+      css: `.gpl-cnotify { margin: 1rem 0; padding: 1rem; border-radius: 10px; background: rgb(var(--color-button, 21 128 61) / 0.07); }
+.gpl-cnotify__text { margin: 0; font-size: 0.78rem; font-weight: 600; }
+.gpl-cnotify__form { display: flex; gap: 0.4rem; margin-top: 0.7rem; }
+.gpl-cnotify__form input { flex: 1; min-width: 0; padding: 0.55rem 0.8rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 999px; font-size: 0.72rem; }
+.gpl-cnotify__form button { padding: 0.55rem 1.1rem; border: 0; border-radius: 999px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-size: 0.7rem; font-weight: 700; cursor: pointer; }`,
+      usage: `{% render 'collection-notify', label: ${js(str(v, "label"))} %}`,
+    }),
+  },
+  {
+    id: "birthday-capture",
+    name: "Birthday signup",
+    description: "'Get a gift on your birthday' - DOB + email for the birthday-discount flow.",
+    category: "Marketing",
+    kind: "snippet",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+      { id: "reward", label: "Reward text", type: "text", maxLength: 60 },
+    ],
+    defaults: { heading: "Birthday perks", reward: "We'll send you a birthday discount - every year." },
+    install: snippetSteps("birthday-capture.liquid"),
+    files: (v) => ({
+      liquid: `<div class="gpl-bday">
+  <p class="gpl-bday__heading">{{ heading | default: 'Birthday perks' }}</p>
+  <p class="gpl-bday__sub">{{ reward | default: '' }}</p>
+  {%- form 'customer', class: 'gpl-bday__form' -%}
+    <input type="hidden" name="contact[tags]" value="birthday">
+    <input type="date" name="contact[note]" required aria-label="Birthday">
+    <input type="email" name="contact[email]" placeholder="Your email" required>
+    <button type="submit">Save my birthday</button>
+  {%- endform -%}
+</div>`,
+      css: `.gpl-bday { margin: 1rem 0; padding: 1rem; border: 1px dashed rgb(var(--color-button, 245 158 11) / 0.4); border-radius: 10px; }
+.gpl-bday__heading { margin: 0; font-size: 0.82rem; font-weight: 800; }
+.gpl-bday__sub { margin: 0.3rem 0 0; font-size: 0.68rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-bday__form { display: grid; gap: 0.4rem; margin-top: 0.7rem; }
+.gpl-bday__form input { padding: 0.55rem 0.8rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 8px; font-size: 0.75rem; color-scheme: inherit; }
+.gpl-bday__form button { padding: 0.55rem 1.1rem; border: 0; border-radius: 8px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-size: 0.7rem; font-weight: 700; cursor: pointer; justify-self: start; }`,
+      usage: `{% render 'birthday-capture', heading: ${js(str(v, "heading"))}, reward: ${js(str(v, "reward"))} %}`,
+    }),
+  },
 ];
 
 export function getExample(id: string | undefined): PlaygroundExample {

@@ -2955,6 +2955,230 @@ function CollectionFilters({ v }: P) {
   );
 }
 
+function ReorderButton({ v }: P) {
+  const [done, setDone] = useState(false);
+  return (
+    <div className="p-4">
+      <button type="button" onClick={() => setDone(true)} className="rounded-full border border-neutral-900 px-4 py-1.5 text-[0.68rem] font-bold hover:bg-neutral-900 hover:text-white">
+        {done ? "Added to cart" : str(v, "label") || "Buy again"}
+      </button>
+    </div>
+  );
+}
+
+function WarrantyRegistration({ v }: P) {
+  const [sent, setSent] = useState(false);
+  return (
+    <div className="max-w-72 p-4">
+      <p className="m-0 text-base font-extrabold">{str(v, "heading") || "Activate warranty"}</p>
+      <p className="m-0 mb-2.5 mt-1 text-[0.62rem] text-neutral-500">Register within 30 days of delivery for full {str(v, "term")} coverage.</p>
+      {sent ? (
+        <p className="m-0 text-[0.72rem] font-bold text-emerald-600">Registered - keep this confirmation</p>
+      ) : (
+        <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="grid gap-2">
+          {["Order number", "Serial / product code", "Email"].map((p) => (
+            <input key={p} required placeholder={p} className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.7rem] outline-none" />
+          ))}
+          <button type="submit" className="w-fit rounded-lg bg-neutral-900 px-4 py-2 text-xs font-extrabold text-white">Register warranty</button>
+        </form>
+      )}
+    </div>
+  );
+}
+
+function CallOrderButton({ v }: P) {
+  return (
+    <div className="p-4">
+      <a href="#" className="inline-flex items-center gap-2 rounded-full border border-neutral-300 px-4 py-2 text-[0.68rem] font-bold hover:border-emerald-600 hover:text-emerald-600">
+        <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        {str(v, "label") || "Call to order"} - {str(v, "phone")}
+      </a>
+    </div>
+  );
+}
+
+function DiscountProgress({ v }: P) {
+  const [cur] = useState(3200);
+  const threshold = Number(str(v, "threshold")) || 5000;
+  const pct = Math.min(100, (cur / threshold) * 100);
+  return (
+    <div className="m-4 rounded-lg border border-dashed border-emerald-400 p-3.5">
+      <p className="m-0 mb-2 text-[0.7rem] font-semibold">{cur >= threshold ? "Unlocked!" : `Add ₹${threshold - cur} more`}</p>
+      <div className="h-1.5 overflow-hidden rounded-full bg-neutral-200">
+        <div className="h-full rounded-full bg-emerald-600 transition-all" style={{ width: `${pct}%` }} />
+      </div>
+      <p className="m-0 mt-2 text-[0.6rem] text-neutral-500">Unlock <b>{str(v, "reward") || "a discount"}</b> at ₹{threshold}</p>
+    </div>
+  );
+}
+
+function VipSignup({ v }: P) {
+  const [sent, setSent] = useState(false);
+  return (
+    <div className="rounded-xl bg-emerald-50/50 p-6 text-center">
+      <p className="m-0 text-base font-extrabold">{str(v, "heading") || "Get first access"}</p>
+      <p className="m-0 mx-auto mt-1.5 max-w-64 text-[0.68rem] text-neutral-500">{str(v, "text")}</p>
+      {sent ? (
+        <p className="m-0 mt-3.5 text-[0.72rem] font-bold text-emerald-600">You&apos;re on the list</p>
+      ) : (
+        <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="mx-auto mt-3.5 flex max-w-56 gap-1.5">
+          <input required type="email" placeholder="Your email" className="min-w-0 flex-1 rounded-full border border-neutral-300 px-3.5 py-2 text-[0.7rem] outline-none" />
+          <button type="submit" className="rounded-full bg-neutral-900 px-3.5 py-2 text-[0.65rem] font-bold text-white">Join</button>
+        </form>
+      )}
+    </div>
+  );
+}
+
+function EventBanner({ v }: P) {
+  return (
+    <div className="m-4 flex items-center gap-2.5 rounded-full bg-red-600 px-4 py-2.5 text-white">
+      <span className="size-2 animate-pulse rounded-full bg-white" />
+      <span className="flex-1 text-[0.65rem] font-semibold">{str(v, "text") || "Live event"}</span>
+      <span className="text-[0.62rem] font-extrabold">{str(v, "cta") || "Join"} &rarr;</span>
+    </div>
+  );
+}
+
+function MadeInBadge({ v }: P) {
+  return (
+    <div className="p-4">
+      <span className="rounded-full border border-neutral-300 px-3 py-1 text-[0.62rem] font-bold">{str(v, "flag")} {str(v, "text") || "Made in India"}</span>
+    </div>
+  );
+}
+
+function CareIcons({ v }: P) {
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 5);
+  return (
+    <div className="flex flex-wrap gap-x-4 gap-y-1.5 p-4">
+      {rows.map((r) => (
+        <span key={r} className="flex items-center gap-1 text-[0.62rem] text-neutral-600">
+          <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+          {r}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function DownloadManual({ v }: P) {
+  return (
+    <div className="p-4">
+      <a href="#" className="inline-flex items-center gap-2 rounded-lg border border-neutral-300 px-4 py-2 text-[0.68rem] font-bold hover:border-emerald-600 hover:text-emerald-600">
+        <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        {str(v, "label") || "Download"}
+      </a>
+    </div>
+  );
+}
+
+function RequestQuote({ v }: P) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative inline-block p-4">
+      <button type="button" onClick={() => setOpen(!open)} className="rounded-full border border-neutral-900 px-4 py-2 text-[0.68rem] font-bold">{str(v, "label") || "Request a quote"}</button>
+      {open && (
+        <div className="absolute left-4 top-full z-10 mt-1 w-52 rounded-xl border border-neutral-200 bg-white p-3.5 shadow-lg">
+          <p className="m-0 mb-2 text-[0.7rem] font-extrabold">Get bulk pricing</p>
+          <div className="grid gap-1.5">
+            <input placeholder="Name" className="rounded border border-neutral-300 px-2.5 py-1.5 text-[0.62rem] outline-none" />
+            <input type="email" placeholder="Email" className="rounded border border-neutral-300 px-2.5 py-1.5 text-[0.62rem] outline-none" />
+            <input placeholder="Product + qty" className="rounded border border-neutral-300 px-2.5 py-1.5 text-[0.62rem] outline-none" />
+            <button type="button" className="rounded bg-neutral-900 py-1.5 text-[0.6rem] font-bold text-white">Send request</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function UgcSubmit({ v }: P) {
+  const [sent, setSent] = useState(false);
+  return (
+    <div className="m-4 rounded-lg border border-dashed border-neutral-300 p-3.5">
+      <p className="m-0 text-[0.75rem] font-extrabold">{str(v, "heading") || "Show us your style"}</p>
+      <p className="m-0 mt-0.5 text-[0.6rem] text-neutral-500">Tag {str(v, "handle") || "@us"} on Instagram or send a pic</p>
+      {sent ? (
+        <p className="m-0 mt-2 text-[0.65rem] font-bold text-emerald-600">Shared - we&apos;ll credit you if featured</p>
+      ) : (
+        <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="mt-2 grid gap-1.5">
+          <input placeholder="Link to your post or photo" className="rounded border border-neutral-300 px-2.5 py-1.5 text-[0.62rem] outline-none" />
+          <input required type="email" placeholder="Email (to credit you)" className="rounded border border-neutral-300 px-2.5 py-1.5 text-[0.62rem] outline-none" />
+          <button type="submit" className="w-fit rounded bg-neutral-900 px-3 py-1.5 text-[0.6rem] font-bold text-white">Share</button>
+        </form>
+      )}
+    </div>
+  );
+}
+
+function VideoPlayerSection({ v }: P) {
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2 text-sm font-extrabold">{str(v, "heading") || "See it in action"}</p>
+      <div className="grid aspect-video place-items-center rounded-xl bg-black">
+        <span className="grid size-12 place-items-center rounded-full bg-white/20 text-xl text-white">&#9654;</span>
+      </div>
+    </div>
+  );
+}
+
+function AmbassadorSignup({ v }: P) {
+  const [sent, setSent] = useState(false);
+  return (
+    <div className="max-w-72 p-4">
+      <p className="m-0 text-base font-extrabold">{str(v, "heading") || "Join the ambassador crew"}</p>
+      <p className="m-0 mt-1 text-[0.62rem] text-neutral-500">{str(v, "text")}</p>
+      {sent ? (
+        <p className="m-0 mt-2 text-[0.7rem] font-bold text-emerald-600">Applied - we&apos;ll reach out</p>
+      ) : (
+        <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="mt-2.5 grid gap-2">
+          {["Name", "Instagram handle", "Email"].map((p) => (
+            <input key={p} required placeholder={p} className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.68rem] outline-none" />
+          ))}
+          <button type="submit" className="w-fit rounded-lg bg-neutral-900 px-4 py-2 text-xs font-extrabold text-white">Apply</button>
+        </form>
+      )}
+    </div>
+  );
+}
+
+function CollectionNotify({ v }: P) {
+  const [sent, setSent] = useState(false);
+  return (
+    <div className="m-4 rounded-lg bg-emerald-50/60 p-3.5">
+      <p className="m-0 text-[0.72rem] font-semibold">Get notified when <b>{str(v, "label") || "the drop"}</b> goes live</p>
+      {sent ? (
+        <p className="m-0 mt-2 text-[0.65rem] font-bold text-emerald-600">You&apos;ll be first to know</p>
+      ) : (
+        <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="mt-2 flex gap-1.5">
+          <input required type="email" placeholder="Your email" className="min-w-0 flex-1 rounded-full border border-neutral-300 px-3 py-1.5 text-[0.65rem] outline-none" />
+          <button type="submit" className="rounded-full bg-neutral-900 px-3 py-1.5 text-[0.6rem] font-bold text-white">Notify me</button>
+        </form>
+      )}
+    </div>
+  );
+}
+
+function BirthdayCapture({ v }: P) {
+  const [sent, setSent] = useState(false);
+  return (
+    <div className="m-4 rounded-lg border border-dashed border-amber-400 p-3.5">
+      <p className="m-0 text-[0.75rem] font-extrabold">{str(v, "heading") || "Birthday perks"}</p>
+      <p className="m-0 mt-0.5 text-[0.6rem] text-neutral-500">{str(v, "reward")}</p>
+      {sent ? (
+        <p className="m-0 mt-2 text-[0.65rem] font-bold text-emerald-600">Saved - gift incoming on your day</p>
+      ) : (
+        <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="mt-2 grid gap-1.5">
+          <input required type="date" className="rounded border border-neutral-300 px-2.5 py-1.5 text-[0.65rem] outline-none" />
+          <input required type="email" placeholder="Your email" className="rounded border border-neutral-300 px-2.5 py-1.5 text-[0.65rem] outline-none" />
+          <button type="submit" className="w-fit rounded bg-neutral-900 px-3 py-1.5 text-[0.6rem] font-bold text-white">Save my birthday</button>
+        </form>
+      )}
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -3102,6 +3326,21 @@ const map: Record<string, (p: P) => ReactNode> = {
   "price-match": PriceMatch,
   "loyalty-tiers": LoyaltyTiers,
   "collection-filters": CollectionFilters,
+  "reorder-button": ReorderButton,
+  "warranty-registration": WarrantyRegistration,
+  "call-order-button": CallOrderButton,
+  "discount-progress": DiscountProgress,
+  "vip-signup": VipSignup,
+  "event-banner": EventBanner,
+  "made-in-badge": MadeInBadge,
+  "care-icons": CareIcons,
+  "download-manual": DownloadManual,
+  "request-quote": RequestQuote,
+  "ugc-submit": UgcSubmit,
+  "video-player-section": VideoPlayerSection,
+  "ambassador-signup": AmbassadorSignup,
+  "collection-notify": CollectionNotify,
+  "birthday-capture": BirthdayCapture,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {
