@@ -9179,6 +9179,607 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
       usage: `{% render 'birthday-capture', heading: ${js(str(v, "heading"))}, reward: ${js(str(v, "reward"))} %}`,
     }),
   },
+  {
+    id: "phone-bar",
+    name: "Phone number bar",
+    description: "Click-to-call strip above the header - phone, hours and a WhatsApp link. Converts older and B2B buyers.",
+    category: "Headers & navigation",
+    kind: "snippet",
+    controls: [
+      { id: "phone", label: "Phone number", type: "text", maxLength: 15 },
+      { id: "hours", label: "Support hours", type: "text", maxLength: 40 },
+      { id: "wa", label: "WhatsApp number", type: "text", maxLength: 15 },
+    ],
+    defaults: { phone: "+919876543210", hours: "Mon-Sat, 10am-7pm IST", wa: "919876543210" },
+    install: [
+      ...snippetSteps("phone-bar.liquid"),
+      "Render inside the header, above the logo row - a visible phone number signals a real business.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-phonebar">
+  <a class="gpl-phonebar__item" href="tel:{{ phone | remove: ' ' }}">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    <b>{{ phone }}</b>
+    {%- if hours != blank -%}
+      <span class="gpl-phonebar__hours">{{ hours }}</span>
+    {%- endif -%}
+  </a>
+  {%- if wa != blank -%}
+    <a class="gpl-phonebar__item gpl-phonebar__wa" href="https://wa.me/{{ wa }}" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.9 1.22 3.09.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.62.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35M12.05 21.79h-.01a9.8 9.8 0 0 1-5-1.37l-.36-.21-3.72.98 1-3.63-.24-.37a9.8 9.8 0 0 1-1.51-5.22c0-5.41 4.4-9.81 9.82-9.81a9.76 9.76 0 0 1 6.93 2.87 9.74 9.74 0 0 1 2.87 6.94c0 5.41-4.4 9.82-9.81 9.82M20.44 3.55A11.76 11.76 0 0 0 12.04 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.32-1.65a11.9 11.9 0 0 0 5.66 1.44h.01c6.55 0 11.89-5.34 11.89-11.89 0-3.18-1.24-6.16-3.5-8.41"/></svg>
+      WhatsApp
+    </a>
+  {%- endif -%}
+</div>`,
+      css: `.gpl-phonebar { display: flex; align-items: center; justify-content: center; gap: 1.25rem; padding: 0.5rem 1rem; border-bottom: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.15); font-size: 0.72rem; }
+.gpl-phonebar__item { display: flex; align-items: center; gap: 0.4rem; text-decoration: none; color: inherit; }
+.gpl-phonebar__item svg { width: 0.8rem; height: 0.8rem; }
+.gpl-phonebar__item b { font-weight: 700; }
+.gpl-phonebar__hours { color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-phonebar__wa { color: #16a34a; font-weight: 700; }
+@media (max-width: 640px) { .gpl-phonebar { flex-direction: column; gap: 0.3rem; } }`,
+      usage: `{% render 'phone-bar', phone: ${js(str(v, "phone"))}, hours: ${js(str(v, "hours"))}, wa: ${js(str(v, "wa"))} %}`,
+    }),
+  },
+  {
+    id: "sold-out-overlay",
+    name: "Sold out card overlay",
+    description: "'SOLD OUT' badge over the product image on grids - an automatic visual, not a label you manually update.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "label", label: "Badge text", type: "text", maxLength: 20 },
+    ],
+    defaults: { label: "SOLD OUT" },
+    install: [
+      ...snippetSteps("sold-out-overlay.liquid"),
+      "Render inside the product card wrapper - it only shows when product.available is false.",
+    ],
+    files: (v) => ({
+      liquid: `{%- unless product.available -%}
+<span class="gpl-so-overlay">{{ label | default: 'SOLD OUT' }}</span>
+{%- endunless -%}`,
+      css: `.gpl-so-overlay {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 5;
+  padding: 0.3rem 0.7rem;
+  border-radius: 4px;
+  background: rgb(var(--color-foreground, 15 23 42) / 0.9);
+  color: rgb(var(--color-background, 255 255 255));
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+}`,
+      usage: `{% render 'sold-out-overlay', product: product, label: ${js(str(v, "label"))} %}`,
+    }),
+  },
+  {
+    id: "notify-whatsapp",
+    name: "WhatsApp notify me",
+    description: "'Notify on WhatsApp' for sold-out products - opens WhatsApp with the product link prefilled.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "wa", label: "Your WhatsApp number", type: "text", maxLength: 15 },
+      { id: "label", label: "Button label", type: "text", maxLength: 30 },
+    ],
+    defaults: { wa: "919876543210", label: "Notify on WhatsApp" },
+    install: [
+      ...snippetSteps("notify-whatsapp.liquid"),
+      "Free alternative to back-in-stock apps - customer messages you, you reply when it's live.",
+    ],
+    files: (v) => ({
+      liquid: `{%- assign msg = 'Let me know when ' | append: product.title | append: ' is back: ' | append: shop.url | append: product.url | url_encode -%}
+<a class="gpl-wan" href="https://wa.me/{{ wa }}?text={{ msg }}" target="_blank" rel="noopener">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.9 1.22 3.09.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.62.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35"/></svg>
+  {{ label | default: 'Notify me' }}
+</a>`,
+      css: `.gpl-wan {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.65rem 1.4rem;
+  border-radius: 999px;
+  background: #25d366;
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.gpl-wan svg { width: 0.9rem; height: 0.9rem; }`,
+      usage: `{% render 'notify-whatsapp', product: product, wa: ${js(str(v, "wa"))}, label: ${js(str(v, "label"))} %}`,
+    }),
+  },
+  {
+    id: "mobile-menu-drawer",
+    name: "Mobile nav drawer",
+    description: "Slide-in menu with collections and a support footer - the navigation every mobile shopper expects.",
+    category: "Headers & navigation",
+    kind: "snippet",
+    controls: [
+      { id: "links", label: "Links (label|url per line)", type: "text", maxLength: 300 },
+      { id: "phone", label: "Footer phone", type: "text", maxLength: 15 },
+    ],
+    defaults: { links: "Home|/\nNew in|/collections/new\nBestsellers|/collections/bestsellers\nSale|/collections/sale\nTrack order|/pages/track", phone: "+919876543210" },
+    install: snippetSteps("mobile-menu-drawer.liquid"),
+    files: (v) => ({
+      liquid: `<gpl-mnav class="gpl-mnav">
+  <button type="button" class="gpl-mnav__open" data-open aria-label="Menu">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+  </button>
+  <div class="gpl-mnav__backdrop" hidden data-backdrop></div>
+  <nav class="gpl-mnav__drawer" hidden data-drawer aria-label="Mobile menu">
+    <button type="button" class="gpl-mnav__close" data-close aria-label="Close">&times;</button>
+    {%- assign rows = links | newline_to_br | split: '<br />' -%}
+    {%- for row in rows -%}
+      {%- assign parts = row | strip | split: '|' -%}
+      <a class="gpl-mnav__link" href="{{ parts[1] | strip | default: '#' }}">{{ parts[0] | strip }}</a>
+    {%- endfor -%}
+    {%- if phone != blank -%}
+      <div class="gpl-mnav__foot">
+        <p class="gpl-mnav__foot-label">Need help?</p>
+        <a class="gpl-mnav__foot-link" href="tel:{{ phone | remove: ' ' }}">{{ phone }}</a>
+      </div>
+    {%- endif -%}
+  </nav>
+</gpl-mnav>`,
+      css: `.gpl-mnav__open { border: 0; background: none; padding: 0.5rem; cursor: pointer; color: inherit; }
+.gpl-mnav__open svg { width: 1.4rem; height: 1.4rem; }
+.gpl-mnav__backdrop { position: fixed; inset: 0; z-index: 70; background: rgb(0 0 0 / 0.4); }
+.gpl-mnav__drawer {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 71;
+  width: min(80vw, 20rem);
+  background: rgb(var(--color-background, 255 255 255));
+  padding: 1.25rem;
+  overflow-y: auto;
+}
+.gpl-mnav__close { border: 0; background: none; font-size: 1.6rem; cursor: pointer; color: inherit; }
+.gpl-mnav__link { display: block; padding: 0.85rem 0; border-bottom: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.12); font-size: 0.9rem; font-weight: 600; text-decoration: none; color: inherit; }
+.gpl-mnav__foot { margin-top: 1.5rem; padding-top: 1rem; border-top: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.15); }
+.gpl-mnav__foot-label { margin: 0; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-mnav__foot-link { font-size: 0.85rem; font-weight: 700; color: rgb(var(--color-button, 21 128 61)); text-decoration: none; }`,
+      js: `document.querySelectorAll('gpl-mnav').forEach((el) => {
+  const drawer = el.querySelector('[data-drawer]');
+  const back = el.querySelector('[data-backdrop]');
+  function open() { drawer.hidden = false; back.hidden = false; document.body.style.overflow = 'hidden'; }
+  function close() { drawer.hidden = true; back.hidden = true; document.body.style.overflow = ''; }
+  el.querySelector('[data-open]').addEventListener('click', open);
+  el.querySelector('[data-close]').addEventListener('click', close);
+  back.addEventListener('click', close);
+});`,
+      usage: `{% render 'mobile-menu-drawer', links: ${js(str(v, "links"))}, phone: ${js(str(v, "phone"))} %}`,
+    }),
+  },
+  {
+    id: "sticky-category-nav",
+    name: "Sticky category pills",
+    description: "Horizontally scrollable category chips that stick under the header - mobile navigation without a hamburger.",
+    category: "Headers & navigation",
+    kind: "snippet",
+    controls: [
+      { id: "cats", label: "Categories (comma separated)", type: "text", maxLength: 150 },
+    ],
+    defaults: { cats: "New in, Bestsellers, Tees, Bottoms, Accessories, Sale" },
+    install: snippetSteps("sticky-category-nav.liquid"),
+    files: (v) => ({
+      liquid: `<nav class="gpl-catnav" aria-label="Categories">
+  {%- assign cs = cats | split: ',' -%}
+  {%- for c in cs -%}
+    {%- assign cat = c | strip -%}
+    <a class="gpl-catnav__pill{% if collection.title == cat %} is-active{% endif %}" href="/collections/{{ cat | handleize }}">{{ cat }}</a>
+  {%- endfor -%}
+</nav>`,
+      css: `.gpl-catnav {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  display: flex;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  border-bottom: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.15);
+  background: rgb(var(--color-background, 255 255 255));
+}
+.gpl-catnav::-webkit-scrollbar { display: none; }
+.gpl-catnav__pill {
+  flex-shrink: 0;
+  padding: 0.4rem 0.95rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: inherit;
+  white-space: nowrap;
+}
+.gpl-catnav__pill.is-active { background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); border-color: transparent; }`,
+      usage: `{% render 'sticky-category-nav', cats: ${js(str(v, "cats"))}, collection: collection %}`,
+    }),
+  },
+  {
+    id: "callback-request",
+    name: "Request a callback",
+    description: "'We'll call you' - name + number form for buyers who'd rather talk than read a product page.",
+    category: "Marketing",
+    kind: "snippet",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+    ],
+    defaults: { heading: "Prefer a call?" },
+    install: snippetSteps("callback-request.liquid"),
+    files: (v) => ({
+      liquid: `<div class="gpl-callback">
+  <p class="gpl-callback__heading">{{ heading | default: 'Request a callback' }}</p>
+  {%- form 'contact', class: 'gpl-callback__form' -%}
+    <input type="hidden" name="contact[tags]" value="callback-request">
+    <input type="text" name="contact[name]" placeholder="Name" required>
+    <input type="tel" name="contact[phone]" placeholder="Phone" required>
+    <select name="contact[time]">
+      <option>Best time: morning</option>
+      <option>Best time: afternoon</option>
+      <option>Best time: evening</option>
+    </select>
+    <button type="submit">Call me back</button>
+  {%- endform -%}
+</div>`,
+      css: `.gpl-callback { margin: 1rem 0; padding: 1rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2); border-radius: 10px; }
+.gpl-callback__heading { margin: 0 0 0.7rem; font-size: 0.8rem; font-weight: 800; }
+.gpl-callback__form { display: grid; gap: 0.5rem; }
+.gpl-callback__form input, .gpl-callback__form select { padding: 0.6rem 0.8rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 8px; font: inherit; font-size: 0.78rem; }
+.gpl-callback__form button { padding: 0.6rem 1.25rem; border: 0; border-radius: 8px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-size: 0.72rem; font-weight: 700; cursor: pointer; justify-self: start; }`,
+      usage: `{% render 'callback-request', heading: ${js(str(v, "heading"))} %}`,
+    }),
+  },
+  {
+    id: "emi-plans-table",
+    name: "EMI plans table",
+    description: "Bank / tenure / monthly-amount table - the clear EMI breakdown that answers 'can I afford this' upfront.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "price", label: "Product price (₹)", type: "text", maxLength: 8 },
+      { id: "rows", label: "Plans (bank|months|per month per line)", type: "text", maxLength: 300 },
+    ],
+    defaults: { price: "24990", rows: "HDFC|3|₹8,330\nHDFC|6|₹4,165\nICICI|9|₹2,777\nSBI|12|₹2,083" },
+    install: [
+      ...snippetSteps("emi-plans-table.liquid"),
+      "Wire to your real EMI partner rates - showing EMI you don't offer is a checkout betrayal.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-emitable">
+  <p class="gpl-emitable__title">No-cost EMI available</p>
+  <table class="gpl-emitable__table">
+    <thead><tr><th>Bank</th><th>Tenure</th><th>Per month</th></tr></thead>
+    <tbody>
+      {%- assign rows = rows | newline_to_br | split: '<br />' -%}
+      {%- for row in rows -%}
+        {%- assign parts = row | strip | split: '|' -%}
+        <tr><td>{{ parts[0] | strip }}</td><td>{{ parts[1] | strip }} mo</td><td class="gpl-emitable__amt">{{ parts[2] | strip }}</td></tr>
+      {%- endfor -%}
+    </tbody>
+  </table>
+</div>`,
+      css: `.gpl-emitable { margin: 0.75rem 0; }
+.gpl-emitable__title { margin: 0 0 0.6rem; font-size: 0.75rem; font-weight: 800; }
+.gpl-emitable__table { width: 100%; border-collapse: collapse; font-size: 0.72rem; }
+.gpl-emitable__table th { padding: 0.4rem; text-align: left; font-size: 0.58rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-emitable__table td { padding: 0.45rem 0.4rem; border-top: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.18); }
+.gpl-emitable__amt { font-weight: 700; }`,
+      usage: `{% render 'emi-plans-table', price: ${js(str(v, "price"))}, rows: ${js(str(v, "rows"))} %}`,
+    }),
+  },
+  {
+    id: "upi-badges",
+    name: "UPI payment badges",
+    description: "UPI / GPay / PhonePe / Paytm icons - the payment methods Indian buyers actually look for before trusting a store.",
+    category: "Trust & social proof",
+    kind: "snippet",
+    controls: [],
+    defaults: {},
+    install: [
+      ...snippetSteps("upi-badges.liquid"),
+      "Only show methods you actually accept - check your Razorpay/Shopify Payments config first.",
+    ],
+    files: () => ({
+      liquid: `<div class="gpl-upi">
+  <span class="gpl-upi__badge">UPI</span>
+  <span class="gpl-upi__badge">GPay</span>
+  <span class="gpl-upi__badge">PhonePe</span>
+  <span class="gpl-upi__badge">Paytm</span>
+  <span class="gpl-upi__badge">Cards</span>
+</div>`,
+      css: `.gpl-upi { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.gpl-upi__badge {
+  padding: 0.3rem 0.65rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25);
+  border-radius: 5px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}`,
+      usage: `{% render 'upi-badges' %}`,
+    }),
+  },
+  {
+    id: "size-recommender",
+    name: "Size recommender",
+    description: "Height + weight -> suggested size - reduces the #1 return reason on fashion stores.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "label", label: "Label", type: "text", maxLength: 40 },
+    ],
+    defaults: { label: "Find your size" },
+    install: [
+      ...snippetSteps("size-recommender.liquid"),
+      "Tune the height/weight bands to your real fit notes - a wrong suggestion is worse than none.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-sizerec class="gpl-sizerec">
+  <p class="gpl-sizerec__label">{{ label | default: 'Find your size' }}</p>
+  <div class="gpl-sizerec__row">
+    <input type="number" placeholder="Height (cm)" data-h>
+    <input type="number" placeholder="Weight (kg)" data-w>
+  </div>
+  <p class="gpl-sizerec__result" hidden data-result></p>
+</gpl-sizerec>`,
+      css: `.gpl-sizerec { margin: 0.75rem 0; padding: 0.9rem; border: 1px dashed rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 9px; }
+.gpl-sizerec__label { margin: 0 0 0.6rem; font-size: 0.72rem; font-weight: 700; }
+.gpl-sizerec__row { display: flex; gap: 0.5rem; }
+.gpl-sizerec__row input { flex: 1; min-width: 0; padding: 0.55rem 0.7rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 8px; font-size: 0.75rem; }
+.gpl-sizerec__result { margin: 0.6rem 0 0; font-size: 0.72rem; font-weight: 700; color: #16a34a; }`,
+      js: `document.querySelectorAll('gpl-sizerec').forEach((el) => {
+  const h = el.querySelector('[data-h]');
+  const w = el.querySelector('[data-w]');
+  const res = el.querySelector('[data-result]');
+  function guess() {
+    const hv = Number(h.value), wv = Number(w.value);
+    if (!hv || !wv) { res.hidden = true; return; }
+    const bmi = wv / ((hv / 100) ** 2);
+    let s = 'M';
+    if (bmi < 19) s = 'S'; else if (bmi < 23) s = 'M'; else if (bmi < 27) s = 'L'; else s = 'XL';
+    res.textContent = 'Suggested size: ' + s;
+    res.hidden = false;
+  }
+  h.addEventListener('input', guess);
+  w.addEventListener('input', guess);
+});`,
+      usage: `{% render 'size-recommender', label: ${js(str(v, "label"))} %}`,
+    }),
+  },
+  {
+    id: "login-prompt",
+    name: "Member pricing prompt",
+    description: "'Log in for member pricing' - prompts account creation on the PDP without being a hard gate.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "text", label: "Prompt text", type: "text", maxLength: 60 },
+      { id: "cta", label: "Link label", type: "text", maxLength: 30 },
+    ],
+    defaults: { text: "Log in for member pricing and faster checkout", cta: "Log in" },
+    install: [
+      ...snippetSteps("login-prompt.liquid"),
+      "Shows only for logged-out visitors - logged-in members don't see the nag.",
+    ],
+    files: (v) => ({
+      liquid: `{%- unless customer -%}
+<div class="gpl-loginp">
+  <p class="gpl-loginp__text">{{ text | default: 'Log in for member benefits' }}</p>
+  <a class="gpl-loginp__cta" href="{{ routes.account_login_url }}">{{ cta | default: 'Log in' }} &rarr;</a>
+</div>
+{%- endunless -%}`,
+      css: `.gpl-loginp { display: flex; align-items: center; justify-content: space-between; gap: 0.75rem; margin: 0.75rem 0; padding: 0.7rem 0.9rem; border-radius: 9px; background: rgb(var(--color-button, 21 128 61) / 0.07); }
+.gpl-loginp__text { margin: 0; font-size: 0.72rem; font-weight: 600; }
+.gpl-loginp__cta { font-size: 0.68rem; font-weight: 700; color: rgb(var(--color-button, 21 128 61)); text-decoration: none; white-space: nowrap; }`,
+      usage: `{% render 'login-prompt', text: ${js(str(v, "text"))}, cta: ${js(str(v, "cta"))} %}`,
+    }),
+  },
+  {
+    id: "ssl-note",
+    name: "Secure checkout note",
+    description: "'256-bit SSL secured' under the buy button - the security reassurance that actually affects conversion.",
+    category: "Trust & social proof",
+    kind: "snippet",
+    controls: [
+      { id: "text", label: "Note text", type: "text", maxLength: 60 },
+    ],
+    defaults: { text: "Secure checkout - 256-bit SSL encrypted" },
+    install: snippetSteps("ssl-note.liquid"),
+    files: (v) => ({
+      liquid: `<p class="gpl-ssl">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+  {{ text | default: 'Secure checkout' }}
+</p>`,
+      css: `.gpl-ssl { display: flex; align-items: center; justify-content: center; gap: 0.35rem; margin: 0.4rem 0; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-ssl svg { width: 0.75rem; height: 0.75rem; }`,
+      usage: `{% render 'ssl-note', text: ${js(str(v, "text"))} %}`,
+    }),
+  },
+  {
+    id: "article-progress",
+    name: "Reading progress bar",
+    description: "A thin progress bar at the top while reading blog posts - keeps readers oriented on long content.",
+    category: "Content",
+    kind: "snippet",
+    controls: [],
+    defaults: {},
+    install: [
+      ...snippetSteps("article-progress.liquid"),
+      "Render at the top of the article template - fills as you scroll through the post.",
+    ],
+    files: () => ({
+      liquid: `<gpl-aprogress class="gpl-aprogress"><span data-fill></span></gpl-aprogress>`,
+      css: `.gpl-aprogress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 80;
+  height: 3px;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.12);
+}
+.gpl-aprogress span { display: block; height: 100%; width: 0; background: rgb(var(--color-button, 21 128 61)); transition: width 0.1s; }`,
+      js: `document.querySelectorAll('gpl-aprogress').forEach((el) => {
+  const fill = el.querySelector('[data-fill]');
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const pct = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+    fill.style.width = Math.min(100, Math.max(0, pct)) + '%';
+  }, { passive: true });
+});`,
+      usage: `{% render 'article-progress' %}`,
+    }),
+  },
+  {
+    id: "related-articles",
+    name: "Related blog posts",
+    description: "'Keep reading' cards for 3 posts in the same blog - keeps readers on your site instead of bouncing.",
+    category: "Content",
+    kind: "snippet",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 40 },
+      { id: "limit", label: "Max articles", type: "text", maxLength: 2 },
+    ],
+    defaults: { heading: "Keep reading", limit: "3" },
+    install: [
+      ...snippetSteps("related-articles.liquid"),
+      "Render at the bottom of the article template - pulls other posts from the same blog.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-rel">
+  <p class="gpl-rel__heading">{{ heading | default: 'Keep reading' }}</p>
+  <div class="gpl-rel__grid">
+    {%- for a in blog.articles limit: limit -%}
+      {%- if a.id != article.id -%}
+        <a class="gpl-rel__card" href="{{ a.url }}">
+          {{ a.image | image_url: width: 400 | image_tag: class: 'gpl-rel__img', loading: 'lazy' }}
+          <span class="gpl-rel__title">{{ a.title }}</span>
+          <span class="gpl-rel__date">{{ a.published_at | date: '%b %d' }}</span>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>`,
+      css: `.gpl-rel { margin: 2rem 0; }
+.gpl-rel__heading { margin: 0 0 0.9rem; font-size: 0.82rem; font-weight: 800; }
+.gpl-rel__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
+@media (max-width: 640px) { .gpl-rel__grid { grid-template-columns: 1fr; } }
+.gpl-rel__card { text-decoration: none; color: inherit; }
+.gpl-rel__img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-radius: 10px; display: block; }
+.gpl-rel__title { display: block; margin-top: 0.5rem; font-size: 0.75rem; font-weight: 700; }
+.gpl-rel__date { display: block; font-size: 0.62rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+      usage: `{% render 'related-articles', blog: blog, article: article, heading: ${js(str(v, "heading"))}, limit: ${js(str(v, "limit"))} %}`,
+    }),
+  },
+  {
+    id: "author-card",
+    name: "Author bio card",
+    description: "Name + avatar + short bio under blog posts - signals a real person wrote it, not content-mill filler.",
+    category: "Content",
+    kind: "snippet",
+    controls: [
+      { id: "name", label: "Author name", type: "text", maxLength: 40 },
+      { id: "bio", label: "Bio", type: "text", maxLength: 120 },
+    ],
+    defaults: { name: "Priya Sharma", bio: "Writes about D2C growth and honest ecommerce." },
+    install: snippetSteps("author-card.liquid"),
+    files: (v) => ({
+      liquid: `<div class="gpl-author">
+  <div class="gpl-author__avatar">{{ name | slice: 0 }}</div>
+  <div>
+    <p class="gpl-author__name">{{ name | default: article.author | default: 'Team' }}</p>
+    <p class="gpl-author__bio">{{ bio | default: '' }}</p>
+  </div>
+</div>`,
+      css: `.gpl-author { display: flex; align-items: center; gap: 0.9rem; margin: 2rem 0; padding: 1.1rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2); border-radius: 12px; }
+.gpl-author__avatar {
+  display: grid;
+  place-items: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 999px;
+  background: rgb(var(--color-button, 21 128 61));
+  color: #fff;
+  font-size: 1.1rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.gpl-author__name { margin: 0; font-size: 0.82rem; font-weight: 800; }
+.gpl-author__bio { margin: 0.25rem 0 0; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.8); }`,
+      usage: `{% render 'author-card', article: article, name: ${js(str(v, "name"))}, bio: ${js(str(v, "bio"))} %}`,
+    }),
+  },
+  {
+    id: "staff-picks",
+    name: "Staff picks section",
+    description: "'Our team's favourites' - curated picks with a human angle that bestseller lists don't have.",
+    category: "Content",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+      { id: "items", label: "Picks (name|role|product handle per line)", type: "text", maxLength: 300 },
+    ],
+    defaults: {
+      heading: "Staff picks",
+      items: "Priya|Head of design|linen-overshirt\nArjun|Ops lead|cotton-chinos\nMeera|Founder|canvas-tote",
+    },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-staff">
+  <h2 class="gpl-staff__heading">{{ section.settings.heading }}</h2>
+  <div class="gpl-staff__grid">
+    {%- assign rows = section.settings.items | newline_to_br | split: '<br />' -%}
+    {%- for row in rows -%}
+      {%- assign parts = row | strip | split: '|' -%}
+      {%- assign p = all_products[parts[2] | strip] -%}
+      <a class="gpl-staff__card" href="{{ p.url | default: '#' }}">
+        {{ p.featured_image | image_url: width: 400 | image_tag: class: 'gpl-staff__img', loading: 'lazy' }}
+        <span class="gpl-staff__badge">{{ parts[0] | strip }}'s pick</span>
+        <span class="gpl-staff__title">{{ p.title | default: parts[2] | strip }}</span>
+        <span class="gpl-staff__price">{{ p.price | money }}</span>
+      </a>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Staff picks",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} },
+    { "type": "textarea", "id": "items", "label": "Picks (name|role|handle per line)", "default": ${js(str(v, "items"))} }
+  ],
+  "presets": [{ "name": "Staff picks" }]
+}
+{% endschema %}`,
+      css: `.gpl-staff { padding: 1.5rem 0; }
+.gpl-staff__heading { margin: 0 0 1rem; font-size: 1.1rem; font-weight: 800; }
+.gpl-staff__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
+@media (max-width: 640px) { .gpl-staff__grid { grid-template-columns: repeat(2, 1fr); } }
+.gpl-staff__card { position: relative; text-decoration: none; color: inherit; }
+.gpl-staff__img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 12px; display: block; }
+.gpl-staff__badge {
+  position: absolute;
+  top: 0.7rem;
+  left: 0.7rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  background: rgb(var(--color-background, 255 255 255) / 0.95);
+  font-size: 0.6rem;
+  font-weight: 800;
+}
+.gpl-staff__title { display: block; margin-top: 0.5rem; font-size: 0.75rem; font-weight: 700; }
+.gpl-staff__price { display: block; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+    }),
+  },
 ];
 
 export function getExample(id: string | undefined): PlaygroundExample {

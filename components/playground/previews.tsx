@@ -3179,6 +3179,241 @@ function BirthdayCapture({ v }: P) {
   );
 }
 
+function PhoneBar({ v }: P) {
+  return (
+    <div className="flex items-center justify-center gap-5 border-b border-neutral-200 px-4 py-2 text-[0.65rem] max-sm:flex-col max-sm:gap-1">
+      <a href="#" className="flex items-center gap-1.5 font-bold">
+        <svg className="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72c.13.96.36 1.9.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.91.34 1.85.57 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+        {str(v, "phone")}
+        <span className="font-normal text-neutral-400">{str(v, "hours")}</span>
+      </a>
+      {str(v, "wa") && (
+        <a href="#" className="flex items-center gap-1 font-bold text-emerald-600">
+          <svg className="size-3" viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.9 1.22 3.09.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.62.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35M12.05 21.79h-.01a9.8 9.8 0 0 1-5-1.37l-.36-.21-3.72.98 1-3.63-.24-.37a9.8 9.8 0 0 1-1.51-5.22c0-5.41 4.4-9.81 9.82-9.81a9.76 9.76 0 0 1 6.93 2.87 9.74 9.74 0 0 1 2.87 6.94c0 5.41-4.4 9.82-9.81 9.82M20.44 3.55A11.76 11.76 0 0 0 12.04 0C5.5 0 .16 5.34.16 11.89c0 2.1.55 4.14 1.59 5.95L.06 24l6.32-1.65a11.9 11.9 0 0 0 5.66 1.44h.01c6.55 0 11.89-5.34 11.89-11.89 0-3.18-1.24-6.16-3.5-8.41"/></svg>
+          WhatsApp
+        </a>
+      )}
+    </div>
+  );
+}
+
+function SoldOutOverlay({ v }: P) {
+  return (
+    <div className="relative w-40 p-4">
+      <div className="aspect-[4/5] rounded-xl bg-[linear-gradient(135deg,#e0e7ff,#fbcfe8)] opacity-60" />
+      <span className="absolute left-6 top-6 rounded bg-neutral-900/90 px-2.5 py-1 text-[0.55rem] font-extrabold tracking-wider text-white">{str(v, "label") || "SOLD OUT"}</span>
+    </div>
+  );
+}
+
+function NotifyWhatsapp({ v }: P) {
+  return (
+    <div className="p-4">
+      <a href="#" className="inline-flex items-center gap-2 rounded-full bg-[#25d366] px-5 py-2.5 text-xs font-bold text-white">
+        <svg className="size-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.9 1.22 3.09.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.62.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35"/></svg>
+        {str(v, "label") || "Notify me"}
+      </a>
+    </div>
+  );
+}
+
+function MobileMenuDrawer({ v }: P) {
+  const [open, setOpen] = useState(false);
+  const rows = str(v, "links").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 6);
+  return (
+    <div className="relative p-4">
+      <button type="button" onClick={() => setOpen(true)} className="p-1.5" aria-label="Menu">
+        <svg className="size-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+      </button>
+      {open && (
+        <>
+          <div className="absolute inset-0 z-10 bg-black/40" onClick={() => setOpen(false)} />
+          <nav className="absolute bottom-0 left-0 top-0 z-20 w-52 overflow-y-auto bg-white p-4 shadow-xl">
+            <button type="button" onClick={() => setOpen(false)} className="text-xl">&times;</button>
+            {rows.map((r) => {
+              const [l] = r.split("|");
+              return <a key={r} href="#" onClick={(e) => e.preventDefault()} className="block border-b border-neutral-100 py-2.5 text-[0.78rem] font-semibold">{l?.trim()}</a>;
+            })}
+            <div className="mt-4 border-t border-neutral-100 pt-3">
+              <p className="m-0 text-[0.6rem] text-neutral-400">Need help?</p>
+              <a href="#" className="text-[0.78rem] font-bold text-emerald-600">{str(v, "phone")}</a>
+            </div>
+          </nav>
+        </>
+      )}
+    </div>
+  );
+}
+
+function StickyCategoryNav({ v }: P) {
+  const [active, setActive] = useState(0);
+  const cats = str(v, "cats").split(",").map((s) => s.trim()).filter(Boolean).slice(0, 7);
+  return (
+    <div className="flex gap-2 overflow-x-auto border-b border-neutral-200 bg-white px-4 py-2.5 [scrollbar-width:none]">
+      {cats.map((c, i) => (
+        <button key={c} type="button" onClick={() => setActive(i)} className={`shrink-0 whitespace-nowrap rounded-full border px-3.5 py-1.5 text-[0.62rem] font-semibold ${i === active ? "border-transparent bg-neutral-900 text-white" : "border-neutral-300"}`}>{c}</button>
+      ))}
+    </div>
+  );
+}
+
+function CallbackRequest({ v }: P) {
+  const [sent, setSent] = useState(false);
+  return (
+    <div className="m-4 rounded-lg border border-neutral-200 p-3.5">
+      <p className="m-0 mb-2 text-[0.72rem] font-extrabold">{str(v, "heading") || "Request a callback"}</p>
+      {sent ? (
+        <p className="m-0 text-[0.65rem] font-bold text-emerald-600">We&apos;ll call at your preferred time</p>
+      ) : (
+        <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="grid gap-1.5">
+          <input required placeholder="Name" className="rounded-lg border border-neutral-300 px-2.5 py-1.5 text-[0.62rem] outline-none" />
+          <input required type="tel" placeholder="Phone" className="rounded-lg border border-neutral-300 px-2.5 py-1.5 text-[0.62rem] outline-none" />
+          <select className="rounded-lg border border-neutral-300 px-2.5 py-1.5 text-[0.62rem]">
+            <option>Best time: morning</option><option>Best time: afternoon</option><option>Best time: evening</option>
+          </select>
+          <button type="submit" className="w-fit rounded-lg bg-neutral-900 px-3.5 py-1.5 text-[0.6rem] font-bold text-white">Call me back</button>
+        </form>
+      )}
+    </div>
+  );
+}
+
+function EmiPlansTable({ v }: P) {
+  const rows = str(v, "rows").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 5);
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2 text-[0.7rem] font-extrabold">No-cost EMI available</p>
+      <table className="w-full border-collapse text-[0.65rem]">
+        <thead><tr>{["Bank", "Tenure", "Per month"].map((h) => <th key={h} className="pb-1.5 text-left text-[0.52rem] uppercase tracking-wider text-neutral-400">{h}</th>)}</tr></thead>
+        <tbody>
+          {rows.map((r) => {
+            const parts = r.split("|").map((s) => s.trim());
+            return (
+              <tr key={r} className="border-t border-neutral-100">
+                <td className="py-1.5">{parts[0]}</td><td className="py-1.5">{parts[1]} mo</td><td className="py-1.5 font-bold">{parts[2]}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function UpiBadges() {
+  return (
+    <div className="flex flex-wrap gap-1.5 p-4">
+      {["UPI", "GPay", "PhonePe", "Paytm", "Cards"].map((b) => (
+        <span key={b} className="rounded border border-neutral-300 px-2.5 py-1 text-[0.55rem] font-extrabold">{b}</span>
+      ))}
+    </div>
+  );
+}
+
+function SizeRecommender({ v }: P) {
+  const [h, setH] = useState("");
+  const [w, setW] = useState("");
+  let size = "";
+  const hv = Number(h), wv = Number(w);
+  if (hv && wv) {
+    const bmi = wv / ((hv / 100) ** 2);
+    size = bmi < 19 ? "S" : bmi < 23 ? "M" : bmi < 27 ? "L" : "XL";
+  }
+  return (
+    <div className="m-4 rounded-lg border border-dashed border-neutral-300 p-3.5">
+      <p className="m-0 mb-2 text-[0.68rem] font-bold">{str(v, "label") || "Find your size"}</p>
+      <div className="flex gap-2">
+        <input type="number" placeholder="Height (cm)" value={h} onChange={(e) => setH(e.target.value)} className="min-w-0 flex-1 rounded-lg border border-neutral-300 px-2.5 py-1.5 text-[0.68rem] outline-none" />
+        <input type="number" placeholder="Weight (kg)" value={w} onChange={(e) => setW(e.target.value)} className="min-w-0 flex-1 rounded-lg border border-neutral-300 px-2.5 py-1.5 text-[0.68rem] outline-none" />
+      </div>
+      {size && <p className="m-0 mt-2 text-[0.65rem] font-bold text-emerald-600">Suggested size: {size}</p>}
+    </div>
+  );
+}
+
+function LoginPrompt({ v }: P) {
+  return (
+    <div className="m-4 flex items-center justify-between gap-3 rounded-lg bg-emerald-50/60 px-3.5 py-2.5">
+      <p className="m-0 text-[0.68rem] font-semibold">{str(v, "text") || "Log in for member benefits"}</p>
+      <a href="#" className="whitespace-nowrap text-[0.62rem] font-bold text-emerald-600">{str(v, "cta") || "Log in"} &rarr;</a>
+    </div>
+  );
+}
+
+function SslNote({ v }: P) {
+  return (
+    <div className="flex items-center justify-center gap-1.5 p-4 text-[0.6rem] text-neutral-500">
+      <svg className="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      {str(v, "text") || "Secure checkout"}
+    </div>
+  );
+}
+
+function ArticleProgress() {
+  const [pct, setPct] = useState(35);
+  return (
+    <div className="p-4">
+      <input type="range" min="0" max="100" value={pct} onChange={(e) => setPct(Number(e.target.value))} className="mb-2 w-full accent-emerald-600" aria-label="Simulate scroll" />
+      <div className="h-1 overflow-hidden rounded-full bg-neutral-200">
+        <div className="h-full bg-emerald-600" style={{ width: `${pct}%` }} />
+      </div>
+    </div>
+  );
+}
+
+function RelatedArticles({ v }: P) {
+  const limit = Number(str(v, "limit")) || 3;
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2.5 text-[0.75rem] font-extrabold">{str(v, "heading") || "Keep reading"}</p>
+      <div className="grid grid-cols-3 gap-2.5 max-sm:grid-cols-1">
+        {["Sizing guide", "Fabric care", "New drops"].slice(0, limit).map((t, i) => (
+          <div key={t}>
+            <div className="aspect-video rounded-lg" style={{ background: `linear-gradient(${135 + i * 60}deg,#e0e7ff,#fbcfe8)` }} />
+            <p className="m-0 mt-1.5 text-[0.68rem] font-bold">{t}</p>
+            <p className="m-0 text-[0.55rem] text-neutral-400">Jan {10 + i * 3}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function AuthorCard({ v }: P) {
+  const name = str(v, "name") || "Author";
+  return (
+    <div className="m-4 flex items-center gap-3.5 rounded-xl border border-neutral-200 p-4">
+      <div className="grid size-11 shrink-0 place-items-center rounded-full bg-emerald-600 text-base font-extrabold text-white">{name[0]}</div>
+      <div>
+        <p className="m-0 text-[0.75rem] font-extrabold">{name}</p>
+        <p className="m-0 mt-0.5 text-[0.62rem] text-neutral-500">{str(v, "bio")}</p>
+      </div>
+    </div>
+  );
+}
+
+function StaffPicks({ v }: P) {
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 3);
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2.5 text-sm font-extrabold">{str(v, "heading") || "Staff picks"}</p>
+      <div className="grid grid-cols-3 gap-2.5 max-sm:grid-cols-2">
+        {rows.map((r, i) => {
+          const parts = r.split("|").map((s) => s.trim());
+          return (
+            <div key={r} className="relative">
+              <div className="aspect-[4/5] rounded-xl" style={{ background: `linear-gradient(${135 + i * 60}deg,#e0e7ff,#fbcfe8)` }} />
+              <span className="absolute left-2 top-2 rounded-full bg-white/95 px-2.5 py-0.5 text-[0.52rem] font-extrabold">{parts[0]}&apos;s pick</span>
+              <p className="m-0 mt-1.5 text-[0.65rem] font-bold capitalize">{parts[2]?.replace(/-/g, " ")}</p>
+              <p className="m-0 text-[0.55rem] text-neutral-400">₹{1499 + i * 400}</p>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -3341,6 +3576,21 @@ const map: Record<string, (p: P) => ReactNode> = {
   "ambassador-signup": AmbassadorSignup,
   "collection-notify": CollectionNotify,
   "birthday-capture": BirthdayCapture,
+  "phone-bar": PhoneBar,
+  "sold-out-overlay": SoldOutOverlay,
+  "notify-whatsapp": NotifyWhatsapp,
+  "mobile-menu-drawer": MobileMenuDrawer,
+  "sticky-category-nav": StickyCategoryNav,
+  "callback-request": CallbackRequest,
+  "emi-plans-table": EmiPlansTable,
+  "upi-badges": UpiBadges,
+  "size-recommender": SizeRecommender,
+  "login-prompt": LoginPrompt,
+  "ssl-note": SslNote,
+  "article-progress": ArticleProgress,
+  "related-articles": RelatedArticles,
+  "author-card": AuthorCard,
+  "staff-picks": StaffPicks,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {
