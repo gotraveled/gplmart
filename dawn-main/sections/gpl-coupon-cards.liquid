@@ -1,0 +1,160 @@
+{%- if section.blocks.size > 0 -%}
+  <div class="gpl-coupons" style="--gpl-accent: {{ section.settings.accent }};" role="list">
+    {%- for block in section.blocks -%}
+      <div class="gpl-coupon" role="listitem" {{ block.shopify_attributes }}>
+        <div class="gpl-coupon__info">
+          {%- if block.settings.tag != blank -%}
+            <span class="gpl-coupon__tag">{{ block.settings.tag | escape }}</span>
+          {%- endif -%}
+          <h3 class="gpl-coupon__title">{{ block.settings.title | escape }}</h3>
+          {%- if block.settings.subtitle != blank -%}
+            <p class="gpl-coupon__subtitle">{{ block.settings.subtitle | escape }}</p>
+          {%- endif -%}
+        </div>
+        <div class="gpl-coupon__divider" aria-hidden="true"></div>
+        <button type="button" class="gpl-coupon__code" data-code="{{ block.settings.code | escape }}" aria-label="Copy coupon code {{ block.settings.code | escape }}">
+          <span class="gpl-coupon__label" data-label>Tap to copy</span>
+          <span class="gpl-coupon__value">{{ block.settings.code | escape }}</span>
+        </button>
+      </div>
+    {%- endfor -%}
+  </div>
+  <p class="gpl-coupon-toast" data-coupon-toast role="status" hidden>Code copied</p>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Coupon cards",
+  "settings": [
+    { "type": "color", "id": "accent", "label": "Accent colour", "default": "#c2410c" }
+  ],
+  "blocks": [
+    {
+      "type": "coupon",
+      "name": "Coupon",
+      "settings": [
+        { "type": "text", "id": "tag", "label": "Tag", "default": "Welcome" },
+        { "type": "text", "id": "title", "label": "Title", "default": "Flat 10% off" },
+        { "type": "text", "id": "subtitle", "label": "Subtitle", "default": "For new customers" },
+        { "type": "text", "id": "code", "label": "Discount code", "default": "WELCOME10" }
+      ]
+    }
+  ],
+  "max_blocks": 6,
+  "presets": [{ "name": "Coupon cards", "blocks": [{ "type": "coupon" }, { "type": "coupon" }] }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-coupons {
+  display: flex;
+  gap: 0.9rem;
+  overflow-x: auto;
+  padding: 0.5rem 0.25rem 1rem;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.gpl-coupons::-webkit-scrollbar { display: none; }
+.gpl-coupon {
+  flex: 0 0 20rem;
+  scroll-snap-align: start;
+  display: flex;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 4px 14px rgba(15, 23, 42, 0.05);
+  overflow: hidden;
+}
+.gpl-coupon__info { flex: 1; min-width: 0; padding: 0.9rem 1rem; }
+.gpl-coupon__tag {
+  display: inline-block;
+  background: #f1f5f9;
+  padding: 0.15rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.gpl-coupon__title { margin: 0.4rem 0 0; font-size: 1rem; font-weight: 800; }
+.gpl-coupon__subtitle { margin: 0.2rem 0 0; color: rgb(var(--color-foreground, 100 116 139) / 0.75); font-size: 0.75rem; }
+.gpl-coupon__divider { width: 1px; border-left: 1.5px dashed #cbd5e1; position: relative; }
+.gpl-coupon:not(.gpl-coupon--flat) .gpl-coupon__divider::before,
+.gpl-coupon:not(.gpl-coupon--flat) .gpl-coupon__divider::after {
+  content: "";
+  position: absolute;
+  left: -7px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--gpl-canvas, #fff);
+  border: 1px solid #e2e8f0;
+}
+.gpl-coupon:not(.gpl-coupon--flat) .gpl-coupon__divider::before { top: -7px; }
+.gpl-coupon:not(.gpl-coupon--flat) .gpl-coupon__divider::after { bottom: -7px; }
+.gpl-coupon__code {
+  width: 7.5rem;
+  border: 0;
+  background: #fafaf9;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+  cursor: pointer;
+}
+.gpl-coupon__label { font-size: 0.6rem; font-weight: 700; letter-spacing: 0.05em; color: #94a3b8; text-transform: uppercase; }
+.gpl-coupon__value {
+  border: 1.5px dashed var(--gpl-accent);
+  border-radius: 7px;
+  padding: 0.3rem 0.55rem;
+  color: var(--gpl-accent);
+  font-size: 0.8rem;
+  font-weight: 800;
+}
+.gpl-coupon__code.is-copied .gpl-coupon__value { background: #059669; border-color: #059669; color: #fff; border-style: solid; }
+.gpl-coupon-toast {
+  position: fixed;
+  bottom: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #0f172a;
+  color: #fff;
+  padding: 0.55rem 1.1rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  z-index: 100;
+}
+.gpl-coupon-toast[hidden] { display: none; }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('.gpl-coupon__code').forEach((btn) => {
+  btn.addEventListener('click', async () => {
+    const code = btn.dataset.code;
+    const label = btn.querySelector('[data-label]');
+    const toast = document.querySelector('[data-coupon-toast]');
+    try {
+      await navigator.clipboard.writeText(code);
+    } catch {
+      const ta = document.createElement('textarea');
+      ta.value = code;
+      document.body.appendChild(ta);
+      ta.select();
+      document.execCommand('copy');
+      ta.remove();
+    }
+    btn.classList.add('is-copied');
+    if (label) label.textContent = 'Copied';
+    if (toast) {
+      toast.hidden = false;
+      clearTimeout(toast._t);
+      toast._t = setTimeout(() => { toast.hidden = true; }, 2000);
+    }
+    setTimeout(() => {
+      btn.classList.remove('is-copied');
+      if (label) label.textContent = 'Tap to copy';
+    }, 2000);
+  });
+});
+{% endjavascript %}

@@ -1,0 +1,82 @@
+<gpl-bb class="gpl-bb" data-pick="{{ section.settings.pick | default: 3 }}">
+  <p class="gpl-bb__heading">{{ section.settings.heading }}</p>
+  <p class="gpl-bb__hint" data-hint>Pick {{ section.settings.pick | default: 3 }} items</p>
+  {%- assign col = section.settings.collection -%}
+  <div class="gpl-bb__grid">
+    {%- for p in col.products limit: 8 -%}
+      <button type="button" class="gpl-bb__card" data-card data-vid="{{ p.selected_or_first_available_variant.id }}" data-price="{{ p.price }}">
+        {{ p.featured_image | image_url: width: 300 | image_tag: class: 'gpl-bb__img', loading: 'lazy' }}
+        <span class="gpl-bb__title">{{ p.title }}</span>
+        <span class="gpl-bb__price">{{ p.price | money }}</span>
+        <span class="gpl-bb__tick">&#10003;</span>
+      </button>
+    {%- endfor -%}
+  </div>
+  <button type="button" class="gpl-bb__add" data-add disabled>Add bundle - <span data-total>₹0</span></button>
+</gpl-bb>
+
+{% schema %}
+{
+  "name": "Bundle builder",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Build your bundle" },
+    { "type": "range", "id": "pick", "label": "Items to pick", "min": 2, "max": 6, "step": 1, "default": 3 },
+    { "type": "collection", "id": "collection", "label": "Bundle collection" }
+  ],
+  "presets": [{ "name": "Bundle builder" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-bb { display: block; padding: 1.5rem 0; }
+.gpl-bb__heading { margin: 0; font-size: 1rem; font-weight: 800; }
+.gpl-bb__hint { margin: 0.25rem 0 1rem; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-bb__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+@media (max-width: 640px) { .gpl-bb__grid { grid-template-columns: repeat(2, 1fr); } }
+.gpl-bb__card { position: relative; border: 2px solid rgb(var(--color-foreground, 148 163 184) / 0.2); border-radius: 12px; background: none; padding: 0.5rem; text-align: left; cursor: pointer; color: inherit; }
+.gpl-bb__card.is-sel { border-color: rgb(var(--color-button, 21 128 61)); }
+.gpl-bb__img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; display: block; }
+.gpl-bb__title { display: block; margin-top: 0.4rem; font-size: 0.68rem; font-weight: 600; }
+.gpl-bb__price { display: block; font-size: 0.62rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-bb__tick { position: absolute; top: 0.6rem; right: 0.6rem; display: none; place-items: center; width: 1.4rem; height: 1.4rem; border-radius: 999px; background: rgb(var(--color-button, 21 128 61)); color: #fff; font-size: 0.7rem; }
+.gpl-bb__card.is-sel .gpl-bb__tick { display: grid; }
+.gpl-bb__add {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.85rem;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
+  font-weight: 800;
+  cursor: pointer;
+}
+.gpl-bb__add:disabled { opacity: 0.45; cursor: not-allowed; }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-bb').forEach((el) => {
+  const need = Number(el.dataset.pick) || 3;
+  const cards = [...el.querySelectorAll('[data-card]')];
+  const btn = el.querySelector('[data-add]');
+  const total = el.querySelector('[data-total]');
+  const hint = el.querySelector('[data-hint]');
+  function update() {
+    const sel = cards.filter((c) => c.classList.contains('is-sel'));
+    const sum = sel.reduce((s, c) => s + Number(c.dataset.price), 0);
+    total.textContent = '₹' + (sum / 100).toFixed(0);
+    btn.disabled = sel.length !== need;
+    hint.textContent = sel.length < need ? 'Pick ' + (need - sel.length) + ' more' : 'Bundle ready';
+  }
+  cards.forEach((c) => c.addEventListener('click', () => {
+    const sel = cards.filter((x) => x.classList.contains('is-sel'));
+    if (c.classList.contains('is-sel') || sel.length < need) c.classList.toggle('is-sel');
+    update();
+  }));
+  btn.addEventListener('click', async () => {
+    const items = cards.filter((c) => c.classList.contains('is-sel')).map((c) => ({ id: Number(c.dataset.vid), quantity: 1 }));
+    await fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items }) });
+    window.location.href = '/cart';
+  });
+});
+{% endjavascript %}

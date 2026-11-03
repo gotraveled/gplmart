@@ -1,0 +1,57 @@
+<gpl-faq class="gpl-faq2">
+  <input type="search" class="gpl-faq2__search" placeholder="Search answers…" aria-label="Search FAQ">
+  {%- assign rows = section.settings.items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <details class="gpl-faq2__item">
+      <summary>{{ parts[0] | strip }}</summary>
+      <p>{{ parts[1] | strip }}</p>
+    </details>
+  {%- endfor -%}
+  <p class="gpl-faq2__empty" hidden>No matching questions - try different words.</p>
+</gpl-faq>
+
+{% schema %}
+{
+  "name": "Searchable FAQ",
+  "settings": [
+    { "type": "textarea", "id": "items", "label": "Q&A (question|answer per line)", "default": "Do you ship pan-India?|Yes - 24h dispatch, 3-6 day delivery.\nIs COD available?|O" }
+  ],
+  "presets": [{ "name": "Searchable FAQ" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-faq2 { padding: 1.5rem 0; }
+.gpl-faq2__search {
+  width: 100%;
+  padding: 0.7rem 1rem;
+  margin-bottom: 1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 10px;
+  font-size: 0.82rem;
+  background: transparent;
+}
+.gpl-faq2__item { border-bottom: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.18); padding: 0.8rem 0; }
+.gpl-faq2__item summary { cursor: pointer; font-weight: 600; font-size: 0.85rem; }
+.gpl-faq2__item p { margin: 0.5rem 0 0; font-size: 0.78rem; color: rgb(var(--color-foreground, 100 116 139) / 0.8); }
+.gpl-faq2__empty { text-align: center; font-size: 0.75rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-faq').forEach((el) => {
+  const input = el.querySelector('.gpl-faq2__search');
+  const items = [...el.querySelectorAll('.gpl-faq2__item')];
+  const empty = el.querySelector('.gpl-faq2__empty');
+  input.addEventListener('input', () => {
+    const q = input.value.toLowerCase().trim();
+    let n = 0;
+    items.forEach((i) => {
+      const hit = !q || i.textContent.toLowerCase().includes(q);
+      i.hidden = !hit;
+      if (hit) n++;
+    });
+    empty.hidden = n > 0;
+  });
+});
+{% endjavascript %}

@@ -1,0 +1,9 @@
+<p class="gpl-ship2">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+  {{ text | default: 'Ships across India' }}{%- if city != blank %} &middot; from {{ city }}{% endif %}
+</p>
+
+{% stylesheet %}
+.gpl-ship2 { display: flex; align-items: center; gap: 0.45rem; margin: 0.4rem 0; font-size: 0.7rem; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
+.gpl-ship2 svg { width: 0.85rem; height: 0.85rem; }
+{% endstylesheet %}

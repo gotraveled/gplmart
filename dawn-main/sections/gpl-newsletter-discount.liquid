@@ -1,0 +1,46 @@
+<div class="gpl-news">
+  <h2 class="gpl-news__heading">{{ section.settings.heading }}</h2>
+  {%- if section.settings.offer != blank -%}
+    <p class="gpl-news__offer">{{ section.settings.offer }}</p>
+  {%- endif -%}
+  {%- form 'customer', class: 'gpl-news__form' -%}
+    <input type="hidden" name="contact[tags]" value="newsletter">
+    <input type="email" name="contact[email]" class="gpl-news__input" placeholder="Your email" required>
+    <button type="submit" class="gpl-news__btn">Subscribe</button>
+  {%- endform -%}
+</div>
+
+{% schema %}
+{
+  "name": "Newsletter",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Get 10% off your first order" },
+    { "type": "text", "id": "offer", "label": "Incentive line", "default": "Plus early access to drops and restocks. No spam - one useful email a week." }
+  ],
+  "presets": [{ "name": "Newsletter" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-news { padding: 2rem 0; text-align: center; }
+.gpl-news__heading { margin: 0; font-size: 1.3rem; font-weight: 800; }
+.gpl-news__offer { margin: 0.5rem auto 0; max-width: 30rem; font-size: 0.8rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-news__form { display: flex; gap: 0.5rem; max-width: 26rem; margin: 1.25rem auto 0; }
+.gpl-news__input {
+  flex: 1;
+  padding: 0.75rem 1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 10px;
+  background: transparent;
+  font-size: 0.85rem;
+}
+.gpl-news__btn {
+  padding: 0.75rem 1.5rem;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
+  font-weight: 800;
+  cursor: pointer;
+}
+{% endstylesheet %}

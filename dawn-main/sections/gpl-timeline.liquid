@@ -1,0 +1,67 @@
+<div class="gpl-tl" style="--gpl-accent: {{ section.settings.accent }};">
+  {%- if section.settings.heading != blank -%}
+    <h2 class="gpl-tl__heading">{{ section.settings.heading }}</h2>
+  {%- endif -%}
+  <ol class="gpl-tl__list">
+    {%- assign rows = section.settings.items | newline_to_br | split: '<br />' -%}
+    {%- for row in rows -%}
+      {%- assign parts = row | strip | split: '|' -%}
+      <li class="gpl-tl__step">
+        <span class="gpl-tl__num">{{ forloop.index }}</span>
+        <div>
+          <p class="gpl-tl__title">{{ parts[0] | strip }}</p>
+          <p class="gpl-tl__cap">{{ parts[1] | strip }}</p>
+        </div>
+      </li>
+    {%- endfor -%}
+  </ol>
+</div>
+
+{% schema %}
+{
+  "name": "Timeline",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "From our workshop to your door" },
+    { "type": "textarea", "id": "items", "label": "Steps (title|caption per line)", "default": "Order placed|Cut and packed within 24 hours\nShips|Traced courier, tracking share" },
+    { "type": "color", "id": "accent", "label": "Dot colour", "default": "#5eead4" }
+  ],
+  "presets": [{ "name": "Timeline" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-tl { padding: 1.5rem 0; }
+.gpl-tl__heading { margin: 0 0 1.25rem; font-size: 1rem; font-weight: 800; }
+.gpl-tl__list { margin: 0; padding: 0; list-style: none; }
+.gpl-tl__step {
+  display: flex;
+  gap: 1rem;
+  padding-bottom: 1.5rem;
+  position: relative;
+}
+.gpl-tl__step:last-child { padding-bottom: 0; }
+.gpl-tl__step::before {
+  content: "";
+  position: absolute;
+  left: 0.85rem;
+  top: 1.9rem;
+  bottom: 0;
+  width: 2px;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.2);
+}
+.gpl-tl__step:last-child::before { display: none; }
+.gpl-tl__num {
+  display: grid;
+  place-items: center;
+  width: 1.7rem;
+  height: 1.7rem;
+  border-radius: 999px;
+  background: var(--gpl-accent);
+  color: #fff;
+  font-size: 0.7rem;
+  font-weight: 800;
+  flex-shrink: 0;
+}
+.gpl-tl__title { margin: 0; font-weight: 700; font-size: 0.82rem; }
+.gpl-tl__cap { margin: 0.25rem 0 0; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+{% endstylesheet %}

@@ -570,6 +570,8 @@ ${on(v, "labels") ? `        <span class="gpl-collections__title">{{ collection.
             <img
               src="{{ block.settings.image_desktop | image_url: width: 2000 }}"
               alt="{{ block.settings.image_desktop.alt | escape }}"
+              width="{{ block.settings.image_desktop.width }}"
+              height="{{ block.settings.image_desktop.height }}"
               loading="{% if forloop.first %}eager{% else %}lazy{% endif %}"
             >
           </picture>
@@ -3286,7 +3288,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
 {%- endcomment -%}
 <nav class="gpl-crumbs" aria-label="Breadcrumb">
   <ol class="gpl-crumbs__list">
-    <li><a href="/" class="gpl-crumbs__link">Home</a></li>
+    <li><a href="{{ routes.root_url }}" class="gpl-crumbs__link">Home</a></li>
     {%- if collection -%}
       <li aria-hidden="true" class="gpl-crumbs__sep">/</li>
       <li><a href="{{ collection.url }}" class="gpl-crumbs__link">{{ collection.title | escape }}</a></li>
@@ -3357,7 +3359,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     <div class="gpl-upsell__info">
       <p class="gpl-upsell__title">{{ upsell.title }}</p>
       <p class="gpl-upsell__price">{{ upsell.price | money }}</p>
-      <form method="post" action="/cart/add">
+      <form method="post" action="{{ routes.cart_add_url }}">
         <input type="hidden" name="id" value="{{ upsell.selected_or_first_available_variant.id }}">
         <button type="submit" class="gpl-upsell__add">Add</button>
       </form>
@@ -6076,7 +6078,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     <button type="button" class="gpl-exit__close" aria-label="Close">&times;</button>
     <p class="gpl-exit__title">{{ heading | default: 'Before you go' }}</p>
     <p class="gpl-exit__text">{{ text | default: 'Use code STAY10 for 10% off.' }}</p>
-    <a class="gpl-exit__cta" href="/cart">Back to cart</a>
+    <a class="gpl-exit__cta" href="{{ routes.cart_url }}">Back to cart</a>
   </div>
 </gpl-exit>`,
       css: `.gpl-exit { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; background: rgb(0 0 0 / 0.55); }
@@ -6401,7 +6403,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
       liquid: `<gpl-incart class="gpl-incart" data-product="{{ product.id }}">
   <span class="gpl-incart__badge" hidden data-badge>
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
-    {{ label | default: 'In your cart' }} - <a href="/cart">view</a>
+    {{ label | default: 'In your cart' }} - <a href="{{ routes.cart_url }}">view</a>
   </span>
 </gpl-incart>`,
       css: `.gpl-incart__badge {
@@ -6501,14 +6503,14 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     files: (v) => ({
       liquid: `<div class="gpl-search">
   <h2 class="gpl-search__heading">{{ section.settings.heading }}</h2>
-  <form action="/search" method="get" class="gpl-search__form" role="search">
+  <form action="{{ routes.search_url }}" method="get" class="gpl-search__form" role="search">
     <input type="search" name="q" placeholder="Search products…" class="gpl-search__input">
     <button type="submit" class="gpl-search__btn" aria-label="Search">&#128269;</button>
   </form>
   {%- assign chips = section.settings.chips | split: ',' -%}
   <div class="gpl-search__chips">
     {%- for chip in chips -%}
-      <a href="/search?q={{ chip | strip | url_encode }}" class="gpl-search__chip">{{ chip | strip }}</a>
+      <a href="{{ routes.search_url }}?q={{ chip | strip | url_encode }}" class="gpl-search__chip">{{ chip | strip }}</a>
     {%- endfor -%}
   </div>
 </div>
@@ -6764,7 +6766,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
       "Pick real complements (charger + case, shampoo + conditioner) - random picks get unchecked and ignored.",
     ],
     files: (v) => ({
-      liquid: `<gpl-fbt class="gpl-fbt">
+      liquid: `<gpl-fbt class="gpl-fbt" data-base="{{ product.price | plus: 0 }}" data-mainvid="{{ product.selected_or_first_available_variant.id | default: 0 }}">
   <p class="gpl-fbt__heading">{{ heading | default: 'Frequently bought together' }}</p>
   <label class="gpl-fbt__row">
     <input type="checkbox" checked disabled>
@@ -6773,7 +6775,8 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   </label>
   {%- assign hs = handles | split: ',' -%}
   {%- for h in hs -%}
-    {%- assign p = all_products[h | strip] -%}
+    {%- assign h_stripped = h | strip -%}
+    {%- assign p = all_products[h_stripped] -%}
     {%- if p -%}
       <label class="gpl-fbt__row">
         <input type="checkbox" checked data-fbt data-vid="{{ p.selected_or_first_available_variant.id }}" data-price="{{ p.price }}">
@@ -6805,7 +6808,8 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
       js: `document.querySelectorAll('gpl-fbt').forEach((el) => {
   const boxes = [...el.querySelectorAll('[data-fbt]')];
   const total = el.querySelector('[data-total]');
-  const base = {{ product.price | plus: 0 }};
+  const base = Number(el.dataset.base) || 0;
+  const mainVid = Number(el.dataset.mainvid) || 0;
   function update() {
     const sum = boxes.filter((b) => b.checked).reduce((s, b) => s + Number(b.dataset.price), base);
     total.textContent = (typeof Shopify !== 'undefined' && Shopify.formatMoney) ? Shopify.formatMoney(sum) : '₹' + (sum / 100).toFixed(0);
@@ -6813,7 +6817,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   boxes.forEach((b) => b.addEventListener('change', update));
   update();
   el.querySelector('[data-add]').addEventListener('click', async () => {
-    const items = [{ id: {{ product.selected_or_first_available_variant.id | default: 0 }}, quantity: 1 }];
+    const items = [{ id: mainVid, quantity: 1 }];
     boxes.filter((b) => b.checked).forEach((b) => items.push({ id: Number(b.dataset.vid), quantity: 1 }));
     await fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items }) });
     window.location.href = '/cart';
@@ -6991,10 +6995,10 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     ],
     files: () => ({
       liquid: `<nav class="gpl-bnav" aria-label="Mobile navigation">
-  <a href="/" class="gpl-bnav__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Home</a>
-  <a href="/search" class="gpl-bnav__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Search</a>
-  <a href="/cart" class="gpl-bnav__item gpl-bnav__item--cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Cart</a>
-  <a href="/account" class="gpl-bnav__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Account</a>
+  <a href="{{ routes.root_url }}" class="gpl-bnav__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>Home</a>
+  <a href="{{ routes.search_url }}" class="gpl-bnav__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Search</a>
+  <a href="{{ routes.cart_url }}" class="gpl-bnav__item gpl-bnav__item--cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>Cart</a>
+  <a href="{{ routes.account_url }}" class="gpl-bnav__item"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Account</a>
 </nav>`,
       css: `.gpl-bnav {
   display: none;
@@ -7195,7 +7199,8 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   </div>
   {%- for row in rows -%}
     {%- assign parts = row | strip | split: '|' -%}
-    {%- assign c = collections[parts[1] | strip | handleize] -%}
+    {%- assign col_handle = parts[1] | strip | handleize -%}
+    {%- assign c = collections[col_handle] -%}
     <div class="gpl-ctabs__grid"{% unless forloop.first %} hidden{% endunless %} data-panel="{{ forloop.index0 }}">
       {%- for p in c.products limit: 4 -%}
         <a class="gpl-ctabs__card" href="{{ p.url }}">
@@ -7879,7 +7884,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     files: (v) => ({
       liquid: `<div class="gpl-404">
   <h2 class="gpl-404__heading">{{ section.settings.heading }}</h2>
-  <form action="/search" method="get" class="gpl-404__form" role="search">
+  <form action="{{ routes.search_url }}" method="get" class="gpl-404__form" role="search">
     <input type="search" name="q" placeholder="Search the store…">
     <button type="submit">Search</button>
   </form>
@@ -8553,7 +8558,7 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
     files: (v) => ({
       liquid: `<p class="gpl-match">
   <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
-  {{ text | default: 'Found it cheaper? We\\'ll match it' }}
+  {{ text | default: "Found it cheaper? We'll match it" }}
 </p>`,
       css: `.gpl-match { display: flex; align-items: center; gap: 0.45rem; margin: 0.5rem 0; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
 .gpl-match svg { width: 0.85rem; height: 0.85rem; color: #16a34a; flex-shrink: 0; }`,
@@ -9379,7 +9384,7 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
   {%- assign cs = cats | split: ',' -%}
   {%- for c in cs -%}
     {%- assign cat = c | strip -%}
-    <a class="gpl-catnav__pill{% if collection.title == cat %} is-active{% endif %}" href="/collections/{{ cat | handleize }}">{{ cat }}</a>
+    <a class="gpl-catnav__pill{% if collection.title == cat %} is-active{% endif %}" href="{{ routes.collections_url }}/{{ cat | handleize }}">{{ cat }}</a>
   {%- endfor -%}
 </nav>`,
       css: `.gpl-catnav {
@@ -9746,11 +9751,12 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
     {%- assign rows = section.settings.items | newline_to_br | split: '<br />' -%}
     {%- for row in rows -%}
       {%- assign parts = row | strip | split: '|' -%}
-      {%- assign p = all_products[parts[2] | strip] -%}
+      {%- assign pick_handle = parts[2] | strip -%}
+      {%- assign p = all_products[pick_handle] -%}
       <a class="gpl-staff__card" href="{{ p.url | default: '#' }}">
         {{ p.featured_image | image_url: width: 400 | image_tag: class: 'gpl-staff__img', loading: 'lazy' }}
         <span class="gpl-staff__badge">{{ parts[0] | strip }}'s pick</span>
-        <span class="gpl-staff__title">{{ p.title | default: parts[2] | strip }}</span>
+        <span class="gpl-staff__title">{{ p.title | default: pick_handle }}</span>
         <span class="gpl-staff__price">{{ p.price | money }}</span>
       </a>
     {%- endfor -%}
@@ -10220,9 +10226,9 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
     defaults: { status: "online", hours: "10am - 7pm IST" },
     install: snippetSteps("live-chat-status.liquid"),
     files: (v) => ({
-      liquid: `<div class="gpl-chat{{ status == 'online' ? ' gpl-chat--on' : '' }}">
+      liquid: `<div class="gpl-chat{% if status == 'online' %} gpl-chat--on{% endif %}">
   <span class="gpl-chat__dot"></span>
-  <span class="gpl-chat__label">Support chat{{ status == 'online' ? ' - online' : ' - away' }}</span>
+  <span class="gpl-chat__label">Support chat{% if status == 'online' %} - online{% else %} - away{% endif %}</span>
   {%- if hours != blank -%}
     <span class="gpl-chat__hours">{{ hours }}</span>
   {%- endif -%}
@@ -10366,7 +10372,7 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
   <span class="gpl-trend__label">Trending</span>
   {%- assign ts = terms | split: ',' -%}
   {%- for t in ts -%}
-    <a class="gpl-trend__term" href="/search?q={{ t | strip | url_encode }}">{{ t | strip }}</a>
+    <a class="gpl-trend__term" href="{{ routes.search_url }}?q={{ t | strip | url_encode }}">{{ t | strip }}</a>
   {%- endfor -%}
 </div>`,
       css: `.gpl-trend { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0.6rem 0; }
@@ -10521,7 +10527,7 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
     defaults: { festival: "Diwali", offer: "up to 30% off + free gift wrap", emoji: "🪔" },
     install: snippetSteps("festival-banner.liquid"),
     files: (v) => ({
-      liquid: `<a class="gpl-fest" href="/collections/sale">
+      liquid: `<a class="gpl-fest" href="{{ routes.collections_url }}/sale">
   {{ emoji | default: '' }} {{ festival | default: 'Festival' }} Sale - {{ offer | default: 'special offers' }}
 </a>`,
       css: `.gpl-fest { display: block; margin: 0.5rem 0; padding: 0.75rem 1rem; border-radius: 10px; background: linear-gradient(90deg, rgb(var(--color-button, 217 119 6) / 0.1), rgb(var(--color-button, 217 119 6) / 0.04)); border: 1px solid rgb(var(--color-button, 217 119 6) / 0.2); font-size: 0.75rem; font-weight: 700; text-decoration: none; color: inherit; text-align: center; }`,

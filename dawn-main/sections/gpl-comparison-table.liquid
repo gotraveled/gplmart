@@ -1,0 +1,60 @@
+<div class="gpl-compare-wrap">
+  <table class="gpl-compare gpl-compare--highlight">
+    <caption class="visually-hidden">Feature comparison</caption>
+    <thead>
+      <tr>
+        <th scope="col">Feature</th>
+        <th scope="col">{{ section.settings.col_a | escape }}</th>
+        <th scope="col">{{ section.settings.col_b | escape }}</th>
+      </tr>
+    </thead>
+    <tbody>
+      {%- for block in section.blocks -%}
+        <tr {{ block.shopify_attributes }}>
+          <th scope="row">{{ block.settings.feature | escape }}</th>
+          <td>{% if block.settings.in_a %}Yes{% else %}No{% endif %}</td>
+          <td>{% if block.settings.in_b %}Yes{% else %}No{% endif %}</td>
+        </tr>
+      {%- endfor -%}
+    </tbody>
+  </table>
+</div>
+
+{% schema %}
+{
+  "name": "Comparison table",
+  "settings": [
+    { "type": "text", "id": "col_a", "label": "Column A title", "default": "This product" },
+    { "type": "text", "id": "col_b", "label": "Column B title", "default": "Standard option" }
+  ],
+  "blocks": [
+    {
+      "type": "row",
+      "name": "Feature row",
+      "settings": [
+        { "type": "text", "id": "feature", "label": "Feature" },
+        { "type": "checkbox", "id": "in_a", "label": "Included in column A", "default": true },
+        { "type": "checkbox", "id": "in_b", "label": "Included in column B", "default": false }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Comparison table" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-compare-wrap { overflow-x: auto; }
+.gpl-compare { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.gpl-compare th,
+.gpl-compare td { padding: 0.75rem 1rem; border-bottom: 1px solid rgb(var(--color-foreground, 213 220 203) / 0.35); text-align: left; }
+.gpl-compare thead th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
+.gpl-compare--highlight th:nth-child(2),
+.gpl-compare--highlight td:nth-child(2) { background: rgb(var(--color-button, 200 245 66) / 0.12); font-weight: 600; }
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+{% endstylesheet %}

@@ -1,0 +1,51 @@
+<div class="gpl-mega">
+  {%- assign rows = section.settings.cols | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <div class="gpl-mega__col">
+      <p class="gpl-mega__head">{{ parts[0] | strip }}</p>
+      {%- assign links = parts[1] | split: ',' -%}
+      {%- for link in links -%}
+        <a class="gpl-mega__link" href="#">{{ link | strip }}</a>
+      {%- endfor -%}
+    </div>
+  {%- endfor -%}
+  <a class="gpl-mega__promo" href="{{ section.settings.promo_link | default: '#' }}">
+    <span class="gpl-mega__promo-label">{{ section.settings.promo_label | default: 'Sale ends tonight' }}</span>
+    <span class="gpl-mega__promo-cta">{{ section.settings.promo_cta | default: 'Shop the sale' }} &rarr;</span>
+  </a>
+</div>
+
+{% schema %}
+{
+  "name": "Mega menu",
+  "settings": [
+    { "type": "textarea", "id": "cols", "label": "Columns (heading|links per line)", "default": "Shop|New in,Bestsellers,Sale\nCollections|Tees,Bottoms,Sets\nHelp|Track order,Retu" },
+    { "type": "text", "id": "promo_label", "label": "Promo label", "default": "Sale ends tonight" },
+    { "type": "text", "id": "promo_cta", "label": "Promo CTA", "default": "Shop the sale" },
+    { "type": "url", "id": "promo_link", "label": "Promo link" }
+  ],
+  "presets": [{ "name": "Mega menu" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-mega { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 1.5rem; padding: 1.5rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.15); border-radius: 14px; background: rgb(var(--color-background, 255 255 255)); }
+.gpl-mega__head { margin: 0 0 0.6rem; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-mega__link { display: block; padding: 0.3rem 0; font-size: 0.78rem; text-decoration: none; color: inherit; }
+.gpl-mega__link:hover { color: rgb(var(--color-button, 21 128 61)); }
+.gpl-mega__promo {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.3rem;
+  min-height: 8rem;
+  padding: 1rem;
+  border-radius: 10px;
+  background: rgb(var(--color-button, 21 128 61) / 0.08);
+  text-decoration: none;
+  color: inherit;
+}
+.gpl-mega__promo-label { font-size: 0.78rem; font-weight: 800; }
+.gpl-mega__promo-cta { font-size: 0.65rem; font-weight: 700; color: rgb(var(--color-button, 21 128 61)); }
+{% endstylesheet %}

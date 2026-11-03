@@ -1,0 +1,14 @@
+<div class="gpl-trend">
+  <span class="gpl-trend__label">Trending</span>
+  {%- assign ts = terms | split: ',' -%}
+  {%- for t in ts -%}
+    <a class="gpl-trend__term" href="{{ routes.search_url }}?q={{ t | strip | url_encode }}">{{ t | strip }}</a>
+  {%- endfor -%}
+</div>
+
+{% stylesheet %}
+.gpl-trend { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0.6rem 0; }
+.gpl-trend__label { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-trend__term { padding: 0.3rem 0.75rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25); border-radius: 999px; font-size: 0.65rem; text-decoration: none; color: inherit; }
+.gpl-trend__term:hover { border-color: rgb(var(--color-button, 21 128 61)); }
+{% endstylesheet %}

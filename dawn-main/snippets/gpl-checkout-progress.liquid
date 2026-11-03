@@ -1,0 +1,29 @@
+{%- assign cur = step | plus: 0 -%}
+<ol class="gpl-steps">
+  <li class="gpl-steps__step{% if cur >= 1 %} is-done{% endif %}{% if cur == 1 %} is-current{% endif %}"><span>1</span>Cart</li>
+  <li class="gpl-steps__step{% if cur >= 2 %} is-done{% endif %}{% if cur == 2 %} is-current{% endif %}"><span>2</span>Details</li>
+  <li class="gpl-steps__step{% if cur >= 3 %} is-done{% endif %}{% if cur == 3 %} is-current{% endif %}"><span>3</span>Payment</li>
+</ol>
+
+{% stylesheet %}
+.gpl-steps { display: flex; gap: 0.5rem; margin: 0; padding: 0.75rem 0; list-style: none; }
+.gpl-steps__step {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.68rem;
+  color: rgb(var(--color-foreground, 100 116 139) / 0.6);
+}
+.gpl-steps__step span {
+  display: grid;
+  place-items: center;
+  width: 1.3rem;
+  height: 1.3rem;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  font-size: 0.6rem;
+  font-weight: 700;
+}
+.gpl-steps__step.is-done span { background: #16a34a; border-color: #16a34a; color: #fff; }
+.gpl-steps__step.is-current { color: inherit; font-weight: 700; }
+{% endstylesheet %}

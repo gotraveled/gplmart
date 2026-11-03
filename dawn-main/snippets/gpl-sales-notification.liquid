@@ -1,0 +1,44 @@
+<gpl-sales class="gpl-sales" data-interval="{{ interval | default: 8 }}" hidden>
+  {%- assign rows = entries | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <div class="gpl-sales__card" data-i="{{ forloop.index0 }}" hidden>
+      <p class="gpl-sales__text"><strong>{{ parts[0] | strip }}</strong> from {{ parts[1] | strip }} bought <strong>{{ parts[2] | strip }}</strong></p>
+      <p class="gpl-sales__time">{{ parts[3] | strip }}</p>
+    </div>
+  {%- endfor -%}
+</gpl-sales>
+
+{% stylesheet %}
+.gpl-sales {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 40;
+  max-width: 19rem;
+}
+.gpl-sales__card {
+  padding: 0.8rem 1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2);
+  border-radius: 12px;
+  background: rgb(var(--color-background, 255 255 255));
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.15);
+}
+.gpl-sales__text { margin: 0; font-size: 0.75rem; line-height: 1.45; }
+.gpl-sales__time { margin: 0.3rem 0 0; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-sales').forEach((el) => {
+  const cards = [...el.querySelectorAll('.gpl-sales__card')];
+  if (!cards.length) return;
+  el.hidden = false;
+  let i = 0;
+  function show() {
+    cards.forEach((c, x) => (c.hidden = x !== i));
+    i = (i + 1) % cards.length;
+  }
+  show();
+  setInterval(show, (Number(el.dataset.interval) || 8) * 1000);
+});
+{% endjavascript %}

@@ -1,0 +1,48 @@
+<div class="gpl-ugc" style="--gpl-cols: {{ section.settings.cols }};">
+  {%- if section.settings.heading != blank -%}
+    <h2 class="gpl-ugc__heading">{{ section.settings.heading }}</h2>
+  {%- endif -%}
+  <div class="gpl-ugc__grid">
+    {%- for block in section.blocks -%}
+      <figure class="gpl-ugc__item" {{ block.shopify_attributes }}>
+        {%- if block.settings.image -%}
+          {{ block.settings.image | image_url: width: 500 | image_tag: class: 'gpl-ugc__img', loading: 'lazy' }}
+        {%- endif -%}
+        {%- if block.settings.caption != blank -%}
+          <figcaption class="gpl-ugc__cap">{{ block.settings.caption }}</figcaption>
+        {%- endif -%}
+      </figure>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Customer photos",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Our customers, in their words and photos" },
+    { "type": "range", "id": "cols", "label": "Columns", "min": 2, "max": 5, "step": 1, "default": 4 }
+  ],
+  "blocks": [
+    {
+      "type": "photo",
+      "name": "Photo",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Customer photo" },
+        { "type": "text", "id": "caption", "label": "Caption" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Customer photos" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-ugc { padding: 1.5rem 0; }
+.gpl-ugc__heading { margin: 0 0 1rem; font-size: 1rem; font-weight: 800; }
+.gpl-ugc__grid { display: grid; grid-template-columns: repeat(var(--gpl-cols, 4), 1fr); gap: 0.75rem; }
+.gpl-ugc__item { margin: 0; border-radius: 12px; overflow: hidden; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.15); }
+.gpl-ugc__img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.gpl-ugc__cap { padding: 0.55rem 0.7rem; font-size: 0.7rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+@media (max-width: 640px) { .gpl-ugc__grid { grid-template-columns: repeat(2, 1fr); } }
+{% endstylesheet %}

@@ -1,0 +1,48 @@
+<div class="gpl-stats" style="--gpl-accent: {{ section.settings.accent }};">
+  {%- assign rows = section.settings.items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <div class="gpl-stats__item">
+      <p class="gpl-stats__num" data-count="{{ parts[0] | strip }}">0</p>
+      <p class="gpl-stats__label">{{ parts[1] | strip }}</p>
+    </div>
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Stats counter",
+  "settings": [
+    { "type": "textarea", "id": "items", "label": "Stats (value|label per line)", "default": "52,000|Orders shipped\n4.8|Average rating\n98|Repeat customers %" },
+    { "type": "color", "id": "accent", "label": "Number colour", "default": "#5eead4" }
+  ],
+  "presets": [{ "name": "Stats counter" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: 1rem; padding: 1.25rem 0; text-align: center; }
+.gpl-stats__num { margin: 0; font-size: 2rem; font-weight: 900; color: var(--gpl-accent); font-variant-numeric: tabular-nums; }
+.gpl-stats__label { margin: 0.25rem 0 0; font-size: 0.7rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('.gpl-stats__num').forEach((el) => {
+  const target = el.dataset.count || '0';
+  const isNum = /^[\d,.]+$/.test(target);
+  const obs = new IntersectionObserver((entries) => {
+    if (!entries[0].isIntersecting) return;
+    obs.disconnect();
+    if (!isNum) { el.textContent = target; return; }
+    const end = parseFloat(target.replace(/,/g, ''));
+    const t0 = performance.now();
+    function tick(t) {
+      const p = Math.min((t - t0) / 1200, 1);
+      el.textContent = Math.round(end * p).toLocaleString('en-IN');
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }, { threshold: 0.4 });
+  obs.observe(el);
+});
+{% endjavascript %}

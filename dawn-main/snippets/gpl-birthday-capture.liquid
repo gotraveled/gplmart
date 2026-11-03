@@ -1,0 +1,19 @@
+<div class="gpl-bday">
+  <p class="gpl-bday__heading">{{ heading | default: 'Birthday perks' }}</p>
+  <p class="gpl-bday__sub">{{ reward | default: '' }}</p>
+  {%- form 'customer', class: 'gpl-bday__form' -%}
+    <input type="hidden" name="contact[tags]" value="birthday">
+    <input type="date" name="contact[note]" required aria-label="Birthday">
+    <input type="email" name="contact[email]" placeholder="Your email" required>
+    <button type="submit">Save my birthday</button>
+  {%- endform -%}
+</div>
+
+{% stylesheet %}
+.gpl-bday { margin: 1rem 0; padding: 1rem; border: 1px dashed rgb(var(--color-button, 245 158 11) / 0.4); border-radius: 10px; }
+.gpl-bday__heading { margin: 0; font-size: 0.82rem; font-weight: 800; }
+.gpl-bday__sub { margin: 0.3rem 0 0; font-size: 0.68rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-bday__form { display: grid; gap: 0.4rem; margin-top: 0.7rem; }
+.gpl-bday__form input { padding: 0.55rem 0.8rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 8px; font-size: 0.75rem; color-scheme: inherit; }
+.gpl-bday__form button { padding: 0.55rem 1.1rem; border: 0; border-radius: 8px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-size: 0.7rem; font-weight: 700; cursor: pointer; justify-self: start; }
+{% endstylesheet %}
