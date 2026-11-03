@@ -32,6 +32,9 @@ export default async function PlaygroundPage({
           <ButtonLink href="/library" variant="secondary">
             Browse the resource library <ArrowRight aria-hidden className="size-4" />
           </ButtonLink>
+          <ButtonLink href="/install" variant="ghost">
+            Free install guide <ArrowRight aria-hidden className="size-4" />
+          </ButtonLink>
         </div>
       </PageHeader>
       <Container className="py-10">

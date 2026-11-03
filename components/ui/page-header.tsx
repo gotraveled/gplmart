@@ -50,7 +50,7 @@ export function PageHeader({
         aria-hidden
         className="absolute -top-32 left-1/2 h-64 w-[40rem] -translate-x-1/2 rounded-full bg-accent/20 blur-3xl"
       />
-      <Container className="relative py-12 sm:py-16">
+      <Container className="relative py-8 sm:py-10">
         {crumbs && <Breadcrumbs items={crumbs} />}
         {eyebrow && (
           <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-mint">{eyebrow}</p>

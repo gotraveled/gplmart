@@ -206,20 +206,20 @@ export default function HomePage() {
       <section className="relative overflow-hidden border-b border-line">
         <div aria-hidden className="bg-grid absolute inset-0" />
         <div aria-hidden className="absolute -top-44 left-1/2 h-[26rem] w-[52rem] -translate-x-1/2 rounded-full bg-accent/15 blur-3xl" />
-        <Container className="relative grid items-center gap-14 py-16 sm:py-20 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)] lg:py-24">
+        <Container className="relative grid items-center gap-12 py-10 sm:py-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,32rem)] lg:py-14">
           <div className="animate-rise max-w-2xl">
             <p className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-1.5 text-xs font-semibold text-accent">
               <Zap aria-hidden className="size-3.5" />
               Shopify conversion code + WordPress resources
             </p>
-            <h1 className="mt-7 font-display text-5xl font-semibold leading-[1.02] tracking-tight text-balance sm:text-6xl lg:text-7xl">
-              More sales.
+            <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.02] tracking-tight text-balance sm:text-6xl lg:text-7xl">
+              Shopify code.
               <br />
-              <span className="text-gradient">Fewer apps.</span>
+              <span className="text-gradient">WordPress bundles.</span>
               <br />
-              One library.
+              One payment.
             </h1>
-            <p className="mt-6 max-w-xl text-lg text-pretty text-muted">
+            <p className="mt-6 max-w-xl font-display text-lg text-pretty text-muted">
               Not getting the conversions your store deserves? GPLMart gives you conversion-focused Liquid sections
               &amp; snippets - countdowns, trust badges, delivery ETA, buy bars and more - without stacking
               high-cost apps. Plus WordPress themes, landing-page templates and popular GPL-licensed plugins,

@@ -169,6 +169,9 @@ export default function HowItWorksPage() {
       </ul>
 
       <div className="not-prose mt-10 flex flex-wrap gap-3">
+        <ButtonLink href="/install" variant="secondary">
+          Free install guide <ArrowRight aria-hidden className="size-4" />
+        </ButtonLink>
         <ButtonLink href="/playground" variant="secondary">
           Try the free playground <ArrowRight aria-hidden className="size-4" />
         </ButtonLink>
