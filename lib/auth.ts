@@ -20,7 +20,7 @@ export const getUser = cache(async (): Promise<SessionUser | null> => {
   return data.user ? { id: data.user.id, email: data.user.email ?? "" } : null;
 });
 
-export function safeNext(value: unknown, fallback = "/account"): string {
+export function safeNext(value: unknown, fallback = "/admin"): string {
   return typeof value === "string" && /^\/(?![/\\])/.test(value) ? value : fallback;
 }
 
