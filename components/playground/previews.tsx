@@ -2518,6 +2518,236 @@ function ReturnsRequest({ v }: P) {
   );
 }
 
+function BundleBuilder({ v }: P) {
+  const [sel, setSel] = useState<number[]>([]);
+  const need = Number(str(v, "pick")) || 3;
+  const items = [["Trail mix", 349], ["Granola", 449], ["Chips", 199], ["Bars", 249], ["Honey", 399], ["Tea", 299]];
+  const total = sel.reduce((s, i) => s + (items[i]?.[1] as number ?? 0), 0);
+  return (
+    <div className="p-4">
+      <p className="m-0 text-sm font-extrabold">{str(v, "heading") || "Build your bundle"}</p>
+      <p className="m-0 mb-2.5 mt-0.5 text-[0.65rem] text-neutral-400">{sel.length < need ? `Pick ${need - sel.length} more` : "Bundle ready"}</p>
+      <div className="grid grid-cols-3 gap-2">
+        {items.map(([n, p], i) => (
+          <button key={n} type="button" onClick={() => setSel(sel.includes(i) ? sel.filter((x) => x !== i) : sel.length < need ? [...sel, i] : sel)} className={`relative rounded-lg border-2 p-1.5 text-left ${sel.includes(i) ? "border-emerald-600" : "border-neutral-200"}`}>
+            <div className="aspect-square rounded-md" style={{ background: `linear-gradient(${135 + i * 50}deg,#e0e7ff,#fbcfe8,#bbf7d0)` }} />
+            <p className="m-0 mt-1 text-[0.58rem] font-semibold">{n}</p>
+            <p className="m-0 text-[0.52rem] text-neutral-400">₹{p}</p>
+            {sel.includes(i) && <span className="absolute right-2 top-2 grid size-4 place-items-center rounded-full bg-emerald-600 text-[0.55rem] text-white">&#10003;</span>}
+          </button>
+        ))}
+      </div>
+      <button type="button" disabled={sel.length !== need} className="mt-2.5 w-full rounded-lg bg-neutral-900 py-2 text-[0.65rem] font-extrabold text-white disabled:opacity-40">Add bundle - ₹{total}</button>
+    </div>
+  );
+}
+
+function QuantitySelector() {
+  const [n, setN] = useState(1);
+  return (
+    <div className="p-4">
+      <div className="inline-flex items-stretch overflow-hidden rounded-lg border border-neutral-300">
+        <button type="button" onClick={() => setN(Math.max(1, n - 1))} className="w-9 bg-neutral-100 text-sm">&minus;</button>
+        <input type="number" readOnly value={n} className="w-10 border-0 text-center text-sm outline-none" />
+        <button type="button" onClick={() => setN(n + 1)} className="w-9 bg-neutral-100 text-sm">+</button>
+      </div>
+    </div>
+  );
+}
+
+function SizeChartTable({ v }: P) {
+  const rows = str(v, "rows").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 5);
+  return (
+    <div className="p-4">
+      <table className="w-full border-collapse text-[0.7rem]">
+        <thead><tr>{["Size", "Chest (in)", "Length (in)"].map((h) => <th key={h} className="pb-1.5 text-left text-[0.55rem] uppercase tracking-wider text-neutral-400">{h}</th>)}</tr></thead>
+        <tbody>
+          {rows.map((r) => {
+            const parts = r.split("|").map((s) => s.trim());
+            return <tr key={r} className="border-t border-neutral-100">{parts.map((p, i) => <td key={i} className="py-1.5">{p}</td>)}</tr>;
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function DeliveryDatePicker({ v }: P) {
+  const [d, setD] = useState("");
+  return (
+    <div className="p-4">
+      <label className="mb-1.5 block text-[0.68rem] font-semibold">{str(v, "label") || "Preferred delivery date"}</label>
+      <input type="date" value={d} onChange={(e) => setD(e.target.value)} className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.75rem] outline-none" />
+      <p className="m-0 mt-1 text-[0.55rem] text-neutral-400">Saves to order attributes</p>
+    </div>
+  );
+}
+
+function GiftMessageCart() {
+  const [on, setOn] = useState(false);
+  return (
+    <div className="p-4">
+      <label className="flex items-center gap-2 text-[0.72rem] font-semibold">
+        <input type="checkbox" checked={on} onChange={() => setOn(!on)} className="accent-emerald-600" />
+        This order is a gift
+      </label>
+      {on && <textarea rows={2} placeholder="Write your gift message…" className="mt-2 w-full resize-y rounded-lg border border-neutral-300 p-2.5 text-[0.7rem] outline-none" />}
+    </div>
+  );
+}
+
+function TermsCheckbox({ v }: P) {
+  const [ok, setOk] = useState(false);
+  return (
+    <div className="p-4">
+      <label className="flex items-center gap-2 text-[0.7rem]">
+        <input type="checkbox" checked={ok} onChange={() => setOk(!ok)} className="accent-neutral-900" />
+        {str(v, "text") || "I agree to the terms"}
+      </label>
+      <button type="button" disabled={!ok} className="mt-2.5 rounded-lg bg-neutral-900 px-5 py-2 text-xs font-bold text-white disabled:opacity-35">Checkout</button>
+    </div>
+  );
+}
+
+function SoldCount({ v }: P) {
+  return (
+    <div className="flex items-center gap-1.5 p-4 text-[0.7rem] text-neutral-600">
+      <svg className="size-3.5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m12 2 2.9 6.26 6.9.6-5.2 4.53 1.55 6.77L12 16.9l-6.15 3.26L7.4 13.4 2.2 8.86l6.9-.6z"/></svg>
+      <b className="font-extrabold">{str(v, "count")}</b> {str(v, "label") || "sold"}
+    </div>
+  );
+}
+
+function ProductCompareTable({ v }: P) {
+  const rows = str(v, "rows").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 5);
+  return (
+    <div className="p-4">
+      <table className="w-full border-collapse text-[0.7rem]">
+        <thead><tr><th className="py-1.5 text-left" /><th className="py-1.5 text-left font-extrabold">{str(v, "p1")}</th><th className="py-1.5 text-left font-extrabold">{str(v, "p2")}</th></tr></thead>
+        <tbody>
+          {rows.map((r) => {
+            const parts = r.split("|").map((s) => s.trim());
+            return (
+              <tr key={r} className="border-t border-neutral-100">
+                <td className="py-1.5 font-bold">{parts[0]}</td>
+                <td className="py-1.5">{parts[1]}</td>
+                <td className="py-1.5">{parts[2]}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
+function LoadMore({ v }: P) {
+  const [done, setDone] = useState(false);
+  return (
+    <div className="p-4 text-center">
+      <div className="mb-3 grid grid-cols-4 gap-2">
+        {Array.from({ length: done ? 8 : 4 }, (_, i) => (
+          <div key={i} className="aspect-square rounded-lg" style={{ background: `linear-gradient(${135 + i * 40}deg,#e0e7ff,#fbcfe8)` }} />
+        ))}
+      </div>
+      {!done && <button type="button" onClick={() => setDone(true)} className="rounded-full border border-neutral-300 px-6 py-2 text-[0.7rem] font-bold">{str(v, "label") || "Load more"}</button>}
+    </div>
+  );
+}
+
+function EmptyCart({ v }: P) {
+  return (
+    <div className="p-4 text-center">
+      <p className="m-0 mb-3 text-sm font-extrabold">{str(v, "heading") || "Your cart is empty - try these"}</p>
+      <div className="grid grid-cols-4 gap-2.5 text-left max-sm:grid-cols-2">
+        {["Overshirt", "Chinos", "Cap", "Tote"].map((t, i) => (
+          <div key={t}>
+            <div className="aspect-square rounded-lg" style={{ background: `linear-gradient(${135 + i * 50}deg,#e0e7ff,#fbcfe8)` }} />
+            <p className="m-0 mt-1.5 text-[0.65rem] font-semibold">{t}</p>
+            <p className="m-0 text-[0.58rem] text-neutral-400">₹{1499 + i * 300}</p>
+          </div>
+        ))}
+      </div>
+      <a href="#" className="mt-3.5 inline-block text-[0.7rem] font-bold text-emerald-600">Browse everything &rarr;</a>
+    </div>
+  );
+}
+
+function NotFoundSearch({ v }: P) {
+  const links = str(v, "links").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 4);
+  return (
+    <div className="p-5 text-center">
+      <p className="m-0 text-lg font-extrabold">{str(v, "heading") || "Page not found"}</p>
+      <div className="mx-auto mt-3.5 flex max-w-56 gap-1.5">
+        <input type="search" placeholder="Search the store…" className="min-w-0 flex-1 rounded-full border border-neutral-300 px-3.5 py-2 text-[0.72rem] outline-none" />
+        <button type="button" className="rounded-full bg-neutral-900 px-3.5 py-2 text-[0.65rem] font-bold text-white">Search</button>
+      </div>
+      <div className="mt-3.5 flex flex-wrap justify-center gap-3.5">
+        {links.map((r) => {
+          const [l] = r.split("|");
+          return <a key={r} href="#" className="text-[0.65rem] font-semibold text-emerald-600">{l?.trim()}</a>;
+        })}
+      </div>
+    </div>
+  );
+}
+
+function ArticleToc() {
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2 text-[0.6rem] text-neutral-400">4 min read</p>
+      <div className="rounded-lg border border-neutral-200 p-3">
+        <p className="m-0 text-[0.68rem] font-bold">On this page</p>
+        <ul className="m-0 mt-2 list-none p-0 text-[0.7rem]">
+          {["Why linen", "How it's made", "Care guide", "Our guarantee"].map((h) => (
+            <li key={h} className="py-0.5"><a href="#" className="text-emerald-600 hover:underline">{h}</a></li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+}
+
+function ReferralCard({ v }: P) {
+  const [copied, setCopied] = useState(false);
+  return (
+    <div className="m-4 rounded-xl border border-dashed border-emerald-400 bg-emerald-50/50 p-4">
+      <p className="m-0 text-sm font-extrabold">{str(v, "heading") || "Refer & earn"}</p>
+      <p className="m-0 mt-1 text-[0.68rem] text-neutral-600">{str(v, "offer")}</p>
+      <button type="button" onClick={() => { setCopied(true); setTimeout(() => setCopied(false), 1500); }} className="mt-2.5 rounded-full bg-neutral-900 px-4 py-1.5 text-[0.65rem] font-bold text-white">{copied ? "Copied!" : "Copy your link"}</button>
+    </div>
+  );
+}
+
+function DonationCheckbox({ v }: P) {
+  const [on, setOn] = useState(false);
+  return (
+    <div className="m-4 rounded-lg border border-dashed border-emerald-400 p-3">
+      <label className="flex items-center gap-2 text-[0.7rem]">
+        <input type="checkbox" checked={on} onChange={() => setOn(!on)} className="accent-emerald-600" />
+        Add {str(v, "amount") || "₹10"} to {str(v, "cause") || "a good cause"}
+      </label>
+      {on && <p className="m-0 mt-1.5 text-[0.6rem] text-emerald-600">Donation added to cart</p>}
+    </div>
+  );
+}
+
+function A11yToolbar() {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative p-4">
+      <button type="button" onClick={() => setOpen(!open)} className="grid size-10 place-items-center rounded-full border border-neutral-300 bg-white text-sm font-extrabold shadow">Aa</button>
+      {open && (
+        <div className="absolute bottom-full left-4 mb-1.5 grid w-28 gap-1 rounded-lg border border-neutral-200 bg-white p-2 shadow-lg">
+          <button type="button" className="rounded border border-neutral-200 py-1 text-[0.6rem]">A+</button>
+          <button type="button" className="rounded border border-neutral-200 py-1 text-[0.6rem]">A-</button>
+          <button type="button" className="rounded border border-neutral-200 py-1 text-[0.6rem]">High contrast</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -2636,6 +2866,21 @@ const map: Record<string, (p: P) => ReactNode> = {
   "checkout-progress": CheckoutProgress,
   "wholesale-inquiry": WholesaleInquiry,
   "returns-request": ReturnsRequest,
+  "bundle-builder": BundleBuilder,
+  "quantity-selector": QuantitySelector,
+  "size-chart-table": SizeChartTable,
+  "delivery-date-picker": DeliveryDatePicker,
+  "gift-message-cart": GiftMessageCart,
+  "terms-checkbox": TermsCheckbox,
+  "sold-count": SoldCount,
+  "product-compare-table": ProductCompareTable,
+  "load-more": LoadMore,
+  "empty-cart": EmptyCart,
+  "not-found-search": NotFoundSearch,
+  "article-toc": ArticleToc,
+  "referral-card": ReferralCard,
+  "donation-checkbox": DonationCheckbox,
+  "a11y-toolbar": A11yToolbar,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {

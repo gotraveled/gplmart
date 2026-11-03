@@ -7405,6 +7405,695 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
 .gpl-ret__note { margin: 1rem 0 0; font-size: 0.68rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
     }),
   },
+  {
+    id: "bundle-builder",
+    name: "Build-your-own bundle",
+    description: "Pick any 3 products from a grid, see the running total, one 'add bundle' - the subscription-box pattern that lifts AOV.",
+    category: "Cart & checkout",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+      { id: "pick", label: "Items to pick", type: "text", maxLength: 2 },
+    ],
+    defaults: { heading: "Build your bundle", pick: "3" },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<gpl-bb class="gpl-bb" data-pick="{{ section.settings.pick | default: 3 }}">
+  <p class="gpl-bb__heading">{{ section.settings.heading }}</p>
+  <p class="gpl-bb__hint" data-hint>Pick {{ section.settings.pick | default: 3 }} items</p>
+  {%- assign col = section.settings.collection -%}
+  <div class="gpl-bb__grid">
+    {%- for p in col.products limit: 8 -%}
+      <button type="button" class="gpl-bb__card" data-card data-vid="{{ p.selected_or_first_available_variant.id }}" data-price="{{ p.price }}">
+        {{ p.featured_image | image_url: width: 300 | image_tag: class: 'gpl-bb__img', loading: 'lazy' }}
+        <span class="gpl-bb__title">{{ p.title }}</span>
+        <span class="gpl-bb__price">{{ p.price | money }}</span>
+        <span class="gpl-bb__tick">&#10003;</span>
+      </button>
+    {%- endfor -%}
+  </div>
+  <button type="button" class="gpl-bb__add" data-add disabled>Add bundle - <span data-total>₹0</span></button>
+</gpl-bb>
+
+{% schema %}
+{
+  "name": "Bundle builder",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} },
+    { "type": "range", "id": "pick", "label": "Items to pick", "min": 2, "max": 6, "step": 1, "default": 3 },
+    { "type": "collection", "id": "collection", "label": "Bundle collection" }
+  ],
+  "presets": [{ "name": "Bundle builder" }]
+}
+{% endschema %}`,
+      css: `.gpl-bb { display: block; padding: 1.5rem 0; }
+.gpl-bb__heading { margin: 0; font-size: 1rem; font-weight: 800; }
+.gpl-bb__hint { margin: 0.25rem 0 1rem; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-bb__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.75rem; }
+@media (max-width: 640px) { .gpl-bb__grid { grid-template-columns: repeat(2, 1fr); } }
+.gpl-bb__card { position: relative; border: 2px solid rgb(var(--color-foreground, 148 163 184) / 0.2); border-radius: 12px; background: none; padding: 0.5rem; text-align: left; cursor: pointer; color: inherit; }
+.gpl-bb__card.is-sel { border-color: rgb(var(--color-button, 21 128 61)); }
+.gpl-bb__img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 8px; display: block; }
+.gpl-bb__title { display: block; margin-top: 0.4rem; font-size: 0.68rem; font-weight: 600; }
+.gpl-bb__price { display: block; font-size: 0.62rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-bb__tick { position: absolute; top: 0.6rem; right: 0.6rem; display: none; place-items: center; width: 1.4rem; height: 1.4rem; border-radius: 999px; background: rgb(var(--color-button, 21 128 61)); color: #fff; font-size: 0.7rem; }
+.gpl-bb__card.is-sel .gpl-bb__tick { display: grid; }
+.gpl-bb__add {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.85rem;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
+  font-weight: 800;
+  cursor: pointer;
+}
+.gpl-bb__add:disabled { opacity: 0.45; cursor: not-allowed; }`,
+      js: `document.querySelectorAll('gpl-bb').forEach((el) => {
+  const need = Number(el.dataset.pick) || 3;
+  const cards = [...el.querySelectorAll('[data-card]')];
+  const btn = el.querySelector('[data-add]');
+  const total = el.querySelector('[data-total]');
+  const hint = el.querySelector('[data-hint]');
+  function update() {
+    const sel = cards.filter((c) => c.classList.contains('is-sel'));
+    const sum = sel.reduce((s, c) => s + Number(c.dataset.price), 0);
+    total.textContent = '₹' + (sum / 100).toFixed(0);
+    btn.disabled = sel.length !== need;
+    hint.textContent = sel.length < need ? 'Pick ' + (need - sel.length) + ' more' : 'Bundle ready';
+  }
+  cards.forEach((c) => c.addEventListener('click', () => {
+    const sel = cards.filter((x) => x.classList.contains('is-sel'));
+    if (c.classList.contains('is-sel') || sel.length < need) c.classList.toggle('is-sel');
+    update();
+  }));
+  btn.addEventListener('click', async () => {
+    const items = cards.filter((c) => c.classList.contains('is-sel')).map((c) => ({ id: Number(c.dataset.vid), quantity: 1 }));
+    await fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items }) });
+    window.location.href = '/cart';
+  });
+});`,
+    }),
+  },
+  {
+    id: "quantity-selector",
+    name: "Quantity +/- stepper",
+    description: "Plus/minus buttons around the qty input - small UX win, present in almost every paid theme.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [],
+    defaults: {},
+    install: [
+      ...snippetSteps("quantity-selector.liquid"),
+      "Render inside the product form - the hidden input submits the real quantity.",
+    ],
+    files: () => ({
+      liquid: `<gpl-qty class="gpl-qty">
+  <button type="button" class="gpl-qty__btn" data-minus aria-label="Decrease">&minus;</button>
+  <input type="number" class="gpl-qty__input" name="quantity" value="1" min="1" data-input>
+  <button type="button" class="gpl-qty__btn" data-plus aria-label="Increase">+</button>
+</gpl-qty>`,
+      css: `.gpl-qty { display: inline-flex; align-items: stretch; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 9px; overflow: hidden; }
+.gpl-qty__btn { width: 2.4rem; border: 0; background: rgb(var(--color-foreground, 148 163 184) / 0.08); font-size: 1rem; cursor: pointer; color: inherit; }
+.gpl-qty__input { width: 3rem; border: 0; text-align: center; font: inherit; font-size: 0.85rem; background: transparent; -moz-appearance: textfield; }
+.gpl-qty__input::-webkit-outer-spin-button, .gpl-qty__input::-webkit-inner-spin-button { -webkit-appearance: none; }`,
+      js: `document.querySelectorAll('gpl-qty').forEach((el) => {
+  const input = el.querySelector('[data-input]');
+  el.querySelector('[data-minus]').addEventListener('click', () => (input.value = Math.max(1, Number(input.value) - 1)));
+  el.querySelector('[data-plus]').addEventListener('click', () => (input.value = Number(input.value) + 1));
+});`,
+      usage: `{% render 'quantity-selector' %}`,
+    }),
+  },
+  {
+    id: "size-chart-table",
+    name: "Inline size chart",
+    description: "A visible measurement table (chest/length/sleeve) - different from the modal, always on the page.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "rows", label: "Rows (size|chest|length per line)", type: "text", maxLength: 300 },
+    ],
+    defaults: { rows: "S|38|26\nM|40|27\nL|42|28\nXL|44|29" },
+    install: [
+      ...snippetSteps("size-chart-table.liquid"),
+      "Replace the defaults with your real garment measurements - a wrong size chart is worse than none.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-size2">
+  <table class="gpl-size2__table">
+    <thead><tr><th>Size</th><th>Chest (in)</th><th>Length (in)</th></tr></thead>
+    <tbody>
+      {%- assign rows = rows | newline_to_br | split: '<br />' -%}
+      {%- for row in rows -%}
+        {%- assign parts = row | strip | split: '|' -%}
+        <tr><td>{{ parts[0] | strip }}</td><td>{{ parts[1] | strip }}</td><td>{{ parts[2] | strip }}</td></tr>
+      {%- endfor -%}
+    </tbody>
+  </table>
+</div>`,
+      css: `.gpl-size2 { margin: 0.75rem 0; }
+.gpl-size2__table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+.gpl-size2__table th { padding: 0.5rem; text-align: left; font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-size2__table td { padding: 0.5rem; border-top: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.18); }`,
+      usage: `{% render 'size-chart-table', rows: ${js(str(v, "rows"))} %}`,
+    }),
+  },
+  {
+    id: "delivery-date-picker",
+    name: "Preferred delivery date",
+    description: "A date input on the cart that saves to order attributes - 'please deliver after the 15th' without email ping-pong.",
+    category: "Cart & checkout",
+    kind: "snippet",
+    controls: [
+      { id: "label", label: "Label", type: "text", maxLength: 50 },
+    ],
+    defaults: { label: "Preferred delivery date (optional)" },
+    install: [
+      ...snippetSteps("delivery-date-picker.liquid"),
+      "Render inside the cart form - saves to order.attributes['Preferred delivery date'] automatically.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-ddp">
+  <label class="gpl-ddp__label" for="gpl-ddp-field">{{ label | default: 'Preferred delivery date' }}</label>
+  <input id="gpl-ddp-field" class="gpl-ddp__input" type="date" name="attributes[Preferred delivery date]" min="{{ 'now' | date: '%Y-%m-%d' }}">
+</div>`,
+      css: `.gpl-ddp { margin: 1rem 0; }
+.gpl-ddp__label { display: block; font-size: 0.72rem; font-weight: 600; margin-bottom: 0.4rem; }
+.gpl-ddp__input {
+  padding: 0.6rem 0.8rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 9px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.82rem;
+  color-scheme: inherit;
+}`,
+      usage: `{% render 'delivery-date-picker', label: ${js(str(v, "label"))} %}`,
+    }),
+  },
+  {
+    id: "gift-message-cart",
+    name: "Gift message in cart",
+    description: "'This is a gift' checkbox that unlocks a message field - both save to order attributes.",
+    category: "Cart & checkout",
+    kind: "snippet",
+    controls: [],
+    defaults: {},
+    install: snippetSteps("gift-message-cart.liquid"),
+    files: () => ({
+      liquid: `<gpl-gift class="gpl-gift">
+  <label class="gpl-gift__check">
+    <input type="checkbox" data-gift-check> This order is a gift
+  </label>
+  <div class="gpl-gift__fields" hidden data-gift-fields>
+    <input type="hidden" name="attributes[Gift]" value="Yes" disabled>
+    <textarea name="attributes[Gift message]" class="gpl-gift__area" rows="3" placeholder="Write your gift message…" disabled></textarea>
+  </div>
+</gpl-gift>`,
+      css: `.gpl-gift { display: block; margin: 1rem 0; }
+.gpl-gift__check { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
+.gpl-gift__check input { accent-color: rgb(var(--color-button, 21 128 61)); }
+.gpl-gift__fields { margin-top: 0.6rem; }
+.gpl-gift__area {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 9px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.8rem;
+  resize: vertical;
+}`,
+      js: `document.querySelectorAll('gpl-gift').forEach((el) => {
+  const check = el.querySelector('[data-gift-check]');
+  const fields = el.querySelector('[data-gift-fields]');
+  check.addEventListener('change', () => {
+    fields.hidden = !check.checked;
+    fields.querySelectorAll('input, textarea').forEach((f) => (f.disabled = !check.checked));
+  });
+});`,
+      usage: `{% render 'gift-message-cart' %}`,
+    }),
+  },
+  {
+    id: "terms-checkbox",
+    name: "Terms agreement checkbox",
+    description: "'I agree to the terms' gate before checkout - a compliance requirement some payment providers ask for.",
+    category: "Cart & checkout",
+    kind: "snippet",
+    controls: [
+      { id: "text", label: "Agreement text", type: "text", maxLength: 120 },
+    ],
+    defaults: { text: "I agree to the terms of service and refund policy" },
+    install: [
+      ...snippetSteps("terms-checkbox.liquid"),
+      "Render before the checkout button - the JS disables the button until checked.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-terms class="gpl-terms">
+  <label class="gpl-terms__check">
+    <input type="checkbox" data-terms>
+    <span>{{ text | default: 'I agree to the terms' }}</span>
+  </label>
+</gpl-terms>`,
+      css: `.gpl-terms { display: block; margin: 0.75rem 0; }
+.gpl-terms__check { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; cursor: pointer; }
+.gpl-terms__check input { accent-color: rgb(var(--color-button, 15 23 42)); }
+.gpl-terms__check a { color: inherit; text-decoration: underline; }`,
+      js: `document.querySelectorAll('gpl-terms').forEach((el) => {
+  const box = el.querySelector('[data-terms]');
+  const btn = document.querySelector('[name="checkout"], form[action="/cart"] [type="submit"]');
+  if (!btn) return;
+  btn.disabled = true;
+  box.addEventListener('change', () => (btn.disabled = !box.checked));
+});`,
+      usage: `{% render 'terms-checkbox', text: ${js(str(v, "text"))} %}`,
+    }),
+  },
+  {
+    id: "sold-count",
+    name: "Honest sold count",
+    description: "'X sold' from a product metafield - real traction beats fake urgency every time.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "count", label: "Sold count", type: "text", maxLength: 8 },
+      { id: "label", label: "Label", type: "text", maxLength: 30 },
+    ],
+    defaults: { count: "2431", label: "sold" },
+    install: [
+      ...snippetSteps("sold-count.liquid"),
+      "Update product.metafields.custom.sold_count periodically from your orders report - it's a real number, not a ticker.",
+    ],
+    files: (v) => ({
+      liquid: `{%- assign n = product.metafields.custom.sold_count.value | default: count -%}
+{%- if n -%}
+<p class="gpl-sold">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 2 2.9 6.26 6.9.6-5.2 4.53 1.55 6.77L12 16.9l-6.15 3.26L7.4 13.4 2.2 8.86l6.9-.6z"/></svg>
+  <b>{{ n }}</b> {{ label | default: 'sold' }}
+</p>
+{%- endif -%}`,
+      css: `.gpl-sold { display: flex; align-items: center; gap: 0.4rem; margin: 0.4rem 0; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
+.gpl-sold svg { width: 0.8rem; height: 0.8rem; color: rgb(var(--color-button, 245 158 11)); }
+.gpl-sold b { font-weight: 800; }`,
+      usage: `{% render 'sold-count', product: product, count: ${js(str(v, "count"))}, label: ${js(str(v, "label"))} %}`,
+    }),
+  },
+  {
+    id: "product-compare-table",
+    name: "Product spec comparison",
+    description: "Side-by-side spec table for 2-3 of your own products - helps shoppers pick the right one.",
+    category: "Product page",
+    kind: "section",
+    controls: [
+      { id: "rows", label: "Specs (spec|p1|p2 per line)", type: "text", maxLength: 400 },
+      { id: "p1", label: "Product 1 name", type: "text", maxLength: 30 },
+      { id: "p2", label: "Product 2 name", type: "text", maxLength: 30 },
+    ],
+    defaults: {
+      rows: "Fabric|Linen|Cotton\nWeight|180 GSM|220 GSM\nFit|Relaxed|Slim\nPrice|₹2,499|₹1,799",
+      p1: "Overshirt",
+      p2: "Classic tee",
+    },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-pc">
+  <table class="gpl-pc__table">
+    <thead><tr><th></th><th>{{ section.settings.p1 }}</th><th>{{ section.settings.p2 }}</th></tr></thead>
+    <tbody>
+      {%- assign rows = section.settings.rows | newline_to_br | split: '<br />' -%}
+      {%- for row in rows -%}
+        {%- assign parts = row | strip | split: '|' -%}
+        <tr><td class="gpl-pc__spec">{{ parts[0] | strip }}</td><td>{{ parts[1] | strip }}</td><td>{{ parts[2] | strip }}</td></tr>
+      {%- endfor -%}
+    </tbody>
+  </table>
+</div>
+
+{% schema %}
+{
+  "name": "Product comparison",
+  "settings": [
+    { "type": "text", "id": "p1", "label": "Product 1 name", "default": ${js(str(v, "p1"))} },
+    { "type": "text", "id": "p2", "label": "Product 2 name", "default": ${js(str(v, "p2"))} },
+    { "type": "textarea", "id": "rows", "label": "Specs (spec|p1|p2 per line)", "default": ${js(str(v, "rows"))} }
+  ],
+  "presets": [{ "name": "Product comparison" }]
+}
+{% endschema %}`,
+      css: `.gpl-pc { padding: 1.5rem 0; }
+.gpl-pc__table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+.gpl-pc__table th { padding: 0.6rem; text-align: left; font-size: 0.72rem; font-weight: 800; }
+.gpl-pc__table td { padding: 0.6rem; border-top: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.18); }
+.gpl-pc__spec { font-weight: 700; }`,
+    }),
+  },
+  {
+    id: "load-more",
+    name: "Load more button",
+    description: "Fetches the next collection page and appends the grid - a smoother alternative to page numbers.",
+    category: "Utility",
+    kind: "snippet",
+    controls: [
+      { id: "label", label: "Label", type: "text", maxLength: 30 },
+    ],
+    defaults: { label: "Load more" },
+    install: [
+      ...snippetSteps("load-more.liquid"),
+      "Render after the product grid in collection - works when paginate is set; falls back to next-page link.",
+    ],
+    files: (v) => ({
+      liquid: `{%- if paginate.next -%}
+<gpl-loadmore class="gpl-lm" data-next="{{ paginate.next.url }}" data-target=".product-grid">
+  <button type="button" class="gpl-lm__btn" data-load>{{ label | default: 'Load more' }}</button>
+</gpl-loadmore>
+{%- endif -%}`,
+      css: `.gpl-lm { display: block; text-align: center; padding: 1.5rem 0; }
+.gpl-lm__btn {
+  padding: 0.75rem 2rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}`,
+      js: `document.querySelectorAll('gpl-loadmore').forEach((el) => {
+  const btn = el.querySelector('[data-load]');
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    btn.textContent = 'Loading…';
+    try {
+      const html = await fetch(el.dataset.next).then((r) => r.text());
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const items = doc.querySelectorAll(el.dataset.target + ' > *');
+      const grid = document.querySelector(el.dataset.target);
+      items.forEach((i) => grid.appendChild(i));
+      const next = doc.querySelector('gpl-loadmore');
+      if (next) el.dataset.next = next.dataset.next; else el.remove();
+    } catch { window.location.href = el.dataset.next; }
+    btn.disabled = false;
+    btn.textContent = 'Load more';
+  });
+});`,
+      usage: `{% render 'load-more', label: ${js(str(v, "label"))}, paginate: paginate %}`,
+    }),
+  },
+  {
+    id: "empty-cart",
+    name: "Empty cart suggestions",
+    description: "When the cart's empty, show bestsellers instead of a dead end - recovers the browse loop.",
+    category: "Cart & checkout",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+    ],
+    defaults: { heading: "Your cart is empty - try these" },
+    install: [
+      ...sectionSteps,
+      "Add this to the cart template - it only renders when cart.item_count is 0.",
+    ],
+    files: (v) => ({
+      liquid: `{%- if cart.item_count == 0 -%}
+<div class="gpl-empty">
+  <h2 class="gpl-empty__heading">{{ section.settings.heading }}</h2>
+  {%- assign col = section.settings.collection | default: collections.bestsellers | default: collections.all -%}
+  <div class="gpl-empty__grid">
+    {%- for p in col.products limit: 4 -%}
+      <a class="gpl-empty__card" href="{{ p.url }}">
+        {{ p.featured_image | image_url: width: 300 | image_tag: class: 'gpl-empty__img', loading: 'lazy' }}
+        <span class="gpl-empty__title">{{ p.title }}</span>
+        <span class="gpl-empty__price">{{ p.price | money }}</span>
+      </a>
+    {%- endfor -%}
+  </div>
+  <a class="gpl-empty__cta" href="{{ routes.all_products_collection_url }}">Browse everything &rarr;</a>
+</div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Empty cart picks",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} },
+    { "type": "collection", "id": "collection", "label": "Collection" }
+  ],
+  "presets": [{ "name": "Empty cart picks" }]
+}
+{% endschema %}`,
+      css: `.gpl-empty { padding: 2rem 0; text-align: center; }
+.gpl-empty__heading { margin: 0 0 1.5rem; font-size: 1.1rem; font-weight: 800; }
+.gpl-empty__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.9rem; text-align: left; }
+@media (max-width: 640px) { .gpl-empty__grid { grid-template-columns: repeat(2, 1fr); } }
+.gpl-empty__card { text-decoration: none; color: inherit; }
+.gpl-empty__img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; display: block; }
+.gpl-empty__title { display: block; margin-top: 0.5rem; font-size: 0.72rem; font-weight: 600; }
+.gpl-empty__price { display: block; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-empty__cta { display: inline-block; margin-top: 1.5rem; font-size: 0.78rem; font-weight: 700; color: rgb(var(--color-button, 21 128 61)); }`,
+    }),
+  },
+  {
+    id: "not-found-search",
+    name: "404 search + links",
+    description: "A helpful 404 - search box plus popular links instead of a dead 'page not found'.",
+    category: "Utility",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+      { id: "links", label: "Links (label|url per line)", type: "text", maxLength: 200 },
+    ],
+    defaults: { heading: "That page moved or never existed", links: "Home|/\nBestsellers|/collections/bestsellers\nContact|/pages/contact" },
+    install: [
+      ...sectionSteps,
+      "Add this section to your 404 template - replaces the default dead-end.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-404">
+  <h2 class="gpl-404__heading">{{ section.settings.heading }}</h2>
+  <form action="/search" method="get" class="gpl-404__form" role="search">
+    <input type="search" name="q" placeholder="Search the store…">
+    <button type="submit">Search</button>
+  </form>
+  <div class="gpl-404__links">
+    {%- assign rows = section.settings.links | newline_to_br | split: '<br />' -%}
+    {%- for row in rows -%}
+      {%- assign parts = row | strip | split: '|' -%}
+      <a href="{{ parts[1] | strip }}">{{ parts[0] | strip }}</a>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "404 helper",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} },
+    { "type": "textarea", "id": "links", "label": "Links (label|url per line)", "default": ${js(str(v, "links"))} }
+  ],
+  "presets": [{ "name": "404 helper" }]
+}
+{% endschema %}`,
+      css: `.gpl-404 { padding: 3rem 1rem; text-align: center; }
+.gpl-404__heading { margin: 0; font-size: 1.4rem; font-weight: 800; }
+.gpl-404__form { display: flex; gap: 0.5rem; max-width: 22rem; margin: 1.5rem auto 0; }
+.gpl-404__form input { flex: 1; padding: 0.7rem 1rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 999px; background: transparent; font-size: 0.82rem; }
+.gpl-404__form button { padding: 0.7rem 1.25rem; border: 0; border-radius: 999px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-weight: 700; cursor: pointer; }
+.gpl-404__links { display: flex; flex-wrap: wrap; justify-content: center; gap: 1rem; margin-top: 1.5rem; }
+.gpl-404__links a { font-size: 0.72rem; font-weight: 600; color: rgb(var(--color-button, 21 128 61)); text-decoration: none; }`,
+    }),
+  },
+  {
+    id: "article-toc",
+    name: "Article TOC + read time",
+    description: "Table of contents from headings plus 'X min read' - makes long blog posts skimmable.",
+    category: "Content",
+    kind: "snippet",
+    controls: [],
+    defaults: {},
+    install: [
+      ...snippetSteps("article-toc.liquid"),
+      "Render at the top of the article template - builds the TOC from h2 tags in the content.",
+    ],
+    files: () => ({
+      liquid: `<gpl-toc class="gpl-toc">
+  <p class="gpl-toc__meta" data-time>Calculating read time…</p>
+  <details class="gpl-toc__box" open>
+    <summary class="gpl-toc__summary">On this page</summary>
+    <ul class="gpl-toc__list" data-list></ul>
+  </details>
+</gpl-toc>`,
+      css: `.gpl-toc { display: block; margin: 1rem 0; }
+.gpl-toc__meta { margin: 0 0 0.6rem; font-size: 0.68rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-toc__box { border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2); border-radius: 10px; padding: 0.9rem; }
+.gpl-toc__summary { font-size: 0.72rem; font-weight: 700; cursor: pointer; }
+.gpl-toc__list { margin: 0.6rem 0 0; padding-left: 1.1rem; font-size: 0.75rem; }
+.gpl-toc__list a { color: rgb(var(--color-button, 21 128 61)); text-decoration: none; }
+.gpl-toc__list a:hover { text-decoration: underline; }`,
+      js: `document.querySelectorAll('gpl-toc').forEach((el) => {
+  const article = document.querySelector('article') || document.body;
+  const heads = [...article.querySelectorAll('h2')];
+  const list = el.querySelector('[data-list]');
+  heads.forEach((h, i) => {
+    if (!h.id) h.id = 'toc-' + i;
+    const li = document.createElement('li');
+    li.innerHTML = '<a href="#' + h.id + '">' + h.textContent + '</a>';
+    list.appendChild(li);
+  });
+  if (!heads.length) el.querySelector('.gpl-toc__box').hidden = true;
+  const words = article.textContent.trim().split(/\\s+/).length;
+  el.querySelector('[data-time]').textContent = Math.max(1, Math.round(words / 200)) + ' min read';
+});`,
+      usage: `{% render 'article-toc' %}`,
+    }),
+  },
+  {
+    id: "referral-card",
+    name: "Referral card",
+    description: "A 'give ₹X, get ₹X' card with tap-to-copy referral link - runs on your real referral URL.",
+    category: "Marketing",
+    kind: "snippet",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+      { id: "offer", label: "Offer line", type: "text", maxLength: 60 },
+      { id: "url", label: "Referral URL", type: "text", maxLength: 120 },
+    ],
+    defaults: { heading: "Give ₹100, get ₹100", offer: "Your friend saves, you save - everybody wins.", url: "https://yourstore.com?ref=YOUR_CODE" },
+    install: [
+      ...snippetSteps("referral-card.liquid"),
+      "Point the URL at your real referral flow - a fake 'refer and earn' with no reward breaks trust.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-ref class="gpl-ref" data-url="{{ url | default: '' }}">
+  <p class="gpl-ref__heading">{{ heading | default: 'Refer & earn' }}</p>
+  <p class="gpl-ref__offer">{{ offer | default: '' }}</p>
+  <button type="button" class="gpl-ref__copy" data-copy>Copy your link</button>
+</gpl-ref>`,
+      css: `.gpl-ref { display: block; margin: 1rem 0; padding: 1.25rem; border: 1px dashed rgb(var(--color-button, 21 128 61) / 0.4); border-radius: 12px; background: rgb(var(--color-button, 21 128 61) / 0.05); }
+.gpl-ref__heading { margin: 0; font-size: 0.9rem; font-weight: 800; }
+.gpl-ref__offer { margin: 0.3rem 0 0; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.8); }
+.gpl-ref__copy {
+  margin-top: 0.9rem;
+  padding: 0.55rem 1.25rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}`,
+      js: `document.querySelectorAll('gpl-ref').forEach((el) => {
+  el.querySelector('[data-copy]').addEventListener('click', async (e) => {
+    await navigator.clipboard.writeText(el.dataset.url).catch(() => {});
+    e.target.textContent = 'Copied!';
+    setTimeout(() => (e.target.textContent = 'Copy your link'), 2000);
+  });
+});`,
+      usage: `{% render 'referral-card', heading: ${js(str(v, "heading"))}, offer: ${js(str(v, "offer"))}, url: ${js(str(v, "url"))} %}`,
+    }),
+  },
+  {
+    id: "donation-checkbox",
+    name: "Charity round-up checkbox",
+    description: "'Add ₹10 to X cause' in the cart - micro-donations convert when the cause is real.",
+    category: "Cart & checkout",
+    kind: "snippet",
+    controls: [
+      { id: "amount", label: "Amount", type: "text", maxLength: 10 },
+      { id: "cause", label: "Cause", type: "text", maxLength: 60 },
+      { id: "handle", label: "Donation product handle", type: "text", maxLength: 60 },
+    ],
+    defaults: { amount: "₹10", cause: "plant a tree", handle: "donation" },
+    install: [
+      ...snippetSteps("donation-checkbox.liquid"),
+      "Create a ₹10 'donation' product (unlisted) and pass its handle - checking adds it to the cart.",
+      "Be transparent about where the money goes - a fake charity checkbox is fraud.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-donate class="gpl-donate" data-handle="{{ handle | default: 'donation' }}">
+  <label class="gpl-donate__check">
+    <input type="checkbox" data-donate>
+    <span>Add {{ amount | default: '₹10' }} to {{ cause | default: 'a good cause' }}</span>
+  </label>
+</gpl-donate>`,
+      css: `.gpl-donate { display: block; margin: 0.75rem 0; padding: 0.75rem; border: 1px dashed rgb(var(--color-button, 21 128 61) / 0.4); border-radius: 9px; }
+.gpl-donate__check { display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; cursor: pointer; }
+.gpl-donate__check input { accent-color: #16a34a; }`,
+      js: `document.querySelectorAll('gpl-donate').forEach((el) => {
+  el.querySelector('[data-donate]').addEventListener('change', async (e) => {
+    if (e.target.checked) {
+      const p = await fetch('/products/' + el.dataset.handle + '.js').then((r) => r.json()).catch(() => null);
+      if (p) await fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: [{ id: p.variants[0].id, quantity: 1 }] }) });
+      else e.target.checked = false;
+    }
+  });
+});`,
+      usage: `{% render 'donation-checkbox', amount: ${js(str(v, "amount"))}, cause: ${js(str(v, "cause"))}, handle: ${js(str(v, "handle"))} %}`,
+    }),
+  },
+  {
+    id: "a11y-toolbar",
+    name: "Accessibility toolbar",
+    description: "Font-size + high-contrast toggles floating on the page - genuinely helpful, and WCAG-friendly.",
+    category: "Utility",
+    kind: "snippet",
+    controls: [],
+    defaults: {},
+    install: [
+      ...snippetSteps("a11y-toolbar.liquid"),
+      "Render once in the layout - remembers choices in localStorage.",
+    ],
+    files: () => ({
+      liquid: `<gpl-a11y class="gpl-a11y">
+  <button type="button" class="gpl-a11y__toggle" data-toggle aria-label="Accessibility tools">Aa</button>
+  <div class="gpl-a11y__panel" hidden data-panel>
+    <button type="button" data-zoom="in">A+</button>
+    <button type="button" data-zoom="out">A-</button>
+    <button type="button" data-contrast>High contrast</button>
+  </div>
+</gpl-a11y>`,
+      css: `.gpl-a11y { position: fixed; right: 1rem; bottom: 5rem; z-index: 60; }
+.gpl-a11y__toggle {
+  width: 2.8rem;
+  height: 2.8rem;
+  border-radius: 999px;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  background: rgb(var(--color-background, 255 255 255));
+  font-size: 0.9rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.12);
+}
+.gpl-a11y__panel {
+  position: absolute;
+  bottom: 100%;
+  right: 0;
+  margin-bottom: 0.5rem;
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.6rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2);
+  border-radius: 10px;
+  background: rgb(var(--color-background, 255 255 255));
+  box-shadow: 0 4px 14px rgb(0 0 0 / 0.12);
+}
+.gpl-a11y__panel button { padding: 0.4rem 0.8rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25); border-radius: 7px; background: none; font-size: 0.7rem; cursor: pointer; white-space: nowrap; }
+body.gpl-a11y-big { font-size: 112.5%; }
+body.gpl-a11y-hc { filter: contrast(1.15); }
+body.gpl-a11y-hc a { text-decoration: underline; }`,
+      js: `document.querySelectorAll('gpl-a11y').forEach((el) => {
+  const panel = el.querySelector('[data-panel]');
+  el.querySelector('[data-toggle]').addEventListener('click', () => (panel.hidden = !panel.hidden));
+  el.querySelector('[data-zoom="in"]').addEventListener('click', () => document.body.classList.toggle('gpl-a11y-big', true));
+  el.querySelector('[data-zoom="out"]').addEventListener('click', () => document.body.classList.toggle('gpl-a11y-big', false));
+  el.querySelector('[data-contrast]').addEventListener('click', () => document.body.classList.toggle('gpl-a11y-hc'));
+});`,
+      usage: `{% render 'a11y-toolbar' %}`,
+    }),
+  },
 ];
 
 export function getExample(id: string | undefined): PlaygroundExample {
