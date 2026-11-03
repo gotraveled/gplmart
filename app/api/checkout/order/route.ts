@@ -29,7 +29,7 @@ export async function POST(req: Request) {
 
   try {
     // Any amount/currency in the request body is deliberately ignored.
-    return json(await createOrderForCustomer(customer));
+    return json(await createOrderForCustomer(customer, { install: body?.install === true }));
   } catch (e) {
     console.error("order creation failed", e instanceof Error ? e.message : e);
     return json({ error: "order_failed" }, 502);

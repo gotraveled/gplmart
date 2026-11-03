@@ -49,6 +49,7 @@ export function CheckoutForm({ label }: { label: string }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [install, setInstall] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
 
   async function start(e: React.FormEvent) {
@@ -60,7 +61,7 @@ export function CheckoutForm({ label }: { label: string }) {
       const res = await fetch("/api/checkout/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, install }),
       });
       const order = (await res.json()) as OrderResponse;
       if (!res.ok) throw new Error(messages[order.error ?? ""] ?? "Could not start the payment. Please try again.");
@@ -107,6 +108,21 @@ export function CheckoutForm({ label }: { label: string }) {
       <label className="block">
         <span className="mb-1 block text-xs font-medium text-muted">Email</span>
         <input required type="email" className={fieldCls} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} maxLength={120} autoComplete="email" placeholder="you@example.com" />
+      </label>
+      <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-line-strong bg-ink-950/60 p-3.5 text-sm">
+        <input
+          type="checkbox"
+          checked={install}
+          onChange={(e) => setInstall(e.target.checked)}
+          className="mt-0.5 size-4 accent-[#c8f542]"
+        />
+        <span>
+          <span className="font-semibold">Add pro install service — +₹499</span>
+          <span className="mt-0.5 block text-xs text-muted">
+            We install and configure the snippets on your store for you. Delivered within 3 business days over
+            WhatsApp.
+          </span>
+        </span>
       </label>
       <Button size="lg" className="mt-1 w-full" type="submit" disabled={busy}>
         <Lock aria-hidden className="size-4" /> {busy ? "Opening secure checkout…" : label}

@@ -1,0 +1,32 @@
+[
+  {
+    "date": "2026-11-03",
+    "title": "40 components, card-grid playground, free samples",
+    "items": [
+      "8 conversion product-page snippets: testimonial strip, before/after slider, EMI note, dispatch cutoff timer, pairs-well-with cross-sell, spec table, gift-wrap option, breadcrumb + schema",
+      "Playground rebuilt as a card grid with mini live previews; 5 examples fully free, the rest preview live with locked source",
+      "New utility snippets: back-to-top, scroll progress, cookie consent, sale badge, product tabs, logo marquee",
+      "Bundle contents page in the members area - GPL-licensed WordPress plugin/theme catalog with live/sourcing status",
+      "New pages: how-it-works, expanded FAQ, disclaimer, copyright & takedowns"
+    ]
+  },
+  {
+    "date": "2026-10-28",
+    "title": "Guest checkout - no accounts needed",
+    "items": [
+      "Razorpay checkout without signup: name, email, WhatsApp number",
+      "Post-payment WhatsApp handoff with order reference",
+      "Email OTP access: enter your paid email, get a one-time code, 30-day access cookie",
+      "Orders, payments and audit records visible in admin"
+    ]
+  },
+  {
+    "date": "2026-10-20",
+    "title": "First playground release",
+    "items": [
+      "21 interactive conversion components: countdown, star rating, stock pulse, sticky buy bar, free-shipping bar, trust grid and more",
+      "Live preview + copyable Liquid, CSS and JS for every example",
+      "Members-only Liquid library with licensing gate: nothing publishes until distribution rights are recorded"
+    ]
+  }
+]

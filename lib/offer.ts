@@ -9,6 +9,9 @@ export const OFFER = {
   name: "GPLMart All-Access",
   currency: "INR",
   pricePaise: parsePaise(process.env.ALL_ACCESS_PRICE_PAISE),
+  /** Optional paid add-on: we install the snippets on the buyer's store. */
+  installAddon: "install_service",
+  installAddonPaise: 49900,
 } as const;
 
 function parsePaise(raw: string | undefined): number {

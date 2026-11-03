@@ -20,12 +20,15 @@ export const footerLinks = {
   GPLMart: [
     { href: "/library", label: "Library" },
     { href: "/playground", label: "Playground" },
+    { href: "/prompts", label: "Free prompts" },
     { href: "/checkout", label: "Get access" },
     { href: "/access", label: "Members area" },
   ],
   Company: [
     { href: "/about", label: "About" },
+    { href: "/guides", label: "Guides" },
     { href: "/contact", label: "Contact" },
+    { href: "/updates", label: "Updates" },
   ],
   Policies: [
     { href: "/licensing", label: "Licensing" },

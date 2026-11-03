@@ -46,26 +46,36 @@ export async function createOrderForUser(userId: string) {
 }
 
 /** Guest checkout: no account required. Contact details are stored for reconciliation and manual fulfilment. */
-export async function createOrderForCustomer(customer: { name: string; email: string; phone: string }) {
+export async function createOrderForCustomer(
+  customer: { name: string; email: string; phone: string },
+  opts: { install?: boolean } = {},
+) {
   const creds = requireCreds();
   const db = createServiceClient();
+  const amountPaise = OFFER.pricePaise + (opts.install ? OFFER.installAddonPaise : 0);
   const order = await createRazorpayOrder(creds, {
-    amountPaise: OFFER.pricePaise,
+    amountPaise,
     currency: OFFER.currency,
     receipt: `gpl_${randomUUID().replace(/-/g, "").slice(0, 30)}`,
-    notes: { plan: OFFER.plan, customer_email: customer.email, customer_phone: customer.phone },
+    notes: {
+      plan: OFFER.plan,
+      customer_email: customer.email,
+      customer_phone: customer.phone,
+      ...(opts.install ? { addon: OFFER.installAddon } : {}),
+    },
   });
   const { error } = await db.from("orders").insert({
     plan: OFFER.plan,
     razorpay_order_id: order.id,
-    amount_paise: OFFER.pricePaise,
+    amount_paise: amountPaise,
     currency: OFFER.currency,
     customer_name: customer.name,
     customer_email: customer.email,
     customer_phone: customer.phone,
+    addon: opts.install ? OFFER.installAddon : null,
   });
   if (error) throw new Error("could not record order");
-  return { orderId: order.id, amountPaise: OFFER.pricePaise, currency: OFFER.currency, keyId: creds.keyId };
+  return { orderId: order.id, amountPaise, currency: OFFER.currency, keyId: creds.keyId };
 }
 
 export async function getOrderForVerification(razorpayOrderId: string) {

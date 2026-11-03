@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Check, CreditCard, ShieldCheck, Smartphone, Wallet } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { CheckoutForm } from "@/components/checkout/checkout-button";
 import { checkoutOpen } from "@/lib/checkout-gate";
@@ -22,6 +23,11 @@ export default async function CheckoutPage() {
         <p className="mt-6 font-display text-5xl font-semibold">{price}</p>
         <p className="mt-1 text-sm text-subtle">INR, one-time. No account needed.</p>
 
+        <p className="mt-4 rounded-lg border border-line bg-ink-950/60 p-3 text-xs text-muted">
+          The average conversion app costs <strong className="text-fg">₹1,500–3,000 per year</strong>. GPLMart is{" "}
+          <strong className="text-accent">{price} once</strong> - no renewals, no monthly fees.
+        </p>
+
         <div className="mt-8">
           {!configured ? (
             <p role="status" className="rounded-lg border border-amber-400/30 bg-amber-400/10 p-3 text-sm text-amber-100">
@@ -39,10 +45,47 @@ export default async function CheckoutPage() {
                 </p>
               )}
               <CheckoutForm label={`Pay ${price} securely`} />
-              <p className="mt-4 text-xs text-subtle">
-                Payment is handled by Razorpay - card details never touch this site. After paying you are sent to
-                WhatsApp to receive your access link.
-              </p>
+
+              {/* Trust stack */}
+              <div className="mt-5 rounded-xl border border-mint/30 bg-mint/10 p-4">
+                <p className="flex items-center gap-2 text-sm font-semibold">
+                  <ShieldCheck aria-hidden className="size-4 text-mint" /> 30-day money-back guarantee
+                </p>
+                <p className="mt-1 text-xs text-muted">
+                  If the library does not work for your store, message us on WhatsApp - refund per the{" "}
+                  <a href="/refund-policy" className="underline">refund policy</a>.
+                </p>
+              </div>
+
+              <div className="mt-3 flex flex-wrap items-center gap-1.5" aria-label="Payment methods">
+                {[
+                  { label: "UPI", icon: Smartphone },
+                  { label: "Cards", icon: CreditCard },
+                  { label: "Net banking", icon: Wallet },
+                  { label: "Wallets", icon: Wallet },
+                ].map(({ label, icon: Icon }) => (
+                  <span
+                    key={label}
+                    className="inline-flex items-center gap-1.5 rounded-full border border-line-strong bg-white/[0.04] px-2.5 py-1 text-[0.68rem] font-semibold text-muted"
+                  >
+                    <Icon aria-hidden className="size-3.5 text-mint" />
+                    {label}
+                  </span>
+                ))}
+              </div>
+
+              <ul className="mt-4 space-y-1.5 text-xs text-subtle">
+                {[
+                  "Payment handled by Razorpay - card details never touch this site",
+                  "Access link arrives on WhatsApp after payment",
+                  "30-day access via your paid email - no signup",
+                ].map((t) => (
+                  <li key={t} className="flex items-center gap-2">
+                    <Check aria-hidden className="size-3.5 text-mint" />
+                    {t}
+                  </li>
+                ))}
+              </ul>
             </>
           )}
         </div>
