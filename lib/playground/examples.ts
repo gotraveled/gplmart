@@ -166,7 +166,7 @@ ${on(v, "dismissible") ? `    <button type="button" class="gpl-announcement__clo
     id: "shipping-panel",
     name: "Shipping & delivery panel",
     description: "A compact panel with processing time, free-shipping threshold and returns note.",
-    category: "Trust & store information",
+    category: "Trust & social proof",
     kind: "snippet",
     controls: [
       { id: "heading", label: "Heading", type: "text", maxLength: 40 },
@@ -215,7 +215,7 @@ ${on(v, "returns") ? `    <div><dt>Returns</dt><dd>See our <a href="{{ routes.ro
     id: "trust-badges",
     name: "Trust & policy highlights",
     description: "Icon-led highlights for payment security, returns and support, based on your real policies.",
-    category: "Trust & store information",
+    category: "Trust & social proof",
     kind: "snippet",
     controls: [
       { id: "payment", label: "Secure payment", type: "toggle" },
@@ -263,7 +263,7 @@ ${on(v, "payment") ? item("lock", "Secure payment", "Pay with the methods enable
     id: "collection-grid",
     name: "Collection card grid",
     description: "A responsive grid of collection cards driven by section blocks.",
-    category: "Storefront sections",
+    category: "Content",
     kind: "section",
     controls: [
       { id: "columns", label: "Columns (desktop)", type: "select", options: [{ value: "2", label: "2" }, { value: "3", label: "3" }, { value: "4", label: "4" }] },
@@ -338,7 +338,7 @@ ${on(v, "labels") ? `        <span class="gpl-collections__title">{{ collection.
     id: "promo-banner",
     name: "Promotional banner",
     description: "A call-to-action banner with heading, text, button and alignment options.",
-    category: "Promotions & banners",
+    category: "Marketing",
     kind: "section",
     controls: [
       { id: "heading", label: "Heading", type: "text", maxLength: 50 },
@@ -481,7 +481,7 @@ ${on(v, "labels") ? `        <span class="gpl-collections__title">{{ collection.
     id: "faq-accordion",
     name: "FAQ accordion",
     description: "An accessible accordion built with native details elements, no JavaScript required.",
-    category: "Storefront sections",
+    category: "Content",
     kind: "section",
     controls: [
       { id: "heading", label: "Heading", type: "text", maxLength: 40 },
@@ -537,7 +537,7 @@ ${on(v, "labels") ? `        <span class="gpl-collections__title">{{ collection.
     id: "responsive-slideshow",
     name: "Responsive slideshow",
     description: "Desktop and mobile images per slide with autoplay and arrow navigation. Adapted from a real storefront build.",
-    category: "Storefront sections",
+    category: "Content",
     kind: "section",
     controls: [
       { id: "autoplay", label: "Autoplay", type: "toggle" },
@@ -647,7 +647,7 @@ if (!customElements.get('gpl-slideshow')) customElements.define('gpl-slideshow',
     id: "delivery-estimator",
     name: "Delivery ETA & trust card",
     description: "A dark premium card with a PIN-code check, a real delivery timeline and a trust row - the kind of block that lifts product-page confidence. Adapted from a real storefront build.",
-    category: "Trust & store information",
+    category: "Trust & social proof",
     kind: "snippet",
     controls: [
       { id: "heading", label: "Heading", type: "text", maxLength: 40 },
@@ -996,7 +996,7 @@ ${on(v, "zoom") ? `  image.addEventListener('click', () => {
     id: "coupon-cards",
     name: "Coupon cards",
     description: "Ticket-style offer cards with tap-to-copy and a confirmation toast, driven by section blocks. Adapted from a real storefront build.",
-    category: "Promotions & banners",
+    category: "Marketing",
     kind: "section",
     controls: [
       { id: "accent", label: "Accent colour", type: "color" },
@@ -1165,7 +1165,7 @@ ${on(v, "zoom") ? `  image.addEventListener('click', () => {
     id: "trust-grid",
     name: "Trust badge grid",
     description: "A responsive icon grid for shipping, returns and authenticity claims, driven by section blocks. Adapted from a real storefront build.",
-    category: "Trust & store information",
+    category: "Trust & social proof",
     kind: "section",
     controls: [{ id: "columns", label: "Columns", type: "select", options: [{ value: "2", label: "2" }, { value: "4", label: "4" }] }],
     defaults: { columns: "2" },
@@ -1347,7 +1347,7 @@ ${on(v, "badge") ? `    <span class="gpl-price__off" data-off {% unless save > 0
     id: "promo-popup",
     name: "Promotional popup",
     description: "A delayed, dismissible popup with a coupon code and tap-to-copy. Adapted from a real storefront build.",
-    category: "Promotions & banners",
+    category: "Marketing",
     kind: "section",
     controls: [
       { id: "title", label: "Title", type: "text", maxLength: 40 },
@@ -1484,7 +1484,7 @@ if (!customElements.get('gpl-promo-popup')) customElements.define('gpl-promo-pop
     id: "countdown-timer",
     name: "Countdown timer",
     description: "A real countdown to a fixed end date set in the theme editor - it does not reset per visitor. Adapted from a real storefront build.",
-    category: "Promotions & banners",
+    category: "Marketing",
     kind: "section",
     controls: [
       { id: "badge", label: "Badge", type: "text", maxLength: 30 },
@@ -1698,7 +1698,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     id: "star-rating",
     name: "Star rating block",
     description: "Shows the product's real review rating from the standard Shopify metafield - no hardcoded numbers. Adapted from a real storefront build.",
-    category: "Trust & store information",
+    category: "Trust & social proof",
     kind: "snippet",
     controls: [
       { id: "stars", label: "Preview stars", type: "select", options: [{ value: "4.9", label: "4.9" }, { value: "4.5", label: "4.5" }, { value: "3.5", label: "3.5" }] },
@@ -2008,7 +2008,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     id: "benefit-marquee",
     name: "Benefit marquee",
     description: "A horizontally scrolling strip of short benefits - pauses on hover and respects reduced-motion. Adapted from a real storefront build.",
-    category: "Promotions & banners",
+    category: "Marketing",
     kind: "section",
     controls: [
       { id: "speed", label: "Scroll speed", type: "select", options: [{ value: "16", label: "Calm" }, { value: "10", label: "Medium" }, { value: "6", label: "Fast" }] },
@@ -2441,7 +2441,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     id: "back-to-top",
     name: "Back to top button",
     description: "A floating button that fades in after the shopper scrolls, then smoothly returns them to the top of the page.",
-    category: "Utilities",
+    category: "Utility",
     kind: "snippet",
     controls: [
       { id: "position", label: "Position", type: "select", options: [{ value: "right", label: "Bottom right" }, { value: "left", label: "Bottom left" }] },
@@ -2499,7 +2499,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     id: "scroll-progress",
     name: "Scroll progress bar",
     description: "A thin bar pinned to the top of the page that fills as the visitor scrolls - subtle cue that keeps people reading.",
-    category: "Utilities",
+    category: "Utility",
     kind: "snippet",
     controls: [{ id: "color", label: "Bar colour", type: "color" }],
     defaults: { color: "#c8f542" },
@@ -2538,7 +2538,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     id: "cookie-consent",
     name: "Cookie consent banner",
     description: "A slim bottom banner that asks for consent once, remembers the choice in the browser, and stays away afterwards.",
-    category: "Utilities",
+    category: "Utility",
     kind: "snippet",
     controls: [
       { id: "text", label: "Message", type: "text", maxLength: 120 },
@@ -2727,7 +2727,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     id: "logo-marquee",
     name: "Logo / 'as seen in' marquee",
     description: "A scrolling strip of press or partner marks. Ships with text placeholders - swap in your real logos as images.",
-    category: "Promotions & banners",
+    category: "Marketing",
     kind: "section",
     controls: [
       { id: "items", label: "Logos (separate with |)", type: "text", maxLength: 120 },
@@ -2815,7 +2815,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     id: "testimonial-slider",
     name: "Testimonial strip",
     description: "A rotating customer quote with stars and name - real social proof under the title or buy button.",
-    category: "Social proof",
+    category: "Trust & social proof",
     kind: "section",
     controls: [
       { id: "autoplay", label: "Auto-rotate", type: "toggle" },
@@ -3474,7 +3474,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   <div class="gpl-look__grid">
     {%- assign total = 0 -%}
     {%- for block in section.blocks -%}
-      {%- assign p = all_products[block.settings.product] -%}
+      {%- assign p = block.settings.product -%}
       {%- if p != blank -%}
         {%- assign total = total | plus: p.selected_or_first_available_variant.price -%}
         <div class="gpl-look__item" data-variant="{{ p.selected_or_first_available_variant.id }}">
@@ -4262,7 +4262,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
       {{ section.settings.image | image_url: width: 1400 | image_tag: class: 'gpl-hot__img', loading: 'lazy' }}
     {%- endif -%}
     {%- for block in section.blocks -%}
-      {%- assign p = all_products[block.settings.product] -%}
+      {%- assign p = block.settings.product -%}
       <a class="gpl-hot__pin" style="left: {{ block.settings.x }}%; top: {{ block.settings.y }}%;" href="{{ p.url | default: '#' }}" {{ block.shopify_attributes }}>
         <span class="gpl-hot__dot"></span>
         <span class="gpl-hot__tip">{{ p.title | default: 'Product' }}<br><b>{{ p.price | default: 0 | money }}</b></span>
@@ -4626,7 +4626,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
       liquid: `<div class="gpl-scroller">
   <p class="gpl-scroller__heading">{{ section.settings.heading }}</p>
   <div class="gpl-scroller__track">
-    {%- assign col = collections[section.settings.collection] | default: collections.all -%}
+    {%- assign col = section.settings.collection | default: collections.all -%}
     {%- for p in col.products limit: 8 -%}
       <a class="gpl-scroller__card" href="{{ p.url }}">
         {{ p.featured_image | image_url: width: 400 | image_tag: class: 'gpl-scroller__img', loading: 'lazy' }}
@@ -4741,7 +4741,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     files: (v) => ({
       liquid: `<gpl-bulk class="gpl-bulk">
   <p class="gpl-bulk__heading">{{ section.settings.heading }}</p>
-  {%- assign p = all_products[section.settings.product] -%}
+  {%- assign p = section.settings.product -%}
   {%- if p -%}
     <table class="gpl-bulk__table">
       <thead><tr><th>Variant</th><th>Price</th><th>Qty</th></tr></thead>
@@ -5750,7 +5750,9 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     {%- if collection.description != blank -%}
       <p class="gpl-colhero__desc">{{ collection.description | strip_html | truncate: 140 }}</p>
     {%- endif -%}
-    <p class="gpl-colhero__count">{{ collection.products_count }} products</p>
+    {%- if collection.products_count -%}
+      <p class="gpl-colhero__count">{{ collection.products_count }} products</p>
+    {%- endif -%}
   </div>
 </div>
 
@@ -5788,7 +5790,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     files: () => ({
       liquid: `<div class="gpl-tiles" style="--gpl-cols: {{ section.settings.cols }};">
   {%- for block in section.blocks -%}
-    {%- assign c = collections[block.settings.collection] -%}
+    {%- assign c = block.settings.collection -%}
     <a class="gpl-tiles__tile" href="{{ c.url | default: '#' }}" {{ block.shopify_attributes }}>
       {%- if block.settings.image or c.image -%}
         {{ block.settings.image | default: c.image | image_url: width: 500 | image_tag: class: 'gpl-tiles__img', loading: 'lazy' }}
@@ -6435,7 +6437,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     install: sectionSteps,
     files: (v) => ({
       liquid: `<div class="gpl-fp">
-  {%- assign p = all_products[section.settings.product] -%}
+  {%- assign p = section.settings.product -%}
   {%- if p -%}
     <div class="gpl-fp__media">
       {{ p.featured_image | image_url: width: 700 | image_tag: class: 'gpl-fp__img', loading: 'lazy' }}

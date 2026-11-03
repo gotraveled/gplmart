@@ -100,8 +100,10 @@ function Card({ ex, onPick }: { ex: PlaygroundExample; onPick: (id: string) => v
       className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-ink-900/70 text-left transition hover:-translate-y-1 hover:border-accent/50"
     >
       <div className="pointer-events-none relative h-36 overflow-hidden border-b border-line bg-[#eef1e6]">
-        <div className="absolute inset-x-0 top-0 origin-top scale-[0.55]">
-          <ExamplePreview id={ex.id} values={ex.defaults} />
+        <div className="absolute inset-0 grid place-items-center">
+          <div className="w-full scale-[0.55]">
+            <ExamplePreview id={ex.id} values={ex.defaults} />
+          </div>
         </div>
         {!free && (
           <span className="absolute right-2.5 top-2.5 grid size-7 place-items-center rounded-lg border border-line-strong bg-ink-900/90">
@@ -172,28 +174,44 @@ export function Workbench({ initialId }: { initialId?: string }) {
 
   const free = examples.filter((e) => freeExampleIds.has(e.id));
   const members = examples.filter((e) => !freeExampleIds.has(e.id));
+  const categoryOrder = ["Product page", "Cart & checkout", "Trust & social proof", "Headers & navigation", "Content", "Marketing", "SEO & performance", "Utility"];
+  const categories = [
+    ...categoryOrder.filter((c) => members.some((e) => e.category === c)),
+    ...[...new Set(members.map((e) => e.category))].filter((c) => !categoryOrder.includes(c)),
+  ];
   const grid = (
     <div className="grid gap-10">
-      {(
-        [
-          { title: "Free samples - copy the code", items: free },
-          { title: "Members library - live preview, source locked", items: members },
-        ] as const
-      ).map(({ title, items }) => (
-        <section key={title}>
-          <h2 className="mb-4 flex items-baseline gap-3 font-display text-lg font-semibold">
-            {title}
-            <span className="text-sm font-normal text-subtle">{items.length}</span>
-          </h2>
-          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-            {items.map((e) => (
-              <li key={e.id}>
-                <Card ex={e} onPick={pick} />
-              </li>
-            ))}
-          </ul>
-        </section>
-      ))}
+      <section>
+        <h2 className="mb-4 flex items-baseline gap-3 font-display text-lg font-semibold">
+          Free samples - copy the code
+          <span className="text-sm font-normal text-subtle">{free.length}</span>
+        </h2>
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+          {free.map((e) => (
+            <li key={e.id}>
+              <Card ex={e} onPick={pick} />
+            </li>
+          ))}
+        </ul>
+      </section>
+      {categories.map((cat) => {
+        const items = members.filter((e) => e.category === cat);
+        return (
+          <section key={cat}>
+            <h2 className="mb-4 flex items-baseline gap-3 font-display text-lg font-semibold">
+              {cat}
+              <span className="text-sm font-normal text-subtle">{items.length}</span>
+            </h2>
+            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+              {items.map((e) => (
+                <li key={e.id}>
+                  <Card ex={e} onPick={pick} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        );
+      })}
     </div>
   );
 
