@@ -67,19 +67,19 @@ const resources = [
     icon: ShoppingBag,
     tag: "Bundle download",
     title: "Shopify themes",
-    text: "Theme bundles delivered through the members-only page via a secure Google Drive link, where distribution is authorised.",
+    text: "Theme bundles delivered through the members-only page via a secure Google Drive link - only items GPLMart owns or is authorised to distribute.",
   },
   {
     icon: LayoutTemplate,
-    tag: "Bundle download",
-    title: "WordPress & landing pages",
-    text: "WordPress themes and ready-made landing-page templates, delivered alongside the theme bundle through the same members page.",
+    tag: "GPL licensed",
+    title: "WordPress themes & landing pages",
+    text: "GPL-licensed WordPress themes and ready-made landing-page template packs - the GPL licence legally permits redistribution, and we pass the same freedoms to you.",
   },
   {
     icon: Puzzle,
-    tag: "Later, as originals",
-    title: "Plugins & tools",
-    text: "GPLMart's own plugins and utilities are planned next. Nothing is bundled today - and none is promised until it exists.",
+    tag: "GPL licensed",
+    title: "WordPress plugins",
+    text: "Popular GPL-licensed plugins across page building, SEO, caching, forms, security and e-commerce - the full files, no vendor keys or auto-updates.",
   },
 ];
 
@@ -125,7 +125,7 @@ const faqs: FAQ[] = [
   {
     question: "What exactly do members get?",
     answer:
-      "Access to the members-only Liquid code library (full source, previews, copy and downloads) plus the Google Drive link to authorised Shopify theme bundles and WordPress landing-page packs - delivered right after payment.",
+      "Access to the members-only Liquid code library (full source, previews, copy and downloads) plus the Google Drive link to authorised Shopify theme bundles, WordPress themes, landing-page templates and GPL-licensed WordPress plugins - delivered right after payment.",
   },
   {
     question: "Is this a subscription?",
@@ -241,7 +241,7 @@ export default function HomePage() {
           <div className="animate-rise max-w-2xl">
             <p className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-1.5 text-xs font-semibold text-accent">
               <Zap aria-hidden className="size-3.5" />
-              Conversion-focused Shopify components
+              Shopify conversion code + WordPress resources
             </p>
             <h1 className="mt-7 font-display text-5xl font-semibold leading-[1.02] tracking-tight text-balance sm:text-6xl lg:text-7xl">
               More sales.
@@ -253,7 +253,8 @@ export default function HomePage() {
             <p className="mt-6 max-w-xl text-lg text-pretty text-muted">
               Not getting the conversions your store deserves? GPLMart gives you conversion-focused Liquid sections
               &amp; snippets - countdowns, trust badges, delivery ETA, buy bars and more - without stacking
-              high-cost apps. Plus theme bundles, WordPress landing pages and plugins.
+              high-cost apps. Plus WordPress themes, landing-page templates and popular GPL-licensed plugins,
+              alongside Shopify theme bundles.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-3">
               <ButtonLink href="/checkout" size="lg">
@@ -266,7 +267,7 @@ export default function HomePage() {
             <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-subtle">
               <span className="inline-flex items-center gap-1.5">
                 <Star aria-hidden className="size-4 fill-amber-400 text-amber-400" />
-                21 free components in the sandbox
+                40 components in the sandbox
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <span aria-hidden className="size-1.5 rounded-full bg-accent" /> One-time payment

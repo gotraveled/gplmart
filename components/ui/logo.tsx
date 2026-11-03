@@ -17,7 +17,7 @@ export function LogoMark({ className = "size-8" }: { className?: string }) {
 export function Logo() {
   return (
     <Link href="/" className="flex items-center" aria-label="GPLMart home">
-      <Image src="/logo-gpl.png" alt="GPLMart" width={600} height={200} className="h-9 w-auto" priority />
+      <Image src="/logo-gpl.png" alt="GPLMart" width={600} height={200} className="h-10 w-auto" priority />
     </Link>
   );
 }
