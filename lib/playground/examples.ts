@@ -3321,6 +3321,626 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
       usage: `{% render 'breadcrumb' %}`,
     }),
   },
+  {
+    id: "cart-upsell",
+    name: "Cart drawer upsell",
+    description: "A 'pairs well' product card inside the cart - the highest-demand upsell pattern. Product picker in theme settings.",
+    category: "Cart & checkout",
+    kind: "snippet",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 40 },
+      { id: "handle", label: "Product handle", type: "text", maxLength: 60 },
+      { id: "accent", label: "Accent", type: "color" },
+    ],
+    defaults: { heading: "Complete your order", handle: "your-product-handle", accent: "#5eead4" },
+    install: [
+      ...snippetSteps("cart-upsell.liquid"),
+      "Replace 'your-product-handle' with a real product handle, or drive it from a cart/product metafield for per-cart suggestions.",
+      "Render it inside your cart drawer or cart template so it shows next to the items list.",
+    ],
+    files: (v) => ({
+      liquid: `{%- liquid
+  assign upsell = all_products[handle]
+-%}
+{%- if upsell != blank -%}
+<div class="gpl-upsell" style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 94 234 212))' }};">
+  <p class="gpl-upsell__heading">{{ heading | default: 'Complete your order' }}</p>
+  <div class="gpl-upsell__card">
+    {%- if upsell.featured_image -%}
+      {{ upsell.featured_image | image_url: width: 140 | image_tag: class: 'gpl-upsell__img', loading: 'lazy' }}
+    {%- endif -%}
+    <div class="gpl-upsell__info">
+      <p class="gpl-upsell__title">{{ upsell.title }}</p>
+      <p class="gpl-upsell__price">{{ upsell.price | money }}</p>
+      <form method="post" action="/cart/add">
+        <input type="hidden" name="id" value="{{ upsell.selected_or_first_available_variant.id }}">
+        <button type="submit" class="gpl-upsell__add">Add</button>
+      </form>
+    </div>
+  </div>
+</div>
+{%- endif -%}`,
+      css: `.gpl-upsell { margin: 0.75rem 0; }
+.gpl-upsell__heading {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgb(var(--color-foreground, 100 116 139) / 0.75);
+}
+.gpl-upsell__card {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--gpl-accent) 30%, transparent);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--gpl-accent) 6%, transparent);
+}
+.gpl-upsell__img { width: 4rem; height: 4rem; object-fit: cover; border-radius: 8px; }
+.gpl-upsell__info { flex: 1; display: flex; flex-direction: column; gap: 0.15rem; }
+.gpl-upsell__title { margin: 0; font-size: 0.8rem; font-weight: 700; }
+.gpl-upsell__price { margin: 0; font-size: 0.75rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-upsell__add {
+  margin-top: 0.35rem;
+  padding: 0.4rem 1rem;
+  border: 0;
+  border-radius: 7px;
+  background: var(--gpl-accent);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 800;
+  cursor: pointer;
+}`,
+      usage: `{% render 'cart-upsell', heading: ${js(str(v, "heading"))}, handle: ${js(str(v, "handle"))}, accent: ${js(hex(v, "accent"))} %}`,
+    }),
+  },
+  {
+    id: "image-zoom",
+    name: "Product image zoom",
+    description: "Hover-to-magnify lens over a product image - the #1 action shoppers take on a product page.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "zoom", label: "Zoom level", type: "select", options: [{ value: "2", label: "2x" }, { value: "3", label: "3x" }, { value: "4", label: "4x" }] },
+    ],
+    defaults: { zoom: "2" },
+    install: [
+      ...snippetSteps("image-zoom.liquid"),
+      "Wrap your main product image with this snippet, passing the media object - it reads media.preview_image automatically.",
+      "On touch devices the lens follows the finger; on desktop it follows the cursor.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-zoom class="gpl-zoom" data-zoom="${v.zoom ?? 2}">
+  {%- if image -%}
+    {{ image | image_url: width: 1200 | image_tag: class: 'gpl-zoom__img', loading: 'eager' }}
+  {%- else -%}
+    {{ product.featured_image | image_url: width: 1200 | image_tag: class: 'gpl-zoom__img', loading: 'eager' }}
+  {%- endif -%}
+  <span class="gpl-zoom__hint" aria-hidden="true">Hover to zoom</span>
+</gpl-zoom>`,
+      css: `.gpl-zoom {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  cursor: zoom-in;
+}
+.gpl-zoom__img { display: block; width: 100%; height: auto; transition: transform 0.15s ease-out; transform-origin: center; }
+.gpl-zoom:hover .gpl-zoom__img { transform: scale(var(--gpl-zoom, 2)); }
+.gpl-zoom__hint {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.55);
+  color: #fff;
+  font-size: 0.65rem;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.gpl-zoom:hover .gpl-zoom__hint { opacity: 0; }`,
+      js: `document.querySelectorAll('gpl-zoom').forEach((el) => {
+  const img = el.querySelector('.gpl-zoom__img');
+  el.style.setProperty('--gpl-zoom', el.dataset.zoom || '2');
+  function move(e) {
+    const r = el.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width) * 100;
+    const y = ((e.clientY - r.top) / r.height) * 100;
+    img.style.transformOrigin = x + '% ' + y + '%';
+  }
+  el.addEventListener('mousemove', move);
+  el.addEventListener('touchmove', (e) => move(e.touches[0]), { passive: true });
+});`,
+      usage: `{% render 'image-zoom', product: product %}`,
+    }),
+  },
+  {
+    id: "complete-the-look",
+    name: "Complete the look",
+    description: "2-3 product cards with a combined price and a single 'add all' button - classic AOV lift for fashion and decor.",
+    category: "Cart & checkout",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+      { id: "accent", label: "Accent", type: "color" },
+    ],
+    defaults: { heading: "Complete the look", accent: "#5eead4" },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<gpl-look class="gpl-look" style="--gpl-accent: {{ section.settings.accent }};">
+  <p class="gpl-look__heading">{{ section.settings.heading }}</p>
+  <div class="gpl-look__grid">
+    {%- assign total = 0 -%}
+    {%- for block in section.blocks -%}
+      {%- assign p = all_products[block.settings.product] -%}
+      {%- if p != blank -%}
+        {%- assign total = total | plus: p.selected_or_first_available_variant.price -%}
+        <div class="gpl-look__item" data-variant="{{ p.selected_or_first_available_variant.id }}">
+          {{ p.featured_image | image_url: width: 300 | image_tag: class: 'gpl-look__img', loading: 'lazy' }}
+          <p class="gpl-look__title">{{ p.title }}</p>
+          <p class="gpl-look__price">{{ p.price | money }}</p>
+        </div>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+  <button type="button" class="gpl-look__add" data-add-all>
+    Add all - <span data-total>{{ total | money }}</span>
+  </button>
+</gpl-look>
+
+{% schema %}
+{
+  "name": "Complete the look",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} },
+    { "type": "color", "id": "accent", "label": "Accent", "default": ${js(hex(v, "accent"))} }
+  ],
+  "blocks": [
+    { "type": "product", "name": "Product", "settings": [{ "type": "product", "id": "product", "label": "Product" }] }
+  ],
+  "presets": [{ "name": "Complete the look" }]
+}
+{% endschema %}`,
+      css: `.gpl-look { padding: 1.5rem 0; }
+.gpl-look__heading { margin: 0 0 1rem; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-look__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(7rem, 1fr)); gap: 0.75rem; }
+.gpl-look__img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 10px; }
+.gpl-look__title { margin: 0.4rem 0 0; font-size: 0.75rem; font-weight: 600; }
+.gpl-look__price { margin: 0.1rem 0 0; font-size: 0.7rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-look__add {
+  margin-top: 1rem;
+  width: 100%;
+  padding: 0.8rem;
+  border: 0;
+  border-radius: 10px;
+  background: var(--gpl-accent);
+  color: #fff;
+  font-weight: 800;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+.gpl-look__add.is-adding { opacity: 0.7; cursor: wait; }`,
+      js: `document.querySelectorAll('gpl-look').forEach((el) => {
+  el.querySelector('[data-add-all]').addEventListener('click', async (btn) => {
+    const ids = [...el.querySelectorAll('.gpl-look__item')].map((i) => ({
+      id: Number(i.dataset.variant), quantity: 1,
+    }));
+    btn.target.classList.add('is-adding');
+    btn.target.textContent = 'Adding…';
+    try {
+      await fetch('/cart/add.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items: ids }),
+      });
+      window.location.href = '/cart';
+    } catch {
+      btn.target.textContent = 'Could not add - try again';
+    }
+  });
+});`,
+    }),
+  },
+  {
+    id: "cod-checker",
+    name: "COD / pincode check",
+    description: "Cash-on-delivery and serviceability check by pincode prefix - the #1 question on Indian stores. Enter your covered prefixes; it checks honestly.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "prefixes", label: "Covered prefixes (comma separated)", type: "text", maxLength: 200 },
+      { id: "label", label: "Button label", type: "text", maxLength: 30 },
+    ],
+    defaults: { prefixes: "110, 400, 560, 600, 700, 500, 380, 411", label: "Check delivery" },
+    install: [
+      ...snippetSteps("cod-checker.liquid"),
+      "Enter the pincode prefixes your courier covers - the check runs against that real list, not a fake 'always yes'.",
+      "If you ship everywhere, leave the list blank and the snippet shows a plain 'COD available' badge instead.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-cod class="gpl-cod" data-prefixes="{{ prefixes | default: '' }}">
+  <div class="gpl-cod__row">
+    <input type="text" inputmode="numeric" maxlength="6" class="gpl-cod__input" placeholder="Enter pincode" aria-label="Pincode">
+    <button type="button" class="gpl-cod__btn">{{ label | default: 'Check' }}</button>
+  </div>
+  <p class="gpl-cod__result" aria-live="polite"></p>
+</gpl-cod>`,
+      css: `.gpl-cod { margin: 0.75rem 0; }
+.gpl-cod__row { display: flex; gap: 0.5rem; }
+.gpl-cod__input {
+  flex: 1;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 9px;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.05);
+  font-size: 0.85rem;
+}
+.gpl-cod__btn {
+  padding: 0.6rem 1.1rem;
+  border: 0;
+  border-radius: 9px;
+  background: rgb(var(--color-button, 21 128 61));
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.gpl-cod__result { margin: 0.5rem 0 0; font-size: 0.78rem; }
+.gpl-cod__result.is-ok { color: #16a34a; }
+.gpl-cod__result.is-no { color: #dc2626; }`,
+      js: `document.querySelectorAll('gpl-cod').forEach((el) => {
+  const input = el.querySelector('.gpl-cod__input');
+  const out = el.querySelector('.gpl-cod__result');
+  const list = (el.dataset.prefixes || '').split(',').map((s) => s.trim()).filter(Boolean);
+  el.querySelector('.gpl-cod__btn').addEventListener('click', () => {
+    const pin = input.value.trim();
+    out.className = 'gpl-cod__result';
+    if (!/^\\d{6}$/.test(pin)) { out.textContent = 'Enter a 6-digit pincode'; out.classList.add('is-no'); return; }
+    if (!list.length) { out.textContent = 'Cash on delivery available'; out.classList.add('is-ok'); return; }
+    const hit = list.some((p) => pin.startsWith(p));
+    out.textContent = hit ? 'COD & delivery available at ' + pin : 'Delivery available - COD not covered at ' + pin;
+    out.classList.add(hit ? 'is-ok' : 'is-no');
+  });
+});`,
+      usage: `{% render 'cod-checker', prefixes: ${js(str(v, "prefixes"))}, label: ${js(str(v, "label"))} %}`,
+    }),
+  },
+  {
+    id: "ingredients-table",
+    name: "Ingredients / materials breakdown",
+    description: "Ingredient or materials rows with optional percentage bars - the transparency card DTC brands win on.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "items", label: "Items (name|desc|pct per line)", type: "text", maxLength: 400 },
+      { id: "accent", label: "Bar colour", type: "color" },
+    ],
+    defaults: {
+      items: "Hyaluronic acid|Deep hydration, all-day plump|2\nNiacinamide|Evens tone and texture|5\nPeptides|Firms over 4 weeks|3",
+      accent: "#15803d",
+    },
+    install: [
+      ...snippetSteps("ingredients-table.liquid"),
+      "Enter one line per ingredient: name|description|percentage. Leave the third value off for no bar.",
+      "For real products, drive this from a product.metafields.custom.ingredients metafield - one line per ingredient.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-ings" style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 21 128 61))' }};">
+  {%- assign rows = items | default: 'Aqua|Base ingredient|' | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <div class="gpl-ings__row">
+      <div class="gpl-ings__top">
+        <span class="gpl-ings__name">{{ parts[0] | strip }}</span>
+        {%- if parts[2] != blank -%}
+          <span class="gpl-ings__pct">{{ parts[2] | strip }}%</span>
+        {%- endif -%}
+      </div>
+      {%- if parts[1] != blank -%}
+        <p class="gpl-ings__desc">{{ parts[1] | strip }}</p>
+      {%- endif -%}
+      {%- if parts[2] != blank -%}
+        <div class="gpl-ings__bar"><i style="width: {{ parts[2] | strip }}%"></i></div>
+      {%- endif -%}
+    </div>
+  {%- endfor -%}
+</div>`,
+      css: `.gpl-ings { display: grid; gap: 0.6rem; }
+.gpl-ings__top { display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; }
+.gpl-ings__pct { color: var(--gpl-accent); }
+.gpl-ings__desc { margin: 0.15rem 0 0; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-ings__bar {
+  height: 0.3rem;
+  margin-top: 0.3rem;
+  border-radius: 999px;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.12);
+  overflow: hidden;
+}
+.gpl-ings__bar i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--gpl-accent);
+}`,
+      usage: `{% render 'ingredients-table', items: ${js(str(v, "items"))}, accent: ${js(hex(v, "accent"))} %}`,
+    }),
+  },
+  {
+    id: "ugc-grid",
+    name: "Customer photos wall",
+    description: "A masonry grid of customer photos with captions - UGC that converts better than stock shots.",
+    category: "Trust & social proof",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 60 },
+      { id: "cols", label: "Columns", type: "select", options: [{ value: "3", label: "3" }, { value: "4", label: "4" }, { value: "5", label: "5" }] },
+    ],
+    defaults: { heading: "Our customers, in their words and photos", cols: "4" },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-ugc" style="--gpl-cols: {{ section.settings.cols }};">
+  {%- if section.settings.heading != blank -%}
+    <h2 class="gpl-ugc__heading">{{ section.settings.heading }}</h2>
+  {%- endif -%}
+  <div class="gpl-ugc__grid">
+    {%- for block in section.blocks -%}
+      <figure class="gpl-ugc__item" {{ block.shopify_attributes }}>
+        {%- if block.settings.image -%}
+          {{ block.settings.image | image_url: width: 500 | image_tag: class: 'gpl-ugc__img', loading: 'lazy' }}
+        {%- endif -%}
+        {%- if block.settings.caption != blank -%}
+          <figcaption class="gpl-ugc__cap">{{ block.settings.caption }}</figcaption>
+        {%- endif -%}
+      </figure>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Customer photos",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} },
+    { "type": "range", "id": "cols", "label": "Columns", "min": 2, "max": 5, "step": 1, "default": 4 }
+  ],
+  "blocks": [
+    {
+      "type": "photo",
+      "name": "Photo",
+      "settings": [
+        { "type": "image_picker", "id": "image", "label": "Customer photo" },
+        { "type": "text", "id": "caption", "label": "Caption" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Customer photos" }]
+}
+{% endschema %}`,
+      css: `.gpl-ugc { padding: 1.5rem 0; }
+.gpl-ugc__heading { margin: 0 0 1rem; font-size: 1rem; font-weight: 800; }
+.gpl-ugc__grid { display: grid; grid-template-columns: repeat(var(--gpl-cols, 4), 1fr); gap: 0.75rem; }
+.gpl-ugc__item { margin: 0; border-radius: 12px; overflow: hidden; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.15); }
+.gpl-ugc__img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.gpl-ugc__cap { padding: 0.55rem 0.7rem; font-size: 0.7rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+@media (max-width: 640px) { .gpl-ugc__grid { grid-template-columns: repeat(2, 1fr); } }`,
+    }),
+  },
+  {
+    id: "sales-notification",
+    name: "Recent sales popup",
+    description: "A bottom-left 'just bought' popup cycling through real recent orders you list yourself. Only show genuine sales - fake notifications burn trust.",
+    category: "Marketing",
+    kind: "snippet",
+    controls: [
+      { id: "entries", label: "Entries (name|city|product|time per line)", type: "text", maxLength: 500 },
+      { id: "interval", label: "Seconds between", type: "text", maxLength: 4 },
+    ],
+    defaults: {
+      entries: "Riya|Pune|Organic cotton tee|8 min ago\nArjun|Delhi|Linen overshirt|14 min ago\nMeera|Jaipur|Canvas tote|22 min ago",
+      interval: "8",
+    },
+    install: [
+      ...snippetSteps("sales-notification.liquid"),
+      "Fill the entries with your real recent orders - one per line: name|city|product|how long ago. Update it weekly so it stays honest.",
+      "Render it once in layout/theme.liquid or a theme section so it floats on every page.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-sales class="gpl-sales" data-interval="{{ interval | default: 8 }}" hidden>
+  {%- assign rows = entries | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <div class="gpl-sales__card" data-i="{{ forloop.index0 }}" hidden>
+      <p class="gpl-sales__text"><strong>{{ parts[0] | strip }}</strong> from {{ parts[1] | strip }} bought <strong>{{ parts[2] | strip }}</strong></p>
+      <p class="gpl-sales__time">{{ parts[3] | strip }}</p>
+    </div>
+  {%- endfor -%}
+</gpl-sales>`,
+      css: `.gpl-sales {
+  position: fixed;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 40;
+  max-width: 19rem;
+}
+.gpl-sales__card {
+  padding: 0.8rem 1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2);
+  border-radius: 12px;
+  background: rgb(var(--color-background, 255 255 255));
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.15);
+}
+.gpl-sales__text { margin: 0; font-size: 0.75rem; line-height: 1.45; }
+.gpl-sales__time { margin: 0.3rem 0 0; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+      js: `document.querySelectorAll('gpl-sales').forEach((el) => {
+  const cards = [...el.querySelectorAll('.gpl-sales__card')];
+  if (!cards.length) return;
+  el.hidden = false;
+  let i = 0;
+  function show() {
+    cards.forEach((c, x) => (c.hidden = x !== i));
+    i = (i + 1) % cards.length;
+  }
+  show();
+  setInterval(show, (Number(el.dataset.interval) || 8) * 1000);
+});`,
+      usage: `{% render 'sales-notification', entries: ${js(str(v, "entries"))}, interval: ${js(str(v, "interval"))} %}`,
+    }),
+  },
+  {
+    id: "age-verify",
+    name: "Age verification gate",
+    description: "A session-gated 18+/21+ modal for age-restricted stores - remembers the visitor for the session.",
+    category: "Utility",
+    kind: "snippet",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 60 },
+      { id: "text", label: "Message", type: "text", maxLength: 140 },
+      { id: "confirm", label: "Confirm label", type: "text", maxLength: 20 },
+    ],
+    defaults: {
+      heading: "Are you 18 or older?",
+      text: "This store sells age-restricted products. Confirm your age to continue.",
+      confirm: "I am 18+",
+    },
+    install: [
+      ...snippetSteps("age-verify.liquid"),
+      "Render once in layout/theme.liquid before </body> - the gate covers the whole storefront until confirmed.",
+      "The visitor's choice is remembered for the session; it asks again on a new visit.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-age class="gpl-age" hidden>
+  <div class="gpl-age__box" role="dialog" aria-modal="true" aria-label="Age verification">
+    <h2 class="gpl-age__title">{{ heading | default: 'Are you of legal age?' }}</h2>
+    <p class="gpl-age__text">{{ text | default: 'Confirm your age to continue.' }}</p>
+    <div class="gpl-age__row">
+      <button type="button" class="gpl-age__yes">{{ confirm | default: 'Yes, I am' }}</button>
+      <a class="gpl-age__no" href="https://www.google.com">No, leave</a>
+    </div>
+  </div>
+</gpl-age>`,
+      css: `.gpl-age {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: rgb(0 0 0 / 0.7);
+  backdrop-filter: blur(6px);
+}
+.gpl-age__box {
+  max-width: 24rem;
+  margin: 1rem;
+  padding: 2rem;
+  border-radius: 16px;
+  background: rgb(var(--color-background, 255 255 255));
+  text-align: center;
+}
+.gpl-age__title { margin: 0; font-size: 1.3rem; font-weight: 800; }
+.gpl-age__text { margin: 0.6rem 0 0; font-size: 0.85rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-age__row { display: flex; gap: 0.6rem; margin-top: 1.5rem; }
+.gpl-age__yes {
+  flex: 1;
+  padding: 0.75rem;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(var(--color-button, 21 128 61));
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+.gpl-age__no {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 0.75rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  font-size: 0.85rem;
+}`,
+      js: `document.querySelectorAll('gpl-age').forEach((el) => {
+  if (sessionStorage.getItem('gpl-age-ok') === '1') return;
+  el.hidden = false;
+  document.body.style.overflow = 'hidden';
+  el.querySelector('.gpl-age__yes').addEventListener('click', () => {
+    sessionStorage.setItem('gpl-age-ok', '1');
+    el.hidden = true;
+    document.body.style.overflow = '';
+  });
+});`,
+      usage: `{% render 'age-verify', heading: ${js(str(v, "heading"))}, text: ${js(str(v, "text"))}, confirm: ${js(str(v, "confirm"))} %}`,
+    }),
+  },
+  {
+    id: "store-locator",
+    name: "Store locator cards",
+    description: "Location cards with address, hours and a map link - for multi-location or pickup-enabled stores.",
+    category: "Utility",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 60 },
+    ],
+    defaults: { heading: "Visit us" },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-loc">
+  {%- if section.settings.heading != blank -%}
+    <h2 class="gpl-loc__heading">{{ section.settings.heading }}</h2>
+  {%- endif -%}
+  <div class="gpl-loc__grid">
+    {%- for block in section.blocks -%}
+      <div class="gpl-loc__card" {{ block.shopify_attributes }}>
+        <p class="gpl-loc__name">{{ block.settings.name }}</p>
+        <p class="gpl-loc__addr">{{ block.settings.address | newline_to_br }}</p>
+        {%- if block.settings.hours != blank -%}
+          <p class="gpl-loc__hours">{{ block.settings.hours }}</p>
+        {%- endif -%}
+        {%- if block.settings.map_url != blank -%}
+          <a class="gpl-loc__map" href="{{ block.settings.map_url }}" target="_blank" rel="noopener">Directions &#8599;</a>
+        {%- endif -%}
+      </div>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Store locator",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} }
+  ],
+  "blocks": [
+    {
+      "type": "location",
+      "name": "Location",
+      "settings": [
+        { "type": "text", "id": "name", "label": "Name" },
+        { "type": "textarea", "id": "address", "label": "Address" },
+        { "type": "text", "id": "hours", "label": "Hours" },
+        { "type": "url", "id": "map_url", "label": "Map link" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Store locator" }]
+}
+{% endschema %}`,
+      css: `.gpl-loc { padding: 1.5rem 0; }
+.gpl-loc__heading { margin: 0 0 1rem; font-size: 1rem; font-weight: 800; }
+.gpl-loc__grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); gap: 0.75rem; }
+.gpl-loc__card {
+  padding: 1rem 1.1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.18);
+  border-radius: 12px;
+}
+.gpl-loc__name { margin: 0; font-weight: 800; font-size: 0.85rem; }
+.gpl-loc__addr { margin: 0.35rem 0 0; font-size: 0.75rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-loc__hours { margin: 0.35rem 0 0; font-size: 0.7rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-loc__map { display: inline-block; margin-top: 0.6rem; font-size: 0.72rem; font-weight: 700; color: rgb(var(--color-button, 21 128 61)); }`,
+    }),
+  },
 ];
 
 export function getExample(id: string | undefined): PlaygroundExample {

@@ -1207,6 +1207,215 @@ function Breadcrumb({ v }: P) {
   );
 }
 
+function CartUpsell({ v }: P) {
+  const accent = hex(v, "accent");
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2 text-[0.65rem] font-bold uppercase tracking-wider text-neutral-500">{str(v, "heading") || "Complete your order"}</p>
+      <div className="flex gap-3 rounded-xl border p-3" style={{ borderColor: `${accent}55`, background: `${accent}0f` }}>
+        <div className="size-16 shrink-0 rounded-lg bg-[linear-gradient(135deg,#e0e7ff,#fbcfe8)]" />
+        <div className="flex-1">
+          <p className="m-0 text-xs font-bold">Organic cotton tee</p>
+          <p className="m-0 mt-0.5 text-[0.65rem] text-neutral-500">₹799</p>
+          <button type="button" className="mt-1.5 rounded-md px-3 py-1 text-[0.65rem] font-extrabold text-white" style={{ background: accent }}>
+            Add
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ImageZoom({ v }: P) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [origin, setOrigin] = useState("50% 50%");
+  const zoom = Number(str(v, "zoom")) || 2;
+  return (
+    <div className="p-4">
+      <div
+        ref={ref}
+        className="relative cursor-zoom-in overflow-hidden rounded-xl bg-[linear-gradient(135deg,#e0e7ff,#fbcfe8,#bbf7d0)]"
+        style={{ aspectRatio: "4/3" }}
+        onMouseMove={(e) => {
+          const r = ref.current?.getBoundingClientRect();
+          if (!r) return;
+          setOrigin(`${(((e.clientX - r.left) / r.width) * 100).toFixed(0)}% ${(((e.clientY - r.top) / r.height) * 100).toFixed(0)}%`);
+        }}
+      >
+        <div
+          className="absolute inset-0 grid place-items-center transition-transform"
+          style={{ transform: `scale(${zoom})`, transformOrigin: origin }}
+        >
+          <span className="text-[0.6rem] font-bold uppercase tracking-widest text-neutral-500/60">Product photo</span>
+        </div>
+        <span className="absolute bottom-2 right-2 rounded-full bg-black/55 px-2 py-0.5 text-[0.6rem] text-white">Hover to zoom {zoom}x</span>
+      </div>
+    </div>
+  );
+}
+
+function CompleteTheLook({ v }: P) {
+  const accent = hex(v, "accent");
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2.5 text-[0.65rem] font-bold uppercase tracking-wider text-neutral-500">{str(v, "heading") || "Complete the look"}</p>
+      <div className="grid grid-cols-3 gap-2.5">
+        {[
+          ["Overshirt", "₹2,499", "#dbeafe"],
+          ["Chinos", "₹1,799", "#fef3c7"],
+          ["Sneakers", "₹2,199", "#fce7f3"],
+        ].map(([t, p, c]) => (
+          <div key={t}>
+            <div className="aspect-square rounded-lg" style={{ background: `linear-gradient(135deg,${c},#fff)` }} />
+            <p className="m-0 mt-1.5 text-[0.65rem] font-semibold">{t}</p>
+            <p className="m-0 text-[0.6rem] text-neutral-500">{p}</p>
+          </div>
+        ))}
+      </div>
+      <button type="button" className="mt-3 w-full rounded-xl py-2.5 text-xs font-extrabold text-white" style={{ background: accent }}>
+        Add all - ₹6,497
+      </button>
+    </div>
+  );
+}
+
+function CodChecker({ v }: P) {
+  const [pin, setPin] = useState("");
+  const [out, setOut] = useState<{ ok: boolean; text: string } | null>(null);
+  const list = str(v, "prefixes").split(",").map((s) => s.trim()).filter(Boolean);
+  return (
+    <div className="p-4">
+      <div className="flex gap-2">
+        <input
+          inputMode="numeric"
+          maxLength={6}
+          value={pin}
+          onChange={(e) => setPin(e.target.value)}
+          placeholder="Enter pincode"
+          className="flex-1 rounded-lg border border-neutral-300 bg-white px-3 py-2 text-sm outline-none"
+        />
+        <button
+          type="button"
+          onClick={() => {
+            if (!/^\d{6}$/.test(pin)) setOut({ ok: false, text: "Enter a 6-digit pincode" });
+            else if (!list.length) setOut({ ok: true, text: "Cash on delivery available" });
+            else if (list.some((p) => pin.startsWith(p))) setOut({ ok: true, text: `COD & delivery available at ${pin}` });
+            else setOut({ ok: false, text: `Delivery available - COD not covered at ${pin}` });
+          }}
+          className="rounded-lg bg-emerald-600 px-4 py-2 text-xs font-bold text-white"
+        >
+          {str(v, "label") || "Check"}
+        </button>
+      </div>
+      {out && <p className={`m-0 mt-2 text-xs ${out.ok ? "text-emerald-600" : "text-red-500"}`}>{out.text}</p>}
+    </div>
+  );
+}
+
+function IngredientsTable({ v }: P) {
+  const accent = hex(v, "accent");
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 5);
+  return (
+    <div className="grid gap-2.5 p-4">
+      {rows.map((r) => {
+        const [name, desc, pct] = r.split("|").map((s) => s.trim());
+        return (
+          <div key={r}>
+            <div className="flex justify-between text-[0.7rem] font-bold">
+              <span>{name}</span>
+              {pct && <span style={{ color: accent }}>{pct}%</span>}
+            </div>
+            {desc && <p className="m-0 mt-0.5 text-[0.62rem] text-neutral-500">{desc}</p>}
+            {pct && (
+              <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-neutral-100">
+                <div className="h-full rounded-full" style={{ width: `${Math.min(Number(pct) || 0, 100)}%`, background: accent }} />
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function UgcGrid({ v }: P) {
+  const cols = Number(str(v, "cols")) || 4;
+  const caps = ["@priya.m", "@arjun_styles", "@meera.d", "@rohan.k", "@sana.w", "@dev.p", "@nia.r", "@kabir.s"];
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2.5 text-sm font-extrabold">{str(v, "heading") || "Our customers, in their words and photos"}</p>
+      <div className="grid gap-2.5" style={{ gridTemplateColumns: `repeat(${Math.min(cols, 4)}, 1fr)` }}>
+        {caps.slice(0, Math.min(cols, 4) * 2).map((c, i) => (
+          <div key={c} className="overflow-hidden rounded-xl border border-neutral-200">
+            <div className="aspect-square" style={{ background: `linear-gradient(${135 + i * 40}deg, #e0e7ff, #fbcfe8, #bbf7d0)` }} />
+            <p className="m-0 px-2 py-1.5 text-[0.6rem] text-neutral-500">{c}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SalesNotification({ v }: P) {
+  const rows = str(v, "entries").split("\n").map((r) => r.trim()).filter(Boolean);
+  const [i, setI] = useState(0);
+  useEffect(() => {
+    const t = setInterval(() => setI((x) => (x + 1) % Math.max(rows.length, 1)), (Number(str(v, "interval")) || 8) * 1000);
+    return () => clearInterval(t);
+  }, [rows.length, v]);
+  const parts = (rows[i] ?? "").split("|").map((s) => s.trim());
+  return (
+    <div className="relative min-h-28 p-4">
+      <div className="absolute bottom-4 left-4 max-w-64 rounded-xl border border-neutral-200 bg-white p-3 shadow-lg">
+        <p className="m-0 text-[0.7rem] leading-snug">
+          <strong>{parts[0] ?? "Riya"}</strong> from {parts[1] ?? "Pune"} bought <strong>{parts[2] ?? "Organic cotton tee"}</strong>
+        </p>
+        <p className="m-0 mt-1 text-[0.6rem] text-neutral-400">{parts[3] ?? "8 min ago"}</p>
+      </div>
+    </div>
+  );
+}
+
+function AgeVerify({ v }: P) {
+  const [open, setOpen] = useState(true);
+  if (!open) return <div className="p-6 text-center text-xs text-neutral-400"><button type="button" className="underline" onClick={() => setOpen(true)}>Age confirmed - show again</button></div>;
+  return (
+    <div className="grid min-h-52 place-items-center bg-black/70 p-4">
+      <div className="w-full max-w-64 rounded-2xl bg-white p-6 text-center">
+        <p className="m-0 text-base font-extrabold">{str(v, "heading") || "Are you of legal age?"}</p>
+        <p className="m-0 mt-2 text-[0.68rem] text-neutral-500">{str(v, "text") || "Confirm your age to continue."}</p>
+        <div className="mt-4 flex gap-2">
+          <button type="button" onClick={() => setOpen(false)} className="flex-1 rounded-lg bg-emerald-600 py-2 text-xs font-extrabold text-white">
+            {str(v, "confirm") || "I am 18+"}
+          </button>
+          <button type="button" className="flex-1 rounded-lg border border-neutral-300 py-2 text-xs">Leave</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function StoreLocator({ v }: P) {
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2.5 text-sm font-extrabold">{str(v, "heading") || "Visit us"}</p>
+      <div className="grid grid-cols-2 gap-2.5">
+        {[
+          { n: "Mumbai - Bandra", a: "Shop 12, Linking Rd", h: "10am - 9pm" },
+          { n: "Delhi - CP", a: "F-22, Inner Circle", h: "11am - 8pm" },
+        ].map((l) => (
+          <div key={l.n} className="rounded-xl border border-neutral-200 p-3">
+            <p className="m-0 text-[0.72rem] font-extrabold">{l.n}</p>
+            <p className="m-0 mt-1 text-[0.62rem] text-neutral-500">{l.a}</p>
+            <p className="m-0 mt-0.5 text-[0.6rem] text-neutral-400">{l.h}</p>
+            <span className="m-0 mt-1.5 inline-block text-[0.62rem] font-bold text-emerald-600">Directions &#8599;</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -1248,6 +1457,15 @@ const map: Record<string, (p: P) => ReactNode> = {
   "spec-table": SpecTable,
   "gift-wrap": GiftWrap,
   "breadcrumb": Breadcrumb,
+  "cart-upsell": CartUpsell,
+  "image-zoom": ImageZoom,
+  "complete-the-look": CompleteTheLook,
+  "cod-checker": CodChecker,
+  "ingredients-table": IngredientsTable,
+  "ugc-grid": UgcGrid,
+  "sales-notification": SalesNotification,
+  "age-verify": AgeVerify,
+  "store-locator": StoreLocator,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {
