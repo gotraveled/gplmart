@@ -236,7 +236,7 @@ export default function HomePage() {
             <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-subtle">
               <span className="inline-flex items-center gap-1.5">
                 <Star aria-hidden className="size-4 fill-amber-400 text-amber-400" />
-                40 components in the sandbox
+                100+ components in the sandbox
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <span aria-hidden className="size-1.5 rounded-full bg-accent" /> One-time payment

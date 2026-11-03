@@ -1900,6 +1900,390 @@ function CheckoutTrust({ v }: P) {
   );
 }
 
+function WhatsappOrder({ v }: P) {
+  return (
+    <div className="p-4">
+      <a className="inline-flex items-center gap-2 rounded-xl bg-[#25d366] px-5 py-2.5 text-xs font-extrabold text-white" href="#">
+        <svg className="size-4" viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.26-.46-2.4-1.48-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.14.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.02-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.9 1.22 3.1.15.2 2.11 3.22 5.1 4.51.71.31 1.27.49 1.7.63.72.23 1.37.2 1.88.12.58-.09 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.13-.27-.2-.57-.35z"/></svg>
+        {str(v, "label") || "Order on WhatsApp"}
+      </a>
+      <p className="m-0 mt-1.5 text-[0.6rem] text-neutral-400">Prefills a message with the product link</p>
+    </div>
+  );
+}
+
+function PersonalizationField({ v }: P) {
+  return (
+    <div className="p-4">
+      <label className="mb-1.5 block text-[0.72rem] font-semibold">
+        {str(v, "label") || "Personalization"}{on(v, "required") && <span className="text-red-500">*</span>}
+      </label>
+      <input type="text" maxLength={Number(str(v, "max")) || 30} placeholder="Type here" className="w-full rounded-lg border border-neutral-300 px-3 py-2.5 text-sm outline-none" />
+      <p className="m-0 mt-1 text-[0.6rem] text-neutral-400">Max {str(v, "max") || 30} characters - saves to order properties</p>
+    </div>
+  );
+}
+
+function VariantMatrix() {
+  return (
+    <div className="flex flex-wrap gap-1.5 p-4">
+      {[["S", true], ["M", true], ["L", false], ["XL", true]].map(([t, ok]) => (
+        <span key={String(t)} className={`flex items-center gap-1 rounded-full border px-3 py-1.5 text-[0.65rem] ${ok ? "border-neutral-300" : "border-neutral-200 opacity-45 line-through"}`}>
+          {t}
+          <i className={`not-italic font-extrabold ${ok ? "text-emerald-600" : "text-red-500"}`}>{ok ? "\u2713" : "\u2715"}</i>
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function PricePerUnit({ v }: P) {
+  return (
+    <div className="p-4">
+      <p className="m-0 text-lg font-extrabold">₹4,500</p>
+      <p className="m-0 text-[0.65rem] text-neutral-500">₹450 / {str(v, "unit") || "100g"}</p>
+    </div>
+  );
+}
+
+function SubscribeSave({ v }: P) {
+  const [sel, setSel] = useState<"onetime" | "sub">("onetime");
+  return (
+    <div className="grid gap-2 p-4">
+      <label className="flex cursor-pointer items-center gap-2.5 rounded-lg border border-neutral-300 p-3 text-[0.75rem]">
+        <input type="radio" checked={sel === "onetime"} onChange={() => setSel("onetime")} className="accent-emerald-600" />
+        <span>One-time purchase</span>
+        <b className="ml-auto">₹4,500</b>
+      </label>
+      <label className="flex cursor-pointer items-center gap-2.5 rounded-lg border border-emerald-400 bg-emerald-50/50 p-3 text-[0.75rem]">
+        <input type="radio" checked={sel === "sub"} onChange={() => setSel("sub")} className="accent-emerald-600" />
+        <span>Subscribe {str(v, "freq") || "monthly"} - save {str(v, "discount") || "10"}%</span>
+        <b className="ml-auto">₹4,050</b>
+      </label>
+    </div>
+  );
+}
+
+function CertificationBadges({ v }: P) {
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 5);
+  return (
+    <div className="flex flex-wrap gap-1.5 p-4">
+      {rows.map((r) => (
+        <span key={r} className="flex items-center gap-1 rounded-full border border-neutral-300 px-3 py-1.5 text-[0.62rem] font-bold text-neutral-600">
+          <svg className="size-3 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="6"/><path d="M15.5 12.9 17 22l-5-3-5 3 1.5-9.1"/></svg>
+          {r}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function LoyaltyPoints({ v }: P) {
+  return (
+    <div className="flex items-center gap-1.5 p-4 text-[0.7rem] text-neutral-600">
+      <svg className="size-3.5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 2l2.9 6.26 6.9.6-5.2 4.53 1.55 6.77L12 16.9l-6.15 3.26L7.4 13.4 2.2 8.86l6.9-.6z"/></svg>
+      Earn <b>225 {str(v, "name") || "points"}</b> on this order
+    </div>
+  );
+}
+
+function CollectionHero({ v }: P) {
+  return (
+    <div className="p-4">
+      <div className="relative aspect-[21/7] overflow-hidden rounded-xl bg-[linear-gradient(135deg,#dbeafe,#fbcfe8)]">
+        {on(v, "overlay") && <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />}
+        <div className={`absolute inset-0 flex flex-col justify-end p-5 ${on(v, "overlay") ? "text-white" : "text-neutral-900"}`}>
+          <p className="m-0 text-xl font-extrabold">New arrivals</p>
+          <p className="m-0 mt-1 text-[0.7rem] opacity-90">The latest drops, all in one place</p>
+          <p className="m-0 mt-1 text-[0.6rem] opacity-80">42 products</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function CategoryTiles({ v }: P) {
+  const cols = Number(str(v, "cols")) || 4;
+  const cats = ["New in", "Tees", "Bottoms", "Sale"];
+  return (
+    <div className="grid gap-2.5 p-4" style={{ gridTemplateColumns: `repeat(${Math.min(cols, 4)}, 1fr)` }}>
+      {cats.slice(0, Math.min(cols, 4)).map((c, i) => (
+        <div key={c} className="relative overflow-hidden rounded-xl">
+          <div className="aspect-square" style={{ background: `linear-gradient(${135 + i * 50}deg,#e0e7ff,#fbcfe8,#bbf7d0)` }} />
+          <span className="absolute bottom-2 left-2 rounded-full bg-white/90 px-2.5 py-1 text-[0.62rem] font-bold">{c}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function SocialShare({ v }: P) {
+  return (
+    <div className="flex items-center gap-3 p-4 text-[0.7rem]">
+      <span className="font-semibold text-neutral-500">{str(v, "label") || "Share"}</span>
+      {["WhatsApp", "X", "Pinterest"].map((s) => (
+        <a key={s} href="#" className="font-bold text-emerald-600 hover:underline">{s}</a>
+      ))}
+    </div>
+  );
+}
+
+function InstagramGrid({ v }: P) {
+  const cols = Number(str(v, "cols")) || 6;
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2.5 text-center text-[0.72rem] font-bold text-emerald-600">Follow {str(v, "handle") || "@yourstore"}</p>
+      <div className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${Math.min(cols, 6)}, 1fr)` }}>
+        {Array.from({ length: Math.min(cols, 6) }, (_, i) => (
+          <div key={i} className="aspect-square rounded-lg" style={{ background: `linear-gradient(${135 + i * 40}deg,#e0e7ff,#fbcfe8,#bbf7d0)` }} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CustomLiquidSection() {
+  return (
+    <div className="grid place-items-center border-2 border-dashed border-neutral-200 p-8">
+      <p className="m-0 text-xs text-neutral-400">Merchant&apos;s custom Liquid renders here</p>
+    </div>
+  );
+}
+
+function OpenNow({ v }: P) {
+  const open = Number(str(v, "open")) || 10;
+  const close = Number(str(v, "close")) || 21;
+  const h = new Date().getHours();
+  const isOpen = h >= open && h < close;
+  return (
+    <div className="flex items-center gap-1.5 p-4 text-[0.7rem] font-semibold">
+      <span className={`size-2 rounded-full ${isOpen ? "bg-emerald-500" : "bg-red-500"}`} />
+      {isOpen ? "Open now - replies within the hour" : "Closed - we reply next morning"}
+    </div>
+  );
+}
+
+function PriceDropAlert({ v }: P) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative inline-block p-4">
+      <button type="button" onClick={() => setOpen(!open)} className="rounded-full border border-neutral-300 px-4 py-2 text-[0.68rem]">{str(v, "label") || "Notify me on price drop"}</button>
+      {open && (
+        <div className="absolute bottom-full left-4 mb-2 w-56 rounded-xl border border-neutral-200 bg-white p-3.5 shadow-lg">
+          <p className="m-0 mb-2 text-[0.7rem] font-bold">Price drop alert</p>
+          <div className="flex gap-1.5">
+            <input type="email" placeholder="Your email" className="min-w-0 flex-1 rounded border border-neutral-300 px-2 py-1.5 text-[0.65rem] outline-none" />
+            <button type="button" className="rounded bg-neutral-900 px-2.5 py-1.5 text-[0.6rem] font-bold text-white">Notify me</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ExitIntent({ v }: P) {
+  const [show, setShow] = useState(true);
+  if (!show) return <div className="p-4 text-center text-[0.65rem] text-neutral-400"><button type="button" className="underline" onClick={() => setShow(true)}>Show popup</button></div>;
+  return (
+    <div className="grid min-h-48 place-items-center bg-black/55 p-4" onClick={(e) => { if (e.target === e.currentTarget) setShow(false); }}>
+      <div className="relative w-full max-w-56 rounded-2xl bg-white p-6 text-center">
+        <button type="button" onClick={() => setShow(false)} className="absolute right-3 top-2.5 text-lg">&times;</button>
+        <p className="m-0 text-base font-extrabold">{str(v, "heading") || "Before you go"}</p>
+        <p className="m-0 mt-2 text-[0.7rem] text-neutral-500">{str(v, "text")}</p>
+        <button type="button" className="mt-3.5 rounded-full bg-neutral-900 px-5 py-2 text-xs font-bold text-white">Back to cart</button>
+      </div>
+    </div>
+  );
+}
+
+function FaqSearch({ v }: P) {
+  const [q, setQ] = useState("");
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 6);
+  const hits = rows.filter((r) => !q || r.toLowerCase().includes(q.toLowerCase()));
+  return (
+    <div className="p-4">
+      <input type="search" value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search answers…" className="mb-3 w-full rounded-lg border border-neutral-300 px-3.5 py-2.5 text-[0.78rem] outline-none" />
+      {hits.map((r) => {
+        const [qn, a] = r.split("|").map((s) => s.trim());
+        return (
+          <details key={r} className="border-b border-neutral-200 py-2.5 last:border-0">
+            <summary className="cursor-pointer text-[0.78rem] font-semibold">{qn}</summary>
+            <p className="m-0 mt-1.5 text-[0.7rem] text-neutral-600">{a}</p>
+          </details>
+        );
+      })}
+      {!hits.length && <p className="text-center text-[0.7rem] text-neutral-400">No matching questions</p>}
+    </div>
+  );
+}
+
+function ContactFormSection({ v }: P) {
+  const [sent, setSent] = useState(false);
+  return (
+    <div className="max-w-72 p-4">
+      <p className="m-0 mb-2.5 text-base font-extrabold">{str(v, "heading") || "Talk to us"}</p>
+      {sent ? (
+        <p className="m-0 text-[0.75rem] font-bold text-emerald-600">Thanks - we reply within a business day.</p>
+      ) : (
+        <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="grid gap-2">
+          <input required placeholder="Your name" className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.75rem] outline-none" />
+          <input required type="email" placeholder="Your email" className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.75rem] outline-none" />
+          <textarea required rows={3} placeholder="Your message" className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.75rem] outline-none" />
+          <button type="submit" className="w-fit rounded-lg bg-neutral-900 px-5 py-2 text-xs font-extrabold text-white">Send message</button>
+        </form>
+      )}
+    </div>
+  );
+}
+
+function TeamGrid({ v }: P) {
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 4);
+  return (
+    <div className="grid grid-cols-3 gap-3 p-4">
+      {rows.map((r) => {
+        const [n, role] = r.split("|").map((s) => s.trim());
+        return (
+          <div key={r} className="text-center">
+            <div className="mx-auto grid size-16 place-items-center rounded-full bg-neutral-100 text-xl font-extrabold">{n?.slice(0, 1)}</div>
+            <p className="m-0 mt-2 text-[0.72rem] font-bold">{n}</p>
+            <p className="m-0 text-[0.6rem] text-neutral-500">{role}</p>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function MapEmbed({ v }: P) {
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2 text-sm font-extrabold">{str(v, "heading") || "Find us"}</p>
+      <div className="grid aspect-video place-items-center rounded-xl bg-[linear-gradient(135deg,#dbeafe,#d1fae5)]">
+        <span className="rounded-full bg-white/90 px-3 py-1.5 text-[0.65rem] font-semibold shadow">{str(v, "query") || "Your address"}</span>
+      </div>
+    </div>
+  );
+}
+
+function ComingSoon({ v }: P) {
+  return (
+    <div className="p-6 text-center">
+      <p className="m-0 text-xl font-black">{str(v, "heading") || "Something big is coming"}</p>
+      <div className="mt-4 flex justify-center gap-5">
+        {["7", "14", "32"].map((n, i) => (
+          <div key={i}>
+            <b className="block text-3xl font-black tabular-nums">{n}</b>
+            <small className="text-[0.58rem] uppercase tracking-wider text-neutral-400">{["days", "hours", "min"][i]}</small>
+          </div>
+        ))}
+      </div>
+      <div className="mx-auto mt-5 flex max-w-60 gap-1.5">
+        <input type="email" placeholder="Get notified at launch" className="min-w-0 flex-1 rounded-lg border border-neutral-300 px-3 py-2 text-[0.72rem] outline-none" />
+        <button type="button" className="rounded-lg bg-neutral-900 px-3.5 py-2 text-[0.65rem] font-bold text-white">Notify me</button>
+      </div>
+    </div>
+  );
+}
+
+function InCartBadge({ v }: P) {
+  return (
+    <div className="p-4">
+      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-3 py-1.5 text-[0.65rem] font-bold text-emerald-700">
+        <svg className="size-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M20 6 9 17l-5-5"/></svg>
+        {str(v, "label") || "In your cart"} - <a href="#" className="underline">view</a>
+      </span>
+    </div>
+  );
+}
+
+function FeaturedProduct({ v }: P) {
+  return (
+    <div className="grid gap-4 p-4 sm:grid-cols-2 sm:items-center">
+      <div className="aspect-square rounded-xl bg-[linear-gradient(135deg,#fef3c7,#fbcfe8)]" />
+      <div>
+        <p className="m-0 text-[0.6rem] font-bold uppercase tracking-widest text-emerald-600">Featured product</p>
+        <p className="m-0 mt-1.5 text-lg font-extrabold">Linen overshirt</p>
+        <p className="m-0 mt-1 text-base font-extrabold">₹2,499</p>
+        <p className="m-0 mt-2 text-[0.72rem] leading-relaxed text-neutral-600">Garment-washed European linen, relaxed fit, mother-of-pearl buttons.</p>
+        <button type="button" className="mt-3 rounded-full bg-neutral-900 px-5 py-2 text-xs font-bold text-white">{str(v, "cta") || "Shop this product"}</button>
+      </div>
+    </div>
+  );
+}
+
+function SearchHero({ v }: P) {
+  const chips = str(v, "chips").split(",").map((s) => s.trim()).filter(Boolean).slice(0, 5);
+  return (
+    <div className="p-5 text-center">
+      <p className="m-0 text-lg font-extrabold">{str(v, "heading") || "What are you looking for?"}</p>
+      <div className="mx-auto mt-3.5 flex max-w-80 gap-1.5">
+        <input type="search" placeholder="Search products…" className="flex-1 rounded-full border border-neutral-300 px-4 py-2.5 text-[0.78rem] outline-none" />
+        <button type="button" className="grid size-10 place-items-center rounded-full bg-neutral-900 text-white">&#128269;</button>
+      </div>
+      <div className="mt-3 flex flex-wrap justify-center gap-1.5">
+        {chips.map((c) => (
+          <span key={c} className="rounded-full border border-neutral-300 px-3 py-1 text-[0.62rem]">{c}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function MadeToOrder({ v }: P) {
+  return (
+    <div className="flex items-center gap-1.5 p-4 text-[0.7rem] text-neutral-600">
+      <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      {str(v, "text") || "Made to order"} - ships in {str(v, "days") || "5"} days
+    </div>
+  );
+}
+
+function FitNote({ v }: P) {
+  const fit = str(v, "fit");
+  const msg = fit === "small" ? "Runs small - consider sizing up" : fit === "large" ? "Runs large - consider sizing down" : "True to size - order your usual";
+  return <div className="p-4 text-[0.7rem] text-neutral-600">{msg}</div>;
+}
+
+function WarrantyBadge({ v }: P) {
+  return (
+    <div className="m-4 flex items-center gap-2.5 rounded-lg border border-neutral-200 p-3">
+      <svg className="size-5 shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      <div>
+        <p className="m-0 text-[0.72rem] font-bold">{str(v, "term") || "1-year warranty"}</p>
+        <p className="m-0 text-[0.6rem] text-neutral-500">{str(v, "detail")}</p>
+      </div>
+    </div>
+  );
+}
+
+function CharityNote({ v }: P) {
+  return (
+    <div className="flex items-center gap-1.5 p-4 text-[0.7rem] text-neutral-600">
+      <svg className="size-3.5 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 14c1.5-1.5 3-3.3 3-5.5A5.5 5.5 0 0 0 12 4 5.5 5.5 0 0 0 2 8.5c0 2.2 1.5 4 3 5.5l7 7z"/></svg>
+      {str(v, "amount") || "₹50"} of every order goes to {str(v, "cause") || "a good cause"}
+    </div>
+  );
+}
+
+function MultiLocationStock({ v }: P) {
+  const rows = str(v, "stores").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 4);
+  return (
+    <div className="grid gap-2 p-4">
+      {rows.map((r) => {
+        const [n, s] = r.split("|").map((x) => x.trim());
+        const low = s?.includes("Low");
+        return (
+          <div key={r} className="flex items-center gap-2 text-[0.7rem]">
+            <span className={`size-2 shrink-0 rounded-full ${low ? "bg-amber-500" : "bg-emerald-500"}`} />
+            <span className="min-w-16 font-bold">{n}</span>
+            <span className="text-neutral-500">{s}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -1978,6 +2362,34 @@ const map: Record<string, (p: P) => ReactNode> = {
   "cart-notes": CartNotes,
   "pills-nav": PillsNav,
   "checkout-trust": CheckoutTrust,
+  "whatsapp-order": WhatsappOrder,
+  "personalization-field": PersonalizationField,
+  "variant-matrix": VariantMatrix,
+  "price-per-unit": PricePerUnit,
+  "subscribe-save": SubscribeSave,
+  "certification-badges": CertificationBadges,
+  "loyalty-points": LoyaltyPoints,
+  "collection-hero": CollectionHero,
+  "category-tiles": CategoryTiles,
+  "social-share": SocialShare,
+  "instagram-grid": InstagramGrid,
+  "custom-liquid-section": CustomLiquidSection,
+  "open-now": OpenNow,
+  "price-drop-alert": PriceDropAlert,
+  "exit-intent": ExitIntent,
+  "faq-search": FaqSearch,
+  "contact-form-section": ContactFormSection,
+  "team-grid": TeamGrid,
+  "map-embed": MapEmbed,
+  "coming-soon": ComingSoon,
+  "in-cart-badge": InCartBadge,
+  "featured-product": FeaturedProduct,
+  "search-hero": SearchHero,
+  "made-to-order": MadeToOrder,
+  "fit-note": FitNote,
+  "warranty-badge": WarrantyBadge,
+  "charity-note": CharityNote,
+  "multi-location-stock": MultiLocationStock,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {
