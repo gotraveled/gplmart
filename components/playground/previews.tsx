@@ -2284,6 +2284,240 @@ function MultiLocationStock({ v }: P) {
   );
 }
 
+function VariantSwatches({ v }: P) {
+  const [sel, setSel] = useState("Midnight");
+  const sq = str(v, "shape") === "square";
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2 text-[0.68rem] text-neutral-500">Colour: <b className="text-neutral-900">{sel}</b></p>
+      <div className="flex gap-2">
+        {([["#1e293b", "Midnight"], ["#15803d", "Forest"], ["#b91c1c", "Crimson"], ["#d4d4d4", "Cloud"]] as [string, string][]).map(([c, n]) => (
+          <button key={n} type="button" onClick={() => setSel(n)} title={n} className={`size-6 border-2 p-0 ${sq ? "rounded-md" : "rounded-full"} ${sel === n ? "border-neutral-900 ring-2 ring-white ring-inset" : "border-neutral-300"}`} style={{ background: c }} />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function FrequentlyBought({ v }: P) {
+  const [checked, setChecked] = useState<boolean[]>([true, true]);
+  const extras: [string, number][] = [["Phone case", 79900], ["Charging cable", 49900]];
+  const base = 249900;
+  const total = base + extras.filter((_, i) => checked[i]).reduce((s, [, p]) => s + p, 0);
+  return (
+    <div className="m-4 rounded-xl border border-neutral-200 p-4">
+      <p className="m-0 mb-2.5 text-[0.65rem] font-bold uppercase tracking-wider">{str(v, "heading") || "Frequently bought together"}</p>
+      <label className="flex items-center gap-2.5 py-1.5 text-[0.72rem]">
+        <input type="checkbox" checked disabled className="accent-emerald-600" />
+        <span className="flex-1">This item: Smartphone</span>
+        <b>₹2,499</b>
+      </label>
+      {extras.map(([n, p], i) => (
+        <label key={n} className="flex items-center gap-2.5 py-1.5 text-[0.72rem]">
+          <input type="checkbox" checked={checked[i]} onChange={() => setChecked(checked.map((c, j) => (j === i ? !c : c)))} className="accent-emerald-600" />
+          <span className="flex-1">{n}</span>
+          <b>₹{(p / 100).toFixed(0)}</b>
+        </label>
+      ))}
+      <button type="button" className="mt-2.5 w-full rounded-xl bg-neutral-900 py-2.5 text-xs font-extrabold text-white">Add selected - ₹{(total / 100).toFixed(0)}</button>
+    </div>
+  );
+}
+
+function QuickView({ v }: P) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative p-4">
+      <button type="button" onClick={() => setOpen(!open)} className="rounded-full border border-neutral-300 bg-white px-3.5 py-1.5 text-[0.62rem] font-bold">{str(v, "label") || "Quick view"}</button>
+      {open && (
+        <div className="absolute left-1/2 top-full z-10 w-44 -translate-x-1/2 rounded-xl border border-neutral-200 bg-white p-3 text-center shadow-lg">
+          <button type="button" onClick={() => setOpen(false)} className="absolute right-2 top-1.5 text-sm">&times;</button>
+          <div className="aspect-square rounded-lg bg-[linear-gradient(135deg,#e0e7ff,#fbcfe8)]" />
+          <p className="m-0 mt-2 text-[0.7rem] font-bold">Linen overshirt</p>
+          <p className="m-0 text-[0.65rem]">₹2,499</p>
+          <a href="#" className="mt-1.5 inline-block text-[0.62rem] font-bold text-emerald-600">View full details &rarr;</a>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ImageRollover() {
+  return (
+    <div className="group relative w-48 p-4">
+      <div className="aspect-[4/5] rounded-xl bg-[linear-gradient(135deg,#e0e7ff,#fbcfe8)] transition-opacity" />
+      <div className="absolute inset-4 aspect-[4/5] rounded-xl bg-[linear-gradient(45deg,#bbf7d0,#dbeafe)] opacity-0 transition-opacity group-hover:opacity-100" />
+      <p className="m-0 mt-2 text-[0.6rem] text-neutral-400">Hover to swap image</p>
+    </div>
+  );
+}
+
+function MegaMenuPanel({ v }: P) {
+  const rows = str(v, "cols").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 3);
+  return (
+    <div className="m-4 grid gap-4 rounded-xl border border-neutral-200 bg-white p-5 sm:grid-cols-4">
+      {rows.map((r) => {
+        const [h, links] = r.split("|");
+        return (
+          <div key={r}>
+            <p className="m-0 mb-2 text-[0.58rem] font-extrabold uppercase tracking-wider text-neutral-400">{h?.trim()}</p>
+            {(links ?? "").split(",").map((l) => (
+              <a key={l} href="#" className="block py-1 text-[0.7rem] hover:text-emerald-600">{l.trim()}</a>
+            ))}
+          </div>
+        );
+      })}
+      <div className="flex flex-col justify-end gap-1 rounded-lg bg-emerald-50 p-3.5">
+        <p className="m-0 text-[0.7rem] font-extrabold">Sale ends tonight</p>
+        <a href="#" className="text-[0.6rem] font-bold text-emerald-600">Shop the sale &rarr;</a>
+      </div>
+    </div>
+  );
+}
+
+function MobileBottomNav() {
+  const items = [["Home", "M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"], ["Search", "M21 21l-4.3-4.3M11 19a8 8 0 1 0 0-16 8 8 0 0 0 0 16z"], ["Cart", "M9 22a1 1 0 1 0 0-2 1 1 0 0 0 0 2zM20 22a1 1 0 1 0 0-2 1 1 0 0 0 0 2zM2 2h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57L22 6H5"], ["Account", "M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8z"]];
+  return (
+    <div className="grid grid-cols-4 border-t border-neutral-200 bg-white">
+      {items.map(([n, d]) => (
+        <a key={n} href="#" className="flex flex-col items-center gap-0.5 py-2.5 text-[0.55rem] font-semibold">
+          <svg className="size-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d={d}/></svg>
+          {n}
+        </a>
+      ))}
+    </div>
+  );
+}
+
+function ProductFinderQuiz({ v }: P) {
+  const [step, setStep] = useState(0);
+  const qs = [
+    { q: "What's your style?", opts: ["Minimal", "Bold", "Classic"] },
+    { q: "Preferred fit?", opts: ["Slim", "Relaxed", "Oversized"] },
+    { q: "Budget?", opts: ["Under ₹1k", "₹1-3k", "Premium"] },
+  ];
+  return (
+    <div className="p-5 text-center">
+      <p className="m-0 mb-3 text-sm font-extrabold">{str(v, "heading") || "Find your perfect fit"}</p>
+      {step < qs.length ? (
+        <div>
+          <p className="m-0 mb-3 text-[0.82rem] font-semibold">{qs[step]?.q}</p>
+          <div className="flex flex-wrap justify-center gap-2">
+            {(qs[step]?.opts ?? []).map((o) => (
+              <button key={o} type="button" onClick={() => setStep(step + 1)} className="rounded-full border border-neutral-300 px-4 py-2 text-[0.72rem] hover:border-emerald-600">{o}</button>
+            ))}
+          </div>
+          <p className="m-0 mt-2.5 text-[0.55rem] text-neutral-400">Step {step + 1} of {qs.length}</p>
+        </div>
+      ) : (
+        <div>
+          <p className="m-0 text-[0.82rem] font-semibold">Here&apos;s your match</p>
+          <a href="#" className="mt-3 inline-block rounded-full bg-neutral-900 px-6 py-2.5 text-xs font-bold text-white">See the collection &rarr;</a>
+          <button type="button" onClick={() => setStep(0)} className="mt-2 block text-[0.6rem] text-neutral-400 underline">Restart</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function ImageAccordion({ v }: P) {
+  const [active, setActive] = useState(0);
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 4);
+  return (
+    <div className="flex h-40 gap-1.5 p-4">
+      {rows.map((r, i) => {
+        const [t] = r.split("|");
+        return (
+          <button key={r} type="button" onClick={() => setActive(i)} className="relative flex-1 overflow-hidden rounded-xl text-left transition-all duration-300" style={{ flex: i === active ? 3 : 1, background: `linear-gradient(${135 + i * 60}deg,#e0e7ff,#fbcfe8,#bbf7d0)` }}>
+            <span className={`absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-3 text-white ${i === active ? "" : "opacity-0"}`}>
+              <p className="m-0 text-[0.72rem] font-extrabold">{t?.trim()}</p>
+            </span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+function TabbedCollections({ v }: P) {
+  const [tab, setTab] = useState(0);
+  const rows = str(v, "tabs").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 4);
+  return (
+    <div className="p-4">
+      <div className="mb-3 flex gap-2">
+        {rows.map((r, i) => {
+          const [t] = r.split("|");
+          return (
+            <button key={r} type="button" onClick={() => setTab(i)} className={`rounded-full border px-3.5 py-1.5 text-[0.68rem] font-semibold ${i === tab ? "border-transparent bg-neutral-900 text-white" : "border-neutral-300"}`}>{t?.trim()}</button>
+          );
+        })}
+      </div>
+      <div className="grid grid-cols-4 gap-2.5 max-sm:grid-cols-2">
+        {[0, 1, 2, 3].map((i) => (
+          <div key={i}>
+            <div className="aspect-square rounded-xl" style={{ background: `linear-gradient(${135 + (i + tab * 2) * 40}deg,#e0e7ff,#fbcfe8,#bbf7d0)` }} />
+            <p className="m-0 mt-1.5 text-[0.68rem] font-semibold">Product {i + 1}</p>
+            <p className="m-0 text-[0.6rem] text-neutral-500">₹1,{499 + i * 300}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function CheckoutProgress({ v }: P) {
+  const cur = Number(str(v, "step")) || 1;
+  return (
+    <div className="flex gap-2 p-4">
+      {["Cart", "Details", "Payment"].map((s, i) => (
+        <span key={s} className={`flex items-center gap-1.5 text-[0.65rem] ${i + 1 === cur ? "font-bold" : "text-neutral-400"}`}>
+          <span className={`grid size-5 place-items-center rounded-full border text-[0.58rem] font-bold ${i + 1 < cur ? "border-emerald-600 bg-emerald-600 text-white" : i + 1 === cur ? "border-neutral-900" : "border-neutral-300"}`}>{i + 1}</span>
+          {s}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function WholesaleInquiry({ v }: P) {
+  const [sent, setSent] = useState(false);
+  return (
+    <div className="max-w-72 p-4">
+      <p className="m-0 mb-2.5 text-base font-extrabold">{str(v, "heading") || "Bulk order? Let's talk"}</p>
+      {sent ? (
+        <p className="m-0 text-[0.75rem] font-bold text-emerald-600">Thanks - our wholesale team will reach out.</p>
+      ) : (
+        <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="grid gap-2">
+          {["Your name", "Company / shop name", "Work email", "Approx. quantity"].map((p) => (
+            <input key={p} required={!p.includes("quantity")} placeholder={p} className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.72rem] outline-none" />
+          ))}
+          <button type="submit" className="w-fit rounded-lg bg-neutral-900 px-4 py-2 text-xs font-extrabold text-white">Request wholesale pricing</button>
+        </form>
+      )}
+    </div>
+  );
+}
+
+function ReturnsRequest({ v }: P) {
+  const [sent, setSent] = useState(false);
+  return (
+    <div className="max-w-72 p-4">
+      <p className="m-0 mb-2.5 text-base font-extrabold">{str(v, "heading") || "Start a return"}</p>
+      {sent ? (
+        <p className="m-0 text-[0.75rem] font-bold text-emerald-600">Request received - we&apos;ll email the return label within a day.</p>
+      ) : (
+        <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="grid gap-2">
+          <input required placeholder="Order number (e.g. #1042)" className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.72rem] outline-none" />
+          <input required type="email" placeholder="Order email" className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.72rem] outline-none" />
+          <textarea required rows={2} placeholder="What went wrong?" className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.72rem] outline-none" />
+          <button type="submit" className="w-fit rounded-lg bg-neutral-900 px-4 py-2 text-xs font-extrabold text-white">Request return</button>
+        </form>
+      )}
+      <p className="m-0 mt-2.5 text-[0.6rem] text-neutral-400">7-day returns, no questions asked</p>
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -2390,6 +2624,18 @@ const map: Record<string, (p: P) => ReactNode> = {
   "warranty-badge": WarrantyBadge,
   "charity-note": CharityNote,
   "multi-location-stock": MultiLocationStock,
+  "variant-swatches": VariantSwatches,
+  "frequently-bought": FrequentlyBought,
+  "quick-view": QuickView,
+  "image-rollover": ImageRollover,
+  "mega-menu-panel": MegaMenuPanel,
+  "mobile-bottom-nav": MobileBottomNav,
+  "product-finder-quiz": ProductFinderQuiz,
+  "image-accordion": ImageAccordion,
+  "tabbed-collections": TabbedCollections,
+  "checkout-progress": CheckoutProgress,
+  "wholesale-inquiry": WholesaleInquiry,
+  "returns-request": ReturnsRequest,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {
