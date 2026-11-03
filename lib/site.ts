@@ -3,9 +3,7 @@ export const siteConfig = {
   description:
     "GPLMart is a library of reusable Shopify Liquid snippets and theme sections, plus authorised template bundles, for merchants, developers and agencies.",
   url: (process.env.NEXT_PUBLIC_SITE_URL ?? "https://gplmart.com").replace(/\/$/, ""),
-  announcement:
-    process.env.NEXT_PUBLIC_ANNOUNCEMENT ||
-    "Preview build: purchases open after content licensing is confirmed.",
+  announcement: process.env.NEXT_PUBLIC_ANNOUNCEMENT || "",
   contactEmail: null as string | null,
 } as const;
 

@@ -215,9 +215,9 @@ export default function HomePage() {
             <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.02] tracking-tight text-balance sm:text-5xl lg:text-6xl">
               <span className="whitespace-nowrap">Shopify Liquid Codes.</span>
               <br />
-              <span className="text-gradient">WordPress bundles.</span>
+              <span className="text-gradient">WordPress/Shopify Themes</span>
               <br />
-              One payment.
+              &amp; Plugins in One Payment
             </h1>
             <p className="mt-6 max-w-xl font-display text-lg text-pretty text-muted">
               Not getting the conversions your store deserves? GPLMart gives you conversion-focused Liquid sections

@@ -278,7 +278,7 @@ export function Workbench({ initialId }: { initialId?: string }) {
         >
           Unlock all snippets
         </Link>
-        <p className="mt-3 text-xs text-subtle">5 examples are free - this one is in the members set.</p>
+        <p className="mt-3 text-xs text-subtle">{freeExampleIds.size} examples are free - this one is in the members set.</p>
       </div>
     </div>
   );
@@ -327,7 +327,7 @@ export function Workbench({ initialId }: { initialId?: string }) {
           onClick={(e) => e.stopPropagation()}
         >
           {/* Modal header */}
-          <div className="sticky top-0 z-10 flex items-center justify-between gap-3 rounded-t-2xl border-b border-line bg-ink-950 px-4 py-3 sm:px-5">
+          <div className="sticky top-0 z-40 flex items-center justify-between gap-3 rounded-t-2xl border-b border-line bg-ink-950 px-4 py-3 sm:px-5">
             <div className="flex min-w-0 flex-wrap items-center gap-2.5">
               <h2 className="font-display text-lg font-semibold">{ex.name}</h2>
               <Badge>{ex.kind === "section" ? "Theme section" : "Snippet"}</Badge>
