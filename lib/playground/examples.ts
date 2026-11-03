@@ -2811,6 +2811,516 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
 }`,
     }),
   },
+  {
+    id: "testimonial-slider",
+    name: "Testimonial strip",
+    description: "A rotating customer quote with stars and name - real social proof under the title or buy button.",
+    category: "Social proof",
+    kind: "section",
+    controls: [
+      { id: "autoplay", label: "Auto-rotate", type: "toggle" },
+      { id: "accent", label: "Star colour", type: "color" },
+    ],
+    defaults: { autoplay: true, accent: "#f59e0b" },
+    install: [
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "Create sections/testimonial-strip.liquid, paste the code, and add the section on your product template in the theme editor.",
+      "Add a block per testimonial - only use real customer quotes you can back up.",
+      "The quote, name and star count come from blocks; wire stars to a metafield later if you want them data-driven.",
+    ],
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  IMPORTANT: use real reviews. Fabricated testimonials breach consumer
+  protection rules in most markets and kill trust when discovered.
+{%- endcomment -%}
+{%- if section.blocks.size > 0 -%}
+  <div class="gpl-quotes" data-gpl-quotes ${on(v, "autoplay") ? 'data-gpl-autoplay="5000"' : ""} style="--gpl-accent: {{ section.settings.accent }};">
+    {%- for block in section.blocks -%}
+      <figure class="gpl-quotes__item {% if forloop.first %}is-active{% endif %}" {{ block.shopify_attributes }} {% unless forloop.first %}hidden{% endunless %}>
+        <div class="gpl-quotes__stars" aria-label="{{ block.settings.stars }} out of 5 stars">
+          {%- for i in (1..5) -%}
+            <svg viewBox="0 0 20 20" {% if i > block.settings.stars %}class="is-dim"{% endif %} aria-hidden="true"><path d="M10 1.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8-5.3-2.8-5.3 2.8 1-5.8L1.5 7.7l5.9-.9z"/></svg>
+          {%- endfor -%}
+        </div>
+        <blockquote class="gpl-quotes__text">&ldquo;{{ block.settings.quote | escape }}&rdquo;</blockquote>
+        <figcaption class="gpl-quotes__name">{{ block.settings.name | escape }}{% if block.settings.role != blank %} &middot; {{ block.settings.role | escape }}{% endif %}</figcaption>
+      </figure>
+    {%- endfor -%}
+    {%- if section.blocks.size > 1 -%}
+      <div class="gpl-quotes__dots" role="tablist" aria-label="Testimonials">
+        {%- for block in section.blocks -%}
+          <button type="button" class="gpl-quotes__dot {% if forloop.first %}is-active{% endif %}" data-gpl-quote-dot="{{ forloop.index0 }}" aria-label="Show testimonial {{ forloop.index }}"></button>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+  </div>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Testimonial strip",
+  "settings": [
+    { "type": "color", "id": "accent", "label": "Star colour", "default": "${hex(v, "accent")}" }
+  ],
+  "blocks": [
+    {
+      "type": "quote",
+      "name": "Testimonial",
+      "settings": [
+        { "type": "range", "id": "stars", "label": "Stars", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "textarea", "id": "quote", "label": "Quote", "default": "Great quality - exactly as described." },
+        { "type": "text", "id": "name", "label": "Customer name", "default": "Verified buyer" },
+        { "type": "text", "id": "role", "label": "Context (optional)", "default": "Mumbai" }
+      ]
+    }
+  ],
+  "max_blocks": 8,
+  "presets": [{ "name": "Testimonial strip", "blocks": [{ "type": "quote" }, { "type": "quote" }] }]
+}
+{% endschema %}`,
+      css: `.gpl-quotes { text-align: center; padding: 1rem 0; }
+.gpl-quotes__item[hidden] { display: none; }
+.gpl-quotes__item { margin: 0; }
+.gpl-quotes__stars { display: flex; justify-content: center; gap: 2px; margin-bottom: 0.6rem; }
+.gpl-quotes__stars svg { width: 1rem; height: 1rem; fill: var(--gpl-accent); }
+.gpl-quotes__stars svg.is-dim { fill: rgb(var(--color-foreground, 148 163 184) / 0.25); }
+.gpl-quotes__text { margin: 0; font-size: 1rem; font-weight: 500; line-height: 1.55; }
+.gpl-quotes__name { margin-top: 0.6rem; font-size: 0.78rem; opacity: 0.6; }
+.gpl-quotes__dots { display: flex; justify-content: center; gap: 0.4rem; margin-top: 1rem; }
+.gpl-quotes__dot {
+  width: 0.5rem; height: 0.5rem; border: 0; border-radius: 999px; padding: 0;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.3); cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+.gpl-quotes__dot.is-active { background: var(--gpl-accent); transform: scale(1.2); }`,
+      js: `document.querySelectorAll('[data-gpl-quotes]').forEach((root) => {
+  const items = Array.from(root.querySelectorAll('.gpl-quotes__item'));
+  const dots = Array.from(root.querySelectorAll('[data-gpl-quote-dot]'));
+  if (items.length < 2) return;
+  let i = 0;
+  const show = (n) => {
+    i = (n + items.length) % items.length;
+    items.forEach((el, j) => (el.hidden = j !== i));
+    dots.forEach((d, j) => d.classList.toggle('is-active', j === i));
+  };
+  dots.forEach((d, j) => d.addEventListener('click', () => show(j)));
+  const delay = parseInt(root.getAttribute('data-gpl-autoplay'), 10);
+  if (delay > 0 && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    let t = setInterval(() => show(i + 1), delay);
+    root.addEventListener('mouseenter', () => clearInterval(t));
+    root.addEventListener('mouseleave', () => (t = setInterval(() => show(i + 1), delay)));
+  }
+});`,
+    }),
+  },
+  {
+    id: "before-after",
+    name: "Before / after slider",
+    description: "An interactive draggable divider over two images - shows the product's effect better than any bullet point.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [{ id: "accent", label: "Handle colour", type: "color" }],
+    defaults: { accent: "#c8f542" },
+    install: [
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "Create snippets/before-after.liquid, paste the code and CSS.",
+      "Render it on the product page passing two images - or wire it to product.metafields for per-product pairs.",
+      "Use honest before/after shots: same lighting, same angle, no retouching differences.",
+    ],
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Pass before_image / after_image (product.media entries or metafield images).
+  The handle is a range input so keyboard users can drag it too.
+{%- endcomment -%}
+{%- assign b = before_image | default: product.media[0].preview_image -%}
+{%- assign a = after_image | default: product.media[1].preview_image -%}
+{%- if b and a -%}
+  <div class="gpl-ba" data-gpl-ba style="--gpl-accent: {{ accent | default: '${hex(v, "accent")}' }};">
+    <img class="gpl-ba__img" src="{{ a | image_url: width: 1200 }}" alt="After" loading="lazy" width="1200" height="{{ 1200 | divided_by: a.aspect_ratio | round }}">
+    <div class="gpl-ba__before" data-gpl-ba-before>
+      <img class="gpl-ba__img" src="{{ b | image_url: width: 1200 }}" alt="Before" loading="lazy" width="1200" height="{{ 1200 | divided_by: b.aspect_ratio | round }}">
+    </div>
+    <input class="gpl-ba__range" type="range" min="0" max="100" value="50" step="0.5" aria-label="Reveal before and after comparison">
+    <span class="gpl-ba__tag gpl-ba__tag--before">Before</span>
+    <span class="gpl-ba__tag gpl-ba__tag--after">After</span>
+  </div>
+{%- endif -%}`,
+      css: `.gpl-ba { position: relative; overflow: hidden; border-radius: 1rem; user-select: none; }
+.gpl-ba__img { display: block; width: 100%; height: auto; pointer-events: none; }
+.gpl-ba__before {
+  position: absolute; inset: 0;
+  clip-path: inset(0 50% 0 0);
+  transition: clip-path 0.05s linear;
+}
+.gpl-ba__before .gpl-ba__img { height: 100%; object-fit: cover; }
+.gpl-ba__range {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0; cursor: ew-resize; margin: 0;
+}
+.gpl-ba::after {
+  content: '';
+  position: absolute; top: 0; bottom: 0; left: var(--gpl-pos, 50%);
+  width: 2px; background: var(--gpl-accent); transform: translateX(-1px);
+}
+.gpl-ba__tag {
+  position: absolute; top: 0.75rem;
+  padding: 0.25rem 0.6rem; border-radius: 999px;
+  background: rgb(0 0 0 / 0.55); color: #fff;
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+}
+.gpl-ba__tag--before { left: 0.75rem; }
+.gpl-ba__tag--after { right: 0.75rem; }`,
+      js: `document.querySelectorAll('[data-gpl-ba]').forEach((el) => {
+  const range = el.querySelector('.gpl-ba__range');
+  const before = el.querySelector('[data-gpl-ba-before]');
+  const apply = () => {
+    const p = range.value;
+    before.style.clipPath = 'inset(0 ' + (100 - p) + '% 0 0)';
+    el.style.setProperty('--gpl-pos', p + '%');
+  };
+  range.addEventListener('input', apply);
+  apply();
+});`,
+      usage: `{% render 'before-after', before_image: product.media[0], after_image: product.media[1] %}`,
+    }),
+  },
+  {
+    id: "emi-note",
+    name: "EMI / pay-in-parts note",
+    description: "Shows the price split into instalments under the price - 'or 3 payments of Rs. X'. Lowers sticker shock on higher-priced items.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "parts", label: "Split into", type: "select", options: [{ value: "3", label: "3 payments" }, { value: "4", label: "4 payments" }, { value: "6", label: "6 payments" }] },
+      { id: "accent", label: "Accent", type: "color" },
+    ],
+    defaults: { parts: "3", accent: "#15803d" },
+    install: [
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "Create snippets/emi-note.liquid, paste the code and CSS.",
+      "Render it under the price (usage tag in the Usage tab).",
+      "IMPORTANT: only show instalments your checkout actually supports - if you do not offer EMI/BNPL, do not show this.",
+    ],
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Pure display maths on the variant price. The actual instalment plan must be
+  offered by your payment provider - this only describes it.
+{%- endcomment -%}
+{%- assign p = product.selected_or_first_available_variant.price | default: product.price -%}
+{%- assign n = parts | default: ${v.parts} -%}
+{%- assign each = p | divided_by: n -%}
+<p class="gpl-emi" style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 21 128 61))' }};">
+  or <strong>{{ n }} payments of {{ each | money }}</strong>
+  <span class="gpl-emi__hint">available at checkout</span>
+</p>`,
+      css: `.gpl-emi { margin: 0.35rem 0 0.75rem; font-size: 0.85rem; }
+.gpl-emi strong { color: var(--gpl-accent); }
+.gpl-emi__hint { font-size: 0.7rem; opacity: 0.55; margin-left: 0.35rem; }`,
+      usage: `{% render 'emi-note', parts: ${v.parts} %}`,
+    }),
+  },
+  {
+    id: "cutoff-timer",
+    name: "Dispatch cutoff timer",
+    description: "'Order in the next 2h 15m for same-day dispatch' - honest urgency based on your real warehouse cutoff.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "hour", label: "Daily cutoff hour", type: "select", options: [{ value: "14", label: "2 PM" }, { value: "16", label: "4 PM" }, { value: "18", label: "6 PM" }] },
+      { id: "accent", label: "Accent", type: "color" },
+    ],
+    defaults: { hour: "16", accent: "#e11d48" },
+    install: [
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "Create snippets/cutoff-timer.liquid, paste the code and CSS.",
+      "Render it near the buy button - it only shows while the cutoff is still reachable today.",
+      "Set the hour to your ACTUAL dispatch cutoff - promising same-day dispatch you cannot honour creates refund disputes.",
+    ],
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Counts down to today's dispatch cutoff. Disappears after the cutoff -
+  it never claims a benefit the store cannot deliver.
+{%- endcomment -%}
+<div class="gpl-cutoff" data-gpl-cutoff="${v.hour}" style="--gpl-accent: {{ accent | default: '#e11d48' }};" hidden>
+  <svg class="gpl-cutoff__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+  <p class="gpl-cutoff__text">Order within <strong data-gpl-cutoff-left></strong> for same-day dispatch</p>
+</div>`,
+      css: `.gpl-cutoff {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0.75rem 0;
+  font-size: 0.85rem;
+}
+.gpl-cutoff[hidden] { display: none; }
+.gpl-cutoff__icon { width: 1.1rem; height: 1.1rem; color: var(--gpl-accent); flex-shrink: 0; }
+.gpl-cutoff__text { margin: 0; }
+.gpl-cutoff__text strong { color: var(--gpl-accent); font-variant-numeric: tabular-nums; }`,
+      js: `document.querySelectorAll('[data-gpl-cutoff]').forEach((el) => {
+  const hour = parseInt(el.getAttribute('data-gpl-cutoff'), 10) || 16;
+  const out = el.querySelector('[data-gpl-cutoff-left]');
+  const tick = () => {
+    const now = new Date();
+    const cut = new Date(now); cut.setHours(hour, 0, 0, 0);
+    const left = cut - now;
+    if (left <= 0) { el.hidden = true; return; }
+    const h = Math.floor(left / 3.6e6), m = Math.floor((left % 3.6e6) / 6e4), s = Math.floor((left % 6e4) / 1e3);
+    out.textContent = (h > 0 ? h + 'h ' : '') + String(m).padStart(2, '0') + 'm ' + String(s).padStart(2, '0') + 's';
+    el.hidden = false;
+  };
+  tick();
+  setInterval(tick, 1000);
+});`,
+      usage: `{% render 'cutoff-timer' %}`,
+    }),
+  },
+  {
+    id: "pairs-well-with",
+    name: "Pairs well with",
+    description: "A cross-sell row pulled from Shopify's product recommendations - suggests the next purchase while intent is high.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 40 },
+      { id: "limit", label: "Max products", type: "select", options: [{ value: "2", label: "2" }, { value: "4", label: "4" }] },
+    ],
+    defaults: { heading: "Pairs well with", limit: "4" },
+    install: [
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "Create snippets/pairs-well-with.liquid, paste the code and CSS, and render it on the product page.",
+      "Recommendations come from the Search & Discovery app - assign complementary products there first.",
+      "If no recommendations exist for a product, the row hides itself.",
+    ],
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Pulls Shopify's complementary-product recommendations at runtime. Needs the
+  free Search & Discovery app with complements configured.
+{%- endcomment -%}
+{%- if product -%}
+  <div class="gpl-pairs" data-gpl-pairs data-product="{{ product.id }}" data-limit="${v.limit}" hidden>
+    <p class="gpl-pairs__head">{{ heading | default: '${v.heading}' | escape }}</p>
+    <div class="gpl-pairs__grid" data-gpl-pairs-grid></div>
+  </div>
+{%- endif -%}`,
+      css: `.gpl-pairs { margin: 1.5rem 0; }
+.gpl-pairs__head { margin: 0 0 0.8rem; font-size: 0.95rem; font-weight: 700; }
+.gpl-pairs__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
+@media (min-width: 48rem) { .gpl-pairs__grid { grid-template-columns: repeat(4, 1fr); } }
+.gpl-pairs__card {
+  display: flex; align-items: center; gap: 0.7rem;
+  padding: 0.6rem; border-radius: 0.75rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.15);
+  text-decoration: none; color: inherit;
+  transition: border-color 0.15s ease;
+}
+.gpl-pairs__card:hover { border-color: rgb(var(--color-foreground, 148 163 184) / 0.35); }
+.gpl-pairs__img { width: 3.25rem; height: 3.25rem; object-fit: cover; border-radius: 0.5rem; flex-shrink: 0; }
+.gpl-pairs__title { margin: 0; font-size: 0.78rem; font-weight: 600; line-height: 1.3; }
+.gpl-pairs__price { margin: 0.15rem 0 0; font-size: 0.72rem; opacity: 0.65; }`,
+      js: `(function () {
+  var el = document.querySelector('[data-gpl-pairs]');
+  if (!el) return;
+  var grid = el.querySelector('[data-gpl-pairs-grid]');
+  var limit = parseInt(el.getAttribute('data-limit'), 10) || 4;
+  var url = window.Shopify && Shopify.routes && Shopify.routes.product_recommendations_url
+    ? Shopify.routes.product_recommendations_url
+    : '/recommendations/products';
+  fetch(url + '.json?product_id=' + el.getAttribute('data-product') + '&limit=' + limit + '&intent=complementary')
+    .then(function (r) { return r.json(); })
+    .then(function (data) {
+      (data.products || []).slice(0, limit).forEach(function (p) {
+        var a = document.createElement('a');
+        a.className = 'gpl-pairs__card';
+        a.href = p.url;
+        var img = p.featured_image ? '<img class="gpl-pairs__img" src="' + p.featured_image + '&width=104" alt="" loading="lazy">' : '';
+        var money = (p.price / 100).toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+        a.innerHTML = img + '<span><p class="gpl-pairs__title"></p><p class="gpl-pairs__price">' + money + '</p></span>';
+        a.querySelector('.gpl-pairs__title').textContent = p.title;
+        grid.appendChild(a);
+      });
+      if (grid.children.length) el.hidden = false;
+    })
+    .catch(function () { /* no recommendations - stays hidden */ });
+})();`,
+      usage: `{% render 'pairs-well-with' %}`,
+    }),
+  },
+  {
+    id: "spec-table",
+    name: "Product spec table",
+    description: "A clean key/value specs table fed by metafields - shoppers scan it in seconds instead of digging through the description.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [{ id: "accent", label: "Row accent", type: "color" }],
+    defaults: { accent: "#0f172a" },
+    install: [
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "Create product metafields (Settings > Custom data > Products) for each spec - e.g. custom.material, custom.weight.",
+      "Create snippets/spec-table.liquid, paste the code and CSS, and render it on the product page.",
+      "Rows only render when their metafield has a value - empty specs disappear automatically.",
+    ],
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Edit the row list to match YOUR metafields. Rows skip themselves when the
+  metafield is blank, so the same snippet works across product types.
+{%- endcomment -%}
+{%- assign specs = 'Material,custom.material|Weight,custom.weight|Dimensions,custom.dimensions|Warranty,custom.warranty|SKU,variant.sku' | split: '|' -%}
+<div class="gpl-specs">
+  <p class="gpl-specs__head">Specifications</p>
+  <table class="gpl-specs__table">
+    <tbody>
+      {%- for row in specs -%}
+        {%- assign parts = row | split: ',' -%}
+        {%- assign label = parts[0] -%}
+        {%- assign key = parts[1] -%}
+        {%- assign value = '' -%}
+        {%- if key == 'variant.sku' -%}
+          {%- assign value = product.selected_or_first_available_variant.sku -%}
+        {%- else -%}
+          {%- assign value = product.metafields[key].value -%}
+        {%- endif -%}
+        {%- if value != blank -%}
+          <tr>
+            <th scope="row">{{ label | escape }}</th>
+            <td>{{ value }}</td>
+          </tr>
+        {%- endif -%}
+      {%- endfor -%}
+    </tbody>
+  </table>
+</div>`,
+      css: `.gpl-specs { margin: 1.25rem 0; }
+.gpl-specs__head { margin: 0 0 0.6rem; font-size: 0.95rem; font-weight: 700; color: ${hex(v, "accent")}; }
+.gpl-specs__table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.gpl-specs__table th,
+.gpl-specs__table td { padding: 0.55rem 0.25rem; text-align: left; border-bottom: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.12); }
+.gpl-specs__table th { font-weight: 600; width: 38%; opacity: 0.7; }
+.gpl-specs__table tr:last-child th,
+.gpl-specs__table tr:last-child td { border-bottom: 0; }`,
+      usage: `{% render 'spec-table' %}`,
+    }),
+  },
+  {
+    id: "gift-wrap",
+    name: "Gift wrap option",
+    description: "A checkbox that adds a gift message and wrap note as line-item properties - easy AOV lift around gifting seasons.",
+    category: "Cart & checkout",
+    kind: "snippet",
+    controls: [
+      { id: "label", label: "Checkbox label", type: "text", maxLength: 60 },
+      { id: "price_note", label: "Price note", type: "text", maxLength: 40 },
+    ],
+    defaults: { label: "Add gift wrap & a handwritten note", price_note: "+ Rs. 49" },
+    install: [
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "Create snippets/gift-wrap.liquid, paste the code and CSS.",
+      "Render it inside your product <form> so the properties travel with the add-to-cart request.",
+      "Fulfil it as a line-item property (shows on the packing slip). Charge for it via a separate product or free - your call.",
+    ],
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Adds properties[Gift wrap] and properties[Gift message] to the line item.
+  Render INSIDE the product form so they submit with Add to cart.
+{%- endcomment -%}
+<div class="gpl-gift">
+  <label class="gpl-gift__check">
+    <input type="checkbox" name="properties[Gift wrap]" value="Yes" data-gpl-gift>
+    <span>{{ label | default: '${v.label}' | escape }} <em>{{ price_note | default: '${v.price_note}' | escape }}</em></span>
+  </label>
+  <div class="gpl-gift__msg" data-gpl-gift-msg hidden>
+    <label class="gpl-gift__msglabel" for="gpl-gift-msg">Your message (optional)</label>
+    <textarea id="gpl-gift-msg" name="properties[Gift message]" rows="2" maxlength="200" placeholder="Happy birthday! Love, Priya"></textarea>
+  </div>
+</div>`,
+      css: `.gpl-gift { margin: 0.9rem 0; }
+.gpl-gift__check {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2);
+  border-radius: 0.75rem;
+  cursor: pointer; font-size: 0.85rem;
+}
+.gpl-gift__check input { width: 1rem; height: 1rem; accent-color: rgb(var(--color-button, 21 128 61)); }
+.gpl-gift__check em { font-style: normal; font-size: 0.75rem; opacity: 0.6; margin-left: 0.3rem; }
+.gpl-gift__msg { margin-top: 0.6rem; }
+.gpl-gift__msglabel { display: block; font-size: 0.75rem; font-weight: 600; margin-bottom: 0.3rem; }
+.gpl-gift__msg textarea {
+  width: 100%; padding: 0.55rem 0.7rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25);
+  border-radius: 0.6rem; background: transparent; color: inherit;
+  font: inherit; font-size: 0.85rem; resize: vertical;
+}`,
+      js: `document.querySelectorAll('[data-gpl-gift]').forEach((cb) => {
+  const msg = cb.closest('.gpl-gift').querySelector('[data-gpl-gift-msg]');
+  const toggle = () => (msg.hidden = !cb.checked);
+  cb.addEventListener('change', toggle);
+  toggle();
+});`,
+      usage: `{% render 'gift-wrap' %}`,
+    }),
+  },
+  {
+    id: "breadcrumb",
+    name: "Breadcrumb + SEO schema",
+    description: "Home > Collection > Product navigation with BreadcrumbList JSON-LD - helps wayfinding and rich results in search.",
+    category: "Headers & navigation",
+    kind: "snippet",
+    controls: [{ id: "accent", label: "Link colour", type: "color" }],
+    defaults: { accent: "#475569" },
+    install: [
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "Create snippets/breadcrumb.liquid, paste the code and CSS.",
+      "Render it at the top of product and collection templates.",
+      "The JSON-LD outputs BreadcrumbList schema - verify in Google's Rich Results Test.",
+    ],
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Emits visible crumbs + BreadcrumbList JSON-LD. Position URLs match the
+  visible order so search engines see the same trail users do.
+{%- endcomment -%}
+<nav class="gpl-crumbs" aria-label="Breadcrumb">
+  <ol class="gpl-crumbs__list">
+    <li><a href="/" class="gpl-crumbs__link">Home</a></li>
+    {%- if collection -%}
+      <li aria-hidden="true" class="gpl-crumbs__sep">/</li>
+      <li><a href="{{ collection.url }}" class="gpl-crumbs__link">{{ collection.title | escape }}</a></li>
+    {%- elsif product.collections.first -%}
+      <li aria-hidden="true" class="gpl-crumbs__sep">/</li>
+      <li><a href="{{ product.collections.first.url }}" class="gpl-crumbs__link">{{ product.collections.first.title | escape }}</a></li>
+    {%- endif -%}
+    {%- if product -%}
+      <li aria-hidden="true" class="gpl-crumbs__sep">/</li>
+      <li aria-current="page" class="gpl-crumbs__current">{{ product.title | escape }}</li>
+    {%- endif -%}
+  </ol>
+</nav>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    { "@type": "ListItem", "position": 1, "name": "Home", "item": {{ shop.url | json }} }
+    {%- if collection -%}
+      ,{ "@type": "ListItem", "position": 2, "name": {{ collection.title | json }}, "item": {{ shop.url | append: collection.url | json }} }
+    {%- elsif product.collections.first -%}
+      ,{ "@type": "ListItem", "position": 2, "name": {{ product.collections.first.title | json }}, "item": {{ shop.url | append: product.collections.first.url | json }} }
+    {%- endif -%}
+    {%- if product -%}
+      ,{ "@type": "ListItem", "position": 3, "name": {{ product.title | json }}, "item": {{ canonical_url | json }} }
+    {%- endif -%}
+  ]
+}
+</script>`,
+      css: `.gpl-crumbs { font-size: 0.78rem; margin: 0.5rem 0 1rem; }
+.gpl-crumbs__list { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; list-style: none; margin: 0; padding: 0; }
+.gpl-crumbs__link { color: ${hex(v, "accent")}; text-decoration: none; }
+.gpl-crumbs__link:hover { text-decoration: underline; }
+.gpl-crumbs__sep { color: rgb(var(--color-foreground, 148 163 184) / 0.5); }
+.gpl-crumbs__current { opacity: 0.75; }`,
+      usage: `{% render 'breadcrumb' %}`,
+    }),
+  },
 ];
 
 export function getExample(id: string | undefined): PlaygroundExample {

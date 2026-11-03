@@ -1007,6 +1007,206 @@ function LogoMarquee({ v }: P) {
   );
 }
 
+function TestimonialSlider({ v }: P) {
+  const quotes = [
+    { quote: "Exactly as described, quality is way better than I expected for the price.", name: "Priya · Mumbai" },
+    { quote: "Ordered Monday, delivered Wednesday. Packaging was beautiful.", name: "Rahul · Delhi" },
+    { quote: "Third purchase from this store - they never miss.", name: "Ananya · Bengaluru" },
+  ];
+  const [i, setI] = useState(0);
+  const auto = on(v, "autoplay");
+  useEffect(() => {
+    if (!auto) return;
+    const t = setInterval(() => setI((x) => (x + 1) % quotes.length), 4000);
+    return () => clearInterval(t);
+  }, [auto, quotes.length]);
+  const q = quotes[i]!;
+  return (
+    <div className="p-8 text-center">
+      <div className="mb-3 flex justify-center gap-0.5" style={{ color: hex(v, "accent") }}>
+        {Array.from({ length: 5 }).map((_, j) => (
+          <svg key={j} viewBox="0 0 20 20" className="size-4" fill="currentColor" aria-hidden>
+            <path d="M10 1.5l2.6 5.3 5.9.9-4.2 4.1 1 5.8-5.3-2.8-5.3 2.8 1-5.8L1.5 7.7l5.9-.9z" />
+          </svg>
+        ))}
+      </div>
+      <blockquote className="m-0 text-base font-medium leading-relaxed">&ldquo;{q.quote}&rdquo;</blockquote>
+      <p className="m-0 mt-3 text-xs text-neutral-500">{q.name}</p>
+      <div className="mt-4 flex justify-center gap-1.5">
+        {quotes.map((_, j) => (
+          <button
+            key={j}
+            type="button"
+            onClick={() => setI(j)}
+            aria-label={`Show testimonial ${j + 1}`}
+            className="size-2 rounded-full transition"
+            style={{ background: j === i ? hex(v, "accent") : "#cbd5e1" }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function BeforeAfter({ v }: P) {
+  const [pos, setPos] = useState(50);
+  return (
+    <div className="p-6">
+      <div className="relative overflow-hidden rounded-xl select-none">
+        <div className="grid h-52 place-items-center bg-gradient-to-br from-mint/60 to-emerald-200 text-sm font-semibold text-emerald-900">AFTER</div>
+        <div className="absolute inset-0 grid place-items-center bg-gradient-to-br from-slate-300 to-slate-200 text-sm font-semibold text-slate-600 transition-[clip-path]" style={{ clipPath: `inset(0 ${100 - pos}% 0 0)` }}>
+          BEFORE
+        </div>
+        <span className="absolute left-3 top-3 rounded-full bg-black/50 px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-wide text-white">Before</span>
+        <span className="absolute right-3 top-3 rounded-full bg-black/50 px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-wide text-white">After</span>
+        <input
+          type="range"
+          min="0"
+          max="100"
+          value={pos}
+          onChange={(e) => setPos(Number(e.target.value))}
+          aria-label="Reveal before and after comparison"
+          className="absolute inset-0 h-full w-full cursor-ew-resize opacity-0"
+        />
+        <span className="pointer-events-none absolute inset-y-0 w-0.5" style={{ left: `${pos}%`, background: hex(v, "accent") }} />
+      </div>
+      <p className="m-0 mt-2 text-center text-[0.65rem] text-neutral-400">Drag to compare - placeholder blocks stand in for the real photos.</p>
+    </div>
+  );
+}
+
+function EmiNote({ v }: P) {
+  const n = Number(v.parts) || 3;
+  const each = Math.round(2499 / n);
+  return (
+    <div className="p-6">
+      <p className="m-0 text-lg font-bold">Rs. 2,499</p>
+      <p className="m-0 mt-1 text-sm">
+        or <strong style={{ color: hex(v, "accent") }}>{n} payments of Rs. {each.toLocaleString("en-IN")}</strong>
+        <span className="ml-1.5 text-[0.7rem] text-neutral-400">available at checkout</span>
+      </p>
+      <p className="m-0 mt-3 text-[0.65rem] text-neutral-400">Only show this if your payment provider actually offers instalments.</p>
+    </div>
+  );
+}
+
+function CutoffTimer({ v }: P) {
+  const [left, setLeft] = useState("2h 15m 00s");
+  useEffect(() => {
+    const tick = () => {
+      const now = new Date();
+      const cut = new Date(now);
+      cut.setHours(Number(v.hour) || 16, 0, 0, 0);
+      const ms = Math.max(0, cut.getTime() - now.getTime());
+      const h = Math.floor(ms / 3.6e6);
+      const m = Math.floor((ms % 3.6e6) / 6e4);
+      const s = Math.floor((ms % 6e4) / 1e3);
+      setLeft(h > 0 ? `${h}h ${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s` : `${String(m).padStart(2, "0")}m ${String(s).padStart(2, "0")}s`);
+    };
+    tick();
+    const t = setInterval(tick, 1000);
+    return () => clearInterval(t);
+  }, [v.hour]);
+  return (
+    <div className="flex items-center gap-2.5 p-6 text-sm">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" className="size-5" style={{ color: hex(v, "accent") }} aria-hidden>
+        <circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 3" />
+      </svg>
+      <p className="m-0">
+        Order within <strong style={{ color: hex(v, "accent") }}>{left}</strong> for same-day dispatch
+      </p>
+    </div>
+  );
+}
+
+function PairsWellWith({ v }: P) {
+  const items = [
+    { title: "Linen shorts", price: "Rs. 1,299" },
+    { title: "Canvas cap", price: "Rs. 699" },
+    { title: "Woven belt", price: "Rs. 549" },
+    { title: "Summer socks (3-pack)", price: "Rs. 399" },
+  ].slice(0, Number(v.limit) || 4);
+  return (
+    <div className="p-6">
+      <p className="m-0 mb-3 text-sm font-bold">{str(v, "heading", 40) || "Pairs well with"}</p>
+      <div className="grid grid-cols-2 gap-2.5">
+        {items.map((i) => (
+          <a key={i.title} className="flex items-center gap-2.5 rounded-xl border border-slate-200 p-2.5 no-underline transition hover:border-slate-300">
+            <span className="block size-12 shrink-0 rounded-lg bg-gradient-to-br from-slate-200 to-slate-100" />
+            <span>
+              <span className="block text-xs font-semibold leading-snug">{i.title}</span>
+              <span className="mt-0.5 block text-[0.7rem] text-neutral-500">{i.price}</span>
+            </span>
+          </a>
+        ))}
+      </div>
+      <p className="m-0 mt-3 text-[0.65rem] text-neutral-400">Live data comes from Shopify&apos;s Search &amp; Discovery recommendations.</p>
+    </div>
+  );
+}
+
+function SpecTable() {
+  const rows = [
+    ["Material", "100% organic linen"],
+    ["Weight", "180 gsm"],
+    ["Care", "Machine wash cold"],
+    ["SKU", "GPL-OSH-001"],
+  ];
+  return (
+    <div className="p-6">
+      <p className="m-0 mb-2.5 text-sm font-bold">Specifications</p>
+      <table className="w-full border-collapse text-sm">
+        <tbody>
+          {rows.map(([k, val]) => (
+            <tr key={k} className="border-b border-slate-200 last:border-0">
+              <th scope="row" className="w-2/5 py-2 text-left font-medium text-neutral-500">{k}</th>
+              <td className="py-2">{val}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <p className="m-0 mt-3 text-[0.65rem] text-neutral-400">Rows render from metafields - empty specs hide automatically.</p>
+    </div>
+  );
+}
+
+function GiftWrap({ v }: P) {
+  const [checked, setChecked] = useState(false);
+  return (
+    <div className="p-6">
+      <label className="flex cursor-pointer items-center gap-2.5 rounded-xl border border-slate-200 p-3 text-sm">
+        <input type="checkbox" checked={checked} onChange={(e) => setChecked(e.target.checked)} className="size-4 accent-[#15803d]" />
+        <span>
+          {str(v, "label", 60) || "Add gift wrap & a handwritten note"}{" "}
+          <em className="text-xs not-italic text-neutral-500">{str(v, "price_note", 40)}</em>
+        </span>
+      </label>
+      {checked && (
+        <div className="mt-2.5">
+          <label className="mb-1 block text-xs font-semibold" htmlFor="gw-msg">Your message (optional)</label>
+          <textarea id="gw-msg" rows={2} maxLength={200} placeholder="Happy birthday! Love, Priya" className="w-full resize-vertical rounded-lg border border-slate-300 bg-transparent p-2.5 text-sm" />
+        </div>
+      )}
+      <p className="m-0 mt-3 text-[0.65rem] text-neutral-400">Travels as line-item properties - visible on the packing slip.</p>
+    </div>
+  );
+}
+
+function Breadcrumb({ v }: P) {
+  return (
+    <div className="p-6">
+      <ol className="m-0 flex list-none flex-wrap items-center gap-1.5 p-0 text-xs">
+        <li><a className="font-medium" style={{ color: hex(v, "accent") }}>Home</a></li>
+        <li className="text-neutral-400">/</li>
+        <li><a className="font-medium" style={{ color: hex(v, "accent") }}>Shirts</a></li>
+        <li className="text-neutral-400">/</li>
+        <li className="text-neutral-600">Linen overshirt</li>
+      </ol>
+      <p className="m-0 mt-3 text-[0.65rem] text-neutral-400">Emits BreadcrumbList JSON-LD for richer search results.</p>
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -1040,6 +1240,14 @@ const map: Record<string, (p: P) => ReactNode> = {
   "sale-badge": SaleBadge,
   "product-tabs": ProductTabs,
   "logo-marquee": LogoMarquee,
+  "testimonial-slider": TestimonialSlider,
+  "before-after": BeforeAfter,
+  "emi-note": EmiNote,
+  "cutoff-timer": CutoffTimer,
+  "pairs-well-with": PairsWellWith,
+  "spec-table": SpecTable,
+  "gift-wrap": GiftWrap,
+  "breadcrumb": Breadcrumb,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {
