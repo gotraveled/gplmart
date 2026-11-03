@@ -9780,6 +9780,785 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
 .gpl-staff__price { display: block; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
     }),
   },
+  {
+    id: "multi-column-footer",
+    name: "Footer link columns",
+    description: "Structured footer with Shop / Help / Company columns + contact strip - the nav most stores skip until it's too late.",
+    category: "Headers & navigation",
+    kind: "section",
+    controls: [
+      { id: "cols", label: "Columns (heading|links per line, links comma-separated)", type: "text", maxLength: 400 },
+      { id: "phone", label: "Phone", type: "text", maxLength: 15 },
+    ],
+    defaults: {
+      cols: "Shop|New in,Bestsellers,Sale\nHelp|Track order,Returns,Contact\nCompany|About,Careers,Press",
+      phone: "+919876543210",
+    },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<footer class="gpl-footer">
+  <div class="gpl-footer__grid">
+    {%- assign rows = section.settings.cols | newline_to_br | split: '<br />' -%}
+    {%- for row in rows -%}
+      {%- assign parts = row | strip | split: '|' -%}
+      <div class="gpl-footer__col">
+        <p class="gpl-footer__head">{{ parts[0] | strip }}</p>
+        {%- assign links = parts[1] | split: ',' -%}
+        {%- for l in links -%}
+          <a class="gpl-footer__link" href="#">{{ l | strip }}</a>
+        {%- endfor -%}
+      </div>
+    {%- endfor -%}
+  </div>
+  {%- if section.settings.phone != blank -%}
+    <div class="gpl-footer__contact">
+      <a href="tel:{{ section.settings.phone | remove: ' ' }}">{{ section.settings.phone }}</a>
+      <span>{{ shop.name }}</span>
+    </div>
+  {%- endif -%}
+</footer>
+
+{% schema %}
+{
+  "name": "Footer",
+  "settings": [
+    { "type": "textarea", "id": "cols", "label": "Columns (heading|links per line)", "default": ${js(str(v, "cols"))} },
+    { "type": "text", "id": "phone", "label": "Phone", "default": ${js(str(v, "phone"))} }
+  ],
+  "presets": [{ "name": "Footer" }]
+}
+{% endschema %}`,
+      css: `.gpl-footer { border-top: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.15); padding: 2rem 0 1.5rem; }
+.gpl-footer__grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 2rem; }
+.gpl-footer__head { margin: 0 0 0.8rem; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-footer__link { display: block; padding: 0.35rem 0; font-size: 0.78rem; text-decoration: none; color: inherit; }
+.gpl-footer__link:hover { color: rgb(var(--color-button, 21 128 61)); }
+.gpl-footer__contact { display: flex; justify-content: space-between; gap: 1rem; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.15); font-size: 0.72rem; }
+.gpl-footer__contact a { font-weight: 700; text-decoration: none; color: inherit; }
+.gpl-footer__contact span { color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+    }),
+  },
+  {
+    id: "business-hours",
+    name: "Store hours card",
+    description: "'Open today 10am-7pm' - for stores with a physical location or phone support.",
+    category: "Utility",
+    kind: "snippet",
+    controls: [
+      { id: "hours", label: "Hours per line (day|hours)", type: "text", maxLength: 200 },
+    ],
+    defaults: { hours: "Mon-Fri|10am - 7pm\nSat|10am - 5pm\nSun|Closed" },
+    install: snippetSteps("business-hours.liquid"),
+    files: (v) => ({
+      liquid: `<div class="gpl-hours2">
+  <p class="gpl-hours2__title">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+    Store hours
+  </p>
+  {%- assign rows = hours | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <p class="gpl-hours2__row"><span>{{ parts[0] | strip }}</span><span>{{ parts[1] | strip }}</span></p>
+  {%- endfor -%}
+</div>`,
+      css: `.gpl-hours2 { margin: 0.75rem 0; font-size: 0.72rem; }
+.gpl-hours2__title { display: flex; align-items: center; gap: 0.4rem; margin: 0 0 0.6rem; font-weight: 700; font-size: 0.75rem; }
+.gpl-hours2__title svg { width: 0.9rem; height: 0.9rem; }
+.gpl-hours2__row { display: flex; justify-content: space-between; margin: 0.25rem 0; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }`,
+      usage: `{% render 'business-hours', hours: ${js(str(v, "hours"))} %}`,
+    }),
+  },
+  {
+    id: "pickup-availability",
+    name: "Buy online, pickup in store",
+    description: "'Available for pickup at [location]' - BOPIS badge using Shopify's real pickup availability.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [],
+    defaults: {},
+    install: [
+      ...snippetSteps("pickup-availability.liquid"),
+      "Requires pickup enabled in Shopify admin (Settings > Locations) - shows real store stock.",
+    ],
+    files: () => ({
+      liquid: `<div class="gpl-pickup">
+  {%- assign pickup = product.selected_or_first_available_variant.store_availabilities | where: 'pick_up_enabled', true | first -%}
+  {%- if pickup -%}
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+    <div>
+      <p class="gpl-pickup__title">Pickup available at {{ pickup.location.name }}</p>
+      <p class="gpl-pickup__sub">Usually ready in {{ pickup.pick_up_time }}</p>
+    </div>
+  {%- endif -%}
+</div>`,
+      css: `.gpl-pickup { display: flex; align-items: flex-start; gap: 0.6rem; margin: 0.75rem 0; }
+.gpl-pickup svg { width: 1rem; height: 1rem; color: #16a34a; margin-top: 0.1rem; flex-shrink: 0; }
+.gpl-pickup__title { margin: 0; font-size: 0.72rem; font-weight: 700; }
+.gpl-pickup__sub { margin: 0.2rem 0 0; font-size: 0.62rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+      usage: `{% render 'pickup-availability', product: product %}`,
+    }),
+  },
+  {
+    id: "whatsapp-order-status",
+    name: "Check order on WhatsApp",
+    description: "'Track your order on WhatsApp' - opens a chat with the order number prefilled. India's preferred support channel.",
+    category: "Utility",
+    kind: "snippet",
+    controls: [
+      { id: "wa", label: "WhatsApp number", type: "text", maxLength: 15 },
+      { id: "label", label: "Button label", type: "text", maxLength: 30 },
+    ],
+    defaults: { wa: "919876543210", label: "Check order on WhatsApp" },
+    install: snippetSteps("whatsapp-order-status.liquid"),
+    files: (v) => ({
+      liquid: `{%- assign msg = 'Hi, checking on my order ' | append: order.name | default: '' | append: ' - ' | append: shop.name | url_encode -%}
+<a class="gpl-waos" href="https://wa.me/{{ wa }}?text={{ msg }}" target="_blank" rel="noopener">
+  <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.9 1.22 3.09.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.62.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35"/></svg>
+  {{ label | default: 'Check on WhatsApp' }}
+</a>`,
+      css: `.gpl-waos {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.3rem;
+  border-radius: 999px;
+  border: 1px solid #25d366;
+  color: #128c7e;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+.gpl-waos svg { width: 0.9rem; height: 0.9rem; }`,
+      usage: `{% render 'whatsapp-order-status', order: order, wa: ${js(str(v, "wa"))}, label: ${js(str(v, "label"))} %}`,
+    }),
+  },
+  {
+    id: "cod-partial-advance",
+    name: "COD partial advance note",
+    description: "'Pay ₹200 now, rest on delivery' - the RTO-reduction trick Indian COD stores use.",
+    category: "Cart & checkout",
+    kind: "snippet",
+    controls: [
+      { id: "amount", label: "Advance amount", type: "text", maxLength: 10 },
+      { id: "text", label: "Explanation", type: "text", maxLength: 80 },
+    ],
+    defaults: { amount: "₹200", text: "Pay a small advance online, rest on delivery - reduces fake orders" },
+    install: [
+      ...snippetSteps("cod-partial-advance.liquid"),
+      "This is a display note - the actual split-payment setup happens in your payment provider, not the theme.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-codadv">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/><path d="M6 12h.01M18 12h.01"/></svg>
+  <div>
+    <p class="gpl-codadv__title">COD with {{ amount | default: 'a small' }} advance</p>
+    <p class="gpl-codadv__text">{{ text | default: '' }}</p>
+  </div>
+</div>`,
+      css: `.gpl-codadv { display: flex; align-items: flex-start; gap: 0.6rem; margin: 0.75rem 0; padding: 0.8rem; border: 1px dashed rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 9px; }
+.gpl-codadv svg { width: 1rem; height: 1rem; margin-top: 0.1rem; flex-shrink: 0; }
+.gpl-codadv__title { margin: 0; font-size: 0.72rem; font-weight: 700; }
+.gpl-codadv__text { margin: 0.2rem 0 0; font-size: 0.62rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+      usage: `{% render 'cod-partial-advance', amount: ${js(str(v, "amount"))}, text: ${js(str(v, "text"))} %}`,
+    }),
+  },
+  {
+    id: "open-box-badge",
+    name: "Open box delivery badge",
+    description: "'Open box delivery - inspect before you pay' - the COD trust feature Indian shoppers actively look for.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "text", label: "Badge text", type: "text", maxLength: 60 },
+    ],
+    defaults: { text: "Open box delivery - check before you pay" },
+    install: snippetSteps("open-box-badge.liquid"),
+    files: (v) => ({
+      liquid: `<p class="gpl-openbox">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+  {{ text | default: 'Open box delivery available' }}
+</p>`,
+      css: `.gpl-openbox { display: flex; align-items: center; gap: 0.45rem; margin: 0.5rem 0; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
+.gpl-openbox svg { width: 0.85rem; height: 0.85rem; color: rgb(var(--color-button, 21 128 61)); flex-shrink: 0; }`,
+      usage: `{% render 'open-box-badge', text: ${js(str(v, "text"))} %}`,
+    }),
+  },
+  {
+    id: "gst-note",
+    name: "GST included note",
+    description: "'All prices include GST' - the transparency Indian buyers check before checkout.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "text", label: "Note text", type: "text", maxLength: 60 },
+    ],
+    defaults: { text: "All prices include GST" },
+    install: snippetSteps("gst-note.liquid"),
+    files: (v) => ({
+      liquid: `<p class="gpl-gst">{{ text | default: 'All prices include GST' }}</p>`,
+      css: `.gpl-gst { margin: 0.3rem 0; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.7); }`,
+      usage: `{% render 'gst-note', text: ${js(str(v, "text"))} %}`,
+    }),
+  },
+  {
+    id: "ship-zones-note",
+    name: "Shipping coverage note",
+    description: "'Ships across India / ships from [city]' - answers 'do they deliver here' before the question forms.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "text", label: "Coverage text", type: "text", maxLength: 60 },
+      { id: "city", label: "Ships from (optional)", type: "text", maxLength: 30 },
+    ],
+    defaults: { text: "Ships across India", city: "Jaipur" },
+    install: snippetSteps("ship-zones-note.liquid"),
+    files: (v) => ({
+      liquid: `<p class="gpl-ship2">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+  {{ text | default: 'Ships across India' }}{%- if city != blank %} &middot; from {{ city }}{% endif %}
+</p>`,
+      css: `.gpl-ship2 { display: flex; align-items: center; gap: 0.45rem; margin: 0.4rem 0; font-size: 0.7rem; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
+.gpl-ship2 svg { width: 0.85rem; height: 0.85rem; }`,
+      usage: `{% render 'ship-zones-note', text: ${js(str(v, "text"))}, city: ${js(str(v, "city"))} %}`,
+    }),
+  },
+  {
+    id: "bulk-pricing-note",
+    name: "Bulk pricing hint",
+    description: "'20+ units? Contact for bulk pricing' - surfaces the B2B option on a retail PDP.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "qty", label: "Minimum qty", type: "text", maxLength: 5 },
+      { id: "text", label: "Note text", type: "text", maxLength: 60 },
+    ],
+    defaults: { qty: "20", text: "units? Get bulk pricing" },
+    install: snippetSteps("bulk-pricing-note.liquid"),
+    files: (v) => ({
+      liquid: `<a class="gpl-bulk2" href="/pages/contact?subject=bulk-{{ product.handle }}">
+  Ordering {{ qty | default: '20' }}+ {{ text | default: 'units?' }} &rarr;
+</a>`,
+      css: `.gpl-bulk2 { display: inline-block; margin: 0.4rem 0; font-size: 0.68rem; font-weight: 700; color: rgb(var(--color-button, 21 128 61)); text-decoration: none; }
+.gpl-bulk2:hover { text-decoration: underline; }`,
+      usage: `{% render 'bulk-pricing-note', product: product, qty: ${js(str(v, "qty"))}, text: ${js(str(v, "text"))} %}`,
+    }),
+  },
+  {
+    id: "sample-request",
+    name: "Order a sample button",
+    description: "'Order a swatch/sample first' - the try-before-commit CTA for fabrics, materials and custom products.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "label", label: "Button label", type: "text", maxLength: 30 },
+      { id: "price", label: "Sample price", type: "text", maxLength: 10 },
+    ],
+    defaults: { label: "Order a sample", price: "₹99" },
+    install: [
+      ...snippetSteps("sample-request.liquid"),
+      "Create a sample product (hidden, cheap) and point this at it - converts hesitant buyers into testers.",
+    ],
+    files: (v) => ({
+      liquid: `<a class="gpl-sample" href="/products/sample-{{ product.handle }}">
+  {{ label | default: 'Order a sample' }} - {{ price | default: '' }}
+</a>`,
+      css: `.gpl-sample { display: inline-block; margin: 0.4rem 0; padding: 0.55rem 1.15rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 999px; font-size: 0.72rem; font-weight: 700; text-decoration: none; color: inherit; }
+.gpl-sample:hover { border-color: rgb(var(--color-button, 21 128 61)); color: rgb(var(--color-button, 21 128 61)); }`,
+      usage: `{% render 'sample-request', product: product, label: ${js(str(v, "label"))}, price: ${js(str(v, "price"))} %}`,
+    }),
+  },
+  {
+    id: "emi-calculator",
+    name: "EMI calculator",
+    description: "Type a price, pick a tenure, see monthly amount - answers 'can I afford this' before checkout.",
+    category: "Utility",
+    kind: "snippet",
+    controls: [
+      { id: "price", label: "Default price (₹)", type: "text", maxLength: 8 },
+      { id: "rate", label: "Interest rate % (0 for no-cost)", type: "text", maxLength: 5 },
+    ],
+    defaults: { price: "24990", rate: "0" },
+    install: snippetSteps("emi-calculator.liquid"),
+    files: (v) => ({
+      liquid: `<gpl-emicalc class="gpl-emicalc" data-rate="{{ rate | default: 0 }}">
+  <p class="gpl-emicalc__title">EMI calculator</p>
+  <input type="number" class="gpl-emicalc__input" value="{{ price | default: 0 }}" data-price placeholder="Price">
+  <div class="gpl-emicalc__terms">
+    {%- for m in (3..12) -%}
+      {%- if m == 3 or m == 6 or m == 9 or m == 12 -%}
+        <button type="button" data-months="{{ m }}">{{ m }} mo</button>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+  <p class="gpl-emicalc__result" data-result></p>
+</gpl-emicalc>`,
+      css: `.gpl-emicalc { margin: 0.75rem 0; padding: 0.9rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2); border-radius: 10px; }
+.gpl-emicalc__title { margin: 0 0 0.6rem; font-size: 0.75rem; font-weight: 800; }
+.gpl-emicalc__input { width: 100%; padding: 0.55rem 0.7rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 8px; font-size: 0.75rem; margin-bottom: 0.5rem; }
+.gpl-emicalc__terms { display: flex; gap: 0.4rem; }
+.gpl-emicalc__terms button { flex: 1; padding: 0.4rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25); border-radius: 6px; background: none; font-size: 0.65rem; cursor: pointer; color: inherit; }
+.gpl-emicalc__terms button.is-sel { background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); border-color: transparent; }
+.gpl-emicalc__result { margin: 0.6rem 0 0; font-size: 0.78rem; font-weight: 700; }`,
+      js: `document.querySelectorAll('gpl-emicalc').forEach((el) => {
+  const price = el.querySelector('[data-price]');
+  const res = el.querySelector('[data-result]');
+  const rate = Number(el.dataset.rate) / 100;
+  el.querySelectorAll('[data-months]').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      el.querySelectorAll('[data-months]').forEach((b) => b.classList.remove('is-sel'));
+      btn.classList.add('is-sel');
+      const p = Number(price.value);
+      const n = Number(btn.dataset.months);
+      const monthly = rate ? (p * rate / 12 * Math.pow(1 + rate / 12, n)) / (Math.pow(1 + rate / 12, n) - 1) : p / n;
+      res.textContent = '₹' + Math.round(monthly).toLocaleString('en-IN') + '/month for ' + n + ' months';
+    });
+  });
+});`,
+      usage: `{% render 'emi-calculator', price: ${js(str(v, "price"))}, rate: ${js(str(v, "rate"))} %}`,
+    }),
+  },
+  {
+    id: "delivery-slot-picker",
+    name: "Delivery time slot picker",
+    description: "Choose a delivery window (morning/afternoon/evening) - saves to order attributes.",
+    category: "Cart & checkout",
+    kind: "snippet",
+    controls: [],
+    defaults: {},
+    install: snippetSteps("delivery-slot-picker.liquid"),
+    files: () => ({
+      liquid: `<div class="gpl-slot">
+  <label class="gpl-slot__label" for="gpl-slot-sel">Preferred delivery time</label>
+  <select id="gpl-slot-sel" name="attributes[Delivery slot]" class="gpl-slot__sel">
+    <option value="">Any time</option>
+    <option>Morning (9am - 1pm)</option>
+    <option>Afternoon (1pm - 5pm)</option>
+    <option>Evening (5pm - 9pm)</option>
+  </select>
+</div>`,
+      css: `.gpl-slot { margin: 1rem 0; }
+.gpl-slot__label { display: block; font-size: 0.72rem; font-weight: 600; margin-bottom: 0.4rem; }
+.gpl-slot__sel { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 9px; background: transparent; font-size: 0.8rem; }`,
+      usage: `{% render 'delivery-slot-picker' %}`,
+    }),
+  },
+  {
+    id: "checkout-trust-strip",
+    name: "Checkout trust strip",
+    description: "'Secure | Easy returns | COD available' - the three reassurance points buyers check before paying.",
+    category: "Trust & social proof",
+    kind: "snippet",
+    controls: [],
+    defaults: {},
+    install: snippetSteps("checkout-trust-strip.liquid"),
+    files: () => ({
+      liquid: `<div class="gpl-ctstrip">
+  <span class="gpl-ctstrip__item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    Secure checkout
+  </span>
+  <span class="gpl-ctstrip__item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/></svg>
+    Easy returns
+  </span>
+  <span class="gpl-ctstrip__item">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg>
+    COD available
+  </span>
+</div>`,
+      css: `.gpl-ctstrip { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.75rem 1.5rem; margin: 1rem 0; padding: 0.75rem 0; border-top: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.15); }
+.gpl-ctstrip__item { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.8); }
+.gpl-ctstrip__item svg { width: 0.8rem; height: 0.8rem; color: #16a34a; }`,
+      usage: `{% render 'checkout-trust-strip' %}`,
+    }),
+  },
+  {
+    id: "language-selector",
+    name: "Language dropdown",
+    description: "Hindi / English / regional selector - connects to Shopify's language settings.",
+    category: "Headers & navigation",
+    kind: "snippet",
+    controls: [
+      { id: "langs", label: "Languages (comma separated)", type: "text", maxLength: 60 },
+    ],
+    defaults: { langs: "English, हिन्दी" },
+    install: [
+      ...snippetSteps("language-selector.liquid"),
+      "Shopify handles real translations via Settings > Languages - this is a visual selector for that setting.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-lang">
+  {%- assign ls = langs | split: ',' -%}
+  <select class="gpl-lang__sel" aria-label="Language" onchange="document.documentElement.lang = this.value">
+    {%- for l in ls -%}
+      <option>{{ l | strip }}</option>
+    {%- endfor -%}
+  </select>
+</div>`,
+      css: `.gpl-lang { display: inline-block; }
+.gpl-lang__sel { padding: 0.4rem 0.7rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 7px; background: transparent; font-size: 0.72rem; }`,
+      usage: `{% render 'language-selector', langs: ${js(str(v, "langs"))} %}`,
+    }),
+  },
+  {
+    id: "live-chat-status",
+    name: "Chat availability status",
+    description: "'Chat: online / offline' - shows support availability instead of a dead widget that never answers.",
+    category: "Utility",
+    kind: "snippet",
+    controls: [
+      { id: "status", label: "Status", type: "select", options: [{ value: "online", label: "Online now" }, { value: "away", label: "Away - leave a message" }] },
+      { id: "hours", label: "Hours note", type: "text", maxLength: 40 },
+    ],
+    defaults: { status: "online", hours: "10am - 7pm IST" },
+    install: snippetSteps("live-chat-status.liquid"),
+    files: (v) => ({
+      liquid: `<div class="gpl-chat{{ status == 'online' ? ' gpl-chat--on' : '' }}">
+  <span class="gpl-chat__dot"></span>
+  <span class="gpl-chat__label">Support chat{{ status == 'online' ? ' - online' : ' - away' }}</span>
+  {%- if hours != blank -%}
+    <span class="gpl-chat__hours">{{ hours }}</span>
+  {%- endif -%}
+</div>`,
+      css: `.gpl-chat { display: inline-flex; align-items: center; gap: 0.45rem; padding: 0.45rem 0.9rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25); border-radius: 999px; font-size: 0.68rem; }
+.gpl-chat__dot { width: 0.5rem; height: 0.5rem; border-radius: 999px; background: #9ca3af; }
+.gpl-chat--on .gpl-chat__dot { background: #16a34a; }
+.gpl-chat__label { font-weight: 700; }
+.gpl-chat__hours { color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+      usage: `{% render 'live-chat-status', status: ${js(str(v, "status"))}, hours: ${js(str(v, "hours"))} %}`,
+    }),
+  },
+  {
+    id: "allergen-warning",
+    name: "Allergen warning badge",
+    description: "'Contains nuts / dairy / gluten' - the food safety detail that's legally important, not just helpful.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "items", label: "Allergens (comma separated)", type: "text", maxLength: 80 },
+    ],
+    defaults: { items: "nuts, dairy" },
+    install: snippetSteps("allergen-warning.liquid"),
+    files: (v) => ({
+      liquid: `<div class="gpl-allergen">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>
+  <span>Contains: <b>{{ items | default: 'allergens' }}</b></span>
+</div>`,
+      css: `.gpl-allergen { display: flex; align-items: center; gap: 0.45rem; margin: 0.5rem 0; padding: 0.5rem 0.75rem; border-radius: 7px; background: rgb(245 158 11 / 0.1); font-size: 0.7rem; }
+.gpl-allergen svg { width: 0.85rem; height: 0.85rem; color: #d97706; flex-shrink: 0; }
+.gpl-allergen b { font-weight: 800; }`,
+      usage: `{% render 'allergen-warning', items: ${js(str(v, "items"))} %}`,
+    }),
+  },
+  {
+    id: "expiry-note",
+    name: "Best before / expiry note",
+    description: "'Best before Dec 2025' - for food, skincare and anything with shelf life.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "date", label: "Expiry/best before", type: "text", maxLength: 30 },
+    ],
+    defaults: { date: "December 2025" },
+    install: snippetSteps("expiry-note.liquid"),
+    files: (v) => ({
+      liquid: `<p class="gpl-expiry">Best before <b>{{ date | default: 'see label' }}</b></p>`,
+      css: `.gpl-expiry { margin: 0.3rem 0; font-size: 0.68rem; color: rgb(var(--color-foreground, 100 116 139) / 0.8); }
+.gpl-expiry b { font-weight: 700; }`,
+      usage: `{% render 'expiry-note', date: ${js(str(v, "date"))} %}`,
+    }),
+  },
+  {
+    id: "fragrance-notes",
+    name: "Fragrance notes pyramid",
+    description: "Top / heart / base notes layout - the standard perfume description structure.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "top", label: "Top notes", type: "text", maxLength: 60 },
+      { id: "heart", label: "Heart notes", type: "text", maxLength: 60 },
+      { id: "base", label: "Base notes", type: "text", maxLength: 60 },
+    ],
+    defaults: { top: "Bergamot, pink pepper", heart: "Jasmine, rose", base: "Sandalwood, musk" },
+    install: snippetSteps("fragrance-notes.liquid"),
+    files: (v) => ({
+      liquid: `<div class="gpl-frag">
+  {%- assign tiers = 'Top|Heart|Base' | split: '|' -%}
+  {%- assign vals = top | append: '|' | append: heart | append: '|' | append: base | split: '|' -%}
+  {%- for t in tiers -%}
+    <div class="gpl-frag__row">
+      <span class="gpl-frag__label">{{ t }}</span>
+      <span class="gpl-frag__val">{{ vals[forloop.index0] | default: '' }}</span>
+    </div>
+  {%- endfor -%}
+</div>`,
+      css: `.gpl-frag { margin: 0.75rem 0; }
+.gpl-frag__row { display: flex; gap: 1rem; padding: 0.45rem 0; border-bottom: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.12); font-size: 0.72rem; }
+.gpl-frag__row:last-child { border-bottom: 0; }
+.gpl-frag__label { width: 3.5rem; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(var(--color-foreground, 100 116 139) / 0.75); flex-shrink: 0; }
+.gpl-frag__val { font-weight: 500; }`,
+      usage: `{% render 'fragrance-notes', top: ${js(str(v, "top"))}, heart: ${js(str(v, "heart"))}, base: ${js(str(v, "base"))} %}`,
+    }),
+  },
+  {
+    id: "fabric-composition",
+    name: "Fabric composition bar",
+    description: "Visual split bar - '60% cotton, 40% linen' - shows material makeup at a glance.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "parts", label: "Materials (name|% per line)", type: "text", maxLength: 100 },
+    ],
+    defaults: { parts: "Cotton|60\nLinen|40" },
+    install: snippetSteps("fabric-composition.liquid"),
+    files: (v) => ({
+      liquid: `<div class="gpl-fabcomp">
+  <div class="gpl-fabcomp__bar">
+    {%- assign rows = parts | newline_to_br | split: '<br />' -%}
+    {%- assign i = 0 -%}
+    {%- for row in rows -%}
+      {%- assign parts2 = row | strip | split: '|' -%}
+      <span class="gpl-fabcomp__seg" style="width: {{ parts2[1] | strip }}%; background: hsl({{ i | times: 60 }}, 60%, 70%)"></span>
+      {%- assign i = i | plus: 1 -%}
+    {%- endfor -%}
+  </div>
+  <div class="gpl-fabcomp__legend">
+    {%- assign i = 0 -%}
+    {%- for row in rows -%}
+      {%- assign parts2 = row | strip | split: '|' -%}
+      <span class="gpl-fabcomp__leg"><span class="gpl-fabcomp__dot" style="background: hsl({{ i | times: 60 }}, 60%, 70%)"></span>{{ parts2[0] | strip }} {{ parts2[1] | strip }}%</span>
+      {%- assign i = i | plus: 1 -%}
+    {%- endfor -%}
+  </div>
+</div>`,
+      css: `.gpl-fabcomp { margin: 0.75rem 0; }
+.gpl-fabcomp__bar { display: flex; height: 0.5rem; border-radius: 999px; overflow: hidden; }
+.gpl-fabcomp__seg { height: 100%; }
+.gpl-fabcomp__legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1rem; margin-top: 0.5rem; }
+.gpl-fabcomp__leg { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.62rem; }
+.gpl-fabcomp__dot { width: 0.5rem; height: 0.5rem; border-radius: 999px; flex-shrink: 0; }`,
+      usage: `{% render 'fabric-composition', parts: ${js(str(v, "parts"))} %}`,
+    }),
+  },
+  {
+    id: "trending-searches",
+    name: "Trending search terms",
+    description: "'Trending: linen, oversized, black' chips - real search suggestions from what people actually type.",
+    category: "Headers & navigation",
+    kind: "snippet",
+    controls: [
+      { id: "terms", label: "Terms (comma separated)", type: "text", maxLength: 100 },
+    ],
+    defaults: { terms: "linen, oversized, black, cotton, sale" },
+    install: [
+      ...snippetSteps("trending-searches.liquid"),
+      "Update from Shopify analytics - only 'trending' if your real search data says so.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-trend">
+  <span class="gpl-trend__label">Trending</span>
+  {%- assign ts = terms | split: ',' -%}
+  {%- for t in ts -%}
+    <a class="gpl-trend__term" href="/search?q={{ t | strip | url_encode }}">{{ t | strip }}</a>
+  {%- endfor -%}
+</div>`,
+      css: `.gpl-trend { display: flex; flex-wrap: wrap; align-items: center; gap: 0.4rem; margin: 0.6rem 0; }
+.gpl-trend__label { font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-trend__term { padding: 0.3rem 0.75rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25); border-radius: 999px; font-size: 0.65rem; text-decoration: none; color: inherit; }
+.gpl-trend__term:hover { border-color: rgb(var(--color-button, 21 128 61)); }`,
+      usage: `{% render 'trending-searches', terms: ${js(str(v, "terms"))} %}`,
+    }),
+  },
+  {
+    id: "no-results-suggestions",
+    name: "Empty search suggestions",
+    description: "When search returns nothing, show popular categories - recovers the dead-end search.",
+    category: "Utility",
+    kind: "snippet",
+    controls: [
+      { id: "links", label: "Suggested (label|url per line)", type: "text", maxLength: 200 },
+    ],
+    defaults: { links: "Bestsellers|/collections/bestsellers\nNew in|/collections/new\nSale|/collections/sale\nAll products|/collections/all" },
+    install: [
+      ...snippetSteps("no-results-suggestions.liquid"),
+      "Render inside the 'no results' block on the search template.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-nores">
+  <p class="gpl-nores__text">Nothing found - try these instead:</p>
+  <div class="gpl-nores__links">
+    {%- assign rows = links | newline_to_br | split: '<br />' -%}
+    {%- for row in rows -%}
+      {%- assign parts = row | strip | split: '|' -%}
+      <a href="{{ parts[1] | strip | default: '#' }}">{{ parts[0] | strip }}</a>
+    {%- endfor -%}
+  </div>
+</div>`,
+      css: `.gpl-nores { padding: 2rem 0; text-align: center; }
+.gpl-nores__text { margin: 0 0 1rem; font-size: 0.78rem; color: rgb(var(--color-foreground, 100 116 139) / 0.8); }
+.gpl-nores__links { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; }
+.gpl-nores__links a { padding: 0.5rem 1.1rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25); border-radius: 999px; font-size: 0.72rem; font-weight: 600; text-decoration: none; color: inherit; }`,
+      usage: `{% render 'no-results-suggestions', links: ${js(str(v, "links"))} %}`,
+    }),
+  },
+  {
+    id: "owner-reply",
+    name: "Store owner reply",
+    description: "'Store replied' card under a review - shows you actually respond, not just collect.",
+    category: "Trust & social proof",
+    kind: "snippet",
+    controls: [
+      { id: "text", label: "Reply text", type: "text", maxLength: 120 },
+      { id: "name", label: "Store name", type: "text", maxLength: 30 },
+    ],
+    defaults: { text: "Thanks for the honest review - we're glad it worked for you!", name: "Store owner" },
+    install: snippetSteps("owner-reply.liquid"),
+    files: (v) => ({
+      liquid: `<div class="gpl-reply">
+  <p class="gpl-reply__badge">Response from {{ name | default: shop.name }}</p>
+  <p class="gpl-reply__text">{{ text | default: '' }}</p>
+</div>`,
+      css: `.gpl-reply { margin: 0.5rem 0 0.75rem 1.25rem; padding: 0.7rem 0.9rem; border-left: 2px solid rgb(var(--color-button, 21 128 61)); background: rgb(var(--color-button, 21 128 61) / 0.05); border-radius: 0 8px 8px 0; }
+.gpl-reply__badge { margin: 0 0 0.3rem; font-size: 0.62rem; font-weight: 800; color: rgb(var(--color-button, 21 128 61)); }
+.gpl-reply__text { margin: 0; font-size: 0.72rem; line-height: 1.5; }`,
+      usage: `{% render 'owner-reply', text: ${js(str(v, "text"))}, name: ${js(str(v, "name"))} %}`,
+    }),
+  },
+  {
+    id: "helpful-vote",
+    name: "Was this helpful?",
+    description: "Yes/no vote buttons on reviews - surfaces the actually-useful feedback.",
+    category: "Trust & social proof",
+    kind: "snippet",
+    controls: [],
+    defaults: {},
+    install: snippetSteps("helpful-vote.liquid"),
+    files: () => ({
+      liquid: `<gpl-vote class="gpl-vote">
+  <span class="gpl-vote__q">Was this helpful?</span>
+  <button type="button" data-yes>Yes (<span data-yes-n>0</span>)</button>
+  <button type="button" data-no>No (<span data-no-n>0</span>)</button>
+</gpl-vote>`,
+      css: `.gpl-vote { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5rem; font-size: 0.62rem; }
+.gpl-vote__q { color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-vote button { padding: 0.2rem 0.6rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25); border-radius: 999px; background: none; font-size: 0.6rem; cursor: pointer; color: inherit; }
+.gpl-vote button.is-sel { border-color: rgb(var(--color-button, 21 128 61)); color: rgb(var(--color-button, 21 128 61)); }`,
+      js: `document.querySelectorAll('gpl-vote').forEach((el) => {
+  el.querySelector('[data-yes]').addEventListener('click', function () {
+    el.querySelector('[data-yes-n]').textContent = Number(el.querySelector('[data-yes-n]').textContent) + 1;
+    this.classList.add('is-sel');
+    el.querySelector('[data-no]').disabled = true;
+  });
+  el.querySelector('[data-no]').addEventListener('click', function () {
+    el.querySelector('[data-no-n]').textContent = Number(el.querySelector('[data-no-n]').textContent) + 1;
+    this.classList.add('is-sel');
+    el.querySelector('[data-yes]').disabled = true;
+  });
+});`,
+      usage: `{% render 'helpful-vote' %}`,
+    }),
+  },
+  {
+    id: "verified-badge",
+    name: "Verified buyer chip",
+    description: "'Verified purchase' chip on reviews - the credibility mark that makes reviews count.",
+    category: "Trust & social proof",
+    kind: "snippet",
+    controls: [],
+    defaults: {},
+    install: snippetSteps("verified-badge.liquid"),
+    files: () => ({
+      liquid: `<span class="gpl-verified">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+  Verified buyer
+</span>`,
+      css: `.gpl-verified { display: inline-flex; align-items: center; gap: 0.3rem; padding: 0.2rem 0.6rem; border-radius: 999px; background: rgb(var(--color-button, 21 128 61) / 0.1); font-size: 0.58rem; font-weight: 800; color: rgb(var(--color-button, 21 128 61)); }
+.gpl-verified svg { width: 0.65rem; height: 0.65rem; }`,
+      usage: `{% render 'verified-badge' %}`,
+    }),
+  },
+  {
+    id: "limited-edition",
+    name: "Limited edition number",
+    description: "'#24 of 500' - numbered editions create real scarcity for drops and collectibles.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "num", label: "This unit #", type: "text", maxLength: 4 },
+      { id: "total", label: "Total run", type: "text", maxLength: 5 },
+    ],
+    defaults: { num: "24", total: "500" },
+    install: [
+      ...snippetSteps("limited-edition.liquid"),
+      "Update the number per unit/batch - a real numbered run, not a marketing lie.",
+    ],
+    files: (v) => ({
+      liquid: `<p class="gpl-limited">#{{ num | default: '1' }} <span class="gpl-limited__of">of</span> {{ total | default: '500' }} <span class="gpl-limited__tag">limited edition</span></p>`,
+      css: `.gpl-limited { display: inline-flex; align-items: baseline; gap: 0.3rem; margin: 0.4rem 0; font-size: 0.8rem; font-weight: 800; }
+.gpl-limited__of { font-size: 0.62rem; font-weight: 400; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-limited__tag { margin-left: 0.4rem; padding: 0.15rem 0.5rem; border-radius: 999px; background: rgb(var(--color-button, 245 158 11) / 0.15); font-size: 0.55rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: #b45309; }`,
+      usage: `{% render 'limited-edition', num: ${js(str(v, "num"))}, total: ${js(str(v, "total"))} %}`,
+    }),
+  },
+  {
+    id: "festival-banner",
+    name: "Festival sale banner",
+    description: "Diwali/Holi/seasonal banner - the recurring sale hook Indian shoppers expect.",
+    category: "Marketing",
+    kind: "snippet",
+    controls: [
+      { id: "festival", label: "Festival name", type: "text", maxLength: 30 },
+      { id: "offer", label: "Offer", type: "text", maxLength: 50 },
+      { id: "emoji", label: "Emoji", type: "text", maxLength: 4 },
+    ],
+    defaults: { festival: "Diwali", offer: "up to 30% off + free gift wrap", emoji: "🪔" },
+    install: snippetSteps("festival-banner.liquid"),
+    files: (v) => ({
+      liquid: `<a class="gpl-fest" href="/collections/sale">
+  {{ emoji | default: '' }} {{ festival | default: 'Festival' }} Sale - {{ offer | default: 'special offers' }}
+</a>`,
+      css: `.gpl-fest { display: block; margin: 0.5rem 0; padding: 0.75rem 1rem; border-radius: 10px; background: linear-gradient(90deg, rgb(var(--color-button, 217 119 6) / 0.1), rgb(var(--color-button, 217 119 6) / 0.04)); border: 1px solid rgb(var(--color-button, 217 119 6) / 0.2); font-size: 0.75rem; font-weight: 700; text-decoration: none; color: inherit; text-align: center; }`,
+      usage: `{% render 'festival-banner', festival: ${js(str(v, "festival"))}, offer: ${js(str(v, "offer"))}, emoji: ${js(str(v, "emoji"))} %}`,
+    }),
+  },
+  {
+    id: "social-unlock",
+    name: "Share to unlock discount",
+    description: "'Share on IG to unlock 10%' - gated discount that trades a coupon for organic reach.",
+    category: "Marketing",
+    kind: "snippet",
+    controls: [
+      { id: "offer", label: "Reward", type: "text", maxLength: 40 },
+      { id: "code", label: "Discount code", type: "text", maxLength: 20 },
+    ],
+    defaults: { offer: "10% off your next order", code: "SHARE10" },
+    install: [
+      ...snippetSteps("social-unlock.liquid"),
+      "Honour-based: they share, you reveal the code. Some share honestly, some don't - still converts.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-unlock class="gpl-unlock">
+  <p class="gpl-unlock__text">Share us on Instagram to unlock <b>{{ offer | default: 'a discount' }}</b></p>
+  <a class="gpl-unlock__share" href="https://instagram.com" target="_blank" rel="noopener">Share on Instagram</a>
+  <div class="gpl-unlock__code" hidden data-code>
+    <p>Your code:</p>
+    <code>{{ code | default: 'CODE' }}</code>
+  </div>
+</gpl-unlock>`,
+      css: `.gpl-unlock { margin: 1rem 0; padding: 1rem; border: 1px dashed rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 10px; }
+.gpl-unlock__text { margin: 0; font-size: 0.75rem; }
+.gpl-unlock__share { display: inline-block; margin-top: 0.6rem; padding: 0.5rem 1.1rem; border-radius: 999px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; font-size: 0.7rem; font-weight: 700; text-decoration: none; }
+.gpl-unlock__code { margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px dashed rgb(var(--color-foreground, 148 163 184) / 0.3); }
+.gpl-unlock__code p { margin: 0 0 0.3rem; font-size: 0.62rem; }
+.gpl-unlock__code code { padding: 0.3rem 0.7rem; border-radius: 6px; background: rgb(var(--color-foreground, 15 23 42) / 0.05); font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; }`,
+      js: `document.querySelectorAll('gpl-unlock').forEach((el) => {
+  el.querySelector('.gpl-unlock__share').addEventListener('click', () => {
+    setTimeout(() => { el.querySelector('[data-code]').hidden = false; }, 1500);
+  });
+});`,
+      usage: `{% render 'social-unlock', offer: ${js(str(v, "offer"))}, code: ${js(str(v, "code"))} %}`,
+    }),
+  },
 ];
 
 export function getExample(id: string | undefined): PlaygroundExample {

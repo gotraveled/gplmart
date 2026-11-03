@@ -3414,6 +3414,344 @@ function StaffPicks({ v }: P) {
   );
 }
 
+function MultiColumnFooter({ v }: P) {
+  const rows = str(v, "cols").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 4);
+  return (
+    <div className="border-t border-neutral-200 px-5 py-5">
+      <div className="grid gap-5 sm:grid-cols-3">
+        {rows.map((r) => {
+          const [h, links] = r.split("|");
+          return (
+            <div key={r}>
+              <p className="m-0 mb-2 text-[0.55rem] font-extrabold uppercase tracking-wider text-neutral-400">{h?.trim()}</p>
+              {(links ?? "").split(",").map((l) => (
+                <a key={l} href="#" className="block py-1 text-[0.7rem] hover:text-emerald-600">{l.trim()}</a>
+              ))}
+            </div>
+          );
+        })}
+      </div>
+      <div className="mt-5 flex justify-between border-t border-neutral-100 pt-4 text-[0.65rem]">
+        <a href="#" className="font-bold">{str(v, "phone")}</a>
+        <span className="text-neutral-400">GPLMart</span>
+      </div>
+    </div>
+  );
+}
+
+function BusinessHours({ v }: P) {
+  const rows = str(v, "hours").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 6);
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2 flex items-center gap-1.5 text-[0.72rem] font-bold">
+        <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Store hours
+      </p>
+      {rows.map((r) => {
+        const parts = r.split("|").map((s) => s.trim());
+        return <p key={r} className="m-0 flex justify-between text-[0.65rem] text-neutral-600"><span>{parts[0]}</span><span>{parts[1]}</span></p>;
+      })}
+    </div>
+  );
+}
+
+function PickupAvailability() {
+  return (
+    <div className="flex items-start gap-2.5 p-4">
+      <svg className="mt-0.5 size-4 shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+      <div>
+        <p className="m-0 text-[0.7rem] font-bold">Pickup available at Connaught Place</p>
+        <p className="m-0 mt-0.5 text-[0.6rem] text-neutral-400">Usually ready in 2 hours</p>
+      </div>
+    </div>
+  );
+}
+
+function WhatsappOrderStatus({ v }: P) {
+  return (
+    <div className="p-4">
+      <a href="#" className="inline-flex items-center gap-2 rounded-full border border-[#25d366] px-5 py-2 text-[0.68rem] font-bold text-[#128c7e]">
+        <svg className="size-3.5" viewBox="0 0 24 24" fill="currentColor"><path d="M17.47 14.38c-.3-.15-1.76-.87-2.03-.97-.27-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.25-.46-2.39-1.47-.88-.79-1.48-1.76-1.65-2.06-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.18.2-.3.3-.5.1-.2.05-.38-.02-.53-.08-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.5 0 1.47 1.07 2.9 1.22 3.09.15.2 2.1 3.2 5.08 4.49.71.3 1.26.49 1.7.62.71.23 1.36.2 1.87.12.57-.09 1.76-.72 2.01-1.42.25-.7.25-1.3.17-1.42-.07-.12-.27-.2-.57-.35"/></svg>
+        {str(v, "label") || "Check on WhatsApp"}
+      </a>
+    </div>
+  );
+}
+
+function CodPartialAdvance({ v }: P) {
+  return (
+    <div className="m-4 flex items-start gap-2.5 rounded-lg border border-dashed border-neutral-300 p-3">
+      <svg className="mt-0.5 size-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2"/></svg>
+      <div>
+        <p className="m-0 text-[0.7rem] font-bold">COD with {str(v, "amount") || "a small"} advance</p>
+        <p className="m-0 mt-0.5 text-[0.6rem] text-neutral-500">{str(v, "text")}</p>
+      </div>
+    </div>
+  );
+}
+
+function OpenBoxBadge({ v }: P) {
+  return (
+    <div className="flex items-center gap-1.5 p-4 text-[0.7rem] text-neutral-600">
+      <svg className="size-3.5 shrink-0 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>
+      {str(v, "text") || "Open box delivery available"}
+    </div>
+  );
+}
+
+function GstNote({ v }: P) {
+  return <p className="m-0 p-4 text-[0.62rem] text-neutral-500">{str(v, "text") || "All prices include GST"}</p>;
+}
+
+function ShipZonesNote({ v }: P) {
+  return (
+    <div className="flex items-center gap-1.5 p-4 text-[0.68rem] text-neutral-600">
+      <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20M2 12h20"/></svg>
+      {str(v, "text") || "Ships across India"}{str(v, "city") && ` · from ${str(v, "city")}`}
+    </div>
+  );
+}
+
+function BulkPricingNote({ v }: P) {
+  return (
+    <div className="p-4">
+      <a href="#" className="text-[0.65rem] font-bold text-emerald-600 hover:underline">Ordering {str(v, "qty") || "20"}+ {str(v, "text") || "units?"} &rarr;</a>
+    </div>
+  );
+}
+
+function SampleRequest({ v }: P) {
+  return (
+    <div className="p-4">
+      <a href="#" className="rounded-full border border-neutral-300 px-4 py-2 text-[0.65rem] font-bold hover:border-emerald-600 hover:text-emerald-600">
+        {str(v, "label") || "Order a sample"} - {str(v, "price")}
+      </a>
+    </div>
+  );
+}
+
+function EmiCalculator({ v }: P) {
+  const [price, setPrice] = useState(str(v, "price") || "24990");
+  const [months, setMonths] = useState(6);
+  const monthly = Math.round(Number(price) / months);
+  return (
+    <div className="m-4 rounded-lg border border-neutral-200 p-3.5">
+      <p className="m-0 mb-2 text-[0.7rem] font-extrabold">EMI calculator</p>
+      <input type="number" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price" className="mb-2 w-full rounded-lg border border-neutral-300 px-2.5 py-1.5 text-[0.68rem] outline-none" />
+      <div className="flex gap-1.5">
+        {[3, 6, 9, 12].map((m) => (
+          <button key={m} type="button" onClick={() => setMonths(m)} className={`flex-1 rounded border py-1 text-[0.6rem] ${months === m ? "border-transparent bg-neutral-900 text-white" : "border-neutral-300"}`}>{m} mo</button>
+        ))}
+      </div>
+      <p className="m-0 mt-2 text-[0.72rem] font-bold">₹{monthly.toLocaleString("en-IN")}/month for {months} months</p>
+    </div>
+  );
+}
+
+function DeliverySlotPicker() {
+  const [slot, setSlot] = useState("");
+  return (
+    <div className="p-4">
+      <label className="mb-1.5 block text-[0.68rem] font-semibold">Preferred delivery time</label>
+      <select value={slot} onChange={(e) => setSlot(e.target.value)} className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-[0.7rem] outline-none">
+        <option value="">Any time</option>
+        <option>Morning (9am - 1pm)</option>
+        <option>Afternoon (1pm - 5pm)</option>
+        <option>Evening (5pm - 9pm)</option>
+      </select>
+      {slot && <p className="m-0 mt-1.5 text-[0.6rem] text-neutral-500">Saves to order attributes</p>}
+    </div>
+  );
+}
+
+function CheckoutTrustStrip() {
+  return (
+    <div className="flex flex-wrap justify-center gap-x-6 gap-y-2 border-t border-neutral-200 p-4">
+      {[["M3 11h18v11H3zM7 11V7a5 5 0 0 1 10 0v4", "Secure checkout"], ["M21 12a9 9 0 1 1-9-9 9 9 0 0 1 6.7 3.1M21 3v6h-6", "Easy returns"], ["M2 6h20v12H2zM12 10v4", "COD available"]].map(([d, t]) => (
+        <span key={t} className="flex items-center gap-1.5 text-[0.6rem] text-neutral-500">
+          <svg className="size-3 text-emerald-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d={d}/></svg>
+          {t}
+        </span>
+      ))}
+    </div>
+  );
+}
+
+function LanguageSelector({ v }: P) {
+  const langs = str(v, "langs").split(",").map((s) => s.trim()).filter(Boolean);
+  return (
+    <div className="p-4">
+      <select className="rounded-lg border border-neutral-300 px-3 py-1.5 text-[0.68rem] outline-none" aria-label="Language">
+        {langs.map((l) => <option key={l}>{l}</option>)}
+      </select>
+    </div>
+  );
+}
+
+function LiveChatStatus({ v }: P) {
+  const on = str(v, "status") === "online";
+  return (
+    <div className="p-4">
+      <span className="inline-flex items-center gap-2 rounded-full border border-neutral-300 px-3.5 py-1.5 text-[0.65rem]">
+        <span className={`size-2 rounded-full ${on ? "bg-emerald-500" : "bg-neutral-400"}`} />
+        <b>Support chat{on ? " - online" : " - away"}</b>
+        <span className="text-neutral-400">{str(v, "hours")}</span>
+      </span>
+    </div>
+  );
+}
+
+function AllergenWarning({ v }: P) {
+  return (
+    <div className="m-4 flex items-center gap-2 rounded-lg bg-amber-50 px-3 py-2 text-[0.68rem]">
+      <svg className="size-3.5 shrink-0 text-amber-600" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4M12 17h.01"/></svg>
+      Contains: <b>{str(v, "items") || "allergens"}</b>
+    </div>
+  );
+}
+
+function ExpiryNote({ v }: P) {
+  return <p className="m-0 p-4 text-[0.65rem] text-neutral-600">Best before <b>{str(v, "date") || "see label"}</b></p>;
+}
+
+function FragranceNotes({ v }: P) {
+  const tiers = [["Top", str(v, "top")], ["Heart", str(v, "heart")], ["Base", str(v, "base")]];
+  return (
+    <div className="p-4">
+      {tiers.map(([t, val]) => (
+        <div key={t} className="flex gap-4 border-b border-neutral-100 py-1.5 text-[0.68rem] last:border-0">
+          <span className="w-14 shrink-0 text-[0.55rem] font-extrabold uppercase tracking-wider text-neutral-400">{t}</span>
+          <span>{val}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function FabricComposition({ v }: P) {
+  const rows = str(v, "parts").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 4);
+  return (
+    <div className="p-4">
+      <div className="flex h-2 overflow-hidden rounded-full">
+        {rows.map((r, i) => {
+          const [, pct] = r.split("|");
+          return <span key={r} className="h-full" style={{ width: `${pct?.trim()}%`, background: `hsl(${i * 60}, 60%, 70%)` }} />;
+        })}
+      </div>
+      <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1">
+        {rows.map((r, i) => {
+          const [n, pct] = r.split("|").map((s) => s.trim());
+          return (
+            <span key={r} className="flex items-center gap-1 text-[0.58rem]">
+              <span className="size-2 rounded-full" style={{ background: `hsl(${i * 60}, 60%, 70%)` }} />
+              {n} {pct}%
+            </span>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function TrendingSearches({ v }: P) {
+  const terms = str(v, "terms").split(",").map((s) => s.trim()).filter(Boolean).slice(0, 6);
+  return (
+    <div className="flex flex-wrap items-center gap-2 p-4">
+      <span className="text-[0.55rem] font-extrabold uppercase tracking-wider text-neutral-400">Trending</span>
+      {terms.map((t) => (
+        <a key={t} href="#" className="rounded-full border border-neutral-300 px-3 py-1 text-[0.62rem]">{t}</a>
+      ))}
+    </div>
+  );
+}
+
+function NoResultsSuggestions({ v }: P) {
+  const links = str(v, "links").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 4);
+  return (
+    <div className="p-6 text-center">
+      <p className="m-0 mb-3 text-[0.72rem] text-neutral-500">Nothing found - try these instead:</p>
+      <div className="flex flex-wrap justify-center gap-2">
+        {links.map((r) => {
+          const [l] = r.split("|");
+          return <a key={r} href="#" className="rounded-full border border-neutral-300 px-4 py-2 text-[0.65rem] font-semibold">{l?.trim()}</a>;
+        })}
+      </div>
+    </div>
+  );
+}
+
+function OwnerReply({ v }: P) {
+  return (
+    <div className="ml-8 mr-4 mt-2 rounded-r-lg border-l-2 border-emerald-600 bg-emerald-50/50 p-3">
+      <p className="m-0 mb-1 text-[0.58rem] font-extrabold text-emerald-600">Response from {str(v, "name") || "Store"}</p>
+      <p className="m-0 text-[0.68rem] leading-relaxed">{str(v, "text")}</p>
+    </div>
+  );
+}
+
+function HelpfulVote() {
+  const [voted, setVoted] = useState<"yes" | "no" | null>(null);
+  const [n, setN] = useState({ yes: 3, no: 0 });
+  return (
+    <div className="flex items-center gap-2.5 p-4 text-[0.6rem]">
+      <span className="text-neutral-400">Was this helpful?</span>
+      {(["yes", "no"] as const).map((k) => (
+        <button key={k} type="button" onClick={() => { if (!voted) { setVoted(k); setN({ ...n, [k]: n[k] + 1 }); } }} className={`rounded-full border px-3 py-1 ${voted === k ? "border-emerald-600 text-emerald-600" : "border-neutral-300"}`}>
+          {k === "yes" ? "Yes" : "No"} ({n[k]})
+        </button>
+      ))}
+    </div>
+  );
+}
+
+function VerifiedBadge() {
+  return (
+    <div className="p-4">
+      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[0.55rem] font-extrabold text-emerald-600">
+        <svg className="size-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+        Verified buyer
+      </span>
+    </div>
+  );
+}
+
+function LimitedEdition({ v }: P) {
+  return (
+    <div className="p-4">
+      <p className="m-0 inline-flex items-baseline gap-1 text-sm font-extrabold">
+        #{str(v, "num") || "1"} <span className="text-[0.6rem] font-normal text-neutral-400">of</span> {str(v, "total") || "500"}
+        <span className="ml-2 rounded-full bg-amber-100 px-2 py-0.5 text-[0.5rem] font-extrabold uppercase tracking-wider text-amber-700">limited edition</span>
+      </p>
+    </div>
+  );
+}
+
+function FestivalBanner({ v }: P) {
+  return (
+    <div className="m-4">
+      <a href="#" className="block rounded-lg border border-amber-300/30 bg-gradient-to-r from-amber-50 to-amber-50/40 px-4 py-3 text-center text-[0.72rem] font-bold">
+        {str(v, "emoji")} {str(v, "festival") || "Festival"} Sale - {str(v, "offer") || "special offers"}
+      </a>
+    </div>
+  );
+}
+
+function SocialUnlock({ v }: P) {
+  const [shared, setShared] = useState(false);
+  return (
+    <div className="m-4 rounded-lg border border-dashed border-neutral-300 p-3.5">
+      <p className="m-0 text-[0.72rem]">Share us on Instagram to unlock <b>{str(v, "offer") || "a discount"}</b></p>
+      <button type="button" onClick={() => setTimeout(() => setShared(true), 1000)} className="mt-2 rounded-full bg-gradient-to-r from-orange-500 via-pink-500 to-purple-600 px-4 py-1.5 text-[0.65rem] font-bold text-white">Share on Instagram</button>
+      {shared && (
+        <div className="mt-3 border-t border-dashed border-neutral-300 pt-3">
+          <p className="m-0 mb-1 text-[0.6rem]">Your code:</p>
+          <code className="rounded-md bg-neutral-100 px-3 py-1.5 text-[0.78rem] font-extrabold tracking-wider">{str(v, "code") || "CODE"}</code>
+        </div>
+      )}
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -3591,6 +3929,33 @@ const map: Record<string, (p: P) => ReactNode> = {
   "related-articles": RelatedArticles,
   "author-card": AuthorCard,
   "staff-picks": StaffPicks,
+  "multi-column-footer": MultiColumnFooter,
+  "business-hours": BusinessHours,
+  "pickup-availability": PickupAvailability,
+  "whatsapp-order-status": WhatsappOrderStatus,
+  "cod-partial-advance": CodPartialAdvance,
+  "open-box-badge": OpenBoxBadge,
+  "gst-note": GstNote,
+  "ship-zones-note": ShipZonesNote,
+  "bulk-pricing-note": BulkPricingNote,
+  "sample-request": SampleRequest,
+  "emi-calculator": EmiCalculator,
+  "delivery-slot-picker": DeliverySlotPicker,
+  "checkout-trust-strip": CheckoutTrustStrip,
+  "language-selector": LanguageSelector,
+  "live-chat-status": LiveChatStatus,
+  "allergen-warning": AllergenWarning,
+  "expiry-note": ExpiryNote,
+  "fragrance-notes": FragranceNotes,
+  "fabric-composition": FabricComposition,
+  "trending-searches": TrendingSearches,
+  "no-results-suggestions": NoResultsSuggestions,
+  "owner-reply": OwnerReply,
+  "helpful-vote": HelpfulVote,
+  "verified-badge": VerifiedBadge,
+  "limited-edition": LimitedEdition,
+  "festival-banner": FestivalBanner,
+  "social-unlock": SocialUnlock,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {
