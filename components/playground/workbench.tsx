@@ -1,9 +1,9 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Monitor, Smartphone, Tablet, BookOpen, Lock } from "lucide-react";
+import { Monitor, Smartphone, Tablet, BookOpen, Lock, X } from "lucide-react";
 import { examples, freeExampleIds, getExample } from "@/lib/playground/examples";
 import type { ControlDef, ExampleFiles, PlaygroundExample, Values } from "@/lib/playground/types";
 import type { Lang } from "@/lib/highlight";
@@ -154,34 +154,50 @@ export function Workbench({ initialId }: { initialId?: string }) {
     router.replace("/playground", { scroll: false });
   }
 
-  if (!ex) {
-    const free = examples.filter((e) => freeExampleIds.has(e.id));
-    const members = examples.filter((e) => !freeExampleIds.has(e.id));
-    return (
-      <div className="grid gap-10">
-        {(
-          [
-            { title: "Free samples - copy the code", items: free },
-            { title: "Members library - live preview, source locked", items: members },
-          ] as const
-        ).map(({ title, items }) => (
-          <section key={title}>
-            <h2 className="mb-4 flex items-baseline gap-3 font-display text-lg font-semibold">
-              {title}
-              <span className="text-sm font-normal text-subtle">{items.length}</span>
-            </h2>
-            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-              {items.map((e) => (
-                <li key={e.id}>
-                  <Card ex={e} onPick={pick} />
-                </li>
-              ))}
-            </ul>
-          </section>
-        ))}
-      </div>
-    );
-  }
+  // Modal behaviour: Escape to close + lock body scroll while open.
+  useEffect(() => {
+    if (!ex) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") back();
+    };
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ex?.id]);
+
+  const free = examples.filter((e) => freeExampleIds.has(e.id));
+  const members = examples.filter((e) => !freeExampleIds.has(e.id));
+  const grid = (
+    <div className="grid gap-10">
+      {(
+        [
+          { title: "Free samples - copy the code", items: free },
+          { title: "Members library - live preview, source locked", items: members },
+        ] as const
+      ).map(({ title, items }) => (
+        <section key={title}>
+          <h2 className="mb-4 flex items-baseline gap-3 font-display text-lg font-semibold">
+            {title}
+            <span className="text-sm font-normal text-subtle">{items.length}</span>
+          </h2>
+          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+            {items.map((e) => (
+              <li key={e.id}>
+                <Card ex={e} onPick={pick} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+    </div>
+  );
+
+  if (!ex) return grid;
 
   function setValue(ctl: string, v: string | boolean) {
     setValues((prev) => ({ ...prev, [ctl]: v }));
@@ -279,64 +295,59 @@ export function Workbench({ initialId }: { initialId?: string }) {
   );
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[16rem_minmax(0,1fr)]">
-      {/* Example selector */}
-      <div>
-        <button
-          type="button"
-          onClick={back}
-          className="mb-4 inline-flex items-center gap-1.5 rounded-lg border border-line-strong px-3 py-1.5 text-xs font-medium text-muted transition hover:border-accent/50 hover:text-fg"
+    <>
+      {grid}
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={`${ex.name} detail`}
+        className="fixed inset-0 z-[70] overflow-y-auto bg-ink-950/80 p-4 backdrop-blur-sm sm:p-8"
+        onClick={back}
+      >
+        <div
+          className="mx-auto max-w-6xl rounded-2xl border border-line-strong bg-ink-950 shadow-card"
+          onClick={(e) => e.stopPropagation()}
         >
-          <ArrowLeft aria-hidden className="size-3.5" /> All components
-        </button>
-        <label htmlFor="example-select" className="mb-2 block text-xs font-semibold uppercase tracking-[0.16em] text-mint lg:sr-only">
-          Choose an example
-        </label>
-        <select
-          id="example-select"
-          value={id ?? ""}
-          onChange={(e) => pick(e.target.value)}
-          className="w-full rounded-xl border border-line-strong bg-ink-900 px-3 py-2.5 text-sm lg:hidden"
-        >
-          {examples.map((e) => (
-            <option key={e.id} value={e.id}>{e.name}</option>
-          ))}
-        </select>
-        <nav aria-label="Playground examples" className="sticky top-24 hidden lg:block">
-          <ul className="space-y-1">
-            {examples.map((e) => (
-              <li key={e.id}>
-                <button
-                  type="button"
-                  onClick={() => pick(e.id)}
-                  aria-current={e.id === id ? "true" : undefined}
-                  className={cn(
-                    "w-full rounded-xl border px-3.5 py-2.5 text-left text-sm transition",
-                    e.id === id
-                      ? "border-accent/50 bg-accent/10 text-fg"
-                      : "border-transparent text-muted hover:border-line-strong hover:bg-white/[0.03] hover:text-fg",
-                  )}
-                >
-                  <span className="flex items-center justify-between gap-2 font-medium">
+          {/* Modal header */}
+          <div className="sticky top-0 z-10 flex items-center justify-between gap-3 rounded-t-2xl border-b border-line bg-ink-950 px-4 py-3 sm:px-5">
+            <div className="flex min-w-0 flex-wrap items-center gap-2.5">
+              <h2 className="font-display text-lg font-semibold">{ex.name}</h2>
+              <Badge>{ex.kind === "section" ? "Theme section" : "Snippet"}</Badge>
+              {locked ? (
+                <Badge className="text-subtle">
+                  <Lock aria-hidden className="size-3" /> Members
+                </Badge>
+              ) : (
+                <Badge className="border-mint/40 bg-mint/10 text-mint">Free</Badge>
+              )}
+            </div>
+            <div className="flex items-center gap-2">
+              <select
+                aria-label="Switch component"
+                value={id ?? ""}
+                onChange={(e) => pick(e.target.value)}
+                className="hidden rounded-lg border border-line-strong bg-ink-900 px-2.5 py-1.5 text-xs sm:block"
+              >
+                {examples.map((e) => (
+                  <option key={e.id} value={e.id}>
                     {e.name}
-                    {!freeExampleIds.has(e.id) && <Lock aria-hidden className="size-3.5 shrink-0 text-subtle" />}
-                  </span>
-                  <span className="mt-0.5 block text-xs text-subtle">{e.category}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-
-      <div className="min-w-0">
-        <div className="mb-4 flex flex-wrap items-start justify-between gap-3">
-          <div>
-            <h2 className="font-display text-xl font-semibold">{ex.name}</h2>
-            <p className="mt-1 text-sm text-muted">{ex.description}</p>
+                  </option>
+                ))}
+              </select>
+              <button
+                type="button"
+                onClick={back}
+                aria-label="Close detail view"
+                className="grid size-9 place-items-center rounded-lg border border-line-strong text-muted transition hover:border-accent/50 hover:text-fg"
+              >
+                <X aria-hidden className="size-4.5" />
+              </button>
+            </div>
           </div>
-          <Badge>{ex.kind === "section" ? "Theme section" : "Snippet"}</Badge>
-        </div>
+
+          {/* Modal body */}
+          <div className="p-4 sm:p-5">
+        <p className="mb-4 text-sm text-muted">{ex.description}</p>
 
         {/* Mobile view toggle */}
         <div className="mb-4 grid grid-cols-2 gap-1 rounded-xl border border-line-strong bg-ink-900 p-1 lg:hidden">
@@ -398,7 +409,9 @@ export function Workbench({ initialId }: { initialId?: string }) {
           File name shown: <code className="font-mono">{ex.kind === "section" ? "sections" : "snippets"}/{ex.id}.liquid</code>
           {" "}&middot; These are GPLMart&apos;s original teaching examples, not the paid library. They are provided as-is for learning.
         </p>
+          </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
