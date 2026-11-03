@@ -33,6 +33,21 @@ export const freeExampleIds: ReadonlySet<string> = new Set([
   "free-shipping-bar",
   "trust-grid",
   "quantity-breaks",
+  "announcement-bar",
+  "faq-accordion",
+  "promo-banner",
+  "testimonial-slider",
+  "logo-marquee",
+  "back-to-top",
+  "scroll-progress",
+  "cookie-consent",
+  "feature-icons",
+  "sold-count",
+  "ssl-note",
+  "model-info",
+  "made-in-badge",
+  "gst-note",
+  "upi-badges",
 ]);
 
 export const examples: readonly PlaygroundExample[] = [
@@ -7037,7 +7052,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
       liquid: `<gpl-quiz class="gpl-quiz" data-step="0">
   <p class="gpl-quiz__heading">{{ section.settings.heading }}</p>
   {%- for block in section.blocks -%}
-    <div class="gpl-quiz__q{% unless forloop.first %} hidden{% endunless %}" data-q="{{ forloop.index0 }}">
+    <div class="gpl-quiz__q"{% unless forloop.first %} hidden{% endunless %} data-q="{{ forloop.index0 }}">
       <p class="gpl-quiz__qtext">{{ block.settings.question }}</p>
       <div class="gpl-quiz__opts">
         {%- assign opts = block.settings.options | split: ',' -%}
@@ -7047,7 +7062,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
       </div>
     </div>
   {%- endfor -%}
-  <div class="gpl-quiz__done hidden" data-done>
+  <div class="gpl-quiz__done" data-done hidden>
     <p class="gpl-quiz__done-text">Here's your match</p>
     <a class="gpl-quiz__result" href="#" data-result>See the collection &rarr;</a>
   </div>
@@ -7094,12 +7109,12 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     opt.addEventListener('click', () => {
       step++;
       if (step < qs.length) {
-        qs.forEach((q) => q.classList.add('hidden'));
-        qs[step].classList.remove('hidden');
+        qs.forEach((q) => (q.hidden = true));
+        qs[step].hidden = false;
       } else {
-        qs.forEach((q) => q.classList.add('hidden'));
+        qs.forEach((q) => (q.hidden = true));
         el.querySelector('[data-result]').href = opt.dataset.goto || '#';
-        el.querySelector('[data-done]').classList.remove('hidden');
+        el.querySelector('[data-done]').hidden = false;
       }
     });
   });
@@ -7191,7 +7206,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   {%- for row in rows -%}
     {%- assign parts = row | strip | split: '|' -%}
     {%- assign c = collections[parts[1] | strip | handleize] -%}
-    <div class="gpl-ctabs__grid{% unless forloop.first %} hidden{% endunless %}" data-panel="{{ forloop.index0 }}">
+    <div class="gpl-ctabs__grid"{% unless forloop.first %} hidden{% endunless %} data-panel="{{ forloop.index0 }}">
       {%- for p in c.products limit: 4 -%}
         <a class="gpl-ctabs__card" href="{{ p.url }}">
           {{ p.featured_image | image_url: width: 400 | image_tag: class: 'gpl-ctabs__img', loading: 'lazy' }}
@@ -7226,6 +7241,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
 }
 .gpl-ctabs__btn.is-active { background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); border-color: transparent; }
 .gpl-ctabs__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.9rem; }
+.gpl-ctabs__grid[hidden] { display: none; }
 @media (max-width: 750px) { .gpl-ctabs__grid { grid-template-columns: repeat(2, 1fr); } }
 .gpl-ctabs__card { text-decoration: none; color: inherit; }
 .gpl-ctabs__img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; display: block; }
@@ -7235,7 +7251,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   el.querySelectorAll('.gpl-ctabs__btn').forEach((btn) => {
     btn.addEventListener('click', () => {
       el.querySelectorAll('.gpl-ctabs__btn').forEach((b) => b.classList.remove('is-active'));
-      el.querySelectorAll('.gpl-ctabs__grid').forEach((g) => g.classList.add('hidden'));
+      el.querySelectorAll('.gpl-ctabs__grid').forEach((g) => (g.hidden = true));
       btn.classList.add('is-active');
       el.querySelector('[data-panel="' + btn.dataset.tab + '"]').classList.remove('hidden');
     });
@@ -8067,6 +8083,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   cursor: pointer;
   box-shadow: 0 4px 14px rgb(0 0 0 / 0.12);
 }
+.gpl-a11y__panel[hidden] { display: none; }
 .gpl-a11y__panel {
   position: absolute;
   bottom: 100%;

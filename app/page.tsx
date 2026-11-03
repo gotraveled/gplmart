@@ -38,8 +38,8 @@ export const metadata: Metadata = {
 };
 
 const numbers = [
-  { k: "300+", v: "Components in the pipeline" },
-  { k: "21", v: "Free examples live in the sandbox" },
+  { k: "200", v: "Components in the sandbox" },
+  { k: "20", v: "Free examples live in the sandbox" },
   { k: "4", v: "Resource areas under one access" },
   { k: "₹0/mo", v: "No monthly fee - ever" },
 ];
@@ -213,9 +213,9 @@ export default function HomePage() {
               Shopify conversion code + WordPress resources
             </p>
             <h1 className="mt-6 font-display text-5xl font-semibold leading-[1.02] tracking-tight text-balance sm:text-6xl lg:text-7xl">
-              Shopify code.
+              Shopify Liquid
               <br />
-              <span className="text-gradient">WordPress bundles.</span>
+              <span className="text-gradient">Codes.</span>
               <br />
               One payment.
             </h1>
@@ -236,7 +236,7 @@ export default function HomePage() {
             <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-subtle">
               <span className="inline-flex items-center gap-1.5">
                 <Star aria-hidden className="size-4 fill-amber-400 text-amber-400" />
-                100+ components in the sandbox
+                200+ components in the sandbox
               </span>
               <span className="inline-flex items-center gap-1.5">
                 <span aria-hidden className="size-1.5 rounded-full bg-accent" /> One-time payment
@@ -259,7 +259,7 @@ export default function HomePage() {
             <div aria-hidden className="absolute -bottom-5 left-2 z-20 flex items-center gap-2 rounded-xl border border-line-strong bg-ink-900 px-3.5 py-2.5 shadow-card">
               <FileCode2 className="size-4 text-accent" />
               <div>
-                <p className="text-xs font-semibold leading-none">300+ in the pipeline</p>
+                <p className="text-xs font-semibold leading-none">200 components</p>
                 <p className="mt-1 text-[0.6rem] leading-none text-subtle">Sections &amp; snippets</p>
               </div>
             </div>

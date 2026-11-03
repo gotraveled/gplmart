@@ -52,7 +52,7 @@ const inside = [
     icon: Code2,
     tag: "Member library",
     title: "Shopify Liquid snippets",
-    text: "40 conversion-focused sections and snippets - product pages, cart, collections, trust and urgency. Full Liquid, CSS and JS source, install guides, copy and download buttons.",
+    text: "200+ conversion-focused sections and snippets - product pages, cart, collections, trust and urgency. Full Liquid, CSS and JS source, install guides, copy and download buttons.",
   },
   {
     icon: ShoppingBag,

@@ -23,7 +23,7 @@ import {
   Timer,
   TrendingUp,
 } from "lucide-react";
-import { freeExampleIds, getExample } from "@/lib/playground/examples";
+import { examples, freeExampleIds, getExample } from "@/lib/playground/examples";
 import type { ExampleFiles } from "@/lib/playground/types";
 import type { Lang } from "@/lib/highlight";
 import { CodeBlock } from "@/components/ui/code-block";
@@ -68,7 +68,7 @@ export function HomeSandbox() {
   const [file, setFile] = useState("liquid");
   const [view, setView] = useState<"preview" | "code">("preview");
   const active = fileTabs.find((t) => t.id === file) ?? fileTabs[0]!;
-  const num = 101 + items.findIndex((i) => i.id === id);
+  const num = String(items.findIndex((i) => i.id === id) + 1).padStart(3, "0");
 
   function pick(next: string) {
     setId(next);
@@ -154,7 +154,7 @@ export function HomeSandbox() {
               </span>
               <h3 className="mt-4 font-display text-lg font-semibold">Members-only code</h3>
               <p className="mt-2 text-sm text-muted">
-                Preview freely - the source unlocks with all-access along with {items.length + freeExampleIds.size - 1}+ more snippets.
+                Preview freely - the source unlocks with all-access along with {examples.length}+ more snippets.
               </p>
               <a
                 href="/checkout"
