@@ -20,7 +20,7 @@ export async function POST(req: Request) {
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
   const customer = {
     name: text(body?.name, 80),
-    email: text(body?.email, 120),
+    email: text(body?.email, 120).toLowerCase(),
     phone: text(body?.phone, 20).replace(/[\s-]/g, ""),
   };
   if (!customer.name || !emailOk(customer.email) || !phoneOk(customer.phone)) {

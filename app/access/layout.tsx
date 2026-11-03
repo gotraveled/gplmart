@@ -3,6 +3,8 @@ import { Container } from "@/components/ui/container";
 import { hasAccess } from "@/lib/access-gate";
 import { PasswordForm } from "@/components/access/password-form";
 
+export const dynamic = "force-dynamic";
+
 export default async function AccessLayout({ children }: { children: ReactNode }) {
   if (await hasAccess()) return <>{children}</>;
   return (

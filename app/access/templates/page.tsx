@@ -3,6 +3,7 @@ import { ExternalLink, Info } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { ButtonLink } from "@/components/ui/button";
+import { isSupabaseConfigured } from "@/lib/env";
 import { getSetting } from "@/lib/settings";
 
 export const metadata: Metadata = { title: "Template bundles", robots: { index: false } };
@@ -17,7 +18,7 @@ const steps = [
 
 export default async function TemplatesPage() {
   // The layout's password gate is the only thing standing between visitors and this URL.
-  const url = (await getSetting("drive_url")).trim();
+  const url = isSupabaseConfigured() ? (await getSetting("drive_url")).trim() : "";
 
   return (
     <>
