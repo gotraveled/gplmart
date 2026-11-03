@@ -20,9 +20,9 @@ const sectionSteps = [
 ];
 const snippetSteps = (file: string) => [
   "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
-  `Open Online Store > Themes > Edit code and create a new file under Snippets named ${file}.`,
+  `Easiest path: paste the 'As section' file into the sections folder and add it from the theme editor - no code needed. For inline placement, create snippets/${file} instead.`,
   "Paste the complete file - markup, styles and JavaScript are already inside the single file, nothing else to install.",
-  "Call the snippet from the template or section where it should appear using the render tag shown in the Usage tab.",
+  "Snippet path only: call it from the template or section where it should appear using the render tag shown in the Usage tab.",
   "Preview the product, collection or cart page and test on mobile before publishing.",
 ];
 
@@ -10588,4 +10588,56 @@ export function completeFile(files: ExampleFiles): string {
   if (files.css) out += `\n\n{% stylesheet %}\n${files.css.replace(/\s+$/, "")}\n{% endstylesheet %}`;
   if (files.js) out += `\n\n{% javascript %}\n${files.js.replace(/\s+$/, "")}\n{% endjavascript %}`;
   return `${out}\n`;
+}
+
+const CONTEXT_OBJECTS = new Set(["product", "collection", "cart", "article", "blog", "customer", "section", "page", "search", "request", "forloop"]);
+const LIQUID_KEYWORDS = new Set(["true", "false", "nil", "null", "empty", "blank", "limit", "offset", "forloop", "loop", "range", "reversed", "cols", "endpaginate", "paginate", "increment", "decrement", "cycle", "tablerow", "endtablerow", "raw", "endraw", "include", "render", "echo", "elsif", "else", "endif", "endunless", "when", "endcase", "case", "unless", "if", "and", "or", "contains", "in", "endfor", "break", "continue", "liquid", "form", "endform", "style", "endstyle", "schema", "endschema", "stylesheet", "endstylesheet", "javascript", "endjavascript", "comment", "endcomment", "doc", "enddoc", "layout", "block", "endblock", "section", "sections", "section_group", "endsection_group", "paginate", "assign", "capture", "endcapture", "with", "as"]);
+
+/**
+ * Section variant: wraps a snippet's liquid in `{% schema %}` so the same code
+ * can also be dropped into sections/ and added via the theme editor - zero
+ * render tags. Scalar render params become section settings; page-context
+ * params (product, cart…) come from the template automatically.
+ */
+export function asSectionFile(ex: PlaygroundExample, files: ExampleFiles): string {
+  const usage = files.usage ?? "";
+  const paramRe = /([a-z_][a-z0-9_]*)\s*:\s*(["'][^"']*["']|[a-z0-9_.-]+)/g;
+  const assigns: string[] = [];
+  const settings: string[] = [];
+  const known = new Set(CONTEXT_OBJECTS);
+  for (const m of Array.from(usage.matchAll(paramRe))) {
+    const name = m[1]!;
+    const val = m[2]!.replace(/^["']|["']$/g, "");
+    if (CONTEXT_OBJECTS.has(m[2]!)) continue; // page-context object, not a setting
+    known.add(name);
+    assigns.push(`{%- assign ${name} = section.settings.${name} -%}`);
+    const ctrl = ex.controls?.find((c) => c.id === name);
+    const type =
+      ctrl?.type === "color" ? "color" : ctrl?.type === "toggle" ? "checkbox" : val.includes("\n") || val.length > 60 ? "textarea" : "text";
+    const options = ctrl?.type === "select" ? `, "options": ${JSON.stringify(ctrl.options.map((o) => ({ value: o.value, label: o.label })))}` : "";
+    settings.push(
+      `    { "type": "${ctrl?.type === "select" ? "select" : type}", "id": "${name}", "label": ${JSON.stringify(ctrl?.label ?? name)}, "default": ${type === "color" ? JSON.stringify(val || "#000000") : type === "checkbox" ? (val === "true" ? "true" : "false") : JSON.stringify(val)}${options} }`,
+    );
+  }
+  // Optional params the liquid references but usage doesn't pass (defaults via | default:)
+  const locals = new Set(known);
+  for (const m of Array.from(files.liquid.matchAll(/\{%\s*-?\s*(?:assign|capture|for|endfor)\s+([a-z_][a-z0-9_]*)/g))) locals.add(m[1]!);
+  for (const m of Array.from(files.liquid.matchAll(/\{%\s*-?\s*for\s+([a-z_][a-z0-9_]*)\s+in\s+([a-z_][a-z0-9_]*)/g))) { locals.add(m[1]!); locals.add(m[2]!); }
+  const referenced = new Set<string>();
+  for (const m of Array.from(files.liquid.matchAll(/\{\{\s*([a-z_][a-z0-9_]*)/g))) referenced.add(m[1]!);
+  for (const m of Array.from(files.liquid.matchAll(/\{%\s*-?\s*(?:if|unless|elsif)\s+([a-z_][a-z0-9_]*)/g))) referenced.add(m[1]!);
+  for (const id of Array.from(referenced)) {
+    if (locals.has(id) || LIQUID_KEYWORDS.has(id)) continue;
+    assigns.push(`{%- assign ${id} = section.settings.${id} -%}`);
+    const ctrl = ex.controls?.find((c) => c.id === id);
+    settings.push(`    { "type": "text", "id": "${id}", "label": ${JSON.stringify(ctrl?.label ?? id)} }`);
+    locals.add(id);
+  }
+  const body = files.liquid.replace(/\s+$/, "");
+  let out = `${assigns.length ? `${assigns.join("\n")}\n` : ""}${body}`;
+  if (files.css) out += `\n\n{% stylesheet %}\n${files.css.replace(/\s+$/, "")}\n{% endstylesheet %}`;
+  if (files.js) out += `\n\n{% javascript %}\n${files.js.replace(/\s+$/, "")}\n{% endjavascript %}`;
+  const schemaName = ex.name.length > 25 ? ex.name.slice(0, 22) + "…" : ex.name;
+  out += `\n\n{% schema %}\n{\n  "name": ${JSON.stringify(schemaName)},\n  "settings": [\n${settings.join(",\n")}\n  ],\n  "presets": [{ "name": ${JSON.stringify(schemaName)} }]\n}\n{% endschema %}\n`;
+  return out;
 }

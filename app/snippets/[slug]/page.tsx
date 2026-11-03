@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { CodeBlock } from "@/components/ui/code-block";
 import { ButtonLink } from "@/components/ui/button";
 import { ExamplePreview } from "@/components/playground/previews";
-import { completeFile, examples, freeExampleIds } from "@/lib/playground/examples";
+import { asSectionFile, completeFile, examples, freeExampleIds } from "@/lib/playground/examples";
 import { absoluteUrl } from "@/lib/site";
 import { breadcrumbJsonLd, codeJsonLd, jsonLdPayload } from "@/lib/seo";
 import { snippetBenefits, snippetHook } from "@/lib/snippet-copy";
@@ -123,6 +123,12 @@ export default async function SnippetPage({ params }: Params) {
               {free ? (
                 <div className="mt-4 space-y-4">
                   <CodeBlock code={completeFile(files)} lang="liquid" lineNumbers />
+                  {ex.kind === "snippet" && (
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wider text-subtle">Section variant - add in theme editor, no render tag</p>
+                      <CodeBlock code={asSectionFile(ex, files)} lang="liquid" className="mt-2" />
+                    </div>
+                  )}
                   {files.usage && (
                     <div className="rounded-xl border border-line bg-ink-900/60 p-4">
                       <p className="text-xs font-semibold uppercase tracking-wider text-subtle">Usage</p>

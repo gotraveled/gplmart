@@ -34,19 +34,27 @@ const scope = {
 };
 
 const errs = [];
+const strip = (lq) => lq
+  .replace(/{%\s*schema\s*%}[\s\S]*?{%\s*endschema\s*%}/g, "")
+  .replace(/{%\s*stylesheet\s*%}[\s\S]*?{%\s*endstylesheet\s*%}/g, "")
+  .replace(/{%\s*javascript\s*%}[\s\S]*?{%\s*endjavascript\s*%}/g, "")
+  .replace(/{%-?\s*form\s[^%]*%}/g, "<form>")
+  .replace(/{%-?\s*endform\s*-?%}/g, "</form>");
+
 for (const ex of examples) {
   const f = ex.files(ex.defaults);
-  // strip shopify-only block tags
-  const lq = f.liquid
-    .replace(/{%\s*schema\s*%}[\s\S]*?{%\s*endschema\s*%}/g, "")
-    .replace(/{%\s*stylesheet\s*%}[\s\S]*?{%\s*endstylesheet\s*%}/g, "")
-    .replace(/{%\s*javascript\s*%}[\s\S]*?{%\s*endjavascript\s*%}/g, "")
-    .replace(/{%-?\s*form\s[^%]*%}/g, "<form>")
-    .replace(/{%-?\s*endform\s*-?%}/g, "</form>");
   try {
-    await liquid.parseAndRender(lq, scope);
+    await liquid.parseAndRender(strip(f.liquid), scope);
   } catch (e) {
     errs.push(`${ex.id}: ${e.message.slice(0, 110)}`);
   }
+  // snippet → section variant
+  if (ex.kind === "snippet" && m.exports.asSectionFile) {
+    try {
+      await liquid.parseAndRender(strip(m.exports.asSectionFile(ex, f)), scope);
+    } catch (e) {
+      errs.push(`${ex.id} [asSection]: ${e.message.slice(0, 110)}`);
+    }
+  }
 }
-console.log(errs.length ? `${errs.length} RENDER ERRORS:\n` + errs.join("\n") : "all 203 rendered without errors");
+console.log(errs.length ? `${errs.length} RENDER ERRORS:\n` + errs.join("\n") : "all 203 + 144 section variants rendered without errors");
