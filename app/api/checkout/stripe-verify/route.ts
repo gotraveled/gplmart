@@ -4,7 +4,7 @@ import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { stripe, stripeEnabled } from "@/lib/payments/stripe";
 import { fulfil } from "@/lib/payments/service";
 
-const sessionOk = (v: unknown): v is string => typeof v === "string" && /^cs_(test|live)_[A-Za-z0-9]+$/.test(v);
+const sessionOk = (v: unknown): v is string => typeof v === "string" && /^cs_(test|live)_[A-Za-z0-9_-]+$/.test(v);
 
 /** Verifies a completed Stripe Checkout Session server-side and fulfils the order. Never trusts the redirect. */
 export async function POST(req: Request) {

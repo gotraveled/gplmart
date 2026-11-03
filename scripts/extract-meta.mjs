@@ -1,4 +1,4 @@
-const fs = require("fs");
+import fs from "node:fs";
 const src = fs.readFileSync("lib/playground/examples.ts", "utf8");
 const out = [];
 const re = /\{\s*id:\s*"([^"]+)",\s*name:\s*"([^"]+)",\s*description:\s*(?:"([^"]*)"|`[^`]{0,400}`),\s*category:\s*"([^"]+)",\s*kind:\s*"(section|snippet)"/g;

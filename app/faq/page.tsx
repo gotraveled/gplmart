@@ -3,6 +3,7 @@ import { InfoPage, infoMetadata } from "@/components/ui/info-page";
 import { FaqList } from "@/components/ui/faq";
 import { ButtonLink } from "@/components/ui/button";
 import { GeoPrice } from "@/components/ui/geo-price";
+import { formatOfferPrice } from "@/lib/offer";
 import { faqs } from "@/lib/faq";
 import { freeExampleIds } from "@/lib/playground/examples";
 import { faqJsonLd, jsonLdPayload } from "@/lib/seo";
@@ -51,11 +52,11 @@ export default function FaqPage() {
 
       <h2 className="mt-12">Ready when you are</h2>
       <p>
-        One-time <GeoPrice fallback="₹499" /> - the full Liquid library, template bundles and plugin pack. No subscription,
+        One-time <GeoPrice fallback={formatOfferPrice()} /> - the full Liquid library, template bundles and plugin pack. No subscription,
         no renewal.
       </p>
       <ButtonLink href="/checkout" className="mt-5">
-        Get all-access &mdash; <GeoPrice fallback="₹499" /> <ArrowRight aria-hidden className="size-4" />
+        Get all-access &mdash; <GeoPrice fallback={formatOfferPrice()} /> <ArrowRight aria-hidden className="size-4" />
       </ButtonLink>
     </InfoPage>
     </>

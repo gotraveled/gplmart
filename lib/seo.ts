@@ -127,6 +127,7 @@ export function codeJsonLd(input: {
     programmingLanguage: ["Liquid", "HTML", "CSS", "JavaScript"],
     codeRepository: absoluteUrl(`/snippets/${input.id}`),
     url: absoluteUrl(`/snippets/${input.id}`),
+    text: input.code.slice(0, 4000),
     author: { "@id": absoluteUrl("/#org") },
     license: absoluteUrl("/licensing"),
     codeSampleType: input.kind === "section" ? "full (compilable) solution" : "code snippet",

@@ -68,7 +68,7 @@ export const guides: Guide[] = [
         ],
       },
       {
-        p: "Want a countdown that's already written, styled and tested? It's one of the five free examples in the GPLMart playground - copy the full Liquid and CSS and paste straight in.",
+        p: "Want a countdown that's already written, styled and tested? It's one of the free examples in the GPLMart playground - copy the full Liquid and CSS and paste straight in.",
       },
     ],
   },

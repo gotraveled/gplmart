@@ -18,7 +18,7 @@ export function geoPrice(country: string | null | undefined) {
   return GEO_PRICE[geoTier(country)];
 }
 
-/** Vercel injects x-vercel-ip-country on edge requests; falls back to India pricing. */
+/** Vercel injects x-vercel-ip-country on edge requests; unknown country falls back to USD pricing. */
 export function countryFromHeaders(headers: Headers): string | null {
   return headers.get("x-vercel-ip-country") ?? headers.get("cf-ipcountry");
 }

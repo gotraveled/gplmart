@@ -45,7 +45,7 @@ export const metadata: Metadata = {
 };
 
 const numbers = [
-  { k: "200", v: "Components in the sandbox" },
+  { k: String(examples.length), v: "Components in the sandbox" },
   { k: "20", v: "Free examples live in the sandbox" },
   { k: "5", v: "Resource areas under one access" },
   { k: "₹0/mo", v: "No monthly fee - ever" },
@@ -562,7 +562,7 @@ export default function HomePage() {
         <SectionHeading eyebrow="Shopify liquid code" title="Popular snippets" />
         <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {popular.map((e) => (
-            <a
+            <Link
               key={e.id}
               href={`/snippets/${e.id}`}
               className="group rounded-2xl border border-line bg-ink-900/60 p-5 transition hover:border-accent/50"
@@ -573,7 +573,7 @@ export default function HomePage() {
               <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-accent">
                 View snippet <ArrowRight aria-hidden className="size-4 transition group-hover:translate-x-0.5" />
               </span>
-            </a>
+            </Link>
           ))}
         </div>
         <div className="mt-6 text-center">

@@ -24,7 +24,8 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const ex = examples.find((e) => e.id === slug);
   if (!ex) return {};
   const free = freeExampleIds.has(ex.id);
-  const title = `${ex.name} - Free Shopify Liquid ${ex.kind === "section" ? "Section" : "Snippet"} Code`;
+  const kindWord = ex.kind === "section" ? "Section" : "Snippet";
+  const title = `${ex.name} - ${free ? "Free " : ""}Shopify Liquid ${kindWord} Code`;
   const description = `${ex.description} ${free ? "Copy the complete Liquid, CSS and JS source free" : "Preview it live - members get the complete source"} - paste into any OS 2.0 Shopify theme, no app needed.`;
   return {
     title,

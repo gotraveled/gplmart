@@ -1,4 +1,6 @@
-import { isSupabaseConfigured } from "@/lib/env";
+import { isLiveCheckoutEnabled, isSupabaseConfigured } from "@/lib/env";
+import { checkoutOpen } from "@/lib/checkout-gate";
+import { isContentReady } from "@/lib/settings";
 import { json, sameOrigin } from "@/lib/http";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { createServiceClient } from "@/lib/supabase/admin";
@@ -16,6 +18,9 @@ export async function POST(req: Request) {
   if (!sameOrigin(req)) return json({ error: "forbidden" }, 403);
   if (!isSupabaseConfigured() || !stripeEnabled()) return json({ error: "not_configured" }, 503);
   if (!rateLimit(`stripe-session:${clientIp(req.headers)}`, 10, 10 * 60_000)) return json({ error: "rate_limited" }, 429);
+  // Stripe is always "live mode" - the same content-readiness gate applies as Razorpay live.
+  const open = checkoutOpen({ testMode: false, liveEnabled: isLiveCheckoutEnabled(), contentReady: await isContentReady() });
+  if (!open) return json({ error: "not_open" }, 403);
 
   const body = (await req.json().catch(() => null)) as Record<string, unknown> | null;
   const customer = {
