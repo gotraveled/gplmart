@@ -48,11 +48,11 @@ export async function createOrderForUser(userId: string) {
 /** Guest checkout: no account required. Contact details are stored for reconciliation and manual fulfilment. */
 export async function createOrderForCustomer(
   customer: { name: string; email: string; phone: string },
-  opts: { install?: boolean } = {},
+  opts: { extended?: boolean } = {},
 ) {
   const creds = requireCreds();
   const db = createServiceClient();
-  const amountPaise = OFFER.pricePaise + (opts.install ? OFFER.installAddonPaise : 0);
+  const amountPaise = OFFER.pricePaise + (opts.extended ? OFFER.extendedAddonPaise : 0);
   const order = await createRazorpayOrder(creds, {
     amountPaise,
     currency: OFFER.currency,
@@ -61,7 +61,7 @@ export async function createOrderForCustomer(
       plan: OFFER.plan,
       customer_email: customer.email,
       customer_phone: customer.phone,
-      ...(opts.install ? { addon: OFFER.installAddon } : {}),
+      ...(opts.extended ? { addon: OFFER.extendedAddon } : {}),
     },
   });
   const { error } = await db.from("orders").insert({
@@ -72,7 +72,7 @@ export async function createOrderForCustomer(
     customer_name: customer.name,
     customer_email: customer.email,
     customer_phone: customer.phone,
-    addon: opts.install ? OFFER.installAddon : null,
+    addon: opts.extended ? OFFER.extendedAddon : null,
   });
   if (error) throw new Error("could not record order");
   return { orderId: order.id, amountPaise, currency: OFFER.currency, keyId: creds.keyId };

@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { CopyButton } from "@/components/ui/copy-button";
 import { PromptGenerator } from "@/components/prompts/generator";
+import { LeadForm } from "@/components/prompts/lead-form";
 import { promptCategories, prompts } from "@/lib/prompts";
 import { formatOfferPrice } from "@/lib/offer";
 
@@ -60,7 +61,11 @@ export default function PromptsPage() {
         </section>
       ))}
 
-      <div className="not-prose mt-12 rounded-2xl border border-accent/30 bg-accent/[0.06] p-6">
+      <div className="not-prose mt-12">
+        <LeadForm />
+      </div>
+
+      <div className="not-prose mt-6 rounded-2xl border border-accent/30 bg-accent/[0.06] p-6">
         <div className="flex items-start gap-3">
           <Sparkles aria-hidden className="mt-0.5 size-5 shrink-0 text-accent" />
           <div>
