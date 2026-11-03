@@ -1,0 +1,19 @@
+<div class="gpl-upi">
+  <span class="gpl-upi__badge">UPI</span>
+  <span class="gpl-upi__badge">GPay</span>
+  <span class="gpl-upi__badge">PhonePe</span>
+  <span class="gpl-upi__badge">Paytm</span>
+  <span class="gpl-upi__badge">Cards</span>
+</div>
+
+{% stylesheet %}
+.gpl-upi { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.6rem 0; }
+.gpl-upi__badge {
+  padding: 0.3rem 0.65rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25);
+  border-radius: 5px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+{% endstylesheet %}

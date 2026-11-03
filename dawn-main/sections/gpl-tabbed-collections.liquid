@@ -1,0 +1,69 @@
+<gpl-ctabs class="gpl-ctabs">
+  <div class="gpl-ctabs__nav">
+    {%- assign rows = section.settings.tabs | newline_to_br | split: '<br />' -%}
+    {%- for row in rows -%}
+      {%- assign parts = row | strip | split: '|' -%}
+      <button type="button" class="gpl-ctabs__btn{% if forloop.first %} is-active{% endif %}" data-tab="{{ forloop.index0 }}">{{ parts[0] | strip }}</button>
+    {%- endfor -%}
+  </div>
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    {%- assign col_handle = parts[1] | strip | handleize -%}
+    {%- assign c = collections[col_handle] -%}
+    <div class="gpl-ctabs__grid"{% unless forloop.first %} hidden{% endunless %} data-panel="{{ forloop.index0 }}">
+      {%- for p in c.products limit: 4 -%}
+        <a class="gpl-ctabs__card" href="{{ p.url }}">
+          {{ p.featured_image | image_url: width: 400 | image_tag: class: 'gpl-ctabs__img', loading: 'lazy' }}
+          <span class="gpl-ctabs__title">{{ p.title }}</span>
+          <span class="gpl-ctabs__price">{{ p.price | money }}</span>
+        </a>
+      {%- endfor -%}
+    </div>
+  {%- endfor -%}
+</gpl-ctabs>
+
+{% schema %}
+{
+  "name": "Tabbed collections",
+  "settings": [
+    { "type": "textarea", "id": "tabs", "label": "Tabs (label|collection per line)", "default": "New in|new-arrivals\nBestsellers|bestsellers\nSale|sale" }
+  ],
+  "presets": [{ "name": "Tabbed collections" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-ctabs { display: block; padding: 1.5rem 0; }
+.gpl-ctabs__nav { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; }
+.gpl-ctabs__btn {
+  padding: 0.5rem 1.1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25);
+  border-radius: 999px;
+  background: none;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: inherit;
+}
+.gpl-ctabs__btn.is-active { background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); border-color: transparent; }
+.gpl-ctabs__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.9rem; }
+.gpl-ctabs__grid[hidden] { display: none; }
+@media (max-width: 750px) { .gpl-ctabs__grid { grid-template-columns: repeat(2, 1fr); } }
+.gpl-ctabs__card { text-decoration: none; color: inherit; }
+.gpl-ctabs__img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; display: block; }
+.gpl-ctabs__title { display: block; margin-top: 0.5rem; font-size: 0.75rem; font-weight: 600; }
+.gpl-ctabs__price { display: block; font-size: 0.68rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-ctabs').forEach((el) => {
+  el.querySelectorAll('.gpl-ctabs__btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      el.querySelectorAll('.gpl-ctabs__btn').forEach((b) => b.classList.remove('is-active'));
+      el.querySelectorAll('.gpl-ctabs__grid').forEach((g) => (g.hidden = true));
+      btn.classList.add('is-active');
+      el.querySelector('[data-panel="' + btn.dataset.tab + '"]').classList.remove('hidden');
+    });
+  });
+});
+{% endjavascript %}

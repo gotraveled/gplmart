@@ -1,0 +1,50 @@
+<div class="gpl-iwt">
+  <div class="gpl-iwt__media">
+    {%- if section.settings.image -%}
+      {{ section.settings.image | image_url: width: 900 | image_tag: class: 'gpl-iwt__img', loading: 'lazy' }}
+    {%- endif -%}
+  </div>
+  <div class="gpl-iwt__body">
+    <h2 class="gpl-iwt__heading">{{ section.settings.heading }}</h2>
+    <p class="gpl-iwt__text">{{ section.settings.text }}</p>
+    {%- if section.settings.cta != blank -%}
+      <a class="gpl-iwt__btn" href="{{ section.settings.link }}">{{ section.settings.cta }}</a>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Image with text",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Image" },
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Built for everyday wear" },
+    { "type": "textarea", "id": "text", "label": "Text", "default": "Cut from heavyweight organic cotton, pre-shrunk and garment-washed so it keeps i" },
+    { "type": "text", "id": "cta", "label": "Button label" },
+    { "type": "url", "id": "link", "label": "Button link" },
+    { "type": "checkbox", "id": "flip", "label": "Image on right", "default": false }
+  ],
+  "presets": [{ "name": "Image with text" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-iwt { display: grid; gap: 1.5rem; align-items: center; padding: 1.5rem 0; }
+@media (min-width: 750px) {
+  .gpl-iwt { grid-template-columns: 1fr 1fr; gap: 3rem; }
+  .gpl-iwt--flip .gpl-iwt__media { order: 2; }
+}
+.gpl-iwt__img { width: 100%; border-radius: 14px; display: block; }
+.gpl-iwt__heading { margin: 0; font-size: 1.5rem; font-weight: 800; }
+.gpl-iwt__text { margin: 0.75rem 0 0; color: rgb(var(--color-foreground, 100 116 139) / 0.8); line-height: 1.6; }
+.gpl-iwt__btn {
+  display: inline-block;
+  margin-top: 1.25rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 999px;
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
+  text-decoration: none;
+  font-weight: 700;
+}
+{% endstylesheet %}

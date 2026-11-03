@@ -1,0 +1,67 @@
+<gpl-age class="gpl-age" hidden>
+  <div class="gpl-age__box" role="dialog" aria-modal="true" aria-label="Age verification">
+    <h2 class="gpl-age__title">{{ heading | default: 'Are you of legal age?' }}</h2>
+    <p class="gpl-age__text">{{ text | default: 'Confirm your age to continue.' }}</p>
+    <div class="gpl-age__row">
+      <button type="button" class="gpl-age__yes">{{ confirm | default: 'Yes, I am' }}</button>
+      <a class="gpl-age__no" href="https://www.google.com">No, leave</a>
+    </div>
+  </div>
+</gpl-age>
+
+{% stylesheet %}
+.gpl-age {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: rgb(0 0 0 / 0.7);
+  backdrop-filter: blur(6px);
+}
+.gpl-age__box {
+  max-width: 24rem;
+  margin: 1rem;
+  padding: 2rem;
+  border-radius: 16px;
+  background: rgb(var(--color-background, 255 255 255));
+  text-align: center;
+}
+.gpl-age__title { margin: 0; font-size: 1.3rem; font-weight: 800; }
+.gpl-age__text { margin: 0.6rem 0 0; font-size: 0.85rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-age__row { display: flex; gap: 0.6rem; margin-top: 1.5rem; }
+.gpl-age__yes {
+  flex: 1;
+  padding: 0.75rem;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(var(--color-button, 21 128 61));
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+.gpl-age__no {
+  flex: 1;
+  display: grid;
+  place-items: center;
+  padding: 0.75rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 10px;
+  text-decoration: none;
+  color: inherit;
+  font-size: 0.85rem;
+}
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-age').forEach((el) => {
+  if (sessionStorage.getItem('gpl-age-ok') === '1') return;
+  el.hidden = false;
+  document.body.style.overflow = 'hidden';
+  el.querySelector('.gpl-age__yes').addEventListener('click', () => {
+    sessionStorage.setItem('gpl-age-ok', '1');
+    el.hidden = true;
+    document.body.style.overflow = '';
+  });
+});
+{% endjavascript %}

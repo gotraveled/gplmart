@@ -1,0 +1,34 @@
+<gpl-toc class="gpl-toc">
+  <p class="gpl-toc__meta" data-time>Calculating read time…</p>
+  <details class="gpl-toc__box" open>
+    <summary class="gpl-toc__summary">On this page</summary>
+    <ul class="gpl-toc__list" data-list></ul>
+  </details>
+</gpl-toc>
+
+{% stylesheet %}
+.gpl-toc { display: block; margin: 1rem 0; }
+.gpl-toc__meta { margin: 0 0 0.6rem; font-size: 0.68rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-toc__box { border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2); border-radius: 10px; padding: 0.9rem; }
+.gpl-toc__summary { font-size: 0.72rem; font-weight: 700; cursor: pointer; }
+.gpl-toc__list { margin: 0.6rem 0 0; padding-left: 1.1rem; font-size: 0.75rem; }
+.gpl-toc__list a { color: rgb(var(--color-button, 21 128 61)); text-decoration: none; }
+.gpl-toc__list a:hover { text-decoration: underline; }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-toc').forEach((el) => {
+  const article = document.querySelector('article') || document.body;
+  const heads = [...article.querySelectorAll('h2')];
+  const list = el.querySelector('[data-list]');
+  heads.forEach((h, i) => {
+    if (!h.id) h.id = 'toc-' + i;
+    const li = document.createElement('li');
+    li.innerHTML = '<a href="#' + h.id + '">' + h.textContent + '</a>';
+    list.appendChild(li);
+  });
+  if (!heads.length) el.querySelector('.gpl-toc__box').hidden = true;
+  const words = article.textContent.trim().split(/\s+/).length;
+  el.querySelector('[data-time]').textContent = Math.max(1, Math.round(words / 200)) + ' min read';
+});
+{% endjavascript %}

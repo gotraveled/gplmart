@@ -1,0 +1,48 @@
+<gpl-zoom class="gpl-zoom" data-zoom="2">
+  {%- if image -%}
+    {{ image | image_url: width: 1200 | image_tag: class: 'gpl-zoom__img', loading: 'eager' }}
+  {%- else -%}
+    {{ product.featured_image | image_url: width: 1200 | image_tag: class: 'gpl-zoom__img', loading: 'eager' }}
+  {%- endif -%}
+  <span class="gpl-zoom__hint" aria-hidden="true">Hover to zoom</span>
+</gpl-zoom>
+
+{% stylesheet %}
+.gpl-zoom {
+  display: block;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  cursor: zoom-in;
+}
+.gpl-zoom__img { display: block; width: 100%; height: auto; transition: transform 0.15s ease-out; transform-origin: center; }
+.gpl-zoom:hover .gpl-zoom__img { transform: scale(var(--gpl-zoom, 2)); }
+.gpl-zoom__hint {
+  position: absolute;
+  bottom: 0.75rem;
+  right: 0.75rem;
+  padding: 0.3rem 0.6rem;
+  border-radius: 999px;
+  background: rgb(0 0 0 / 0.55);
+  color: #fff;
+  font-size: 0.65rem;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.gpl-zoom:hover .gpl-zoom__hint { opacity: 0; }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-zoom').forEach((el) => {
+  const img = el.querySelector('.gpl-zoom__img');
+  el.style.setProperty('--gpl-zoom', el.dataset.zoom || '2');
+  function move(e) {
+    const r = el.getBoundingClientRect();
+    const x = ((e.clientX - r.left) / r.width) * 100;
+    const y = ((e.clientY - r.top) / r.height) * 100;
+    img.style.transformOrigin = x + '% ' + y + '%';
+  }
+  el.addEventListener('mousemove', move);
+  el.addEventListener('touchmove', (e) => move(e.touches[0]), { passive: true });
+});
+{% endjavascript %}

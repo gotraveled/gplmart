@@ -1,0 +1,17 @@
+<div class="gpl-ask">
+  <p class="gpl-ask__heading">{{ heading | default: 'Have a question?' }}</p>
+  {%- form 'contact', class: 'gpl-ask__form' -%}
+    <input type="hidden" name="contact[tags]" value="question-{{ product.handle }}">
+    <input type="email" name="contact[email]" placeholder="Your email" required>
+    <input type="text" name="contact[body]" placeholder="Ask about {{ product.title }}" required>
+    <button type="submit">Ask</button>
+  {%- endform -%}
+</div>
+
+{% stylesheet %}
+.gpl-ask { margin: 1rem 0; padding: 0.9rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2); border-radius: 10px; }
+.gpl-ask__heading { margin: 0 0 0.6rem; font-size: 0.75rem; font-weight: 700; }
+.gpl-ask__form { display: grid; gap: 0.5rem; }
+.gpl-ask__form input { padding: 0.55rem 0.75rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 8px; font-size: 0.78rem; }
+.gpl-ask__form button { padding: 0.6rem 1.25rem; border: 0; border-radius: 8px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-weight: 700; font-size: 0.72rem; cursor: pointer; justify-self: start; }
+{% endstylesheet %}

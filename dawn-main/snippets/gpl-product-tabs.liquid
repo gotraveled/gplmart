@@ -1,0 +1,66 @@
+{%- comment -%}
+  Accessible tab pattern: buttons drive panels, arrow keys move between tabs.
+  Wire the shipping/returns panels to metafields or hard-code your policies.
+{%- endcomment -%}
+<div class="gpl-tabs" data-gpl-tabs>
+  <div class="gpl-tabs__bar" role="tablist" aria-label="Product information">
+    <button type="button" role="tab" id="gpl-tab-1" aria-controls="gpl-panel-1" aria-selected="true" class="gpl-tabs__btn is-active">{{ tab1 | default: 'Description' | escape }}</button>
+    <button type="button" role="tab" id="gpl-tab-2" aria-controls="gpl-panel-2" aria-selected="false" tabindex="-1" class="gpl-tabs__btn">{{ tab2 | default: 'Shipping' | escape }}</button>
+    <button type="button" role="tab" id="gpl-tab-3" aria-controls="gpl-panel-3" aria-selected="false" tabindex="-1" class="gpl-tabs__btn">{{ tab3 | default: 'Returns' | escape }}</button>
+  </div>
+  <div id="gpl-panel-1" role="tabpanel" aria-labelledby="gpl-tab-1" class="gpl-tabs__panel">
+    {{ product.description }}
+  </div>
+  <div id="gpl-panel-2" role="tabpanel" aria-labelledby="gpl-tab-2" class="gpl-tabs__panel" hidden>
+    <p>{{ product.metafields.custom.shipping_info | default: 'Ships in 2-4 business days. Free shipping thresholds apply at checkout.' | escape }}</p>
+  </div>
+  <div id="gpl-panel-3" role="tabpanel" aria-labelledby="gpl-tab-3" class="gpl-tabs__panel" hidden>
+    <p>{{ product.metafields.custom.return_info | default: 'Easy 30-day returns on unused items in original packaging.' | escape }}</p>
+  </div>
+</div>
+
+{% stylesheet %}
+.gpl-tabs { margin: 1.25rem 0; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.15); border-radius: 0.85rem; overflow: hidden; }
+.gpl-tabs__bar { display: flex; border-bottom: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.15); background: rgb(var(--color-foreground, 148 163 184) / 0.04); }
+.gpl-tabs__btn {
+  flex: 1;
+  padding: 0.75rem 0.5rem;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  opacity: 0.65;
+  transition: opacity 0.15s ease;
+}
+.gpl-tabs__btn.is-active { opacity: 1; border-bottom-color: rgb(var(--color-button, 200 245 66)); }
+.gpl-tabs__panel { padding: 1rem 1.1rem; font-size: 0.9rem; line-height: 1.6; }
+.gpl-tabs__panel[hidden] { display: none; }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('[data-gpl-tabs]').forEach((root) => {
+  const tabs = Array.from(root.querySelectorAll('[role="tab"]'));
+  const panels = Array.from(root.querySelectorAll('[role="tabpanel"]'));
+  const activate = (i) => {
+    tabs.forEach((t, j) => {
+      const on = i === j;
+      t.classList.toggle('is-active', on);
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+      panels[j].hidden = !on;
+    });
+    tabs[i].focus();
+  };
+  tabs.forEach((t, i) => {
+    t.addEventListener('click', () => activate(i));
+    t.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') activate((i + 1) % tabs.length);
+      if (e.key === 'ArrowLeft') activate((i - 1 + tabs.length) % tabs.length);
+    });
+  });
+});
+{% endjavascript %}

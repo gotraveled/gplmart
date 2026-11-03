@@ -1,0 +1,25 @@
+<gpl-unlock class="gpl-unlock">
+  <p class="gpl-unlock__text">Share us on Instagram to unlock <b>{{ offer | default: 'a discount' }}</b></p>
+  <a class="gpl-unlock__share" href="https://instagram.com" target="_blank" rel="noopener">Share on Instagram</a>
+  <div class="gpl-unlock__code" hidden data-code>
+    <p>Your code:</p>
+    <code>{{ code | default: 'CODE' }}</code>
+  </div>
+</gpl-unlock>
+
+{% stylesheet %}
+.gpl-unlock { margin: 1rem 0; padding: 1rem; border: 1px dashed rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 10px; }
+.gpl-unlock__text { margin: 0; font-size: 0.75rem; }
+.gpl-unlock__share { display: inline-block; margin-top: 0.6rem; padding: 0.5rem 1.1rem; border-radius: 999px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; font-size: 0.7rem; font-weight: 700; text-decoration: none; }
+.gpl-unlock__code { margin-top: 0.8rem; padding-top: 0.8rem; border-top: 1px dashed rgb(var(--color-foreground, 148 163 184) / 0.3); }
+.gpl-unlock__code p { margin: 0 0 0.3rem; font-size: 0.62rem; }
+.gpl-unlock__code code { padding: 0.3rem 0.7rem; border-radius: 6px; background: rgb(var(--color-foreground, 15 23 42) / 0.05); font-size: 0.8rem; font-weight: 800; letter-spacing: 0.08em; }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-unlock').forEach((el) => {
+  el.querySelector('.gpl-unlock__share').addEventListener('click', () => {
+    setTimeout(() => { el.querySelector('[data-code]').hidden = false; }, 1500);
+  });
+});
+{% endjavascript %}

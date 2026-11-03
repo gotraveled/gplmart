@@ -1,0 +1,51 @@
+<div class="gpl-warreg">
+  <h2 class="gpl-warreg__heading">{{ section.settings.heading }}</h2>
+  <p class="gpl-warreg__sub">Register within 30 days of delivery for the full {{ section.settings.term }} coverage.</p>
+  {%- form 'contact', class: 'gpl-warreg__form' -%}
+    <input type="hidden" name="contact[tags]" value="warranty-registration">
+    {%- if form.posted_successfully? -%}
+      <p class="gpl-warreg__ok">Registered - keep this confirmation.</p>
+    {%- endif -%}
+    <input type="text" name="contact[order]" placeholder="Order number" required>
+    <input type="text" name="contact[serial]" placeholder="Serial / product code" required>
+    <input type="email" name="contact[email]" placeholder="Email" required>
+    <button type="submit">Register warranty</button>
+  {%- endform -%}
+</div>
+
+{% schema %}
+{
+  "name": "Warranty registration",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Activate your warranty" },
+    { "type": "text", "id": "term", "label": "Warranty term", "default": "1-year" }
+  ],
+  "presets": [{ "name": "Warranty registration" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-warreg { padding: 1.5rem 0; max-width: 28rem; }
+.gpl-warreg__heading { margin: 0; font-size: 1.1rem; font-weight: 800; }
+.gpl-warreg__sub { margin: 0.4rem 0 1rem; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-warreg__form { display: grid; gap: 0.6rem; }
+.gpl-warreg__form input {
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 9px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.82rem;
+}
+.gpl-warreg__form button {
+  padding: 0.75rem 1.75rem;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
+  font-weight: 800;
+  cursor: pointer;
+  justify-self: start;
+}
+.gpl-warreg__ok { margin: 0; color: #16a34a; font-size: 0.8rem; font-weight: 700; }
+{% endstylesheet %}

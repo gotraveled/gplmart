@@ -1,0 +1,25 @@
+<gpl-aprogress class="gpl-aprogress"><span data-fill></span></gpl-aprogress>
+
+{% stylesheet %}
+.gpl-aprogress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 80;
+  height: 3px;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.12);
+}
+.gpl-aprogress span { display: block; height: 100%; width: 0; background: rgb(var(--color-button, 21 128 61)); transition: width 0.1s; }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-aprogress').forEach((el) => {
+  const fill = el.querySelector('[data-fill]');
+  window.addEventListener('scroll', () => {
+    const doc = document.documentElement;
+    const pct = (doc.scrollTop / (doc.scrollHeight - doc.clientHeight)) * 100;
+    fill.style.width = Math.min(100, Math.max(0, pct)) + '%';
+  }, { passive: true });
+});
+{% endjavascript %}

@@ -1,0 +1,50 @@
+<gpl-cod class="gpl-cod" data-prefixes="{{ prefixes | default: '' }}">
+  <div class="gpl-cod__row">
+    <input type="text" inputmode="numeric" maxlength="6" class="gpl-cod__input" placeholder="Enter pincode" aria-label="Pincode">
+    <button type="button" class="gpl-cod__btn">{{ label | default: 'Check' }}</button>
+  </div>
+  <p class="gpl-cod__result" aria-live="polite"></p>
+</gpl-cod>
+
+{% stylesheet %}
+.gpl-cod { margin: 0.75rem 0; }
+.gpl-cod__row { display: flex; gap: 0.5rem; }
+.gpl-cod__input {
+  flex: 1;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 9px;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.05);
+  font-size: 0.85rem;
+}
+.gpl-cod__btn {
+  padding: 0.6rem 1.1rem;
+  border: 0;
+  border-radius: 9px;
+  background: rgb(var(--color-button, 21 128 61));
+  color: #fff;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.gpl-cod__result { margin: 0.5rem 0 0; font-size: 0.78rem; }
+.gpl-cod__result.is-ok { color: #16a34a; }
+.gpl-cod__result.is-no { color: #dc2626; }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-cod').forEach((el) => {
+  const input = el.querySelector('.gpl-cod__input');
+  const out = el.querySelector('.gpl-cod__result');
+  const list = (el.dataset.prefixes || '').split(',').map((s) => s.trim()).filter(Boolean);
+  el.querySelector('.gpl-cod__btn').addEventListener('click', () => {
+    const pin = input.value.trim();
+    out.className = 'gpl-cod__result';
+    if (!/^\d{6}$/.test(pin)) { out.textContent = 'Enter a 6-digit pincode'; out.classList.add('is-no'); return; }
+    if (!list.length) { out.textContent = 'Cash on delivery available'; out.classList.add('is-ok'); return; }
+    const hit = list.some((p) => pin.startsWith(p));
+    out.textContent = hit ? 'COD & delivery available at ' + pin : 'Delivery available - COD not covered at ' + pin;
+    out.classList.add(hit ? 'is-ok' : 'is-no');
+  });
+});
+{% endjavascript %}

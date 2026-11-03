@@ -1,0 +1,32 @@
+<div class="gpl-pc">
+  <table class="gpl-pc__table">
+    <thead><tr><th></th><th>{{ section.settings.p1 }}</th><th>{{ section.settings.p2 }}</th></tr></thead>
+    <tbody>
+      {%- assign rows = section.settings.rows | newline_to_br | split: '<br />' -%}
+      {%- for row in rows -%}
+        {%- assign parts = row | strip | split: '|' -%}
+        <tr><td class="gpl-pc__spec">{{ parts[0] | strip }}</td><td>{{ parts[1] | strip }}</td><td>{{ parts[2] | strip }}</td></tr>
+      {%- endfor -%}
+    </tbody>
+  </table>
+</div>
+
+{% schema %}
+{
+  "name": "Product comparison",
+  "settings": [
+    { "type": "text", "id": "p1", "label": "Product 1 name", "default": "Overshirt" },
+    { "type": "text", "id": "p2", "label": "Product 2 name", "default": "Classic tee" },
+    { "type": "textarea", "id": "rows", "label": "Specs (spec|p1|p2 per line)", "default": "Fabric|Linen|Cotton\nWeight|180 GSM|220 GSM\nFit|Relaxed|Slim\nPrice|₹2,499|₹1,799" }
+  ],
+  "presets": [{ "name": "Product comparison" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-pc { padding: 1.5rem 0; }
+.gpl-pc__table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+.gpl-pc__table th { padding: 0.6rem; text-align: left; font-size: 0.72rem; font-weight: 800; }
+.gpl-pc__table td { padding: 0.6rem; border-top: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.18); }
+.gpl-pc__spec { font-weight: 700; }
+{% endstylesheet %}

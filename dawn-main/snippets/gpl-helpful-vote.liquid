@@ -1,0 +1,27 @@
+<gpl-vote class="gpl-vote">
+  <span class="gpl-vote__q">Was this helpful?</span>
+  <button type="button" data-yes>Yes (<span data-yes-n>0</span>)</button>
+  <button type="button" data-no>No (<span data-no-n>0</span>)</button>
+</gpl-vote>
+
+{% stylesheet %}
+.gpl-vote { display: flex; align-items: center; gap: 0.6rem; margin-top: 0.5rem; font-size: 0.62rem; }
+.gpl-vote__q { color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-vote button { padding: 0.2rem 0.6rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25); border-radius: 999px; background: none; font-size: 0.6rem; cursor: pointer; color: inherit; }
+.gpl-vote button.is-sel { border-color: rgb(var(--color-button, 21 128 61)); color: rgb(var(--color-button, 21 128 61)); }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-vote').forEach((el) => {
+  el.querySelector('[data-yes]').addEventListener('click', function () {
+    el.querySelector('[data-yes-n]').textContent = Number(el.querySelector('[data-yes-n]').textContent) + 1;
+    this.classList.add('is-sel');
+    el.querySelector('[data-no]').disabled = true;
+  });
+  el.querySelector('[data-no]').addEventListener('click', function () {
+    el.querySelector('[data-no-n]').textContent = Number(el.querySelector('[data-no-n]').textContent) + 1;
+    this.classList.add('is-sel');
+    el.querySelector('[data-yes]').disabled = true;
+  });
+});
+{% endjavascript %}
