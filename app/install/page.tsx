@@ -1,6 +1,7 @@
-import { ArrowRight, BookOpen, Download, FileCode2, Package, ShieldAlert, Store, Upload } from "lucide-react";
+import { ArrowRight, BookOpen, Download, FileCode2, Grid2x2, Package, PanelTop, ShieldAlert, Store, Upload } from "lucide-react";
 import { InfoPage, infoMetadata } from "@/components/ui/info-page";
 import { ButtonLink } from "@/components/ui/button";
+import { ThemeChecker } from "@/components/install/theme-checker";
 
 export const metadata = infoMetadata(
   "How to install - free instructions",
@@ -71,9 +72,35 @@ export default function InstallPage() {
   return (
     <InfoPage
       title="Free install guide"
-      description="Every resource installs the same way - no app, no developer needed. Save this page; it's everything you need."
+      description="Every resource installs the same way - no app, no developer needed. Check your theme below, then follow the steps."
     >
-      <h2>Shopify Liquid snippets &amp; sections</h2>
+      {/* Theme-specific checker */}
+      <div className="not-prose mb-10">
+        <ThemeChecker />
+      </div>
+
+      <h2>Where to place a snippet - choose by goal</h2>
+      <p className="mt-2 text-sm text-muted">
+        The same component works in different spots; pick by what it needs to do.
+      </p>
+      <div className="not-prose mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {[
+          { icon: Store, title: "Product page", text: "Buy bars, countdowns, trust, delivery ETA, cross-sells - open the Product template, add to the Product information section above or below the buy buttons." },
+          { icon: Package, title: "Cart", text: "Free-shipping bars, upsells, cart notes - add to the Cart template. Cart snippets work best directly under the items list." },
+          { icon: PanelTop, title: "Header & footer", text: "Announcement bars, nav links, cookie consent - header snippets go in sections/header-group.json or the layout file; footer ones in the footer section." },
+          { icon: Grid2x2, title: "Collection pages", text: "Promo banners, sort helpers, badge strips - add to the Collection template, usually above the product grid." },
+          { icon: FileCode2, title: "Everywhere (global)", text: "Scroll progress, back-to-top, site-wide notices - these go in layout/theme.liquid just before </body> so they render on every page." },
+          { icon: BookOpen, title: "If your theme has no section", text: "Any Liquid block can be pasted directly into the template file that renders the area - the 'vintage' path in the checker explains it for older themes." },
+        ].map(({ icon: Icon, title, text }) => (
+          <div key={title} className="rounded-2xl border border-line bg-ink-900/60 p-5">
+            <Icon aria-hidden className="size-5 text-mint" />
+            <h3 className="mt-3 font-display text-sm font-semibold">{title}</h3>
+            <p className="mt-1.5 text-xs text-muted">{text}</p>
+          </div>
+        ))}
+      </div>
+
+      <h2 className="mt-12">Shopify Liquid snippets &amp; sections - the general path</h2>
       <div className="not-prose mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {shopifySteps.map(({ icon: Icon, title, text }, i) => (
           <div key={title} className="relative rounded-2xl border border-line bg-ink-900/60 p-5">
