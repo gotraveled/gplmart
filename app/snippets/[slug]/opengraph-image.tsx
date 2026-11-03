@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { examples, freeExampleIds } from "@/lib/playground/examples";
+import meta from "@/lib/playground/snippet-meta.json";
 
 export const runtime = "nodejs";
 export const alt = "GPLMart Shopify Liquid snippet";
@@ -8,10 +8,11 @@ export const contentType = "image/png";
 
 export default async function OpengraphImage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const ex = examples.find((e) => e.id === slug);
+  const ex = meta.find((e) => e.id === slug);
   const name = ex?.name ?? "Shopify snippet";
   const category = ex?.category ?? "GPLMart library";
-  const free = ex ? freeExampleIds.has(ex.id) : false;
+  const free = ex?.free ?? false;
+  const kind = ex?.kind === "section" ? "section" : "snippet";
 
   return new ImageResponse(
     (
@@ -31,15 +32,14 @@ export default async function OpengraphImage({ params }: { params: Promise<{ slu
           GPL<span style={{ color: "#c8f542" }}>Mart</span>
         </div>
         <div style={{ display: "flex", flexDirection: "column" }}>
-          <div style={{ fontSize: 30, color: "#c8f542", letterSpacing: 2, textTransform: "uppercase" }}>{category}</div>
-          <div style={{ fontSize: 84, fontWeight: 700, marginTop: 12, lineHeight: 1.05 }}>{name}</div>
-          <div style={{ fontSize: 34, color: "#a3aad1", marginTop: 20 }}>
-            Shopify Liquid {ex?.kind === "section" ? "section" : "snippet"} code - paste into any OS 2.0 theme
+          <div style={{ fontSize: 30, color: "#c8f542" }}>{category}</div>
+          <div style={{ fontSize: 84, fontWeight: 700, marginTop: 12 }}>{name}</div>
+          <div style={{ fontSize: 34, color: "#a3aad1", marginTop: 20, display: "flex" }}>
+            Shopify Liquid {kind} code - paste into any OS 2.0 theme
           </div>
         </div>
-        <div style={{ display: "flex", alignItems: "center", fontSize: 30, color: "#a3aad1" }}>
-          <span style={{ color: "#c8f542", marginRight: 14 }}>{free ? "FREE source code" : "Members source"}</span>
-          gplmart.com/snippets/{slug}
+        <div style={{ display: "flex", fontSize: 30, color: "#a3aad1" }}>
+          {free ? "FREE source code" : "Members source"} - gplmart.com/snippets/{slug}
         </div>
       </div>
     ),
