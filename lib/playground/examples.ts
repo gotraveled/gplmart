@@ -2079,6 +2079,355 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
 }`,
     }),
   },
+  {
+    id: "payment-badges",
+    name: "Payment trust row",
+    description: "A row of payment-method pills (UPI, cards, COD) that sits under the buy button and answers the 'can I trust this checkout?' question.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "items", label: "Methods (separate with |)", type: "text", maxLength: 120 },
+      { id: "note", label: "Sub-line", type: "text", maxLength: 80 },
+      { id: "accent", label: "Accent", type: "color" },
+    ],
+    defaults: { items: "UPI|Cards|Net banking|COD", note: "100% secure payments via trusted gateways", accent: "#15803d" },
+    install: snippetSteps("payment-badges.liquid"),
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Sits under the add-to-cart button. Edit the list to match the methods you
+  actually offer - showing a method you do not support erodes trust.
+{%- endcomment -%}
+<div class="gpl-pay" style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 21 128 61))' }};">
+  <ul class="gpl-pay__row" role="list">
+    {%- assign methods = items | default: '${v.items}' | split: '|' -%}
+    {%- for m in methods -%}
+      <li class="gpl-pay__pill">
+        <svg class="gpl-pay__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg>
+        {{ m | strip | escape }}
+      </li>
+    {%- endfor -%}
+  </ul>
+  {%- if note != blank or ${v.note ? "true" : "false"} -%}
+    <p class="gpl-pay__note">{{ note | default: '${v.note}' | escape }}</p>
+  {%- endif -%}
+</div>`,
+      css: `.gpl-pay { margin: 0.75rem 0; }
+.gpl-pay__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.gpl-pay__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgb(var(--color-foreground, 226 232 240) / 0.18);
+  border-radius: 999px;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.06);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.gpl-pay__icon { width: 0.9rem; height: 0.9rem; color: var(--gpl-accent); }
+.gpl-pay__note { margin: 0.5rem 0 0; font-size: 0.7rem; opacity: 0.65; }`,
+      usage: `{% render 'payment-badges', items: '${v.items}', note: '${v.note}' %}`,
+    }),
+  },
+  {
+    id: "quantity-breaks",
+    name: "Bundle & save table",
+    description: "Tiered 'buy more, save more' pricing rows. Clicking a tier sets the quantity and highlights the deal - pushes average order value up.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "tier2", label: "2-pack discount %", type: "select", options: [{ value: "5", label: "5%" }, { value: "10", label: "10%" }, { value: "15", label: "15%" }] },
+      { id: "tier3", label: "3-pack discount %", type: "select", options: [{ value: "10", label: "10%" }, { value: "15", label: "15%" }, { value: "20", label: "20%" }, { value: "25", label: "25%" }] },
+      { id: "accent", label: "Accent", type: "color" },
+    ],
+    defaults: { tier2: "10", tier3: "20", accent: "#c8f542" },
+    install: [
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "Create snippets/quantity-breaks.liquid, paste the Liquid code, and add the CSS and JS to your theme.",
+      "Render it above the add-to-cart button inside your product form (usage tag in the Usage tab).",
+      "IMPORTANT: the discounts shown must also exist in Shopify - create matching automatic discounts or bundle pricing, otherwise customers see a saving that the cart never applies.",
+    ],
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Shows a per-unit price so shoppers understand the saving. The numbers are
+  only accurate if matching Shopify discounts exist - keep them in sync.
+{%- endcomment -%}
+{%- assign p = product.selected_or_first_available_variant.price | default: product.price -%}
+<div class="gpl-qty" data-gpl-qty style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 200 245 66))' }};">
+  <p class="gpl-qty__head">Bundle &amp; save</p>
+  <button type="button" class="gpl-qty__tier is-active" data-qty="1">
+    <span class="gpl-qty__label">Buy 1</span>
+    <span class="gpl-qty__price">{{ p | money }}</span>
+  </button>
+  <button type="button" class="gpl-qty__tier" data-qty="2">
+    <span class="gpl-qty__label">Buy 2 <em class="gpl-qty__save">save ${v.tier2}%</em></span>
+    <span class="gpl-qty__price">{{ p | times: 2 | times: ${100 - Number(v.tier2)} | divided_by: 100 | money }}</span>
+  </button>
+  <button type="button" class="gpl-qty__tier gpl-qty__tier--best" data-qty="3">
+    <span class="gpl-qty__label">Buy 3 <em class="gpl-qty__save">save ${v.tier3}%</em> <span class="gpl-qty__tag">best value</span></span>
+    <span class="gpl-qty__price">{{ p | times: 3 | times: ${100 - Number(v.tier3)} | divided_by: 100 | money }}</span>
+  </button>
+</div>`,
+      css: `.gpl-qty { display: grid; gap: 0.5rem; margin: 1rem 0; }
+.gpl-qty__head { margin: 0; font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; text-transform: uppercase; opacity: 0.7; }
+.gpl-qty__tier {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.7rem 0.9rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2);
+  border-radius: 0.75rem;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.05);
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+.gpl-qty__tier.is-active {
+  border-color: var(--gpl-accent);
+  background: rgb(var(--color-foreground, 148 163 184) / 0.1);
+  box-shadow: 0 0 0 1px var(--gpl-accent);
+}
+.gpl-qty__label { font-weight: 600; font-size: 0.9rem; }
+.gpl-qty__save {
+  font-style: normal;
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: var(--gpl-accent);
+  margin-left: 0.35rem;
+}
+.gpl-qty__tag {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: var(--gpl-accent);
+  color: #0b1220;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+  margin-left: 0.4rem;
+}
+.gpl-qty__price { font-weight: 700; font-size: 0.95rem; }`,
+      js: `document.querySelectorAll('[data-gpl-qty]').forEach((wrap) => {
+  const tiers = wrap.querySelectorAll('[data-qty]');
+  tiers.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      tiers.forEach((t) => t.classList.remove('is-active'));
+      btn.classList.add('is-active');
+      const qty = btn.getAttribute('data-qty');
+      const input = wrap.closest('form')?.querySelector('input[name="quantity"]')
+        || document.querySelector('input[name="quantity"]');
+      if (input) input.value = qty;
+    });
+  });
+});`,
+      usage: `{% render 'quantity-breaks' %}`,
+    }),
+  },
+  {
+    id: "guarantee-strip",
+    name: "Money-back guarantee",
+    description: "A compact shield-and-copy strip that reassures buyers right under the price or add-to-cart button.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "days", label: "Guarantee length", type: "select", options: [{ value: "7", label: "7 days" }, { value: "14", label: "14 days" }, { value: "30", label: "30 days" }] },
+      { id: "text", label: "Copy", type: "text", maxLength: 90 },
+      { id: "accent", label: "Accent", type: "color" },
+    ],
+    defaults: { days: "30", text: "Love it or get a full refund - no questions asked.", accent: "#15803d" },
+    install: snippetSteps("guarantee-strip.liquid"),
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Only show a guarantee you actually honour - this line sets a buyer
+  expectation your support has to meet.
+{%- endcomment -%}
+<div class="gpl-guarantee" style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 21 128 61))' }};">
+  <span class="gpl-guarantee__icon" aria-hidden="true">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+  </span>
+  <p class="gpl-guarantee__text"><strong>{{ days | default: ${v.days} }}-day money-back guarantee.</strong> {{ text | default: '${v.text}' | escape }}</p>
+</div>`,
+      css: `.gpl-guarantee {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.9rem 0;
+  padding: 0.75rem 0.95rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.16);
+  border-radius: 0.85rem;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.05);
+}
+.gpl-guarantee__icon {
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 0.65rem;
+  background: var(--gpl-accent);
+  color: #fff;
+  flex-shrink: 0;
+}
+.gpl-guarantee__icon svg { width: 1.15rem; height: 1.15rem; }
+.gpl-guarantee__text { margin: 0; font-size: 0.82rem; line-height: 1.45; }
+.gpl-guarantee__text strong { display: block; font-size: 0.88rem; }`,
+      usage: `{% render 'guarantee-strip', days: ${v.days}, text: '${v.text}' %}`,
+    }),
+  },
+  {
+    id: "recently-viewed",
+    name: "Recently viewed products",
+    description: "Remembers the products a visitor opened and shows them again - brings shoppers back to items they already considered.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+      { id: "limit", label: "Max products", type: "select", options: [{ value: "4", label: "4" }, { value: "6", label: "6" }, { value: "8", label: "8" }] },
+    ],
+    defaults: { heading: "Recently viewed", limit: "4" },
+    install: [
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "Create snippets/recently-viewed.liquid, paste the code, and add the CSS and JS to your theme.",
+      "Render it near the bottom of your product template (usage tag in the Usage tab).",
+      "The list is stored in the visitor's browser only - nothing is sent to your server, which keeps it privacy-safe.",
+    ],
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Works on product pages: remembers handles in localStorage, then loads the
+  other products via Shopify's /products/{handle}.js endpoint. Renders
+  nothing on non-product templates or for first-time visitors.
+{%- endcomment -%}
+<div class="gpl-recent" data-gpl-recent data-limit="${v.limit}"
+     data-current="{{ product.handle | default: '' }}" hidden>
+  <p class="gpl-recent__head">{{ heading | default: '${v.heading}' | escape }}</p>
+  <div class="gpl-recent__grid" data-gpl-recent-grid></div>
+</div>`,
+      css: `.gpl-recent { margin: 2rem 0; }
+.gpl-recent__head { margin: 0 0 0.9rem; font-size: 1.05rem; font-weight: 700; }
+.gpl-recent__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: 0.9rem;
+}
+.gpl-recent__card {
+  display: block;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.15);
+  border-radius: 0.75rem;
+  overflow: hidden;
+  text-decoration: none;
+  color: inherit;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.05);
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+.gpl-recent__card:hover { transform: translateY(-2px); border-color: rgb(var(--color-foreground, 148 163 184) / 0.35); }
+.gpl-recent__img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; }
+.gpl-recent__meta { padding: 0.6rem 0.7rem; }
+.gpl-recent__title { font-size: 0.8rem; font-weight: 600; line-height: 1.3; margin: 0; }
+.gpl-recent__price { font-size: 0.75rem; opacity: 0.7; margin: 0.2rem 0 0; }`,
+      js: `(function () {
+  var wrap = document.querySelector('[data-gpl-recent]');
+  if (!wrap) return;
+  var KEY = 'gpl_recent';
+  var limit = parseInt(wrap.getAttribute('data-limit'), 10) || 4;
+  var current = wrap.getAttribute('data-current') || '';
+  try {
+    var list = JSON.parse(localStorage.getItem(KEY) || '[]');
+    if (current) {
+      list = [current].concat(list.filter(function (h) { return h !== current; }));
+      localStorage.setItem(KEY, JSON.stringify(list.slice(0, 12)));
+    }
+    var others = list.filter(function (h) { return h && h !== current; }).slice(0, limit);
+    if (!others.length) return;
+    var grid = wrap.querySelector('[data-gpl-recent-grid]');
+    Promise.all(others.map(function (h) {
+      return fetch('/products/' + h + '.js').then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+    })).then(function (products) {
+      products.filter(Boolean).forEach(function (p) {
+        var a = document.createElement('a');
+        a.className = 'gpl-recent__card';
+        a.href = p.url;
+        var money = (p.price / 100).toLocaleString('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 });
+        a.innerHTML = (p.featured_image ? '<img class="gpl-recent__img" src="' + p.featured_image + '&width=300" alt="" loading="lazy">' : '')
+          + '<div class="gpl-recent__meta"><p class="gpl-recent__title"></p><p class="gpl-recent__price">' + money + '</p></div>';
+        a.querySelector('.gpl-recent__title').textContent = p.title;
+        grid.appendChild(a);
+      });
+      if (grid.children.length) wrap.hidden = false;
+    });
+  } catch (e) { /* storage blocked - hide */ }
+})();`,
+      usage: `{% render 'recently-viewed' %}`,
+    }),
+  },
+  {
+    id: "sold-out-notify",
+    name: "Sold out notify button",
+    description: "Replaces the dead 'sold out' state with a 'notify me' action - keeps the shopper engaged instead of losing them.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "mode", label: "Notify via", type: "select", options: [{ value: "whatsapp", label: "WhatsApp" }, { value: "email", label: "Email" }] },
+      { id: "label", label: "Button text", type: "text", maxLength: 40 },
+    ],
+    defaults: { mode: "whatsapp", label: "Notify me when back in stock" },
+    install: [
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "Create snippets/sold-out-notify.liquid, paste the code, and add the CSS to your theme.",
+      "Render it in place of (or next to) the add-to-cart button inside your product form - it only appears when the variant is sold out.",
+      "Point the contact target at your own WhatsApp number or email address in the code where marked.",
+    ],
+    files: (v) => ({
+      liquid: `{%- comment -%}
+  Only renders when the selected variant is unavailable. Change the phone or
+  address below to your own support channel.
+{%- endcomment -%}
+{%- assign v = product.selected_or_first_available_variant -%}
+{%- if v and v.available == false -%}
+  <div class="gpl-soldout">
+    <p class="gpl-soldout__msg"><strong>Sold out.</strong> Get notified when it returns.</p>
+    <a class="gpl-soldout__btn"
+       ${v.mode === "email" ? `href="mailto:support@example.com?subject={{ 'Back in stock: ' | append: product.title | url_encode }}"` : `href="https://wa.me/919999999999?text={{ 'Please notify me when ' | append: product.title | append: ' is back in stock' | url_encode }}"`}
+       target="_blank" rel="noopener noreferrer">
+      {{ label | default: '${v.label}' | escape }}
+    </a>
+  </div>
+{%- endif -%}`,
+      css: `.gpl-soldout {
+  margin: 0.9rem 0;
+  padding: 0.9rem 1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.18);
+  border-radius: 0.85rem;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.05);
+  text-align: center;
+}
+.gpl-soldout__msg { margin: 0 0 0.6rem; font-size: 0.85rem; }
+.gpl-soldout__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding: 0.7rem 1rem;
+  border-radius: var(--buttons-radius, 0.6rem);
+  background: rgb(var(--color-button, 11 18 32));
+  color: rgb(var(--color-button-text, 255 255 255));
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-decoration: none;
+}`,
+      usage: `{% render 'sold-out-notify' %}`,
+    }),
+  },
 ];
 
 export function getExample(id: string | undefined): PlaygroundExample {

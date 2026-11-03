@@ -750,6 +750,118 @@ function Marquee({ v }: P) {
   );
 }
 
+function PaymentBadges({ v }: P) {
+  const items = str(v, "items", 120).split("|").map((s) => s.trim()).filter(Boolean);
+  return (
+    <div className="p-6">
+      <ul className="m-0 flex list-none flex-wrap gap-1.5 p-0">
+        {items.map((i) => (
+          <li key={i} className="inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-xs font-semibold">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="size-3.5" style={{ color: hex(v, "accent") }} aria-hidden>
+              <rect x="2" y="5" width="20" height="14" rx="3" /><path d="M2 10h20" />
+            </svg>
+            {i}
+          </li>
+        ))}
+      </ul>
+      <p className="m-0 mt-2 text-[0.68rem] text-neutral-500">{str(v, "note", 80)}</p>
+    </div>
+  );
+}
+
+function QuantityBreaks({ v }: P) {
+  const [sel, setSel] = useState(1);
+  const t2 = Number(v.tier2) || 10;
+  const t3 = Number(v.tier3) || 20;
+  const price = 2499;
+  const money = (n: number) => `Rs. ${n.toLocaleString("en-IN")}`;
+  const tiers = [
+    { q: 1, label: "Buy 1", price: money(price) },
+    { q: 2, label: "Buy 2", save: t2, price: money(Math.round(price * 2 * (1 - t2 / 100))) },
+    { q: 3, label: "Buy 3", save: t3, best: true, price: money(Math.round(price * 3 * (1 - t3 / 100))) },
+  ];
+  return (
+    <div className="grid gap-2 p-6">
+      <p className="m-0 text-xs font-bold uppercase tracking-wider text-neutral-500">Bundle &amp; save</p>
+      {tiers.map((t) => (
+        <button
+          key={t.q}
+          type="button"
+          onClick={() => setSel(t.q)}
+          className={`flex items-center justify-between gap-3 rounded-xl border px-3.5 py-2.5 text-left text-sm transition ${sel === t.q ? "border-2 bg-slate-50" : "border-slate-200 bg-slate-50/60 hover:border-slate-300"}`}
+          style={sel === t.q ? { borderColor: hex(v, "accent"), boxShadow: `0 0 0 1px ${hex(v, "accent")}` } : undefined}
+        >
+          <span className="font-semibold">
+            {t.label}
+            {t.save != null && <em className="ml-1.5 text-[0.7rem] font-bold not-italic" style={{ color: hex(v, "accent") }}>save {t.save}%</em>}
+            {t.best && <span className="ml-1.5 rounded-full px-1.5 py-0.5 text-[0.6rem] font-bold uppercase tracking-wide" style={{ background: hex(v, "accent"), color: "#0b1220" }}>best value</span>}
+          </span>
+          <span className="font-bold">{t.price}</span>
+        </button>
+      ))}
+      <p className="m-0 text-[0.65rem] text-neutral-400">On the store it also sets the quantity field - and the discount must exist in Shopify too.</p>
+    </div>
+  );
+}
+
+function Guarantee({ v }: P) {
+  return (
+    <div className="p-6">
+      <div className="flex items-center gap-3 rounded-xl border border-slate-200 bg-slate-50/80 p-3.5">
+        <span className="grid size-9 shrink-0 place-items-center rounded-lg text-white" style={{ background: hex(v, "accent") }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="size-5" aria-hidden>
+            <path d="M12 22s8-3.5 8-10V5l-8-3-8 3v7c0 6.5 8 10 8 10z" /><path d="m9 12 2 2 4-4" />
+          </svg>
+        </span>
+        <p className="m-0 text-sm leading-snug">
+          <strong className="block">{str(v, "days") || "30"}-day money-back guarantee.</strong>
+          {str(v, "text", 90)}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+function RecentlyViewed({ v }: P) {
+  const items = [
+    { title: "Linen overshirt", price: "Rs. 2,499" },
+    { title: "Everyday tote", price: "Rs. 1,199" },
+    { title: "Ribbed knit top", price: "Rs. 899" },
+    { title: "Canvas sneakers", price: "Rs. 3,299" },
+  ].slice(0, Number(v.limit) || 4);
+  return (
+    <div className="p-6">
+      <p className="m-0 mb-3 text-sm font-bold">{str(v, "heading", 50) || "Recently viewed"}</p>
+      <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-4">
+        {items.map((i) => (
+          <a key={i.title} className="block overflow-hidden rounded-xl border border-slate-200 bg-slate-50/60 no-underline">
+            <span className="block aspect-square bg-gradient-to-br from-slate-200 to-slate-100" />
+            <span className="block p-2.5">
+              <span className="block text-xs font-semibold leading-snug">{i.title}</span>
+              <span className="mt-0.5 block text-[0.7rem] text-neutral-500">{i.price}</span>
+            </span>
+          </a>
+        ))}
+      </div>
+      <p className="m-0 mt-2 text-[0.65rem] text-neutral-400">Stored in the visitor&apos;s browser only - the preview shows sample cards.</p>
+    </div>
+  );
+}
+
+function SoldOutNotify({ v }: P) {
+  return (
+    <div className="p-6">
+      <div className="rounded-xl border border-slate-200 bg-slate-50/80 p-4 text-center">
+        <p className="m-0 mb-2.5 text-sm"><strong>Sold out.</strong> Get notified when it returns.</p>
+        <span className="inline-flex w-full items-center justify-center rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white">
+          {str(v, "label", 40) || "Notify me when back in stock"}
+        </span>
+        <p className="m-0 mt-2 text-[0.65rem] text-neutral-400">Opens {str(v, "mode") === "email" ? "an email" : "WhatsApp"} to your support channel - only shows when the variant is sold out.</p>
+      </div>
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -772,6 +884,11 @@ const map: Record<string, (p: P) => ReactNode> = {
   "sticky-buy-bar": StickyBuyBar,
   "free-shipping-bar": FreeShipBar,
   "benefit-marquee": Marquee,
+  "payment-badges": PaymentBadges,
+  "quantity-breaks": QuantityBreaks,
+  "guarantee-strip": Guarantee,
+  "recently-viewed": RecentlyViewed,
+  "sold-out-notify": SoldOutNotify,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {
