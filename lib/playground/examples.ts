@@ -197,7 +197,7 @@ ${on(v, "dismissible") ? `    <button type="button" class="gpl-announcement__clo
 ${on(v, "returns") ? `    <div><dt>Returns</dt><dd>See our <a href="{{ routes.root_url }}policies/refund-policy">refund policy</a></dd></div>\n` : ""}  </dl>
 </section>`,
         css: `.gpl-ship {
-  border: 1px solid #d5dccb;
+  border: 1px solid rgb(var(--color-foreground, 213 220 203) / 0.35);
   border-radius: 12px;
   padding: 1rem 1.25rem;
   font-size: 0.9rem;
@@ -245,7 +245,7 @@ ${on(v, "payment") ? item("lock", "Secure payment", "Pay with the methods enable
   gap: 0.25rem;
   flex: 1 1 14rem;
   padding: 1rem;
-  border: 1px solid #d5dccb;
+  border: 1px solid rgb(var(--color-foreground, 213 220 203) / 0.35);
   border-radius: 12px;
   font-size: 0.875rem;
 }
@@ -253,7 +253,7 @@ ${on(v, "payment") ? item("lock", "Secure payment", "Pay with the methods enable
   width: 1.5rem;
   height: 1.5rem;
   border-radius: 6px;
-  background: #0b1220;
+  background: rgb(var(--color-background, 11 18 32));
 }`,
         usage: `{% render 'trust-badges' %}`,
       };
@@ -320,7 +320,7 @@ ${on(v, "labels") ? `        <span class="gpl-collections__title">{{ collection.
   overflow: hidden;
   border-radius: var(--gpl-radius);
   aspect-ratio: 4 / 5;
-  background: #e8ecde;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.12);
 }
 .gpl-collections__card img,
 .gpl-collections__placeholder { width: 100%; height: 100%; object-fit: cover; }
@@ -464,10 +464,10 @@ ${on(v, "labels") ? `        <span class="gpl-collections__title">{{ collection.
       css: `.gpl-compare-wrap { overflow-x: auto; }
 .gpl-compare { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
 .gpl-compare th,
-.gpl-compare td { padding: 0.75rem 1rem; border-bottom: 1px solid #d5dccb; text-align: left; }
+.gpl-compare td { padding: 0.75rem 1rem; border-bottom: 1px solid rgb(var(--color-foreground, 213 220 203) / 0.35); text-align: left; }
 .gpl-compare thead th { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; }
 .gpl-compare--highlight th:nth-child(2),
-.gpl-compare--highlight td:nth-child(2) { background: #f1f8dc; font-weight: 600; }
+.gpl-compare--highlight td:nth-child(2) { background: rgb(var(--color-button, 200 245 66) / 0.12); font-weight: 600; }
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -524,13 +524,13 @@ ${on(v, "labels") ? `        <span class="gpl-collections__title">{{ collection.
 {% endschema %}`,
       css: `.gpl-faq h2 { margin: 0 0 1rem; }
 .gpl-faq details { padding: 0.9rem 1.1rem; }
-.gpl-faq--bordered details { border: 1px solid #d5dccb; border-radius: 12px; margin-bottom: 0.6rem; }
-.gpl-faq--minimal details { border-bottom: 1px solid #d5dccb; }
+.gpl-faq--bordered details { border: 1px solid rgb(var(--color-foreground, 213 220 203) / 0.35); border-radius: 12px; margin-bottom: 0.6rem; }
+.gpl-faq--minimal details { border-bottom: 1px solid rgb(var(--color-foreground, 213 220 203) / 0.35); }
 .gpl-faq summary { cursor: pointer; font-weight: 600; list-style: none; }
 .gpl-faq summary::-webkit-details-marker { display: none; }
 .gpl-faq summary::after { content: "+"; float: right; }
 .gpl-faq details[open] summary::after { content: "\\2212"; }
-.gpl-faq__answer { margin-top: 0.6rem; color: #3f4a3a; }`,
+.gpl-faq__answer { margin-top: 0.6rem; color: rgb(var(--color-foreground, 63 74 58) / 0.8); }`,
     }),
   },
   {
@@ -667,7 +667,7 @@ if (!customElements.get('gpl-slideshow')) customElements.define('gpl-slideshow',
   data-gpl-delivery
   data-fast-days="${v.fast ?? 2}"
   data-slow-days="${v.slow ?? 5}"
-  style="--gpl-accent: {{ accent | default: '#5eead4' }};"
+  style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 94 234 212))' }};"
 >
   <div class="gpl-eta__card">
     <div class="gpl-eta__trust">
@@ -717,7 +717,7 @@ if (!customElements.get('gpl-slideshow')) customElements.define('gpl-slideshow',
   padding: 1.1rem 1.15rem;
   border-radius: 14px;
   background: linear-gradient(145deg, rgba(16, 24, 40, 0.95), rgba(8, 12, 27, 0.98));
-  border: 1px solid rgb(94 234 212 / 0.22);
+  border: 1px solid color-mix(in srgb, var(--gpl-accent) 22%, transparent);
   box-shadow: 0 14px 34px -10px rgba(0, 0, 0, 0.65), inset 0 1px 0 rgb(255 255 255 / 0.07);
   color: #fff;
   overflow: hidden;
@@ -736,22 +736,22 @@ if (!customElements.get('gpl-slideshow')) customElements.define('gpl-slideshow',
   gap: 0.3rem;
   padding: 0.22rem 0.6rem;
   border-radius: 999px;
-  border: 1px solid rgb(148 163 184 / 0.25);
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25);
   background: rgb(255 255 255 / 0.04);
-  color: #cbd5e1;
+  color: rgb(var(--color-foreground, 203 213 225) / 0.9);
   font-size: 0.62rem;
   font-weight: 700;
 }
 .gpl-eta__pill b { color: var(--gpl-accent); font-weight: 800; }
-.gpl-eta__title { margin: 0.7rem 0 0.5rem; font-size: 0.85rem; font-weight: 700; color: #e2e8f0; }
+.gpl-eta__title { margin: 0.7rem 0 0.5rem; font-size: 0.85rem; font-weight: 700; color: rgb(var(--color-foreground, 226 232 240)); }
 .gpl-eta__field {
   display: flex;
   overflow: hidden;
-  border: 1px solid rgb(148 163 184 / 0.3);
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
   border-radius: 10px;
   background: rgba(2, 6, 23, 0.7);
 }
-.gpl-eta__field:focus-within { border-color: var(--gpl-accent); box-shadow: 0 0 0 3px rgb(94 234 212 / 0.12); }
+.gpl-eta__field:focus-within { border-color: var(--gpl-accent); box-shadow: 0 0 0 3px color-mix(in srgb, var(--gpl-accent) 12%, transparent); }
 .gpl-eta__field input {
   flex: 1;
   min-width: 0;
@@ -763,18 +763,18 @@ if (!customElements.get('gpl-slideshow')) customElements.define('gpl-slideshow',
   font-size: 0.85rem;
   outline: 0;
 }
-.gpl-eta__field input::placeholder { color: #64748b; }
+.gpl-eta__field input::placeholder { color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
 .gpl-eta__check {
   flex: 0 0 4.6rem;
   border: 0;
-  border-left: 1px solid rgb(148 163 184 / 0.25);
-  background: rgb(94 234 212 / 0.12);
+  border-left: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25);
+  background: color-mix(in srgb, var(--gpl-accent) 12%, transparent);
   color: var(--gpl-accent);
   font-weight: 700;
   font-size: 0.8rem;
   cursor: pointer;
 }
-.gpl-eta__check:hover { background: rgb(94 234 212 / 0.22); }
+.gpl-eta__check:hover { background: color-mix(in srgb, var(--gpl-accent) 22%, transparent); }
 .gpl-eta__error { margin: 0.4rem 0 0; color: #fca5a5; font-size: 0.72rem; }
 .gpl-eta__error[hidden], .gpl-eta__timeline[hidden], .gpl-eta__change[hidden] { display: none; }
 .gpl-eta__timeline {
@@ -793,7 +793,7 @@ if (!customElements.get('gpl-slideshow')) customElements.define('gpl-slideshow',
   left: 0.45rem;
   right: -0.3rem;
   height: 1px;
-  background: rgb(148 163 184 / 0.25);
+  background: rgb(var(--color-foreground, 148 163 184) / 0.25);
 }
 .gpl-eta__step:last-child::before { right: 50%; }
 .gpl-eta__dot {
@@ -808,8 +808,8 @@ if (!customElements.get('gpl-slideshow')) customElements.define('gpl-slideshow',
   background: var(--gpl-accent);
   box-shadow: 0 0 8px var(--gpl-accent);
 }
-.gpl-eta__step b { font-size: 0.68rem; font-weight: 700; color: #e2e8f0; }
-.gpl-eta__step small { font-size: 0.62rem; color: #64748b; }
+.gpl-eta__step b { font-size: 0.68rem; font-weight: 700; color: rgb(var(--color-foreground, 226 232 240)); }
+.gpl-eta__step small { font-size: 0.62rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
 .gpl-eta__step--final b, .gpl-eta__step--final small { color: var(--gpl-accent); }
 .gpl-eta__change {
   margin-top: 0.6rem;
@@ -1082,7 +1082,7 @@ ${on(v, "zoom") ? `  image.addEventListener('click', () => {
   letter-spacing: 0.05em;
 }
 .gpl-coupon__title { margin: 0.4rem 0 0; font-size: 1rem; font-weight: 800; }
-.gpl-coupon__subtitle { margin: 0.2rem 0 0; color: #64748b; font-size: 0.75rem; }
+.gpl-coupon__subtitle { margin: 0.2rem 0 0; color: rgb(var(--color-foreground, 100 116 139) / 0.75); font-size: 0.75rem; }
 .gpl-coupon__divider { width: 1px; border-left: 1.5px dashed #cbd5e1; position: relative; }
 .gpl-coupon:not(.gpl-coupon--flat) .gpl-coupon__divider::before,
 .gpl-coupon:not(.gpl-coupon--flat) .gpl-coupon__divider::after {
@@ -1271,7 +1271,7 @@ ${on(v, "zoom") ? `  image.addEventListener('click', () => {
 .gpl-trustgrid__icon svg { width: 1.3rem; height: 1.3rem; }
 .gpl-trustgrid__text { display: grid; min-width: 0; }
 .gpl-trustgrid__text strong { font-size: 0.9rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.gpl-trustgrid__text span { font-size: 0.75rem; color: #64748b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }`,
+.gpl-trustgrid__text span { font-size: 0.75rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }`,
     }),
   },
   {
@@ -1314,7 +1314,7 @@ ${on(v, "badge") ? `    <span class="gpl-price__off" data-off {% unless save > 0
   border-radius: 6px;
   text-transform: uppercase;
 }
-.gpl-price__note { color: #64748b; font-size: 0.75rem; }
+.gpl-price__note { color: rgb(var(--color-foreground, 100 116 139) / 0.75); font-size: 0.75rem; }
 .gpl-price [hidden] { display: none; }`,
       js: `document.querySelectorAll('[data-gpl-price]').forEach((box) => {
   const json = box.parentElement.querySelector('[data-gpl-variants]');
@@ -1425,7 +1425,7 @@ ${on(v, "badge") ? `    <span class="gpl-price__off" data-off {% unless save > 0
   border: 0;
   background: none;
   font-size: 1.5rem;
-  color: #64748b;
+  color: rgb(var(--color-foreground, 100 116 139) / 0.75);
   cursor: pointer;
 }
 .gpl-popup__title { margin: 0; font-size: 1.4rem; font-weight: 800; }
@@ -1550,10 +1550,10 @@ if (!customElements.get('gpl-promo-popup')) customElements.define('gpl-promo-pop
   padding: clamp(1rem, 3.5vw, 1.4rem) clamp(0.8rem, 4vw, 1.5rem);
   border-radius: clamp(12px, 3vw, 16px);
   background: linear-gradient(145deg, rgba(16, 24, 40, 0.95), rgba(8, 12, 27, 0.98));
-  border: 1px solid rgb(94 234 212 / 0.25);
+  border: 1px solid color-mix(in srgb, var(--gpl-accent) 25%, transparent);
   box-shadow:
     0 16px 40px -10px rgba(0, 0, 0, 0.7),
-    0 0 24px -6px rgb(94 234 212 / 0.18),
+    0 0 24px -6px color-mix(in srgb, var(--gpl-accent) 18%, transparent),
     inset 0 1px 0 rgb(255 255 255 / 0.08);
   color: #fff;
   text-align: center;
@@ -1637,14 +1637,14 @@ if (!customElements.get('gpl-promo-popup')) customElements.define('gpl-promo-pop
   background: rgb(255 255 255 / 0.06);
 }
 .gpl-cd__slot--accent b {
-  border-color: rgb(94 234 212 / 0.5);
+  border-color: color-mix(in srgb, var(--gpl-accent) 50%, transparent);
   background: rgba(8, 24, 28, 0.9);
   color: #5eead4;
-  text-shadow: 0 0 14px rgb(94 234 212 / 0.5);
-  box-shadow: 0 0 18px rgb(94 234 212 / 0.22), inset 0 1px 0 rgb(94 234 212 / 0.35);
+  text-shadow: 0 0 14px color-mix(in srgb, var(--gpl-accent) 50%, transparent);
+  box-shadow: 0 0 18px color-mix(in srgb, var(--gpl-accent) 22%, transparent), inset 0 1px 0 color-mix(in srgb, var(--gpl-accent) 35%, transparent);
 }
 .gpl-cd__slot small {
-  color: #64748b;
+  color: rgb(var(--color-foreground, 100 116 139) / 0.75);
   font-size: clamp(0.55rem, 1.9vw, 0.65rem);
   font-weight: 700;
   letter-spacing: 0.08em;
@@ -1654,7 +1654,7 @@ if (!customElements.get('gpl-promo-popup')) customElements.define('gpl-promo-pop
 .gpl-cd__colon {
   font-family: ui-monospace, monospace;
   font-weight: 700;
-  color: rgb(148 163 184 / 0.55);
+  color: rgb(var(--color-foreground, 148 163 184) / 0.55);
   animation: gpl-cd-blink 1s steps(2, start) infinite;
 }
 @keyframes gpl-cd-blink {
@@ -1870,7 +1870,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     gap: 0.75rem;
     padding: 0.65rem 0.9rem calc(0.65rem + env(safe-area-inset-bottom, 0px));
     background: rgba(8, 12, 27, 0.94);
-    border-top: 1px solid rgb(94 234 212 / 0.35);
+    border-top: 1px solid color-mix(in srgb, var(--gpl-accent) 35%, transparent);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
@@ -1880,9 +1880,9 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     font-size: 1.2rem;
     font-weight: 900;
     color: #fff;
-    text-shadow: 0 0 16px rgb(94 234 212 / 0.4);
+    text-shadow: 0 0 16px color-mix(in srgb, var(--gpl-accent) 40%, transparent);
   }
-  .gpl-buybar__price s { color: #64748b; font-size: 0.8rem; }
+  .gpl-buybar__price s { color: rgb(var(--color-foreground, 100 116 139) / 0.75); font-size: 0.8rem; }
   .gpl-buybar__off {
     font-size: 0.62rem;
     font-weight: 800;
@@ -1903,7 +1903,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     font-size: 0.85rem;
     font-weight: 900;
     letter-spacing: 0.02em;
-    box-shadow: 0 0 20px rgb(94 234 212 / 0.4), inset 0 1px 0 rgb(255 255 255 / 0.6);
+    box-shadow: 0 0 20px color-mix(in srgb, var(--gpl-accent) 40%, transparent), inset 0 1px 0 rgb(255 255 255 / 0.6);
     cursor: pointer;
   }
   .gpl-buybar__cta:active { transform: scale(0.97); }
@@ -2575,8 +2575,8 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.9rem 1.25rem;
-  background: #0b1220;
-  color: #e2e8f0;
+  background: rgb(var(--color-background, 11 18 32));
+  color: rgb(var(--color-foreground, 226 232 240));
   border-top: 1px solid rgb(255 255 255 / 0.12);
   font-size: 0.8rem;
 }
@@ -3042,7 +3042,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   Counts down to today's dispatch cutoff. Disappears after the cutoff -
   it never claims a benefit the store cannot deliver.
 {%- endcomment -%}
-<div class="gpl-cutoff" data-gpl-cutoff="${v.hour}" style="--gpl-accent: {{ accent | default: '#e11d48' }};" hidden>
+<div class="gpl-cutoff" data-gpl-cutoff="${v.hour}" style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 225 29 72))' }};" hidden>
   <svg class="gpl-cutoff__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
   <p class="gpl-cutoff__text">Order within <strong data-gpl-cutoff-left></strong> for same-day dispatch</p>
 </div>`,
