@@ -3941,6 +3941,567 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
 .gpl-loc__map { display: inline-block; margin-top: 0.6rem; font-size: 0.72rem; font-weight: 700; color: rgb(var(--color-button, 21 128 61)); }`,
     }),
   },
+  {
+    id: "review-summary",
+    name: "Review summary card",
+    description: "Overall rating, review count and star-distribution bars - the card shoppers scan before reading a single review.",
+    category: "Trust & social proof",
+    kind: "snippet",
+    controls: [
+      { id: "rating", label: "Average rating", type: "text", maxLength: 3 },
+      { id: "count", label: "Review count", type: "text", maxLength: 8 },
+      { id: "bars", label: "5|4|3|2|1 star counts", type: "text", maxLength: 40 },
+    ],
+    defaults: { rating: "4.8", count: "1243", bars: "980|180|60|15|8" },
+    install: [
+      ...snippetSteps("review-summary.liquid"),
+      "Values come from your review app - paste real counts, or drive them from product.metafields.custom.review_* metafields if your app exposes them.",
+    ],
+    files: (v) => ({
+      liquid: `{%- assign counts = bars | default: '0|0|0|0|0' | split: '|' -%}
+{%- assign total = 0 -%}
+{%- for c in counts -%}{%- assign total = total | plus: c | plus: 0 -%}{%- endfor -%}
+<div class="gpl-rs">
+  <div class="gpl-rs__big">
+    <p class="gpl-rs__num">{{ rating | default: '0.0' }}</p>
+    <p class="gpl-rs__stars" aria-label="{{ rating }} out of 5 stars">
+      {%- assign full = rating | plus: 0 | floor -%}
+      {%- for i in (1..5) -%}{%- if i <= full -%}&#9733;{%- else -%}&#9734;{%- endif -%}{%- endfor -%}
+    </p>
+    <p class="gpl-rs__count">{{ count | default: '0' }} reviews</p>
+  </div>
+  <div class="gpl-rs__bars">
+    {%- for c in counts -%}
+      <div class="gpl-rs__bar">
+        <span>{{ forloop.rindex }} &#9733;</span>
+        <div class="gpl-rs__track"><i style="width: {% if total > 0 %}{{ c | times: 100 | divided_by: total }}{% else %}0{% endif %}%"></i></div>
+        <span class="gpl-rs__n">{{ c }}</span>
+      </div>
+    {%- endfor -%}
+  </div>
+</div>`,
+      css: `.gpl-rs { display: flex; gap: 1.25rem; align-items: center; }
+.gpl-rs__big { text-align: center; }
+.gpl-rs__num { margin: 0; font-size: 2rem; font-weight: 900; line-height: 1; }
+.gpl-rs__stars { margin: 0.2rem 0 0; color: rgb(var(--color-button, 245 158 11)); font-size: 0.85rem; letter-spacing: 0.1em; }
+.gpl-rs__count { margin: 0.25rem 0 0; font-size: 0.7rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-rs__bars { flex: 1; display: grid; gap: 0.3rem; }
+.gpl-rs__bar { display: flex; align-items: center; gap: 0.5rem; font-size: 0.68rem; }
+.gpl-rs__track { flex: 1; height: 0.35rem; border-radius: 999px; background: rgb(var(--color-foreground, 148 163 184) / 0.12); overflow: hidden; }
+.gpl-rs__track i { display: block; height: 100%; border-radius: 999px; background: rgb(var(--color-button, 245 158 11)); }
+.gpl-rs__n { min-width: 1.6rem; text-align: right; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+      usage: `{% render 'review-summary', rating: ${js(str(v, "rating"))}, count: ${js(str(v, "count"))}, bars: ${js(str(v, "bars"))} %}`,
+    }),
+  },
+  {
+    id: "aspect-ratings",
+    name: "Attribute ratings",
+    description: "Amazon-style per-attribute bars - quality, fit, value - so buyers see nuance, not just one number.",
+    category: "Trust & social proof",
+    kind: "snippet",
+    controls: [
+      { id: "items", label: "Aspects (name|score of 5 per line)", type: "text", maxLength: 200 },
+      { id: "accent", label: "Bar colour", type: "color" },
+    ],
+    defaults: { items: "Quality|4.9\nTrue to size|4.2\nValue for money|4.6\nComfort|4.7", accent: "#15803d" },
+    install: [
+      ...snippetSteps("aspect-ratings.liquid"),
+      "Enter real aggregated scores from your reviews - this only works if the numbers are honest.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-ar" style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 21 128 61))' }};">
+  {%- assign rows = items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <div class="gpl-ar__row">
+      <span class="gpl-ar__name">{{ parts[0] | strip }}</span>
+      <div class="gpl-ar__track"><i style="width: {{ parts[1] | strip | plus: 0 | times: 20 }}%"></i></div>
+      <span class="gpl-ar__score">{{ parts[1] | strip }}</span>
+    </div>
+  {%- endfor -%}
+</div>`,
+      css: `.gpl-ar { display: grid; gap: 0.55rem; }
+.gpl-ar__row { display: flex; align-items: center; gap: 0.7rem; font-size: 0.72rem; }
+.gpl-ar__name { min-width: 6.5rem; font-weight: 600; }
+.gpl-ar__track { flex: 1; height: 0.35rem; border-radius: 999px; background: rgb(var(--color-foreground, 148 163 184) / 0.12); overflow: hidden; }
+.gpl-ar__track i { display: block; height: 100%; border-radius: 999px; background: var(--gpl-accent); }
+.gpl-ar__score { font-weight: 700; min-width: 1.8rem; }`,
+      usage: `{% render 'aspect-ratings', items: ${js(str(v, "items"))}, accent: ${js(hex(v, "accent"))} %}`,
+    }),
+  },
+  {
+    id: "review-card",
+    name: "Featured review card",
+    description: "A single highlighted review with stars, verified badge and the buyer's name - social proof that reads like a person, not a widget.",
+    category: "Trust & social proof",
+    kind: "snippet",
+    controls: [
+      { id: "quote", label: "Review text", type: "text", maxLength: 200 },
+      { id: "name", label: "Reviewer name", type: "text", maxLength: 30 },
+      { id: "detail", label: "Product / variant", type: "text", maxLength: 40 },
+    ],
+    defaults: {
+      quote: "Fits perfectly and the fabric is heavier than I expected for the price. Already ordered a second colour.",
+      name: "Riya S.",
+      detail: "Verified buyer - Olive, M",
+    },
+    install: [
+      ...snippetSteps("review-card.liquid"),
+      "Paste a real review from your review app - rotate featured reviews weekly so the card stays fresh.",
+    ],
+    files: (v) => ({
+      liquid: `<figure class="gpl-rc">
+  <p class="gpl-rc__stars" aria-label="5 out of 5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</p>
+  <blockquote class="gpl-rc__quote">&ldquo;{{ quote | escape }}&rdquo;</blockquote>
+  <figcaption class="gpl-rc__by">
+    <span class="gpl-rc__name">{{ name | escape }}</span>
+    <span class="gpl-rc__detail">{{ detail | escape }}</span>
+  </figcaption>
+</figure>`,
+      css: `.gpl-rc {
+  margin: 0.75rem 0;
+  padding: 1rem 1.1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.16);
+  border-radius: 12px;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.04);
+}
+.gpl-rc__stars { margin: 0; color: rgb(var(--color-button, 245 158 11)); font-size: 0.8rem; letter-spacing: 0.12em; }
+.gpl-rc__quote { margin: 0.5rem 0 0; font-size: 0.85rem; line-height: 1.55; }
+.gpl-rc__by { margin-top: 0.6rem; display: flex; flex-direction: column; gap: 0.1rem; }
+.gpl-rc__name { font-weight: 700; font-size: 0.75rem; }
+.gpl-rc__detail { font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+      usage: `{% render 'review-card', quote: ${js(str(v, "quote"))}, name: ${js(str(v, "name"))}, detail: ${js(str(v, "detail"))} %}`,
+    }),
+  },
+  {
+    id: "press-mentions",
+    name: "Press mentions bar",
+    description: "An 'As featured in' strip of publication names - borrow credibility the honest way: only real mentions.",
+    category: "Trust & social proof",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Eyebrow", type: "text", maxLength: 40 },
+      { id: "names", label: "Publications (comma separated)", type: "text", maxLength: 200 },
+    ],
+    defaults: { heading: "As featured in", names: "Vogue India, Economic Times, Mint Lifestyle, YourStory" },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `{%- assign pubs = section.settings.names | split: ',' -%}
+<div class="gpl-press">
+  {%- if section.settings.heading != blank -%}
+    <p class="gpl-press__eyebrow">{{ section.settings.heading }}</p>
+  {%- endif -%}
+  <ul class="gpl-press__list">
+    {%- for p in pubs -%}
+      <li>{{ p | strip }}</li>
+    {%- endfor -%}
+  </ul>
+</div>
+
+{% schema %}
+{
+  "name": "Press mentions",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Eyebrow", "default": ${js(str(v, "heading"))} },
+    { "type": "text", "id": "names", "label": "Publications (comma separated)", "default": ${js(str(v, "names"))} }
+  ],
+  "presets": [{ "name": "Press mentions" }]
+}
+{% endschema %}`,
+      css: `.gpl-press { padding: 1.25rem 0; text-align: center; }
+.gpl-press__eyebrow {
+  margin: 0 0 0.9rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgb(var(--color-foreground, 100 116 139) / 0.75);
+}
+.gpl-press__list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.75rem 2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.gpl-press__list li {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 0.95rem;
+  font-style: italic;
+  color: rgb(var(--color-foreground, 100 116 139) / 0.8);
+}`,
+    }),
+  },
+  {
+    id: "expert-quote",
+    name: "Expert quote card",
+    description: "A pull-quote with a credential - 'recommended by' authority that outperforms anonymous reviews.",
+    category: "Trust & social proof",
+    kind: "snippet",
+    controls: [
+      { id: "quote", label: "Quote", type: "text", maxLength: 200 },
+      { id: "name", label: "Expert name", type: "text", maxLength: 40 },
+      { id: "credential", label: "Credential", type: "text", maxLength: 60 },
+    ],
+    defaults: {
+      quote: "The formulation is clean, the dosage is right, and the sourcing is transparent - rare at this price point.",
+      name: "Dr. Ananya Rao",
+      credential: "Consultant dermatologist, Bengaluru",
+    },
+    install: [
+      ...snippetSteps("expert-quote.liquid"),
+      "Only use a real quote from a real person - an invented expert endorsement is a legal problem, not a conversion trick.",
+    ],
+    files: (v) => ({
+      liquid: `<figure class="gpl-eq">
+  <div class="gpl-eq__mark" aria-hidden="true">&ldquo;</div>
+  <blockquote class="gpl-eq__quote">{{ quote | escape }}</blockquote>
+  <figcaption class="gpl-eq__by">
+    <span class="gpl-eq__name">{{ name | escape }}</span>
+    <span class="gpl-eq__cred">{{ credential | escape }}</span>
+  </figcaption>
+</figure>`,
+      css: `.gpl-eq {
+  margin: 0.75rem 0;
+  padding: 1.25rem 1.4rem;
+  border-left: 3px solid rgb(var(--color-button, 21 128 61));
+  background: rgb(var(--color-foreground, 148 163 184) / 0.05);
+  border-radius: 0 12px 12px 0;
+}
+.gpl-eq__mark { font-size: 2.2rem; line-height: 0.8; color: rgb(var(--color-button, 21 128 61)); }
+.gpl-eq__quote { margin: 0.5rem 0 0; font-size: 0.95rem; line-height: 1.6; font-style: italic; }
+.gpl-eq__by { margin-top: 0.8rem; }
+.gpl-eq__name { font-weight: 700; font-size: 0.78rem; }
+.gpl-eq__cred { display: block; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+      usage: `{% render 'expert-quote', quote: ${js(str(v, "quote"))}, name: ${js(str(v, "name"))}, credential: ${js(str(v, "credential"))} %}`,
+    }),
+  },
+  {
+    id: "video-testimonial",
+    name: "Video testimonial card",
+    description: "A testimonial card with a video play button - 'see it in action' proof MaryRuth-style stores rely on.",
+    category: "Trust & social proof",
+    kind: "snippet",
+    controls: [
+      { id: "quote", label: "Quote", type: "text", maxLength: 160 },
+      { id: "name", label: "Customer name", type: "text", maxLength: 30 },
+      { id: "video", label: "Video URL (mp4/embed)", type: "text", maxLength: 200 },
+    ],
+    defaults: {
+      quote: "Two weeks in and the difference is obvious - I bought three more for family.",
+      name: "Kavita M.",
+      video: "",
+    },
+    install: [
+      ...snippetSteps("video-testimonial.liquid"),
+      "Host the video on Shopify's Files (Settings > Files) or embed YouTube - paste the URL into the video setting.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-vt">
+  <div class="gpl-vt__media">
+    {%- if video != blank -%}
+      {%- if video contains 'youtube' or video contains 'youtu.be' -%}
+        <iframe class="gpl-vt__frame" src="{{ video | replace: 'watch?v=', 'embed/' }}" allowfullscreen loading="lazy"></iframe>
+      {%- else -%}
+        <video class="gpl-vt__frame" src="{{ video }}" controls preload="metadata"></video>
+      {%- endif -%}
+    {%- else -%}
+      <div class="gpl-vt__placeholder" aria-hidden="true">
+        <span class="gpl-vt__play">&#9654;</span>
+      </div>
+    {%- endif -%}
+  </div>
+  <div class="gpl-vt__body">
+    <blockquote class="gpl-vt__quote">&ldquo;{{ quote | escape }}&rdquo;</blockquote>
+    <p class="gpl-vt__name">&mdash; {{ name | escape }}</p>
+  </div>
+</div>`,
+      css: `.gpl-vt {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.16);
+  border-radius: 14px;
+}
+@media (min-width: 560px) { .gpl-vt { grid-template-columns: 1.2fr 1fr; align-items: center; } }
+.gpl-vt__frame { width: 100%; aspect-ratio: 16/9; border: 0; border-radius: 10px; background: #000; }
+.gpl-vt__placeholder {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16/9;
+  border-radius: 10px;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.15);
+}
+.gpl-vt__play { font-size: 1.6rem; color: rgb(var(--color-foreground, 100 116 139) / 0.6); }
+.gpl-vt__quote { margin: 0; font-size: 0.82rem; line-height: 1.55; font-style: italic; }
+.gpl-vt__name { margin: 0.5rem 0 0; font-size: 0.7rem; font-weight: 700; }`,
+      usage: `{% render 'video-testimonial', quote: ${js(str(v, "quote"))}, name: ${js(str(v, "name"))}, video: ${js(str(v, "video"))} %}`,
+    }),
+  },
+  {
+    id: "image-hotspots",
+    name: "Shop-the-look hotspots",
+    description: "Pins on a lifestyle image that link to each product in the shot - lookbook-to-cart in one tap.",
+    category: "Marketing",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+      { id: "accent", label: "Pin colour", type: "color" },
+    ],
+    defaults: { heading: "Shop the look", accent: "#c8f542" },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-hot" style="--gpl-accent: {{ section.settings.accent }};">
+  {%- if section.settings.heading != blank -%}
+    <h2 class="gpl-hot__heading">{{ section.settings.heading }}</h2>
+  {%- endif -%}
+  <div class="gpl-hot__stage">
+    {%- if section.settings.image -%}
+      {{ section.settings.image | image_url: width: 1400 | image_tag: class: 'gpl-hot__img', loading: 'lazy' }}
+    {%- endif -%}
+    {%- for block in section.blocks -%}
+      {%- assign p = all_products[block.settings.product] -%}
+      <a class="gpl-hot__pin" style="left: {{ block.settings.x }}%; top: {{ block.settings.y }}%;" href="{{ p.url | default: '#' }}" {{ block.shopify_attributes }}>
+        <span class="gpl-hot__dot"></span>
+        <span class="gpl-hot__tip">{{ p.title | default: 'Product' }}<br><b>{{ p.price | default: 0 | money }}</b></span>
+      </a>
+    {%- endfor -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Shop the look",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} },
+    { "type": "color", "id": "accent", "label": "Pin colour", "default": ${js(hex(v, "accent"))} },
+    { "type": "image_picker", "id": "image", "label": "Lifestyle image" }
+  ],
+  "blocks": [
+    {
+      "type": "pin",
+      "name": "Pin",
+      "settings": [
+        { "type": "product", "id": "product", "label": "Product" },
+        { "type": "range", "id": "x", "label": "Left position %", "min": 0, "max": 100, "step": 1, "default": 50 },
+        { "type": "range", "id": "y", "label": "Top position %", "min": 0, "max": 100, "step": 1, "default": 50 }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Shop the look" }]
+}
+{% endschema %}`,
+      css: `.gpl-hot { padding: 1.5rem 0; }
+.gpl-hot__heading { margin: 0 0 1rem; font-size: 1rem; font-weight: 800; }
+.gpl-hot__stage { position: relative; border-radius: 16px; overflow: hidden; }
+.gpl-hot__img { display: block; width: 100%; }
+.gpl-hot__pin { position: absolute; transform: translate(-50%, -50%); }
+.gpl-hot__dot {
+  display: block;
+  width: 1.4rem;
+  height: 1.4rem;
+  border-radius: 999px;
+  background: var(--gpl-accent);
+  border: 2px solid #fff;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--gpl-accent) 35%, transparent);
+}
+.gpl-hot__tip {
+  position: absolute;
+  left: 50%;
+  bottom: 130%;
+  transform: translateX(-50%);
+  padding: 0.4rem 0.7rem;
+  border-radius: 8px;
+  background: rgb(0 0 0 / 0.85);
+  color: #fff;
+  font-size: 0.65rem;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+.gpl-hot__pin:hover .gpl-hot__tip { opacity: 1; }`,
+    }),
+  },
+  {
+    id: "stats-counter",
+    name: "Stats counter strip",
+    description: "Animated count-up numbers - orders shipped, customers, years - credibility in 3 digits.",
+    category: "Marketing",
+    kind: "section",
+    controls: [
+      { id: "items", label: "Stats (value|label per line)", type: "text", maxLength: 200 },
+      { id: "accent", label: "Number colour", type: "color" },
+    ],
+    defaults: { items: "52,000|Orders shipped\n4.8|Average rating\n98|Repeat customers %", accent: "#5eead4" },
+    install: sectionSteps,
+    files: (v) => ({
+      liquid: `<div class="gpl-stats" style="--gpl-accent: {{ section.settings.accent }};">
+  {%- assign rows = section.settings.items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <div class="gpl-stats__item">
+      <p class="gpl-stats__num" data-count="{{ parts[0] | strip }}">0</p>
+      <p class="gpl-stats__label">{{ parts[1] | strip }}</p>
+    </div>
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Stats counter",
+  "settings": [
+    { "type": "textarea", "id": "items", "label": "Stats (value|label per line)", "default": ${js(str(v, "items"))} },
+    { "type": "color", "id": "accent", "label": "Number colour", "default": ${js(hex(v, "accent"))} }
+  ],
+  "presets": [{ "name": "Stats counter" }]
+}
+{% endschema %}`,
+      css: `.gpl-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)); gap: 1rem; padding: 1.25rem 0; text-align: center; }
+.gpl-stats__num { margin: 0; font-size: 2rem; font-weight: 900; color: var(--gpl-accent); font-variant-numeric: tabular-nums; }
+.gpl-stats__label { margin: 0.25rem 0 0; font-size: 0.7rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
+      js: `document.querySelectorAll('.gpl-stats__num').forEach((el) => {
+  const target = el.dataset.count || '0';
+  const isNum = /^[\\d,.]+$/.test(target);
+  const obs = new IntersectionObserver((entries) => {
+    if (!entries[0].isIntersecting) return;
+    obs.disconnect();
+    if (!isNum) { el.textContent = target; return; }
+    const end = parseFloat(target.replace(/,/g, ''));
+    const t0 = performance.now();
+    function tick(t) {
+      const p = Math.min((t - t0) / 1200, 1);
+      el.textContent = Math.round(end * p).toLocaleString('en-IN');
+      if (p < 1) requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+  }, { threshold: 0.4 });
+  obs.observe(el);
+});`,
+    }),
+  },
+  {
+    id: "wishlist-button",
+    name: "Wishlist heart button",
+    description: "A save-for-later heart with a count badge - remembers picks across the visit without an app.",
+    category: "Product page",
+    kind: "snippet",
+    controls: [
+      { id: "label", label: "Button label", type: "text", maxLength: 30 },
+    ],
+    defaults: { label: "Save for later" },
+    install: [
+      ...snippetSteps("wishlist-button.liquid"),
+      "The wishlist lives in the visitor's browser (localStorage) - no account needed, survives the visit but not devices.",
+      "For a real account-based wishlist, pair with the Storefront API or an app - this is the lightweight version.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-wish class="gpl-wish" data-product="{{ product.handle | default: 'demo' }}">
+  <button type="button" class="gpl-wish__btn" aria-pressed="false">
+    <svg class="gpl-wish__heart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 14c1.5-1.5 3-3.3 3-5.5A5.5 5.5 0 0 0 12 4 5.5 5.5 0 0 0 2 8.5c0 2.2 1.5 4 3 5.5l7 7z"/></svg>
+    <span>{{ label | default: 'Save for later' }}</span>
+    <span class="gpl-wish__count" data-count>0</span>
+  </button>
+</gpl-wish>`,
+      css: `.gpl-wish__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-size: 0.78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.gpl-wish__btn.is-saved { border-color: #e11d48; color: #e11d48; }
+.gpl-wish__heart { width: 1rem; height: 1rem; }
+.gpl-wish__btn.is-saved .gpl-wish__heart { fill: #e11d48; stroke: #e11d48; }
+.gpl-wish__count { font-variant-numeric: tabular-nums; opacity: 0.7; }`,
+      js: `document.querySelectorAll('gpl-wish').forEach((el) => {
+  const KEY = 'gpl-wishlist';
+  const btn = el.querySelector('.gpl-wish__btn');
+  const badge = el.querySelector('[data-count]');
+  const list = () => JSON.parse(localStorage.getItem(KEY) || '[]');
+  const save = (l) => localStorage.setItem(KEY, JSON.stringify(l));
+  function render() {
+    const l = list();
+    badge.textContent = l.length;
+    btn.classList.toggle('is-saved', l.includes(el.dataset.product));
+  }
+  btn.addEventListener('click', () => {
+    const l = list();
+    const i = l.indexOf(el.dataset.product);
+    if (i >= 0) l.splice(i, 1); else l.push(el.dataset.product);
+    save(l);
+    render();
+  });
+  render();
+});`,
+      usage: `{% render 'wishlist-button', product: product, label: ${js(str(v, "label"))} %}`,
+    }),
+  },
+  {
+    id: "faq-schema",
+    name: "FAQ + JSON-LD schema",
+    description: "An FAQ accordion that also emits FAQPage structured data - eligibility for Google's rich FAQ snippets.",
+    category: "Marketing",
+    kind: "section",
+    controls: [
+      { id: "items", label: "Q&A (question|answer per line)", type: "text", maxLength: 500 },
+    ],
+    defaults: {
+      items: "Do you ship pan-India?|Yes - dispatch in 24h, delivery 3-6 business days.|Is COD available?|On most pincodes - check the COD checker on the product page.|What is the return window?|7-day easy returns, refund to source account.",
+    },
+    install: [
+      ...sectionSteps,
+      "Only include Q&A that are actually on the page - Google ignores schema for hidden content.",
+    ],
+    files: (v) => ({
+      liquid: `{%- assign rows = section.settings.items | newline_to_br | split: '<br />' -%}
+<div class="gpl-faqs">
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <details class="gpl-faqs__item">
+      <summary>{{ parts[0] | strip }}</summary>
+      <p>{{ parts[1] | strip }}</p>
+    </details>
+  {%- endfor -%}
+</div>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {%- for row in rows -%}
+      {%- assign parts = row | strip | split: '|' -%}
+      { "@type": "Question", "name": {{ parts[0] | strip | json }}, "acceptedAnswer": { "@type": "Answer", "text": {{ parts[1] | strip | json }} } }{% unless forloop.last %},{% endunless %}
+    {%- endfor -%}
+  ]
+}
+</script>
+
+{% schema %}
+{
+  "name": "FAQ + schema",
+  "settings": [
+    { "type": "textarea", "id": "items", "label": "Q&A (question|answer per line)", "default": ${js(str(v, "items"))} }
+  ],
+  "presets": [{ "name": "FAQ + schema" }]
+}
+{% endschema %}`,
+      css: `.gpl-faqs__item { border-bottom: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.18); padding: 0.8rem 0; }
+.gpl-faqs__item summary { cursor: pointer; font-weight: 600; font-size: 0.85rem; list-style: none; }
+.gpl-faqs__item summary::-webkit-details-marker { display: none; }
+.gpl-faqs__item p { margin: 0.5rem 0 0; font-size: 0.78rem; color: rgb(var(--color-foreground, 100 116 139) / 0.8); }`,
+    }),
+  },
 ];
 
 export function getExample(id: string | undefined): PlaygroundExample {

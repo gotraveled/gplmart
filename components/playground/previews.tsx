@@ -1416,6 +1416,189 @@ function StoreLocator({ v }: P) {
   );
 }
 
+function ReviewSummary({ v }: P) {
+  const counts = str(v, "bars").split("|").map((s) => Number(s.trim()) || 0);
+  const total = counts.reduce((a, b) => a + b, 0) || 1;
+  return (
+    <div className="flex items-center gap-5 p-4">
+      <div className="text-center">
+        <p className="m-0 text-4xl font-black leading-none">{str(v, "rating") || "0.0"}</p>
+        <p className="m-0 mt-1 text-amber-500">&#9733;&#9733;&#9733;&#9733;&#9733;</p>
+        <p className="m-0 mt-1 text-[0.65rem] text-neutral-500">{str(v, "count")} reviews</p>
+      </div>
+      <div className="grid flex-1 gap-1.5">
+        {counts.map((c, i) => (
+          <div key={i} className="flex items-center gap-2 text-[0.6rem]">
+            <span>{5 - i} &#9733;</span>
+            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-neutral-100">
+              <div className="h-full rounded-full bg-amber-500" style={{ width: `${(c / total) * 100}%` }} />
+            </div>
+            <span className="w-6 text-right text-neutral-400">{c}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function AspectRatings({ v }: P) {
+  const accent = hex(v, "accent");
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 5);
+  return (
+    <div className="grid gap-2.5 p-4">
+      {rows.map((r) => {
+        const [name, score] = r.split("|").map((s) => s.trim());
+        return (
+          <div key={r} className="flex items-center gap-3 text-[0.7rem]">
+            <span className="min-w-24 font-semibold">{name}</span>
+            <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-neutral-100">
+              <div className="h-full rounded-full" style={{ width: `${(Number(score) || 0) * 20}%`, background: accent }} />
+            </div>
+            <span className="font-bold">{score}</span>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function ReviewCard({ v }: P) {
+  return (
+    <div className="m-4 rounded-xl border border-neutral-200 bg-neutral-50 p-4">
+      <p className="m-0 text-[0.7rem] tracking-widest text-amber-500">&#9733;&#9733;&#9733;&#9733;&#9733;</p>
+      <p className="m-0 mt-2 text-sm leading-relaxed">&ldquo;{str(v, "quote")}&rdquo;</p>
+      <p className="m-0 mt-2.5 text-[0.7rem] font-bold">{str(v, "name")}</p>
+      <p className="m-0 text-[0.6rem] text-neutral-500">{str(v, "detail")}</p>
+    </div>
+  );
+}
+
+function PressMentions({ v }: P) {
+  return (
+    <div className="p-5 text-center">
+      <p className="m-0 mb-3 text-[0.6rem] font-bold uppercase tracking-[0.2em] text-neutral-400">{str(v, "heading") || "As featured in"}</p>
+      <div className="flex flex-wrap justify-center gap-x-7 gap-y-2">
+        {str(v, "names").split(",").map((s) => s.trim()).filter(Boolean).map((n) => (
+          <span key={n} className="font-serif text-sm italic text-neutral-500">{n}</span>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ExpertQuote({ v }: P) {
+  return (
+    <div className="m-4 rounded-r-xl border-l-4 border-emerald-600 bg-neutral-50 p-4">
+      <span className="text-3xl leading-none text-emerald-600">&ldquo;</span>
+      <p className="m-0 mt-1 text-sm italic leading-relaxed">{str(v, "quote")}</p>
+      <p className="m-0 mt-2.5 text-[0.7rem] font-bold">{str(v, "name")}</p>
+      <p className="m-0 text-[0.6rem] text-neutral-500">{str(v, "credential")}</p>
+    </div>
+  );
+}
+
+function VideoTestimonial({ v }: P) {
+  return (
+    <div className="m-4 grid gap-3 rounded-xl border border-neutral-200 p-3 sm:grid-cols-[1.2fr_1fr] sm:items-center">
+      <div className="grid aspect-video place-items-center rounded-lg bg-[linear-gradient(135deg,#dbeafe,#fce7f3)]">
+        <span className="text-2xl text-neutral-400">&#9654;</span>
+      </div>
+      <div>
+        <p className="m-0 text-[0.7rem] italic leading-snug">&ldquo;{str(v, "quote")}&rdquo;</p>
+        <p className="m-0 mt-1.5 text-[0.62rem] font-bold">&mdash; {str(v, "name")}</p>
+      </div>
+    </div>
+  );
+}
+
+function ImageHotspots({ v }: P) {
+  const accent = hex(v, "accent");
+  const [open, setOpen] = useState(0);
+  const pins = [
+    { x: 30, y: 35, t: "Linen overshirt", p: "₹2,499" },
+    { x: 62, y: 62, t: "Chinos", p: "₹1,799" },
+  ];
+  return (
+    <div className="p-4">
+      <p className="m-0 mb-2 text-sm font-extrabold">{str(v, "heading") || "Shop the look"}</p>
+      <div className="relative aspect-[16/9] overflow-hidden rounded-xl bg-[linear-gradient(135deg,#e0e7ff,#fbcfe8,#bbf7d0)]">
+        {pins.map((pin, i) => (
+          <button
+            key={pin.t}
+            type="button"
+            onClick={() => setOpen(i)}
+            className="absolute -translate-x-1/2 -translate-y-1/2"
+            style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
+          >
+            <span className="block size-5 rounded-full border-2 border-white shadow" style={{ background: accent }} />
+            {open === i && (
+              <span className="absolute bottom-6 left-1/2 w-24 -translate-x-1/2 rounded-lg bg-black/85 px-2 py-1 text-center text-[0.58rem] text-white">
+                {pin.t}<br /><b>{pin.p}</b>
+              </span>
+            )}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function StatsCounter({ v }: P) {
+  const accent = hex(v, "accent");
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 4);
+  return (
+    <div className="grid grid-cols-3 gap-2 p-4 text-center">
+      {rows.map((r) => {
+        const [num, label] = r.split("|").map((s) => s.trim());
+        return (
+          <div key={r}>
+            <p className="m-0 text-2xl font-black tabular-nums" style={{ color: accent }}>{num}</p>
+            <p className="m-0 mt-0.5 text-[0.6rem] text-neutral-500">{label}</p>
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
+function WishlistButton({ v }: P) {
+  const [saved, setSaved] = useState(false);
+  const [n, setN] = useState(3);
+  return (
+    <div className="flex items-center gap-3 p-4">
+      <button
+        type="button"
+        onClick={() => { setSaved(!saved); setN(saved ? n - 1 : n + 1); }}
+        className={`flex items-center gap-1.5 rounded-full border px-4 py-2 text-[0.7rem] font-semibold transition ${saved ? "border-rose-500 text-rose-500" : "border-neutral-300"}`}
+      >
+        <svg className="size-4" viewBox="0 0 24 24" fill={saved ? "#e11d48" : "none"} stroke={saved ? "#e11d48" : "currentColor"} strokeWidth="2">
+          <path d="M19 14c1.5-1.5 3-3.3 3-5.5A5.5 5.5 0 0 0 12 4 5.5 5.5 0 0 0 2 8.5c0 2.2 1.5 4 3 5.5l7 7z" />
+        </svg>
+        {str(v, "label") || "Save for later"}
+        <span className="tabular-nums opacity-70">{n}</span>
+      </button>
+    </div>
+  );
+}
+
+function FaqSchema({ v }: P) {
+  const rows = str(v, "items").split("\n").map((r) => r.trim()).filter(Boolean).slice(0, 4);
+  return (
+    <div className="p-4">
+      {rows.map((r) => {
+        const [q, a] = r.split("|").map((s) => s.trim());
+        return (
+          <details key={r} className="border-b border-neutral-200 py-2.5 text-sm last:border-0">
+            <summary className="cursor-pointer text-[0.78rem] font-semibold">{q}</summary>
+            <p className="m-0 mt-1.5 text-[0.7rem] text-neutral-600">{a}</p>
+          </details>
+        );
+      })}
+      <p className="m-0 mt-2.5 text-[0.6rem] text-neutral-400">Emits FAQPage JSON-LD for rich search snippets.</p>
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -1466,6 +1649,16 @@ const map: Record<string, (p: P) => ReactNode> = {
   "sales-notification": SalesNotification,
   "age-verify": AgeVerify,
   "store-locator": StoreLocator,
+  "review-summary": ReviewSummary,
+  "aspect-ratings": AspectRatings,
+  "review-card": ReviewCard,
+  "press-mentions": PressMentions,
+  "expert-quote": ExpertQuote,
+  "video-testimonial": VideoTestimonial,
+  "image-hotspots": ImageHotspots,
+  "stats-counter": StatsCounter,
+  "wishlist-button": WishlistButton,
+  "faq-schema": FaqSchema,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {
