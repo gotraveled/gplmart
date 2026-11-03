@@ -9,7 +9,7 @@ import { promptCategories, prompts } from "@/lib/prompts";
 import { formatOfferPrice } from "@/lib/offer";
 
 export const metadata = infoMetadata(
-  "50 free AI prompts for e-commerce",
+  "50 Free AI Prompts for Shopify & E-commerce",
   "A free prompt pack for Shopify merchants - product descriptions, ads, emails, SEO, support and conversion strategy. Plus a prompt builder.",
   "/prompts",
 );

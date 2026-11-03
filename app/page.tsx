@@ -27,15 +27,21 @@ import { CodeBlock } from "@/components/ui/code-block";
 import { FaqList } from "@/components/ui/faq";
 import { HomeSandbox } from "@/components/home/sandbox";
 import { faqs } from "@/lib/faq";
-import { getExample } from "@/lib/playground/examples";
+import { examples, getExample } from "@/lib/playground/examples";
+import { faqJsonLd, jsonLdPayload, productJsonLd } from "@/lib/seo";
 import { formatOfferPrice } from "@/lib/offer";
 import { GeoPrice } from "@/components/ui/geo-price";
 
 export const metadata: Metadata = {
-  title: { absolute: "GPLMart - Shopify Liquid code & storefront components" },
+  title: { absolute: "GPLMart - Shopify Liquid Code, Snippets & Sections" },
   description:
-    "Reusable Shopify Liquid snippets and theme sections you can read, preview and paste into your store - plus Shopify themes, WordPress landing pages and plugins in one bundle. One-time payment.",
+    "200+ reusable Shopify Liquid snippets and theme sections you can preview live and paste into your store - plus Shopify themes, WordPress themes and plugins in one bundle. One payment, no subscription.",
   alternates: { canonical: "/" },
+  openGraph: {
+    title: "GPLMart - Shopify Liquid Code, Snippets & Sections",
+    description:
+      "200+ reusable Shopify Liquid snippets and theme sections - live preview, install guides, copy-paste code. One payment, no subscription.",
+  },
 };
 
 const numbers = [
@@ -201,8 +207,13 @@ function StorefrontMockup() {
 
 export default function HomePage() {
   const price = formatOfferPrice();
+  const jsonLd = jsonLdPayload(productJsonLd(), faqJsonLd(faqs));
+  const popular = ["variant-swatches", "countdown-timer", "sticky-buy-bar", "trust-grid", "faq-accordion", "quick-view"]
+    .map((id) => examples.find((e) => e.id === id))
+    .filter((e): e is NonNullable<typeof e> => Boolean(e));
   return (
     <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       {/* Hero - two columns */}
       <section className="relative overflow-hidden border-b border-line">
         <div aria-hidden className="bg-grid absolute inset-0" />
@@ -545,6 +556,32 @@ export default function HomePage() {
           </div>
         </Section>
       </section>
+
+      {/* Popular snippets - internal links */}
+      <Section>
+        <SectionHeading eyebrow="Shopify liquid code" title="Popular snippets" />
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {popular.map((e) => (
+            <a
+              key={e.id}
+              href={`/snippets/${e.id}`}
+              className="group rounded-2xl border border-line bg-ink-900/60 p-5 transition hover:border-accent/50"
+            >
+              <p className="text-xs text-subtle">{e.category}</p>
+              <p className="mt-1 font-display text-base font-semibold group-hover:text-accent">{e.name}</p>
+              <p className="mt-1.5 line-clamp-2 text-sm text-muted">{e.description}</p>
+              <span className="mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-accent">
+                View snippet <ArrowRight aria-hidden className="size-4 transition group-hover:translate-x-0.5" />
+              </span>
+            </a>
+          ))}
+        </div>
+        <div className="mt-6 text-center">
+          <ButtonLink href="/snippets" variant="secondary">
+            Browse all {examples.length} snippets <ArrowRight aria-hidden className="size-4" />
+          </ButtonLink>
+        </div>
+      </Section>
 
       {/* FAQ */}
       <Section id="faq">

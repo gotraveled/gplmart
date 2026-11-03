@@ -6,10 +6,14 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Workbench } from "@/components/playground/workbench";
 
 export const metadata: Metadata = {
-  title: "Free Shopify Liquid playground",
+  title: "Free Shopify Liquid Playground - Preview 200+ Snippets & Sections",
   description:
-    "Try original Shopify Liquid sections and snippets in the browser: inspect the code, preview the storefront output and tweak settings. Free, no account needed.",
+    "Try 200+ original Shopify Liquid snippets and sections in the browser - inspect the code, preview the storefront output and tweak settings live. Free, no account needed.",
   alternates: { canonical: "/playground" },
+  openGraph: {
+    title: "Free Shopify Liquid Playground - Preview 200+ Snippets & Sections",
+    description: "Live previews of 200+ Shopify Liquid snippets and sections. Inspect code, tweak settings, copy free samples.",
+  },
 };
 
 export default async function PlaygroundPage({

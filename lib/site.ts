@@ -8,14 +8,16 @@ export const siteConfig = {
 } as const;
 
 export const mainNav = [
-  { href: "/library", label: "Library" },
+  { href: "/snippets", label: "Snippets" },
   { href: "/playground", label: "Playground" },
+  { href: "/library", label: "Library" },
   { href: "/how-it-works", label: "How it works" },
   { href: "/faq", label: "FAQ" },
 ] as const;
 
 export const footerLinks = {
   GPLMart: [
+    { href: "/snippets", label: "Snippets" },
     { href: "/library", label: "Library" },
     { href: "/playground", label: "Playground" },
     { href: "/prompts", label: "Free prompts" },

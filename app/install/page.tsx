@@ -4,8 +4,8 @@ import { ButtonLink } from "@/components/ui/button";
 import { ThemeChecker } from "@/components/install/theme-checker";
 
 export const metadata = infoMetadata(
-  "How to install - free instructions",
-  "Free step-by-step install guides for Shopify snippets, sections, WordPress plugins, themes and Drive bundle downloads.",
+  "How to Install Shopify Liquid Snippets - Step-by-Step Guide",
+  "Free step-by-step install guides for Shopify Liquid snippets and sections, WordPress plugins, themes and template bundles - paste code into any OS 2.0 theme, no developer needed.",
   "/install",
 );
 

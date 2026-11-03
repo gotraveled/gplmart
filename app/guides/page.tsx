@@ -5,8 +5,8 @@ import { Badge } from "@/components/ui/badge";
 import { guides } from "@/lib/guides";
 
 export const metadata = infoMetadata(
-  "Guides & tutorials",
-  "Free guides for Shopify merchants and builders - Liquid tutorials, conversion strategy and honest licensing explainers.",
+  "Shopify Liquid Tutorials & Conversion Guides",
+  "Free guides for Shopify merchants and builders - Liquid code tutorials, conversion strategy and honest licensing explainers.",
   "/guides",
 );
 

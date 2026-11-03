@@ -5,6 +5,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { GeoPrice } from "@/components/ui/geo-price";
 import { faqs } from "@/lib/faq";
 import { freeExampleIds } from "@/lib/playground/examples";
+import { faqJsonLd, jsonLdPayload } from "@/lib/seo";
 
 export const metadata = infoMetadata(
   "Frequently asked questions",
@@ -14,6 +15,8 @@ export const metadata = infoMetadata(
 
 export default function FaqPage() {
   return (
+    <>
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdPayload(faqJsonLd(faqs)) }} />
     <InfoPage
       title="Frequently asked questions"
       description="Everything about the library, licensing, delivery and access - answered plainly."
@@ -55,5 +58,6 @@ export default function FaqPage() {
         Get all-access &mdash; <GeoPrice fallback="₹499" /> <ArrowRight aria-hidden className="size-4" />
       </ButtonLink>
     </InfoPage>
+    </>
   );
 }
