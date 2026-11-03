@@ -27,7 +27,7 @@ import { CodeBlock } from "@/components/ui/code-block";
 import { FaqList } from "@/components/ui/faq";
 import { HomeSandbox } from "@/components/home/sandbox";
 import { faqs } from "@/lib/faq";
-import { examples, getExample } from "@/lib/playground/examples";
+import { examples, freeExampleIds, getExample } from "@/lib/playground/examples";
 import { faqJsonLd, jsonLdPayload, productJsonLd } from "@/lib/seo";
 import { formatOfferPrice } from "@/lib/offer";
 import { GeoPrice } from "@/components/ui/geo-price";
@@ -46,7 +46,7 @@ export const metadata: Metadata = {
 
 const numbers = [
   { k: String(examples.length), v: "Components in the sandbox" },
-  { k: "20", v: "Free examples live in the sandbox" },
+  { k: String(freeExampleIds.size), v: "Free examples live in the sandbox" },
   { k: "5", v: "Resource areas under one access" },
   { k: "₹0/mo", v: "No monthly fee - ever" },
 ];

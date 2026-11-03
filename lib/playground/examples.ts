@@ -38,16 +38,6 @@ export const freeExampleIds: ReadonlySet<string> = new Set([
   "promo-banner",
   "testimonial-slider",
   "logo-marquee",
-  "back-to-top",
-  "scroll-progress",
-  "cookie-consent",
-  "feature-icons",
-  "sold-count",
-  "ssl-note",
-  "model-info",
-  "made-in-badge",
-  "gst-note",
-  "upi-badges",
 ]);
 
 export const examples: readonly PlaygroundExample[] = [

@@ -1,8 +1,10 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
 import {
   BadgePercent,
+  Bell,
   BookOpen,
   Clock,
   Code2,
@@ -10,8 +12,11 @@ import {
   Eye,
   Flame,
   GitCompareArrows,
+  HelpCircle,
+  Images,
   Layers,
   Lock,
+  Megaphone,
   MessageSquareQuote,
   Package,
   Play,
@@ -37,6 +42,11 @@ const items = [
   { id: "free-shipping-bar", label: "Free ship bar", icon: TrendingUp },
   { id: "trust-grid", label: "Trust grid", icon: ShieldCheck },
   { id: "quantity-breaks", label: "Bundle & save", icon: Layers },
+  { id: "announcement-bar", label: "Announcement", icon: Bell },
+  { id: "faq-accordion", label: "FAQ accordion", icon: HelpCircle },
+  { id: "promo-banner", label: "Promo banner", icon: Megaphone },
+  { id: "testimonial-slider", label: "Testimonials", icon: MessageSquareQuote },
+  { id: "logo-marquee", label: "Logo marquee", icon: Images },
   { id: "delivery-estimator", label: "Delivery ETA", icon: Package },
   { id: "stock-pulse", label: "Stock pulse", icon: Flame },
   { id: "sticky-buy-bar", label: "Buy bar", icon: ShoppingCart },
@@ -45,7 +55,6 @@ const items = [
   { id: "payment-badges", label: "Payment row", icon: CreditCard },
   { id: "sale-badge", label: "Sale badge", icon: BadgePercent },
   { id: "cutoff-timer", label: "Dispatch cutoff", icon: Clock },
-  { id: "testimonial-slider", label: "Testimonials", icon: MessageSquareQuote },
   { id: "before-after", label: "Before / after", icon: GitCompareArrows },
   { id: "product-tabs", label: "Info tabs", icon: BookOpen },
 ] as const;
@@ -81,12 +90,22 @@ export function HomeSandbox() {
       <div className="mb-7 grid gap-5 sm:grid-cols-2" role="tablist" aria-label="Sandbox components">
         {(
           [
-            { title: "Free - full code", items: items.filter((i) => freeExampleIds.has(i.id)) },
-            { title: "Members - preview, source locked", items: items.filter((i) => !freeExampleIds.has(i.id)) },
+            { title: "Free - full code", items: items.filter((i) => freeExampleIds.has(i.id)), members: false },
+            { title: "Members - preview, source locked", items: items.filter((i) => !freeExampleIds.has(i.id)), members: true },
           ] as const
-        ).map(({ title, items: group }) => (
+        ).map(({ title, items: group, members }) => (
           <div key={title} className="rounded-2xl border border-line bg-ink-900/50 p-4">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-subtle">{title}</p>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-subtle">{title}</p>
+              {members && (
+                <Link
+                  href="/playground"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-accent/40 bg-accent/10 px-3.5 py-1.5 text-xs font-semibold text-accent transition hover:bg-accent/20"
+                >
+                  Access {examples.length}+ snippets
+                </Link>
+              )}
+            </div>
             <div className="flex flex-wrap gap-2">
               {group.map(({ id: cid, label, icon: Icon }) => (
                 <button

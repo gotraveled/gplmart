@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Monitor, Smartphone, Tablet, BookOpen, Lock, X } from "lucide-react";
+import { Monitor, Smartphone, Tablet, BookOpen, Lock, X, Search } from "lucide-react";
 import { examples, freeExampleIds, getExample } from "@/lib/playground/examples";
 import type { ControlDef, ExampleFiles, PlaygroundExample, Values } from "@/lib/playground/types";
 import type { Lang } from "@/lib/highlight";
@@ -173,6 +173,7 @@ export function Workbench({ initialId }: { initialId?: string }) {
   }, [ex?.id]);
 
   const [category, setCategory] = useState<string>("all");
+  const [query, setQuery] = useState("");
 
   const free = examples.filter((e) => freeExampleIds.has(e.id));
   const members = examples.filter((e) => !freeExampleIds.has(e.id));
@@ -181,52 +182,68 @@ export function Workbench({ initialId }: { initialId?: string }) {
     ...categoryOrder.filter((c) => members.some((e) => e.category === c)),
     ...[...new Set(members.map((e) => e.category))].filter((c) => !categoryOrder.includes(c)),
   ];
-  const filtered = category === "all" ? null : examples.filter((e) => e.category === category);
+  const q = query.trim().toLowerCase();
+  const base =
+    category === "free" ? free : category === "all" ? examples : examples.filter((e) => e.category === category);
+  const filtered = q ? base.filter((e) => e.name.toLowerCase().includes(q) || e.description.toLowerCase().includes(q)) : base;
+  const searching = category !== "all" || q !== "";
+
+  const chipCls = (on: boolean) =>
+    cn(
+      "rounded-full border px-4 py-2 text-sm font-medium transition",
+      on ? "border-accent bg-accent text-ink-950" : "border-line-strong text-muted hover:border-accent/50 hover:text-fg",
+    );
+
   const grid = (
     <div>
-      {/* Category filter */}
-      <div className="mb-10 flex flex-wrap gap-2" role="group" aria-label="Filter by category">
-        <button
-          type="button"
-          onClick={() => setCategory("all")}
-          aria-pressed={category === "all"}
-          className={cn(
-            "rounded-full border px-4 py-2 text-sm font-medium transition",
-            category === "all" ? "border-accent bg-accent text-ink-950" : "border-line-strong text-muted hover:border-accent/50 hover:text-fg",
-          )}
-        >
-          All {examples.length}
-        </button>
-        {categories.map((cat) => (
-          <button
-            key={cat}
-            type="button"
-            onClick={() => setCategory(cat)}
-            aria-pressed={category === cat}
-            className={cn(
-              "rounded-full border px-4 py-2 text-sm font-medium transition",
-              category === cat ? "border-accent bg-accent text-ink-950" : "border-line-strong text-muted hover:border-accent/50 hover:text-fg",
-            )}
-          >
-            {cat}
+      {/* Search + category filter */}
+      <div className="mb-10">
+        <label className="relative block">
+          <Search aria-hidden className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-subtle" />
+          <input
+            type="search"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            placeholder="Search snippets - countdown, reviews, sticky bar…"
+            className="w-full rounded-full border border-line-strong bg-ink-900/70 py-2.5 pl-11 pr-4 text-sm text-fg placeholder:text-subtle focus:border-accent/60 focus:outline-none"
+            aria-label="Search snippets"
+          />
+        </label>
+        <div className="mt-4 flex flex-wrap gap-2" role="group" aria-label="Filter by category">
+          <button type="button" onClick={() => setCategory("all")} aria-pressed={category === "all"} className={chipCls(category === "all")}>
+            All {examples.length}
           </button>
-        ))}
+          <button type="button" onClick={() => setCategory("free")} aria-pressed={category === "free"} className={chipCls(category === "free")}>
+            Free {free.length}
+          </button>
+          {categories.map((cat) => (
+            <button key={cat} type="button" onClick={() => setCategory(cat)} aria-pressed={category === cat} className={chipCls(category === cat)}>
+              {cat}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {filtered ? (
-        <section>
-          <h2 className="mb-5 flex items-baseline gap-3 font-display text-2xl font-semibold text-accent">
-            {category}
-            <span className="text-sm font-normal text-subtle">{filtered.length}</span>
-          </h2>
-          <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {filtered.map((e) => (
-              <li key={e.id}>
-                <Card ex={e} onPick={pick} />
-              </li>
-            ))}
-          </ul>
-        </section>
+      {searching ? (
+        filtered.length === 0 ? (
+          <p className="rounded-xl border border-line p-8 text-center text-sm text-muted">
+            No snippets match &quot;{query}&quot;{category !== "all" ? ` in ${category === "free" ? "free" : category}` : ""} - try a different search.
+          </p>
+        ) : (
+          <section>
+            <h2 className="mb-5 flex items-baseline gap-3 font-display text-2xl font-semibold text-accent">
+              {category === "free" ? "Free snippets - copy the code" : category === "all" ? `Results for "${query}"` : category}
+              <span className="text-sm font-normal text-subtle">{filtered.length}</span>
+            </h2>
+            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+              {filtered.map((e) => (
+                <li key={e.id}>
+                  <Card ex={e} onPick={pick} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        )
       ) : (
         <div className="grid gap-10">
           <section>
