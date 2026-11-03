@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Inter, JetBrains_Mono, Roboto, Roboto_Condensed } from "next/font/google";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
+import { Analytics } from "@vercel/analytics/react";
 import { siteConfig } from "@/lib/site";
 import { SEO_KEYWORDS, jsonLdPayload, orgJsonLd, websiteJsonLd } from "@/lib/seo";
 import "./globals.css";
@@ -39,6 +40,9 @@ export const metadata: Metadata = {
     images: ["/opengraph-image"],
   },
   alternates: { canonical: "/" },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
+  },
 };
 
 const globalJsonLd = jsonLdPayload(orgJsonLd(), websiteJsonLd());
@@ -53,6 +57,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Header />
         <main id="main">{children}</main>
         <Footer />
+        <Analytics />
       </body>
     </html>
   );

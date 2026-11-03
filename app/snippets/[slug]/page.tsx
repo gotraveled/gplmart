@@ -11,6 +11,7 @@ import { ExamplePreview } from "@/components/playground/previews";
 import { examples, freeExampleIds } from "@/lib/playground/examples";
 import { absoluteUrl } from "@/lib/site";
 import { breadcrumbJsonLd, codeJsonLd, jsonLdPayload } from "@/lib/seo";
+import { snippetBenefits, snippetHook } from "@/lib/snippet-copy";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -57,7 +58,7 @@ export default async function SnippetPage({ params }: Params) {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
       <PageHeader
         title={ex.name}
-        description={ex.description}
+        description={snippetHook(ex)}
         crumbs={[
           { label: "Home", href: "/" },
           { label: "Snippets", href: "/snippets" },
@@ -154,9 +155,9 @@ export default async function SnippetPage({ params }: Params) {
             <div className="rounded-2xl border border-line bg-ink-900/60 p-5">
               <h3 className="font-display text-sm font-semibold">Why this component</h3>
               <ul className="mt-3 space-y-2.5 text-sm text-muted">
-                <li className="flex gap-2"><Check aria-hidden className="mt-0.5 size-4 shrink-0 text-mint" /> No app or monthly fee - pure theme code</li>
-                <li className="flex gap-2"><Check aria-hidden className="mt-0.5 size-4 shrink-0 text-mint" /> Uses your theme&apos;s own fonts and colour variables</li>
-                <li className="flex gap-2"><Check aria-hidden className="mt-0.5 size-4 shrink-0 text-mint" /> Numbered install guide, tested on mobile</li>
+                {snippetBenefits(ex).map((b) => (
+                  <li key={b} className="flex gap-2"><Check aria-hidden className="mt-0.5 size-4 shrink-0 text-mint" /> {b}</li>
+                ))}
               </ul>
             </div>
             {related.length > 0 && (

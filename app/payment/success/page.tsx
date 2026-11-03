@@ -3,6 +3,7 @@ import { CheckCircle2, Clock, MessageCircle, XCircle } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { ButtonLink } from "@/components/ui/button";
 import { StatusPoller } from "@/components/checkout/status-poller";
+import { StripeVerifier } from "@/components/checkout/stripe-verifier";
 import { isSupabaseConfigured, whatsappNumber } from "@/lib/env";
 import { createServiceClient } from "@/lib/supabase/admin";
 
@@ -10,7 +11,7 @@ export const metadata: Metadata = { title: "Payment status", robots: { index: fa
 
 export default async function PaymentSuccessPage({ searchParams }: { searchParams: Promise<{ order?: string }> }) {
   const orderId = (await searchParams).order ?? "";
-  const valid = /^[A-Za-z0-9_]{5,64}$/.test(orderId);
+  const valid = /^[A-Za-z0-9_-]{5,100}$/.test(orderId);
   const { data: order } = valid && isSupabaseConfigured()
     ? await createServiceClient().from("orders").select("status").eq("razorpay_order_id", orderId).maybeSingle()
     : { data: null };
@@ -53,6 +54,7 @@ export default async function PaymentSuccessPage({ searchParams }: { searchParam
           )}
         </div>
         {status === "created" && <StatusPoller orderId={orderId} />}
+        {orderId.startsWith("stripe_") && status !== "paid" && <StripeVerifier sessionId={orderId.slice(7)} />}
       </div>
     </Container>
   );

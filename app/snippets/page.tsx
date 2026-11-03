@@ -22,6 +22,8 @@ export const metadata: Metadata = {
   },
 };
 
+const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
 export default function SnippetsIndexPage() {
   const categories = [...new Set(examples.map((e) => e.category))];
   const jsonLd = jsonLdPayload(
@@ -53,7 +55,10 @@ export default function SnippetsIndexPage() {
           return (
             <section key={cat} className="mt-12">
               <h2 className="font-display text-xl font-semibold">
-                {cat} <span className="ml-2 text-sm font-normal text-subtle">{items.length}</span>
+                <Link href={`/snippets/category/${slugify(cat)}`} className="transition hover:text-accent">
+                  {cat}
+                </Link>
+                <span className="ml-2 text-sm font-normal text-subtle">{items.length}</span>
               </h2>
               <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {items.map((e) => (

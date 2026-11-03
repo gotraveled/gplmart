@@ -53,6 +53,26 @@ export function CheckoutForm({ label }: { label: string }) {
   const [extended, setExtended] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
 
+  const stripeOn = process.env.NEXT_PUBLIC_STRIPE_ENABLED === "true";
+
+  async function startStripe() {
+    setBusy(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/checkout/stripe-session", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ...form, extended }),
+      });
+      const data = (await res.json()) as { url?: string; error?: string };
+      if (!res.ok || !data.url) throw new Error(messages[data.error ?? ""] ?? "Could not start Stripe checkout.");
+      window.location.href = data.url;
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong.");
+      setBusy(false);
+    }
+  }
+
   async function start(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
@@ -128,6 +148,11 @@ export function CheckoutForm({ label }: { label: string }) {
       <Button size="lg" className="mt-1 w-full" type="submit" disabled={busy}>
         <Lock aria-hidden className="size-4" /> {busy ? "Opening secure checkout…" : label}
       </Button>
+      {stripeOn && (
+        <Button size="lg" variant="secondary" className="w-full" type="button" disabled={busy} onClick={startStripe}>
+          Pay by card — Stripe
+        </Button>
+      )}
       {error && (
         <p role="alert" className="rounded-lg border border-rose-400/30 bg-rose-400/10 p-3 text-sm text-rose-100">
           {error}
