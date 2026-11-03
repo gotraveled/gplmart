@@ -1,0 +1,36 @@
+<div class="gpl-colhero{% if section.settings.overlay %} gpl-colhero--overlay{% endif %}">
+  {%- if section.settings.image or collection.image -%}
+    {{ section.settings.image | default: collection.image | image_url: width: 1600 | image_tag: class: 'gpl-colhero__img', loading: 'eager' }}
+  {%- endif -%}
+  <div class="gpl-colhero__body">
+    <h1 class="gpl-colhero__title">{{ section.settings.title | default: collection.title }}</h1>
+    {%- if collection.description != blank -%}
+      <p class="gpl-colhero__desc">{{ collection.description | strip_html | truncate: 140 }}</p>
+    {%- endif -%}
+    {%- if collection.products_count -%}
+      <p class="gpl-colhero__count">{{ collection.products_count }} products</p>
+    {%- endif -%}
+  </div>
+</div>
+
+{% schema %}
+{
+  "name": "Collection hero",
+  "settings": [
+    { "type": "image_picker", "id": "image", "label": "Custom image" },
+    { "type": "text", "id": "title", "label": "Custom title" },
+    { "type": "checkbox", "id": "overlay", "label": "Dark overlay", "default": true }
+  ],
+  "presets": [{ "name": "Collection hero" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-colhero { position: relative; border-radius: 16px; overflow: hidden; }
+.gpl-colhero__img { width: 100%; aspect-ratio: 21/7; object-fit: cover; display: block; }
+.gpl-colhero__body { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: flex-end; padding: 2rem; }
+.gpl-colhero--overlay .gpl-colhero__body { background: linear-gradient(to top, rgb(0 0 0 / 0.6), transparent 70%); color: #fff; }
+.gpl-colhero__title { margin: 0; font-size: 1.8rem; font-weight: 800; }
+.gpl-colhero__desc { margin: 0.4rem 0 0; font-size: 0.8rem; opacity: 0.9; max-width: 34rem; }
+.gpl-colhero__count { margin: 0.4rem 0 0; font-size: 0.68rem; opacity: 0.8; }
+{% endstylesheet %}

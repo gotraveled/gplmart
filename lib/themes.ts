@@ -104,7 +104,7 @@ export function vintageSteps(t: ThemeEntry): string[] {
     `Open Themes > ${t.name} > Actions > Edit code > snippets folder > 'Add a new snippet' > name it gpl-your-snippet.liquid > paste the code.`,
     `Open ${t.productSection} - this is where the product page renders in ${t.name} (no theme-editor sections on vintage themes).`,
     `Find where the add-to-cart form ends (search for 'product-form' or the buy button block) and add {% render 'gpl-your-snippet' %} after it.`,
-    `Paste the snippet's CSS into assets/theme.scss.liquid (or theme.css) at the bottom.`,
+    `Nothing else to install - the file you pasted already contains the CSS and JavaScript ({% stylesheet %} / {% javascript %} blocks work in snippets on any theme).`,
     `Save, preview on mobile and desktop, then publish.`,
   ];
 }

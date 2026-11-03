@@ -1,0 +1,24 @@
+<div class="gpl-nut">
+  <p class="gpl-nut__title">Nutrition Facts</p>
+  <p class="gpl-nut__serving">Serving size: {{ serving | default: '1 serving' }}</p>
+  {%- assign rows = items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <div class="gpl-nut__row">
+      <b>{{ parts[0] | strip }}</b>
+      <span>{{ parts[1] | strip }}</span>
+      {%- if parts[2] != blank -%}
+        <span class="gpl-nut__dv">{{ parts[2] | strip }}%</span>
+      {%- endif -%}
+    </div>
+  {%- endfor -%}
+</div>
+
+{% stylesheet %}
+.gpl-nut { margin: 0.75rem 0; padding: 0.9rem; border: 2px solid rgb(var(--color-foreground, 15 23 42)); border-radius: 4px; font-size: 0.75rem; }
+.gpl-nut__title { margin: 0; font-size: 1.1rem; font-weight: 900; border-bottom: 6px solid rgb(var(--color-foreground, 15 23 42)); padding-bottom: 0.3rem; }
+.gpl-nut__serving { margin: 0.3rem 0; font-size: 0.68rem; border-bottom: 3px solid rgb(var(--color-foreground, 15 23 42)); padding-bottom: 0.3rem; }
+.gpl-nut__row { display: flex; gap: 0.5rem; padding: 0.3rem 0; border-bottom: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); }
+.gpl-nut__row b { flex: 1; }
+.gpl-nut__dv { font-weight: 700; }
+{% endstylesheet %}

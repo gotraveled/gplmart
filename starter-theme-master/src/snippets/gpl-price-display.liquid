@@ -1,0 +1,59 @@
+{%- assign v = product.selected_or_first_available_variant -%}
+{%- if v -%}
+  {%- assign save = v.compare_at_price | minus: v.price -%}
+  {%- assign pct = 0 -%}
+  {%- if save > 0 -%}{%- assign pct = save | times: 100 | divided_by: v.compare_at_price -%}{%- endif -%}
+  <div class="gpl-price" data-gpl-price style="--gpl-accent: {{ accent | default: 'rgb(var(--color-foreground, 15 23 42))' }};">
+    <span class="gpl-price__now" data-now>{{ v.price | money }}</span>
+    <span class="gpl-price__was" data-was {% unless save > 0 %}hidden{% endunless %}>
+      <s>{{ v.compare_at_price | money }}</s>
+    </span>
+    <span class="gpl-price__off" data-off {% unless save > 0 %}hidden{% endunless %}>{{ pct }}% off</span>
+    <span class="gpl-price__note">(incl. of all taxes)</span>
+  </div>
+  <script type="application/json" data-gpl-variants>{{ product.variants | json }}</script>
+{%- endif -%}
+
+{% stylesheet %}
+.gpl-price { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.6rem; padding-bottom: 0.8rem; border-bottom: 1px solid #e2e8f0; }
+.gpl-price__now { color: var(--gpl-accent); font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; }
+.gpl-price__was { color: #94a3b8; font-size: 0.9rem; }
+.gpl-price__off {
+  background: #dcfce7;
+  color: #15803d;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.2rem 0.55rem;
+  border-radius: 6px;
+  text-transform: uppercase;
+}
+.gpl-price__note { color: rgb(var(--color-foreground, 100 116 139) / 0.75); font-size: 0.75rem; }
+.gpl-price [hidden] { display: none; }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('[data-gpl-price]').forEach((box) => {
+  const json = box.parentElement.querySelector('[data-gpl-variants]');
+  if (!json) return;
+  let variants = [];
+  try { variants = JSON.parse(json.textContent); } catch {}
+  const now = box.querySelector('[data-now]');
+  const was = box.querySelector('[data-was]');
+  const off = box.querySelector('[data-off]');
+  const currency = (typeof Shopify !== 'undefined' && Shopify.currency && Shopify.currency.active) || 'INR';
+  const money = (c) =>
+    new Intl.NumberFormat('en-IN', { style: 'currency', currency, maximumFractionDigits: 0 }).format(c / 100);
+  function update(variant) {
+    if (!variant) return;
+    now.textContent = money(variant.price);
+    const compare = variant.compare_at_price || 0;
+    const onSale = compare > variant.price;
+    if (was) { was.hidden = !onSale; if (onSale) was.querySelector('s').textContent = money(compare); }
+    if (off) { off.hidden = !onSale; if (onSale) off.textContent = Math.round(((compare - variant.price) * 100) / compare) + '% off'; }
+  }
+  document.addEventListener('variant:change', (e) => { if (e.detail?.variant) update(e.detail.variant); });
+  /* Fallback for themes that only update ?variant= in the URL */
+  new URLSearchParams(location.search).get('variant') &&
+    update(variants.find((v) => String(v.id) === new URLSearchParams(location.search).get('variant')));
+});
+{% endjavascript %}

@@ -84,7 +84,7 @@ const install = [
   {
     icon: ClipboardCopy,
     title: "Paste the code",
-    text: "Create the snippet or section file, paste the source, add the CSS to your stylesheet. Every resource ships with numbered install notes.",
+    text: "Create the snippet or section file and paste the complete source - markup, styles and script ship inside one file, nothing else to install. Every resource ships with numbered install notes.",
   },
   {
     icon: Store,

@@ -1,0 +1,20 @@
+<div class="gpl-fchips">
+  {%- assign ts = tags | split: ',' -%}
+  {%- for t in ts -%}
+    {%- assign tag = t | strip -%}
+    <a class="gpl-fchips__chip{% if current_tags contains tag %} is-active{% endif %}" href="{{ collection.url }}?filter.p.tag={{ tag | url_encode }}">{{ tag }}</a>
+  {%- endfor -%}
+</div>
+
+{% stylesheet %}
+.gpl-fchips { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.75rem 0; }
+.gpl-fchips__chip {
+  padding: 0.4rem 0.9rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25);
+  border-radius: 999px;
+  font-size: 0.68rem;
+  text-decoration: none;
+  color: inherit;
+}
+.gpl-fchips__chip.is-active { background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); border-color: transparent; }
+{% endstylesheet %}

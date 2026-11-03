@@ -1,0 +1,7 @@
+<a class="gpl-fest" href="{{ routes.collections_url }}/sale">
+  {{ emoji | default: '' }} {{ festival | default: 'Festival' }} Sale - {{ offer | default: 'special offers' }}
+</a>
+
+{% stylesheet %}
+.gpl-fest { display: block; margin: 0.5rem 0; padding: 0.75rem 1rem; border-radius: 10px; background: linear-gradient(90deg, rgb(var(--color-button, 217 119 6) / 0.1), rgb(var(--color-button, 217 119 6) / 0.04)); border: 1px solid rgb(var(--color-button, 217 119 6) / 0.2); font-size: 0.75rem; font-weight: 700; text-decoration: none; color: inherit; text-align: center; }
+{% endstylesheet %}

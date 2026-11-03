@@ -159,7 +159,7 @@ export function HomeSandbox() {
                 </button>
               ))}
             </div>
-            {!locked && <CopyButton text={view === "code" ? active.code : files.liquid} label="Copy" />}
+            {!locked && <CopyButton text={view === "code" ? active.code : completeFile(files)} label="Copy" />}
           </div>
         </div>
 

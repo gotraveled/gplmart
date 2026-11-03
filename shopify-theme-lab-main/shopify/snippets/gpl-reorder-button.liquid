@@ -1,0 +1,35 @@
+<gpl-reorder class="gpl-reorder" data-order="{{ order.id }}">
+  <button type="button" class="gpl-reorder__btn" data-reorder>{{ label | default: 'Buy again' }}</button>
+</gpl-reorder>
+
+{% stylesheet %}
+.gpl-reorder { display: inline-block; }
+.gpl-reorder__btn {
+  padding: 0.55rem 1.25rem;
+  border: 1px solid rgb(var(--color-button, 15 23 42));
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-size: 0.72rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.gpl-reorder__btn:hover { background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-reorder').forEach((el) => {
+  el.querySelector('[data-reorder]').addEventListener('click', async () => {
+    // Order items live in the rendered table - grab variant ids from data attributes your theme puts on rows,
+    // or render this inside the order's line_items loop where variant.id is available.
+    const vids = el.dataset.vids ? el.dataset.vids.split(',') : [];
+    if (!vids.length) { window.location.href = '/account/orders/' + el.dataset.order; return; }
+    await fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items: vids.map((id) => ({ id: Number(id), quantity: 1 })) }),
+    });
+    window.location.href = '/cart';
+  });
+});
+{% endjavascript %}

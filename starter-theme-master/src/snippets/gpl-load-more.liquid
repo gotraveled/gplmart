@@ -1,0 +1,40 @@
+{%- if paginate.next -%}
+<gpl-loadmore class="gpl-lm" data-next="{{ paginate.next.url }}" data-target=".product-grid">
+  <button type="button" class="gpl-lm__btn" data-load>{{ label | default: 'Load more' }}</button>
+</gpl-loadmore>
+{%- endif -%}
+
+{% stylesheet %}
+.gpl-lm { display: block; text-align: center; padding: 1.5rem 0; }
+.gpl-lm__btn {
+  padding: 0.75rem 2rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-size: 0.78rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-loadmore').forEach((el) => {
+  const btn = el.querySelector('[data-load]');
+  btn.addEventListener('click', async () => {
+    btn.disabled = true;
+    btn.textContent = 'Loading…';
+    try {
+      const html = await fetch(el.dataset.next).then((r) => r.text());
+      const doc = new DOMParser().parseFromString(html, 'text/html');
+      const items = doc.querySelectorAll(el.dataset.target + ' > *');
+      const grid = document.querySelector(el.dataset.target);
+      items.forEach((i) => grid.appendChild(i));
+      const next = doc.querySelector('gpl-loadmore');
+      if (next) el.dataset.next = next.dataset.next; else el.remove();
+    } catch { window.location.href = el.dataset.next; }
+    btn.disabled = false;
+    btn.textContent = 'Load more';
+  });
+});
+{% endjavascript %}

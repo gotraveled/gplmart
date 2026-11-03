@@ -1,0 +1,15 @@
+<div class="gpl-slot">
+  <label class="gpl-slot__label" for="gpl-slot-sel">Preferred delivery time</label>
+  <select id="gpl-slot-sel" name="attributes[Delivery slot]" class="gpl-slot__sel">
+    <option value="">Any time</option>
+    <option>Morning (9am - 1pm)</option>
+    <option>Afternoon (1pm - 5pm)</option>
+    <option>Evening (5pm - 9pm)</option>
+  </select>
+</div>
+
+{% stylesheet %}
+.gpl-slot { margin: 1rem 0; }
+.gpl-slot__label { display: block; font-size: 0.72rem; font-weight: 600; margin-bottom: 0.4rem; }
+.gpl-slot__sel { width: 100%; padding: 0.6rem 0.8rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 9px; background: transparent; font-size: 0.8rem; }
+{% endstylesheet %}

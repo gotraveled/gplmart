@@ -1,0 +1,24 @@
+<div class="gpl-vm">
+  {%- for variant in product.variants -%}
+    <span class="gpl-vm__chip{% unless variant.available %} gpl-vm__chip--out{% endunless %}" title="{% if variant.available %}In stock{% else %}Sold out{% endif %}">
+      {{ variant.title }}
+      <i>{% if variant.available %}&#10003;{% else %}&#10005;{% endif %}</i>
+    </span>
+  {%- endfor -%}
+</div>
+
+{% stylesheet %}
+.gpl-vm { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.75rem 0; }
+.gpl-vm__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.75rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25);
+  border-radius: 999px;
+  font-size: 0.68rem;
+}
+.gpl-vm__chip i { font-style: normal; color: #16a34a; font-weight: 800; }
+.gpl-vm__chip--out { opacity: 0.45; text-decoration: line-through; }
+.gpl-vm__chip--out i { color: #dc2626; }
+{% endstylesheet %}

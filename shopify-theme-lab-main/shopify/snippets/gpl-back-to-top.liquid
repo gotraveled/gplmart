@@ -1,0 +1,48 @@
+{%- comment -%}
+  Render once near the end of theme.liquid (or a layout file) so it works on
+  every page. Pure CSS + a tiny scroll listener.
+{%- endcomment -%}
+<button type="button" class="gpl-totop gpl-totop--right" data-gpl-totop aria-label="Back to top" hidden>
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5"/><path d="m5 12 7-7 7 7"/></svg>
+</button>
+
+{% stylesheet %}
+.gpl-totop {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(var(--color-button, 11 18 32));
+  color: rgb(var(--color-button-text, 255 255 255));
+  box-shadow: 0 10px 24px -8px rgb(0 0 0 / 0.35);
+  cursor: pointer;
+  opacity: 0;
+  transform: translateY(0.5rem);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.gpl-totop.is-visible { opacity: 1; transform: translateY(0); }
+.gpl-totop[hidden] { display: none; }
+.gpl-totop svg { width: 1.1rem; height: 1.1rem; }
+@media (prefers-reduced-motion: reduce) {
+  .gpl-totop { transition: none; }
+}
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('[data-gpl-totop]').forEach((btn) => {
+  btn.hidden = false;
+  const onScroll = () => btn.classList.toggle('is-visible', window.scrollY > 480);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  btn.addEventListener('click', () => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
+  });
+});
+{% endjavascript %}

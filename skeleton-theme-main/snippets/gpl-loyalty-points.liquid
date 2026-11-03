@@ -1,0 +1,11 @@
+{%- assign pts = product.selected_or_first_available_variant.price | times: rate | plus: 0 | divided_by: 10000 -%}
+<p class="gpl-loyalty">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l2.9 6.26 6.9.6-5.2 4.53 1.55 6.77L12 16.9l-6.15 3.26L7.4 13.4 2.2 8.86l6.9-.6z"/></svg>
+  Earn <strong>{{ pts }} {{ name | default: 'points' }}</strong> on this order
+</p>
+
+{% stylesheet %}
+.gpl-loyalty { display: flex; align-items: center; gap: 0.45rem; margin: 0.5rem 0 0; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
+.gpl-loyalty svg { width: 0.85rem; height: 0.85rem; color: rgb(var(--color-button, 245 158 11)); }
+.gpl-loyalty strong { font-weight: 700; }
+{% endstylesheet %}

@@ -1,0 +1,49 @@
+<gpl-pda class="gpl-pda">
+  <button type="button" class="gpl-pda__btn" data-open>{{ label | default: 'Notify me on price drop' }}</button>
+  <div class="gpl-pda__pop" hidden>
+    {%- form 'customer', class: 'gpl-pda__form' -%}
+      <input type="hidden" name="contact[tags]" value="price-drop-{{ product.handle }}">
+      <p class="gpl-pda__title">Price drop alert</p>
+      <input type="email" name="contact[email]" placeholder="Your email" required>
+      <button type="submit">Notify me</button>
+    {%- endform -%}
+  </div>
+</gpl-pda>
+
+{% stylesheet %}
+.gpl-pda { position: relative; display: inline-block; }
+.gpl-pda__btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 999px;
+  background: transparent;
+  color: inherit;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+.gpl-pda__pop {
+  position: absolute;
+  bottom: 110%;
+  left: 0;
+  min-width: 15rem;
+  padding: 1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2);
+  border-radius: 12px;
+  background: rgb(var(--color-background, 255 255 255));
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.15);
+  z-index: 10;
+}
+.gpl-pda__title { margin: 0 0 0.6rem; font-weight: 700; font-size: 0.78rem; }
+.gpl-pda__form { display: flex; gap: 0.4rem; }
+.gpl-pda__form input { flex: 1; min-width: 0; padding: 0.5rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 7px; font-size: 0.75rem; }
+.gpl-pda__form button { padding: 0.5rem 0.9rem; border: 0; border-radius: 7px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-size: 0.72rem; font-weight: 700; cursor: pointer; }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-pda').forEach((el) => {
+  el.querySelector('[data-open]').addEventListener('click', () => {
+    const pop = el.querySelector('.gpl-pda__pop');
+    pop.hidden = !pop.hidden;
+  });
+});
+{% endjavascript %}

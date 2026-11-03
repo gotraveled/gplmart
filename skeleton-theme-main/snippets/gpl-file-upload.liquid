@@ -1,0 +1,20 @@
+<div class="gpl-upload">
+  <label class="gpl-upload__label" for="gpl-upload-field">{{ label | default: 'Upload your file' }}</label>
+  <input id="gpl-upload-field" class="gpl-upload__input" type="file" name="properties[{{ label | default: 'Upload' }}]" accept="image/*" required>
+  <p class="gpl-upload__hint">JPG/PNG, max 20MB - we print exactly what you upload.</p>
+</div>
+
+{% stylesheet %}
+.gpl-upload { margin: 0.75rem 0; }
+.gpl-upload__label { display: block; font-size: 0.72rem; font-weight: 600; margin-bottom: 0.4rem; }
+.gpl-upload__input { width: 100%; font-size: 0.75rem; }
+.gpl-upload__input::file-selector-button {
+  padding: 0.5rem 1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 8px;
+  background: transparent;
+  font-size: 0.72rem;
+  cursor: pointer;
+}
+.gpl-upload__hint { margin: 0.4rem 0 0; font-size: 0.62rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+{% endstylesheet %}

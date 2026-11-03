@@ -1,0 +1,43 @@
+<div class="gpl-sub" data-gpl-sub>
+  <label class="gpl-sub__opt">
+    <input type="radio" name="purchase_type" value="onetime" checked>
+    <span>One-time purchase</span>
+    <b>{{ product.price | money }}</b>
+  </label>
+  {%- if product.selling_plan_groups.size > 0 -%}
+    <label class="gpl-sub__opt gpl-sub__opt--save">
+      <input type="radio" name="purchase_type" value="sub">
+      <span>Subscribe {{ freq | default: 'monthly' }} - save {{ discount | default: '10' }}%</span>
+      <b>{{ product.price | times: 0.9 | money }}</b>
+      <input type="hidden" name="selling_plan" value="{{ product.selling_plan_groups.first.selling_plans.first.id }}" disabled>
+    </label>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+.gpl-sub { display: grid; gap: 0.5rem; margin: 0.75rem 0; }
+.gpl-sub__opt {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25);
+  border-radius: 10px;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.gpl-sub__opt input { accent-color: rgb(var(--color-button, 21 128 61)); }
+.gpl-sub__opt b { margin-left: auto; }
+.gpl-sub__opt--save { border-color: rgb(var(--color-button, 21 128 61) / 0.4); background: rgb(var(--color-button, 21 128 61) / 0.06); }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('[data-gpl-sub]').forEach((el) => {
+  el.querySelectorAll('input[name="purchase_type"]').forEach((r) => {
+    r.addEventListener('change', () => {
+      const plan = el.querySelector('input[name="selling_plan"]');
+      if (plan) plan.disabled = r.value !== 'sub';
+    });
+  });
+});
+{% endjavascript %}

@@ -1,0 +1,15 @@
+<div class="gpl-care">
+  {%- assign rows = items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    <span class="gpl-care__item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/></svg>
+      {{ row | strip }}
+    </span>
+  {%- endfor -%}
+</div>
+
+{% stylesheet %}
+.gpl-care { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin: 0.6rem 0; }
+.gpl-care__item { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
+.gpl-care__item svg { width: 0.85rem; height: 0.85rem; }
+{% endstylesheet %}

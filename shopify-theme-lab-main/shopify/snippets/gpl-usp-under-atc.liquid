@@ -1,0 +1,15 @@
+<div class="gpl-usp">
+  {%- assign rows = items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    <span class="gpl-usp__item">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+      {{ row | strip }}
+    </span>
+  {%- endfor -%}
+</div>
+
+{% stylesheet %}
+.gpl-usp { display: flex; flex-wrap: wrap; gap: 0.4rem 1rem; margin-top: 0.6rem; }
+.gpl-usp__item { display: inline-flex; align-items: center; gap: 0.35rem; font-size: 0.68rem; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
+.gpl-usp__item svg { width: 0.8rem; height: 0.8rem; color: #16a34a; flex-shrink: 0; }
+{% endstylesheet %}

@@ -1,0 +1,40 @@
+{%- comment -%}
+  Counts down to today's dispatch cutoff. Disappears after the cutoff -
+  it never claims a benefit the store cannot deliver.
+{%- endcomment -%}
+<div class="gpl-cutoff" data-gpl-cutoff="16" style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 225 29 72))' }};" hidden>
+  <svg class="gpl-cutoff__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+  <p class="gpl-cutoff__text">Order within <strong data-gpl-cutoff-left></strong> for same-day dispatch</p>
+</div>
+
+{% stylesheet %}
+.gpl-cutoff {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0.75rem 0;
+  font-size: 0.85rem;
+}
+.gpl-cutoff[hidden] { display: none; }
+.gpl-cutoff__icon { width: 1.1rem; height: 1.1rem; color: var(--gpl-accent); flex-shrink: 0; }
+.gpl-cutoff__text { margin: 0; }
+.gpl-cutoff__text strong { color: var(--gpl-accent); font-variant-numeric: tabular-nums; }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('[data-gpl-cutoff]').forEach((el) => {
+  const hour = parseInt(el.getAttribute('data-gpl-cutoff'), 10) || 16;
+  const out = el.querySelector('[data-gpl-cutoff-left]');
+  const tick = () => {
+    const now = new Date();
+    const cut = new Date(now); cut.setHours(hour, 0, 0, 0);
+    const left = cut - now;
+    if (left <= 0) { el.hidden = true; return; }
+    const h = Math.floor(left / 3.6e6), m = Math.floor((left % 3.6e6) / 6e4), s = Math.floor((left % 6e4) / 1e3);
+    out.textContent = (h > 0 ? h + 'h ' : '') + String(m).padStart(2, '0') + 'm ' + String(s).padStart(2, '0') + 's';
+    el.hidden = false;
+  };
+  tick();
+  setInterval(tick, 1000);
+});
+{% endjavascript %}

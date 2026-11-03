@@ -1,0 +1,23 @@
+<div class="gpl-perso">
+  <label class="gpl-perso__label" for="gpl-perso-field">
+    {{ label | default: 'Personalization' }}
+    {%- if required -%}<span aria-hidden="true">*</span>{%- endif -%}
+  </label>
+  <input id="gpl-perso-field" class="gpl-perso__input" type="text" name="properties[{{ label | default: 'Personalization' }}]" maxlength="{{ max | default: 30 }}" placeholder="Type here" {% if required %}required{% endif %}>
+  <p class="gpl-perso__hint">Max {{ max | default: 30 }} characters</p>
+</div>
+
+{% stylesheet %}
+.gpl-perso { margin: 0.75rem 0; }
+.gpl-perso__label { display: block; font-size: 0.72rem; font-weight: 600; margin-bottom: 0.4rem; }
+.gpl-perso__label span { color: #dc2626; }
+.gpl-perso__input {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 9px;
+  background: transparent;
+  font-size: 0.85rem;
+}
+.gpl-perso__hint { margin: 0.3rem 0 0; font-size: 0.62rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+{% endstylesheet %}

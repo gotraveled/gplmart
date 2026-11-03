@@ -1,0 +1,9 @@
+<p class="gpl-charity">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 14c1.5-1.5 3-3.3 3-5.5A5.5 5.5 0 0 0 12 4 5.5 5.5 0 0 0 2 8.5c0 2.2 1.5 4 3 5.5l7 7z"/></svg>
+  {{ amount | default: '₹50' }} of every order goes to {{ cause | default: 'a good cause' }}
+</p>
+
+{% stylesheet %}
+.gpl-charity { display: flex; align-items: center; gap: 0.45rem; margin: 0.5rem 0; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
+.gpl-charity svg { width: 0.85rem; height: 0.85rem; color: #16a34a; }
+{% endstylesheet %}

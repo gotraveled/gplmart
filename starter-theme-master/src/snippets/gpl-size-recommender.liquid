@@ -1,0 +1,35 @@
+<gpl-sizerec class="gpl-sizerec">
+  <p class="gpl-sizerec__label">{{ label | default: 'Find your size' }}</p>
+  <div class="gpl-sizerec__row">
+    <input type="number" placeholder="Height (cm)" data-h>
+    <input type="number" placeholder="Weight (kg)" data-w>
+  </div>
+  <p class="gpl-sizerec__result" hidden data-result></p>
+</gpl-sizerec>
+
+{% stylesheet %}
+.gpl-sizerec { margin: 0.75rem 0; padding: 0.9rem; border: 1px dashed rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 9px; }
+.gpl-sizerec__label { margin: 0 0 0.6rem; font-size: 0.72rem; font-weight: 700; }
+.gpl-sizerec__row { display: flex; gap: 0.5rem; }
+.gpl-sizerec__row input { flex: 1; min-width: 0; padding: 0.55rem 0.7rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 8px; font-size: 0.75rem; }
+.gpl-sizerec__result { margin: 0.6rem 0 0; font-size: 0.72rem; font-weight: 700; color: #16a34a; }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-sizerec').forEach((el) => {
+  const h = el.querySelector('[data-h]');
+  const w = el.querySelector('[data-w]');
+  const res = el.querySelector('[data-result]');
+  function guess() {
+    const hv = Number(h.value), wv = Number(w.value);
+    if (!hv || !wv) { res.hidden = true; return; }
+    const bmi = wv / ((hv / 100) ** 2);
+    let s = 'M';
+    if (bmi < 19) s = 'S'; else if (bmi < 23) s = 'M'; else if (bmi < 27) s = 'L'; else s = 'XL';
+    res.textContent = 'Suggested size: ' + s;
+    res.hidden = false;
+  }
+  h.addEventListener('input', guess);
+  w.addEventListener('input', guess);
+});
+{% endjavascript %}

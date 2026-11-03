@@ -1,0 +1,13 @@
+<div class="gpl-roll">
+  {{ product.featured_image | image_url: width: 600 | image_tag: class: 'gpl-roll__img gpl-roll__img--a' }}
+  {%- if product.images[1] -%}
+    {{ product.images[1] | image_url: width: 600 | image_tag: class: 'gpl-roll__img gpl-roll__img--b', loading: 'lazy' }}
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+.gpl-roll { position: relative; overflow: hidden; }
+.gpl-roll__img { display: block; width: 100%; transition: opacity 0.3s; }
+.gpl-roll__img--b { position: absolute; inset: 0; opacity: 0; }
+.gpl-roll:hover .gpl-roll__img--b { opacity: 1; }
+{% endstylesheet %}

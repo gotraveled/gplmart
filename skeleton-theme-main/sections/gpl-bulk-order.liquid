@@ -1,0 +1,73 @@
+<gpl-bulk class="gpl-bulk">
+  <p class="gpl-bulk__heading">{{ section.settings.heading }}</p>
+  {%- assign p = section.settings.product -%}
+  {%- if p -%}
+    <table class="gpl-bulk__table">
+      <thead><tr><th>Variant</th><th>Price</th><th>Qty</th></tr></thead>
+      <tbody>
+        {%- for variant in p.variants -%}
+          <tr>
+            <td>{{ variant.title }}{% unless variant.available %} <em>(sold out)</em>{% endunless %}</td>
+            <td>{{ variant.price | money }}</td>
+            <td><input type="number" min="0" value="0" data-variant="{{ variant.id }}" {% unless variant.available %}disabled{% endunless %}></td>
+          </tr>
+        {%- endfor -%}
+      </tbody>
+    </table>
+    <button type="button" class="gpl-bulk__add" data-bulk-add>Add to cart</button>
+  {%- else -%}
+    <p class="gpl-bulk__hint">Pick a product in the section settings.</p>
+  {%- endif -%}
+</gpl-bulk>
+
+{% schema %}
+{
+  "name": "Quick order",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Quick order" },
+    { "type": "product", "id": "product", "label": "Product" }
+  ],
+  "presets": [{ "name": "Quick order" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-bulk { padding: 1.5rem 0; }
+.gpl-bulk__heading { margin: 0 0 1rem; font-size: 1rem; font-weight: 800; }
+.gpl-bulk__table { width: 100%; border-collapse: collapse; font-size: 0.78rem; }
+.gpl-bulk__table th { text-align: left; padding: 0.5rem; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-bulk__table td { padding: 0.5rem; border-top: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.18); }
+.gpl-bulk__table input {
+  width: 4rem;
+  padding: 0.35rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 7px;
+}
+.gpl-bulk__add {
+  margin-top: 1rem;
+  padding: 0.75rem 1.75rem;
+  border: 0;
+  border-radius: 10px;
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
+  font-weight: 800;
+  cursor: pointer;
+}
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-bulk').forEach((el) => {
+  el.querySelector('[data-bulk-add]').addEventListener('click', async () => {
+    const items = [...el.querySelectorAll('input[data-variant]')]
+      .map((i) => ({ id: Number(i.dataset.variant), quantity: Number(i.value) }))
+      .filter((i) => i.quantity > 0);
+    if (!items.length) return;
+    await fetch('/cart/add.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ items }),
+    });
+    window.location.href = '/cart';
+  });
+});
+{% endjavascript %}

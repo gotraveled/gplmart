@@ -1,0 +1,50 @@
+<gpl-qv class="gpl-qv">
+  <button type="button" class="gpl-qv__btn" data-open>{{ label | default: 'Quick view' }}</button>
+  <div class="gpl-qv__pop" hidden>
+    <button type="button" class="gpl-qv__close" aria-label="Close">&times;</button>
+    {{ product.featured_image | image_url: width: 500 | image_tag: class: 'gpl-qv__img' }}
+    <p class="gpl-qv__title">{{ product.title }}</p>
+    <p class="gpl-qv__price">{{ product.price | money }}</p>
+    <a class="gpl-qv__link" href="{{ product.url }}">View full details &rarr;</a>
+  </div>
+</gpl-qv>
+
+{% stylesheet %}
+.gpl-qv { position: relative; }
+.gpl-qv__btn {
+  padding: 0.45rem 0.9rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 999px;
+  background: rgb(var(--color-background, 255 255 255));
+  font-size: 0.68rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.gpl-qv__pop {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  width: 13rem;
+  padding: 0.9rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2);
+  border-radius: 12px;
+  background: rgb(var(--color-background, 255 255 255));
+  box-shadow: 0 10px 30px rgb(0 0 0 / 0.15);
+  text-align: center;
+}
+.gpl-qv__img { width: 100%; border-radius: 8px; }
+.gpl-qv__close { position: absolute; top: 0.4rem; right: 0.6rem; border: 0; background: none; font-size: 1.1rem; cursor: pointer; }
+.gpl-qv__title { margin: 0.5rem 0 0; font-size: 0.78rem; font-weight: 700; }
+.gpl-qv__price { margin: 0.2rem 0 0; font-size: 0.72rem; }
+.gpl-qv__link { display: inline-block; margin-top: 0.6rem; font-size: 0.7rem; font-weight: 700; color: rgb(var(--color-button, 21 128 61)); }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-qv').forEach((el) => {
+  const pop = el.querySelector('.gpl-qv__pop');
+  el.querySelector('[data-open]').addEventListener('click', () => (pop.hidden = !pop.hidden));
+  el.querySelector('.gpl-qv__close').addEventListener('click', () => (pop.hidden = true));
+});
+{% endjavascript %}

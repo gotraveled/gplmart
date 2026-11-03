@@ -1,0 +1,40 @@
+{%- comment -%}
+  Edit the row list to match YOUR metafields. Rows skip themselves when the
+  metafield is blank, so the same snippet works across product types.
+{%- endcomment -%}
+{%- assign specs = 'Material,custom.material|Weight,custom.weight|Dimensions,custom.dimensions|Warranty,custom.warranty|SKU,variant.sku' | split: '|' -%}
+<div class="gpl-specs">
+  <p class="gpl-specs__head">Specifications</p>
+  <table class="gpl-specs__table">
+    <tbody>
+      {%- for row in specs -%}
+        {%- assign parts = row | split: ',' -%}
+        {%- assign label = parts[0] -%}
+        {%- assign key = parts[1] -%}
+        {%- assign value = '' -%}
+        {%- if key == 'variant.sku' -%}
+          {%- assign value = product.selected_or_first_available_variant.sku -%}
+        {%- else -%}
+          {%- assign value = product.metafields[key].value -%}
+        {%- endif -%}
+        {%- if value != blank -%}
+          <tr>
+            <th scope="row">{{ label | escape }}</th>
+            <td>{{ value }}</td>
+          </tr>
+        {%- endif -%}
+      {%- endfor -%}
+    </tbody>
+  </table>
+</div>
+
+{% stylesheet %}
+.gpl-specs { margin: 1.25rem 0; }
+.gpl-specs__head { margin: 0 0 0.6rem; font-size: 0.95rem; font-weight: 700; color: #0f172a; }
+.gpl-specs__table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+.gpl-specs__table th,
+.gpl-specs__table td { padding: 0.55rem 0.25rem; text-align: left; border-bottom: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.12); }
+.gpl-specs__table th { font-weight: 600; width: 38%; opacity: 0.7; }
+.gpl-specs__table tr:last-child th,
+.gpl-specs__table tr:last-child td { border-bottom: 0; }
+{% endstylesheet %}

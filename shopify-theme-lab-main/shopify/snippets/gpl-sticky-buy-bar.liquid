@@ -1,0 +1,112 @@
+{%- assign v = product.selected_or_first_available_variant -%}
+{%- if v -%}
+  <div class="gpl-buybar" data-gpl-buybar>
+    <div class="gpl-buybar__price">
+      <strong>{{ v.price | money }}</strong>
+      {%- if v.compare_at_price > v.price -%}
+        <s>{{ v.compare_at_price | money }}</s>
+        {%- assign save_pct = v.compare_at_price | minus: v.price | times: 100 | divided_by: v.compare_at_price -%}
+        <span class="gpl-buybar__off">{{ save_pct }}% off</span>
+      {%- endif -%}
+    </div>
+    <button type="button" class="gpl-buybar__cta" data-gpl-buy>
+      <span class="gpl-buybar__shine" aria-hidden="true"></span>
+      Add to cart
+    </button>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+/* Mobile only - hidden on desktop */
+.gpl-buybar { display: none; }
+@media (max-width: 767px) {
+  .gpl-buybar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 60;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    padding: 0.65rem 0.9rem calc(0.65rem + env(safe-area-inset-bottom, 0px));
+    background: rgba(8, 12, 27, 0.94);
+    border-top: 1px solid color-mix(in srgb, var(--gpl-accent) 35%, transparent);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 -10px 30px rgba(0, 0, 0, 0.6);
+  }
+  .gpl-buybar__price { display: flex; align-items: baseline; gap: 0.4rem; }
+  .gpl-buybar__price strong {
+    font-size: 1.2rem;
+    font-weight: 900;
+    color: #fff;
+    text-shadow: 0 0 16px color-mix(in srgb, var(--gpl-accent) 40%, transparent);
+  }
+  .gpl-buybar__price s { color: rgb(var(--color-foreground, 100 116 139) / 0.75); font-size: 0.8rem; }
+  .gpl-buybar__off {
+    font-size: 0.62rem;
+    font-weight: 800;
+    color: #f87171;
+    background: rgb(239 68 68 / 0.15);
+    border: 1px solid rgb(239 68 68 / 0.35);
+    padding: 0.15rem 0.35rem;
+    border-radius: 4px;
+  }
+  .gpl-buybar__cta {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgb(255 255 255 / 0.4);
+    border-radius: 999px;
+    background: linear-gradient(135deg, #00f0b5, #10b981 50%, #059669);
+    color: #030712;
+    padding: 0.7rem 1.4rem;
+    font-size: 0.85rem;
+    font-weight: 900;
+    letter-spacing: 0.02em;
+    box-shadow: 0 0 20px color-mix(in srgb, var(--gpl-accent) 40%, transparent), inset 0 1px 0 rgb(255 255 255 / 0.6);
+    cursor: pointer;
+  }
+  .gpl-buybar__cta:active { transform: scale(0.97); }
+  .gpl-buybar__shine {
+    position: absolute;
+    top: -50%;
+    left: -80%;
+    width: 45%;
+    height: 200%;
+    background: linear-gradient(120deg, transparent, rgb(255 255 255 / 0.5), transparent);
+    transform: rotate(25deg);
+    animation: gpl-buybar-sheen 3.5s ease-in-out infinite;
+  }
+  @keyframes gpl-buybar-sheen {
+    0% { left: -80%; }
+    35%, 100% { left: 160%; }
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .gpl-buybar__shine { display: none; }
+}
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('[data-gpl-buybar]').forEach((bar) => {
+  bar.querySelector('[data-gpl-buy]').addEventListener('click', () => {
+    /* Click the theme's own add-to-cart button so validation,
+       cart drawers and analytics keep working. */
+    const selectors = [
+      'form[action*="/cart/add"] button[type="submit"]',
+      'form[action*="/cart/add"] [name="add"]',
+      '.product-form__submit',
+    ];
+    for (const sel of selectors) {
+      const btn = document.querySelector(sel);
+      if (btn && btn !== bar && btn.offsetParent !== null) {
+        btn.click();
+        return;
+      }
+    }
+    document.querySelector('form[action*="/cart/add"]')?.submit();
+  });
+});
+{% endjavascript %}

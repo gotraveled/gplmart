@@ -1,0 +1,76 @@
+<gpl-quiz class="gpl-quiz" data-step="0">
+  <p class="gpl-quiz__heading">{{ section.settings.heading }}</p>
+  {%- for block in section.blocks -%}
+    <div class="gpl-quiz__q"{% unless forloop.first %} hidden{% endunless %} data-q="{{ forloop.index0 }}">
+      <p class="gpl-quiz__qtext">{{ block.settings.question }}</p>
+      <div class="gpl-quiz__opts">
+        {%- assign opts = block.settings.options | split: ',' -%}
+        {%- for o in opts -%}
+          <button type="button" class="gpl-quiz__opt" data-goto="{{ block.settings.result_url }}">{{ o | strip }}</button>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endfor -%}
+  <div class="gpl-quiz__done" data-done hidden>
+    <p class="gpl-quiz__done-text">Here's your match</p>
+    <a class="gpl-quiz__result" href="#" data-result>See the collection &rarr;</a>
+  </div>
+</gpl-quiz>
+
+{% schema %}
+{
+  "name": "Product finder quiz",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": "Find your perfect fit" }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question" },
+        { "type": "text", "id": "options", "label": "Options (comma separated)" },
+        { "type": "url", "id": "result_url", "label": "Result collection" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Product finder quiz" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-quiz { display: block; padding: 2rem 1rem; text-align: center; }
+.gpl-quiz__heading { margin: 0 0 1.25rem; font-size: 1.2rem; font-weight: 800; }
+.gpl-quiz__qtext { margin: 0 0 1rem; font-size: 0.95rem; font-weight: 600; }
+.gpl-quiz__opts { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; }
+.gpl-quiz__opt {
+  padding: 0.7rem 1.4rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 999px;
+  background: transparent;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+.gpl-quiz__opt:hover { border-color: rgb(var(--color-button, 21 128 61)); }
+.gpl-quiz__result { display: inline-block; margin-top: 1rem; padding: 0.75rem 1.75rem; border-radius: 999px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); text-decoration: none; font-weight: 700; }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-quiz').forEach((el) => {
+  let step = 0;
+  const qs = [...el.querySelectorAll('.gpl-quiz__q')];
+  el.querySelectorAll('.gpl-quiz__opt').forEach((opt) => {
+    opt.addEventListener('click', () => {
+      step++;
+      if (step < qs.length) {
+        qs.forEach((q) => (q.hidden = true));
+        qs[step].hidden = false;
+      } else {
+        qs.forEach((q) => (q.hidden = true));
+        el.querySelector('[data-result]').href = opt.dataset.goto || '#';
+        el.querySelector('[data-done]').hidden = false;
+      }
+    });
+  });
+});
+{% endjavascript %}

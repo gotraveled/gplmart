@@ -1,0 +1,44 @@
+{%- comment -%}
+  Sits under the add-to-cart button. Edit the list to match the methods you
+  actually offer - showing a method you do not support erodes trust.
+{%- endcomment -%}
+<div class="gpl-pay" style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 21 128 61))' }};">
+  <ul class="gpl-pay__row" role="list">
+    {%- assign methods = items | default: 'UPI|Cards|Net banking|COD' | split: '|' -%}
+    {%- for m in methods -%}
+      <li class="gpl-pay__pill">
+        <svg class="gpl-pay__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="5" width="20" height="14" rx="3"/><path d="M2 10h20"/></svg>
+        {{ m | strip | escape }}
+      </li>
+    {%- endfor -%}
+  </ul>
+  {%- if note != blank or true -%}
+    <p class="gpl-pay__note">{{ note | default: '100% secure payments via trusted gateways' | escape }}</p>
+  {%- endif -%}
+</div>
+
+{% stylesheet %}
+.gpl-pay { margin: 0.75rem 0; }
+.gpl-pay__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.gpl-pay__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid rgb(var(--color-foreground, 226 232 240) / 0.18);
+  border-radius: 999px;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.06);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.gpl-pay__icon { width: 0.9rem; height: 0.9rem; color: var(--gpl-accent); }
+.gpl-pay__note { margin: 0.5rem 0 0; font-size: 0.7rem; opacity: 0.65; }
+{% endstylesheet %}

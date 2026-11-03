@@ -1,0 +1,46 @@
+<div class="gpl-fp">
+  {%- assign p = section.settings.product -%}
+  {%- if p -%}
+    <div class="gpl-fp__media">
+      {{ p.featured_image | image_url: width: 700 | image_tag: class: 'gpl-fp__img', loading: 'lazy' }}
+    </div>
+    <div class="gpl-fp__body">
+      <p class="gpl-fp__eyebrow">Featured product</p>
+      <h2 class="gpl-fp__title">{{ p.title }}</h2>
+      <p class="gpl-fp__price">{{ p.price | money }}</p>
+      <p class="gpl-fp__desc">{{ p.description | strip_html | truncate: 180 }}</p>
+      <a class="gpl-fp__btn" href="{{ p.url }}">{{ section.settings.cta }}</a>
+    </div>
+  {%- endif -%}
+</div>
+
+{% schema %}
+{
+  "name": "Featured product",
+  "settings": [
+    { "type": "product", "id": "product", "label": "Product" },
+    { "type": "text", "id": "cta", "label": "Button label", "default": "Shop this product" }
+  ],
+  "presets": [{ "name": "Featured product" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-fp { display: grid; gap: 1.5rem; align-items: center; padding: 1.5rem 0; }
+@media (min-width: 750px) { .gpl-fp { grid-template-columns: 1fr 1fr; gap: 3rem; } }
+.gpl-fp__img { width: 100%; border-radius: 14px; display: block; }
+.gpl-fp__eyebrow { margin: 0; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: rgb(var(--color-button, 21 128 61)); }
+.gpl-fp__title { margin: 0.4rem 0 0; font-size: 1.4rem; font-weight: 800; }
+.gpl-fp__price { margin: 0.4rem 0 0; font-size: 1.1rem; font-weight: 800; }
+.gpl-fp__desc { margin: 0.75rem 0 0; font-size: 0.82rem; line-height: 1.6; color: rgb(var(--color-foreground, 100 116 139) / 0.8); }
+.gpl-fp__btn {
+  display: inline-block;
+  margin-top: 1.25rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 999px;
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
+  text-decoration: none;
+  font-weight: 700;
+}
+{% endstylesheet %}

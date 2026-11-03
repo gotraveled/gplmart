@@ -1,0 +1,9 @@
+<p class="gpl-mto">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+  {{ text | default: 'Made to order' }} - ships in {{ days | default: 5 }} days
+</p>
+
+{% stylesheet %}
+.gpl-mto { display: flex; align-items: center; gap: 0.45rem; margin: 0.5rem 0; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
+.gpl-mto svg { width: 0.85rem; height: 0.85rem; }
+{% endstylesheet %}

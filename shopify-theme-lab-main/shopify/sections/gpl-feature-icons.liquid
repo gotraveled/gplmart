@@ -1,0 +1,31 @@
+<div class="gpl-icons" style="--gpl-accent: {{ section.settings.accent }};">
+  {%- assign rows = section.settings.items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <div class="gpl-icons__item">
+      <svg class="gpl-icons__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg>
+      <p class="gpl-icons__title">{{ parts[0] | strip }}</p>
+      {%- if parts[1] != blank -%}
+        <p class="gpl-icons__cap">{{ parts[1] | strip }}</p>
+      {%- endif -%}
+    </div>
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Feature icons",
+  "settings": [
+    { "type": "textarea", "id": "items", "label": "Features (title|caption per line)", "default": "Free shipping|On all prepaid orders\n7-day returns|No questions asked\nSecure chec" },
+    { "type": "color", "id": "accent", "label": "Icon colour", "default": "#15803d" }
+  ],
+  "presets": [{ "name": "Feature icons" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-icons { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 1.25rem; padding: 1.5rem 0; text-align: center; }
+.gpl-icons__icon { width: 1.6rem; height: 1.6rem; color: var(--gpl-accent); margin: 0 auto; }
+.gpl-icons__title { margin: 0.5rem 0 0; font-size: 0.82rem; font-weight: 700; }
+.gpl-icons__cap { margin: 0.25rem 0 0; font-size: 0.7rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+{% endstylesheet %}

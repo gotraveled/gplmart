@@ -1,0 +1,27 @@
+{%- unless product.available -%}
+<div class="gpl-sim">
+  <p class="gpl-sim__heading">{{ heading | default: 'Similar styles' }}</p>
+  <div class="gpl-sim__grid">
+    {%- for p in product.collections.first.products limit: 5 -%}
+      {%- if p.id != product.id and p.available -%}
+        <a class="gpl-sim__card" href="{{ p.url }}">
+          {{ p.featured_image | image_url: width: 300 | image_tag: class: 'gpl-sim__img', loading: 'lazy' }}
+          <span class="gpl-sim__title">{{ p.title }}</span>
+          <span class="gpl-sim__price">{{ p.price | money }}</span>
+        </a>
+      {%- endif -%}
+    {%- endfor -%}
+  </div>
+</div>
+{%- endunless -%}
+
+{% stylesheet %}
+.gpl-sim { margin: 1rem 0; }
+.gpl-sim__heading { margin: 0 0 0.75rem; font-size: 0.8rem; font-weight: 800; }
+.gpl-sim__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.7rem; }
+@media (max-width: 640px) { .gpl-sim__grid { grid-template-columns: repeat(2, 1fr); } }
+.gpl-sim__card { text-decoration: none; color: inherit; }
+.gpl-sim__img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 9px; display: block; }
+.gpl-sim__title { display: block; margin-top: 0.4rem; font-size: 0.68rem; font-weight: 600; }
+.gpl-sim__price { display: block; font-size: 0.62rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+{% endstylesheet %}

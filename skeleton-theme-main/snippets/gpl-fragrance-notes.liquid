@@ -1,0 +1,18 @@
+<div class="gpl-frag">
+  {%- assign tiers = 'Top|Heart|Base' | split: '|' -%}
+  {%- assign vals = top | append: '|' | append: heart | append: '|' | append: base | split: '|' -%}
+  {%- for t in tiers -%}
+    <div class="gpl-frag__row">
+      <span class="gpl-frag__label">{{ t }}</span>
+      <span class="gpl-frag__val">{{ vals[forloop.index0] | default: '' }}</span>
+    </div>
+  {%- endfor -%}
+</div>
+
+{% stylesheet %}
+.gpl-frag { margin: 0.75rem 0; }
+.gpl-frag__row { display: flex; gap: 1rem; padding: 0.45rem 0; border-bottom: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.12); font-size: 0.72rem; }
+.gpl-frag__row:last-child { border-bottom: 0; }
+.gpl-frag__label { width: 3.5rem; font-size: 0.62rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: rgb(var(--color-foreground, 100 116 139) / 0.75); flex-shrink: 0; }
+.gpl-frag__val { font-weight: 500; }
+{% endstylesheet %}

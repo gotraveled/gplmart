@@ -1,0 +1,41 @@
+<div class="gpl-vt">
+  <div class="gpl-vt__media">
+    {%- if video != blank -%}
+      {%- if video contains 'youtube' or video contains 'youtu.be' -%}
+        <iframe class="gpl-vt__frame" src="{{ video | replace: 'watch?v=', 'embed/' }}" allowfullscreen loading="lazy"></iframe>
+      {%- else -%}
+        <video class="gpl-vt__frame" src="{{ video }}" controls preload="metadata"></video>
+      {%- endif -%}
+    {%- else -%}
+      <div class="gpl-vt__placeholder" aria-hidden="true">
+        <span class="gpl-vt__play">&#9654;</span>
+      </div>
+    {%- endif -%}
+  </div>
+  <div class="gpl-vt__body">
+    <blockquote class="gpl-vt__quote">&ldquo;{{ quote | escape }}&rdquo;</blockquote>
+    <p class="gpl-vt__name">&mdash; {{ name | escape }}</p>
+  </div>
+</div>
+
+{% stylesheet %}
+.gpl-vt {
+  display: grid;
+  gap: 0.9rem;
+  padding: 1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.16);
+  border-radius: 14px;
+}
+@media (min-width: 560px) { .gpl-vt { grid-template-columns: 1.2fr 1fr; align-items: center; } }
+.gpl-vt__frame { width: 100%; aspect-ratio: 16/9; border: 0; border-radius: 10px; background: #000; }
+.gpl-vt__placeholder {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 16/9;
+  border-radius: 10px;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.15);
+}
+.gpl-vt__play { font-size: 1.6rem; color: rgb(var(--color-foreground, 100 116 139) / 0.6); }
+.gpl-vt__quote { margin: 0; font-size: 0.82rem; line-height: 1.55; font-style: italic; }
+.gpl-vt__name { margin: 0.5rem 0 0; font-size: 0.7rem; font-weight: 700; }
+{% endstylesheet %}

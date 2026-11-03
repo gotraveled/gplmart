@@ -1,0 +1,38 @@
+<nav class="gpl-pills" aria-label="Quick filters">
+  {%- assign rows = section.settings.items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <a class="gpl-pills__pill{% if forloop.first %} is-active{% endif %}" href="{{ parts[1] | strip }}">{{ parts[0] | strip }}</a>
+  {%- endfor -%}
+</nav>
+
+{% schema %}
+{
+  "name": "Pills nav",
+  "settings": [
+    { "type": "textarea", "id": "items", "label": "Pills (label|url per line)", "default": "All|/\nNew in|/collections/new\nBestsellers|/collections/bestsellers\nSale|/collect" }
+  ],
+  "presets": [{ "name": "Pills nav" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-pills { display: flex; gap: 0.5rem; overflow-x: auto; padding: 0.75rem 0.5rem; scrollbar-width: none; }
+.gpl-pills::-webkit-scrollbar { display: none; }
+.gpl-pills__pill {
+  flex: 0 0 auto;
+  padding: 0.45rem 1rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.25);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: inherit;
+  white-space: nowrap;
+}
+.gpl-pills__pill.is-active {
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
+  border-color: transparent;
+}
+{% endstylesheet %}

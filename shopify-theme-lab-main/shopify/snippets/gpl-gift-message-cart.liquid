@@ -1,0 +1,37 @@
+<gpl-gift class="gpl-gift">
+  <label class="gpl-gift__check">
+    <input type="checkbox" data-gift-check> This order is a gift
+  </label>
+  <div class="gpl-gift__fields" hidden data-gift-fields>
+    <input type="hidden" name="attributes[Gift]" value="Yes" disabled>
+    <textarea name="attributes[Gift message]" class="gpl-gift__area" rows="3" placeholder="Write your gift message…" disabled></textarea>
+  </div>
+</gpl-gift>
+
+{% stylesheet %}
+.gpl-gift { display: block; margin: 1rem 0; }
+.gpl-gift__check { display: flex; align-items: center; gap: 0.5rem; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
+.gpl-gift__check input { accent-color: rgb(var(--color-button, 21 128 61)); }
+.gpl-gift__fields { margin-top: 0.6rem; }
+.gpl-gift__area {
+  width: 100%;
+  padding: 0.7rem;
+  border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
+  border-radius: 9px;
+  background: transparent;
+  font: inherit;
+  font-size: 0.8rem;
+  resize: vertical;
+}
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-gift').forEach((el) => {
+  const check = el.querySelector('[data-gift-check]');
+  const fields = el.querySelector('[data-gift-fields]');
+  check.addEventListener('change', () => {
+    fields.hidden = !check.checked;
+    fields.querySelectorAll('input, textarea').forEach((f) => (f.disabled = !check.checked));
+  });
+});
+{% endjavascript %}

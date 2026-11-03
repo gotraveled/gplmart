@@ -1715,7 +1715,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     install: [
       "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
       "Install a review app that writes to the standard product.metafields.reviews.rating and rating_count metafields (most review apps do).",
-      "Create snippets/star-rating.liquid, paste the Liquid code, and add the CSS to your theme stylesheet or a {% stylesheet %} tag.",
+      "Create snippets/star-rating.liquid, paste the complete file - styles and script are already inside it.",
       "Render it where you want the rating shown - for example under the product title.",
       "If a product has no rating metafield, the block renders nothing at all - it never invents a score.",
     ],
@@ -1779,7 +1779,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     install: [
       "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
       "In Shopify admin, enable 'Track quantity' on the products where you want the indicator - it only works with real inventory tracking.",
-      "Create snippets/stock-pulse.liquid, paste the Liquid code, and add the CSS to your theme stylesheet or a {% stylesheet %} tag.",
+      "Create snippets/stock-pulse.liquid, paste the complete file - styles and script are already inside it.",
       "Render it near your add-to-cart button with the usage tag shown in the Usage tab.",
       "Test both states: it stays hidden when stock is above the threshold or when tracking is off.",
     ],
@@ -1839,7 +1839,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     defaults: { label: "Add to cart" },
     install: [
       "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
-      "Create snippets/sticky-buy-bar.liquid, paste the Liquid code, and add the CSS + JS to your theme.",
+      "Create snippets/sticky-buy-bar.liquid, paste the complete file - styles and script are already inside it.",
       "Render it inside your product form area with the usage tag shown in the Usage tab.",
       "On mobile, the bar clicks your theme's own add-to-cart button, so drawer carts and validation still work.",
       "Check it does not cover your footer content - some themes need a little bottom padding on the page.",
@@ -1967,7 +1967,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     defaults: { goal: "49900", accent: "#15803d" },
     install: [
       "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
-      "Create snippets/free-shipping-bar.liquid, paste the Liquid code, and add the CSS to your theme stylesheet or a {% stylesheet %} tag.",
+      "Create snippets/free-shipping-bar.liquid, paste the complete file - styles and script are already inside it.",
       "Render it inside your cart template or cart drawer with the usage tag shown in the Usage tab.",
       "Set the threshold (in paise) to match the free-shipping rate you actually configured in Shopify shipping settings.",
     ],
@@ -2167,7 +2167,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     defaults: { tier2: "10", tier3: "20", accent: "#c8f542" },
     install: [
       "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
-      "Create snippets/quantity-breaks.liquid, paste the Liquid code, and add the CSS and JS to your theme.",
+      "Create snippets/quantity-breaks.liquid, paste the complete file - styles and script are already inside it.",
       "Render it above the add-to-cart button inside your product form (usage tag in the Usage tab).",
       "IMPORTANT: the discounts shown must also exist in Shopify - create matching automatic discounts or bundle pricing, otherwise customers see a saving that the cart never applies.",
     ],
@@ -2314,7 +2314,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     defaults: { heading: "Recently viewed", limit: "4" },
     install: [
       "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
-      "Create snippets/recently-viewed.liquid, paste the code, and add the CSS and JS to your theme.",
+      "Create snippets/recently-viewed.liquid, paste the complete file - styles and script are already inside it.",
       "Render it near the bottom of your product template (usage tag in the Usage tab).",
       "The list is stored in the visitor's browser only - nothing is sent to your server, which keeps it privacy-safe.",
     ],
@@ -2399,7 +2399,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     defaults: { mode: "whatsapp", label: "Notify me when back in stock" },
     install: [
       "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
-      "Create snippets/sold-out-notify.liquid, paste the code, and add the CSS to your theme.",
+      "Create snippets/sold-out-notify.liquid, paste the complete file - styles and script are already inside it.",
       "Render it in place of (or next to) the add-to-cart button inside your product form - it only appears when the variant is sold out.",
       "Point the contact target at your own WhatsApp number or email address in the code where marked.",
     ],
@@ -6692,7 +6692,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
 .gpl-loc2__dot--low { background: #f59e0b; }
 .gpl-loc2__store { font-weight: 700; min-width: 6rem; }
 .gpl-loc2__status { color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
-      usage: `{% render 'multi-location-stock', product: product, stores: ${js(str(v, "stores"))} %}`,
+      usage: `{% render 'multi-location-stock', stores: ${js(str(v, "stores"))} %}`,
     }),
   },
   {
@@ -9466,7 +9466,7 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
     ],
     files: (v) => ({
       liquid: `<div class="gpl-emitable">
-  <p class="gpl-emitable__title">No-cost EMI available</p>
+  <p class="gpl-emitable__title">No-cost EMI available{%- if price != blank %} on {{ price }}{% endif %}</p>
   <table class="gpl-emitable__table">
     <thead><tr><th>Bank</th><th>Tenure</th><th>Per month</th></tr></thead>
     <tbody>

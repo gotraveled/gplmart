@@ -1,0 +1,32 @@
+<gpl-rfq class="gpl-rfq">
+  <button type="button" class="gpl-rfq__btn" data-open>{{ label | default: 'Request a quote' }}</button>
+  <div class="gpl-rfq__pop" hidden>
+    <p class="gpl-rfq__title">Get bulk pricing</p>
+    {%- form 'contact', class: 'gpl-rfq__form' -%}
+      <input type="hidden" name="contact[tags]" value="rfq">
+      <input type="text" name="contact[name]" placeholder="Name" required>
+      <input type="email" name="contact[email]" placeholder="Email" required>
+      <input type="text" name="contact[body]" placeholder="What do you need? (product + qty)" required>
+      <button type="submit">Send request</button>
+    {%- endform -%}
+  </div>
+</gpl-rfq>
+
+{% stylesheet %}
+.gpl-rfq { position: relative; display: inline-block; }
+.gpl-rfq__btn { padding: 0.65rem 1.5rem; border: 1px solid rgb(var(--color-button, 15 23 42)); border-radius: 999px; background: transparent; color: inherit; font-size: 0.78rem; font-weight: 700; cursor: pointer; }
+.gpl-rfq__pop { position: absolute; top: 110%; left: 0; z-index: 10; width: 16rem; padding: 1rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2); border-radius: 12px; background: rgb(var(--color-background, 255 255 255)); box-shadow: 0 10px 30px rgb(0 0 0 / 0.15); }
+.gpl-rfq__title { margin: 0 0 0.6rem; font-weight: 800; font-size: 0.8rem; }
+.gpl-rfq__form { display: grid; gap: 0.4rem; }
+.gpl-rfq__form input { padding: 0.5rem 0.7rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 7px; font-size: 0.72rem; }
+.gpl-rfq__form button { padding: 0.5rem 1rem; border: 0; border-radius: 7px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-size: 0.7rem; font-weight: 700; cursor: pointer; }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-rfq').forEach((el) => {
+  el.querySelector('[data-open]').addEventListener('click', () => {
+    const pop = el.querySelector('.gpl-rfq__pop');
+    pop.hidden = !pop.hidden;
+  });
+});
+{% endjavascript %}

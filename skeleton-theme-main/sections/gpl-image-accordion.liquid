@@ -1,0 +1,51 @@
+<div class="gpl-acc2">
+  {%- assign rows = section.settings.items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <div class="gpl-acc2__panel" data-panel>
+      {%- if section.blocks[forloop.index0].settings.image -%}
+        {{ section.blocks[forloop.index0].settings.image | image_url: width: 800 | image_tag: class: 'gpl-acc2__img', loading: 'lazy' }}
+      {%- endif -%}
+      <div class="gpl-acc2__body">
+        <p class="gpl-acc2__label">{{ parts[0] | strip }}</p>
+        <p class="gpl-acc2__cap">{{ parts[1] | strip }}</p>
+      </div>
+    </div>
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Image accordion",
+  "settings": [
+    { "type": "textarea", "id": "items", "label": "Panels (label|caption per line)", "default": "New in|Spring drop\nBestsellers|What people love\nSale|Last sizes" }
+  ],
+  "blocks": [
+    { "type": "image", "name": "Panel image", "settings": [{ "type": "image_picker", "id": "image", "label": "Image" }] }
+  ],
+  "presets": [{ "name": "Image accordion" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-acc2 { display: flex; gap: 0.5rem; height: 24rem; }
+.gpl-acc2__panel {
+  position: relative;
+  flex: 1;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: flex 0.4s;
+}
+.gpl-acc2__panel:hover, .gpl-acc2__panel.is-active { flex: 3; }
+.gpl-acc2__img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.gpl-acc2__body {
+  position: absolute;
+  inset: auto 0 0;
+  padding: 1.25rem;
+  background: linear-gradient(to top, rgb(0 0 0 / 0.7), transparent);
+  color: #fff;
+}
+.gpl-acc2__label { margin: 0; font-weight: 800; }
+.gpl-acc2__cap { margin: 0.3rem 0 0; font-size: 0.72rem; opacity: 0.9; }
+@media (max-width: 640px) { .gpl-acc2 { flex-direction: column; height: auto; } .gpl-acc2__panel { min-height: 8rem; } }
+{% endstylesheet %}

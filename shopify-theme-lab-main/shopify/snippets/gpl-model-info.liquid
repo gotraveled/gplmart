@@ -1,0 +1,9 @@
+<p class="gpl-model">
+  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+  {{ text | default: 'Model info' }}
+</p>
+
+{% stylesheet %}
+.gpl-model { display: flex; align-items: center; gap: 0.45rem; margin: 0.4rem 0; font-size: 0.7rem; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
+.gpl-model svg { width: 0.85rem; height: 0.85rem; }
+{% endstylesheet %}

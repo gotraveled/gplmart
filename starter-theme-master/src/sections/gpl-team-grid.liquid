@@ -1,0 +1,39 @@
+<div class="gpl-team">
+  {%- assign rows = section.settings.items | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <div class="gpl-team__card">
+      <div class="gpl-team__avatar">{{ parts[0] | strip | slice: 0 }}</div>
+      <p class="gpl-team__name">{{ parts[0] | strip }}</p>
+      <p class="gpl-team__role">{{ parts[1] | strip }}</p>
+    </div>
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Team grid",
+  "settings": [
+    { "type": "textarea", "id": "items", "label": "People (name|role per line)", "default": "Ananya|Founder & sourcing\nVikram|Production lead\nSana|Customer care" }
+  ],
+  "presets": [{ "name": "Team grid" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-team { display: grid; grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr)); gap: 1rem; padding: 1.5rem 0; }
+.gpl-team__card { text-align: center; }
+.gpl-team__avatar {
+  display: grid;
+  place-items: center;
+  width: 5rem;
+  height: 5rem;
+  margin: 0 auto;
+  border-radius: 999px;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.12);
+  font-size: 1.6rem;
+  font-weight: 800;
+}
+.gpl-team__name { margin: 0.75rem 0 0; font-weight: 700; font-size: 0.82rem; }
+.gpl-team__role { margin: 0.2rem 0 0; font-size: 0.68rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+{% endstylesheet %}

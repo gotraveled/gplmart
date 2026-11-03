@@ -1,0 +1,13 @@
+<div class="gpl-lang">
+  {%- assign ls = langs | split: ',' -%}
+  <select class="gpl-lang__sel" aria-label="Language" onchange="document.documentElement.lang = this.value">
+    {%- for l in ls -%}
+      <option>{{ l | strip }}</option>
+    {%- endfor -%}
+  </select>
+</div>
+
+{% stylesheet %}
+.gpl-lang { display: inline-block; }
+.gpl-lang__sel { padding: 0.4rem 0.7rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 7px; background: transparent; font-size: 0.72rem; }
+{% endstylesheet %}

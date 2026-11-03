@@ -1,0 +1,41 @@
+<gpl-exit class="gpl-exit" hidden>
+  <div class="gpl-exit__box" role="dialog" aria-modal="true">
+    <button type="button" class="gpl-exit__close" aria-label="Close">&times;</button>
+    <p class="gpl-exit__title">{{ heading | default: 'Before you go' }}</p>
+    <p class="gpl-exit__text">{{ text | default: 'Use code STAY10 for 10% off.' }}</p>
+    <a class="gpl-exit__cta" href="{{ routes.cart_url }}">Back to cart</a>
+  </div>
+</gpl-exit>
+
+{% stylesheet %}
+.gpl-exit { position: fixed; inset: 0; z-index: 90; display: grid; place-items: center; background: rgb(0 0 0 / 0.55); }
+.gpl-exit__box { position: relative; max-width: 22rem; margin: 1rem; padding: 2rem; border-radius: 16px; background: rgb(var(--color-background, 255 255 255)); text-align: center; }
+.gpl-exit__close { position: absolute; top: 0.75rem; right: 0.9rem; background: none; border: 0; font-size: 1.3rem; cursor: pointer; color: inherit; }
+.gpl-exit__title { margin: 0; font-size: 1.15rem; font-weight: 800; }
+.gpl-exit__text { margin: 0.6rem 0 0; font-size: 0.82rem; color: rgb(var(--color-foreground, 100 116 139) / 0.8); }
+.gpl-exit__cta {
+  display: inline-block;
+  margin-top: 1.25rem;
+  padding: 0.75rem 1.75rem;
+  border-radius: 999px;
+  background: rgb(var(--color-button, 15 23 42));
+  color: rgb(var(--color-button-text, 255 255 255));
+  text-decoration: none;
+  font-weight: 700;
+}
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-exit').forEach((el) => {
+  if (sessionStorage.getItem('gpl-exit-shown')) return;
+  function show() {
+    sessionStorage.setItem('gpl-exit-shown', '1');
+    el.hidden = false;
+  }
+  document.addEventListener('mouseout', (e) => {
+    if (!e.relatedTarget && e.clientY < 8) show();
+  });
+  el.querySelector('.gpl-exit__close').addEventListener('click', () => (el.hidden = true));
+  el.addEventListener('click', (e) => { if (e.target === el) el.hidden = true; });
+});
+{% endjavascript %}

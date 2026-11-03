@@ -1,0 +1,39 @@
+{%- comment -%}
+  Driven by cart.total_price, so the message is always accurate.
+  Pass the free-shipping threshold in paise (49900 = Rs. 499).
+{%- endcomment -%}
+{%- assign goal = threshold | default: 49900 -%}
+{%- assign total = cart.total_price | default: 0 -%}
+{%- assign pct = total | times: 100 | divided_by: goal -%}
+{%- if pct > 100 -%}{%- assign pct = 100 -%}{%- endif -%}
+<div class="gpl-ship" style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 21 128 61))' }};">
+  {%- if total >= goal -%}
+    <p class="gpl-ship__msg gpl-ship__msg--done">You have unlocked <strong>free shipping</strong></p>
+  {%- else -%}
+    <p class="gpl-ship__msg">Add <strong>{{ goal | minus: total | money }}</strong> more to unlock free shipping</p>
+  {%- endif -%}
+  <div class="gpl-ship__track" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="{{ pct }}" aria-label="Progress to free shipping">
+    <span class="gpl-ship__fill" style="width: {{ pct }}%;"></span>
+  </div>
+</div>
+
+{% stylesheet %}
+.gpl-ship { margin: 0.75rem 0; }
+.gpl-ship__msg { margin: 0 0 0.45rem; font-size: 0.85rem; }
+.gpl-ship__msg strong { color: var(--gpl-accent); }
+.gpl-ship__msg--done { color: var(--gpl-accent); font-weight: 700; }
+.gpl-ship__track {
+  height: 0.5rem;
+  border-radius: 999px;
+  background: #e2e8f0;
+  overflow: hidden;
+}
+.gpl-ship__fill {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--gpl-accent), #34d399);
+  box-shadow: 0 0 10px -2px var(--gpl-accent);
+  transition: width 0.4s ease;
+}
+{% endstylesheet %}

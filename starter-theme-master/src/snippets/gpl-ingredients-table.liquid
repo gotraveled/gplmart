@@ -1,0 +1,40 @@
+<div class="gpl-ings" style="--gpl-accent: {{ accent | default: 'rgb(var(--color-button, 21 128 61))' }};">
+  {%- assign rows = items | default: 'Aqua|Base ingredient|' | newline_to_br | split: '<br />' -%}
+  {%- for row in rows -%}
+    {%- assign parts = row | strip | split: '|' -%}
+    <div class="gpl-ings__row">
+      <div class="gpl-ings__top">
+        <span class="gpl-ings__name">{{ parts[0] | strip }}</span>
+        {%- if parts[2] != blank -%}
+          <span class="gpl-ings__pct">{{ parts[2] | strip }}%</span>
+        {%- endif -%}
+      </div>
+      {%- if parts[1] != blank -%}
+        <p class="gpl-ings__desc">{{ parts[1] | strip }}</p>
+      {%- endif -%}
+      {%- if parts[2] != blank -%}
+        <div class="gpl-ings__bar"><i style="width: {{ parts[2] | strip }}%"></i></div>
+      {%- endif -%}
+    </div>
+  {%- endfor -%}
+</div>
+
+{% stylesheet %}
+.gpl-ings { display: grid; gap: 0.6rem; }
+.gpl-ings__top { display: flex; justify-content: space-between; font-size: 0.78rem; font-weight: 700; }
+.gpl-ings__pct { color: var(--gpl-accent); }
+.gpl-ings__desc { margin: 0.15rem 0 0; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+.gpl-ings__bar {
+  height: 0.3rem;
+  margin-top: 0.3rem;
+  border-radius: 999px;
+  background: rgb(var(--color-foreground, 148 163 184) / 0.12);
+  overflow: hidden;
+}
+.gpl-ings__bar i {
+  display: block;
+  height: 100%;
+  border-radius: 999px;
+  background: var(--gpl-accent);
+}
+{% endstylesheet %}

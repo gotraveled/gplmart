@@ -44,9 +44,9 @@ export const guides: Guide[] = [
           code: `{% comment %} snippets/countdown-timer.liquid {% endcomment %}\n<div class="gpl-countdown" data-end="{{ ends }}">\n  <!-- countdown markup here -->\n</div>`,
         },
       },
-      { h: "Step 3 - add the CSS" },
+      { h: "Step 3 - the CSS and JS are already inside" },
       {
-        p: "Open your theme's main stylesheet (usually assets/base.css or theme.css) and paste the countdown styles at the bottom. Keep them namespaced under a prefix like gpl- so they can't collide with your theme's existing classes.",
+        p: "GPLMart snippets are single files - the styles ship in a {% stylesheet %} block and the script in a {% javascript %} block at the bottom of the same .liquid file. Shopify runs them only when the snippet renders, scoped to that instance. Nothing to paste into base.css and no asset files to upload.",
       },
       { h: "Step 4 - render it" },
       {
@@ -68,7 +68,7 @@ export const guides: Guide[] = [
         ],
       },
       {
-        p: "Want a countdown that's already written, styled and tested? It's one of the free examples in the GPLMart playground - copy the full Liquid and CSS and paste straight in.",
+        p: "Want a countdown that's already written, styled and tested? It's one of the free examples in the GPLMart playground - copy the complete single file and paste straight in.",
       },
     ],
   },

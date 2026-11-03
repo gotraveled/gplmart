@@ -1,0 +1,51 @@
+<div class="gpl-tiles" style="--gpl-cols: {{ section.settings.cols }};">
+  {%- for block in section.blocks -%}
+    {%- assign c = block.settings.collection -%}
+    <a class="gpl-tiles__tile" href="{{ c.url | default: '#' }}" {{ block.shopify_attributes }}>
+      {%- if block.settings.image or c.image -%}
+        {{ block.settings.image | default: c.image | image_url: width: 500 | image_tag: class: 'gpl-tiles__img', loading: 'lazy' }}
+      {%- endif -%}
+      <span class="gpl-tiles__label">{{ block.settings.title | default: c.title }}</span>
+    </a>
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Category tiles",
+  "settings": [
+    { "type": "range", "id": "cols", "label": "Columns", "min": 2, "max": 4, "step": 1, "default": 4 }
+  ],
+  "blocks": [
+    {
+      "type": "tile",
+      "name": "Category",
+      "settings": [
+        { "type": "collection", "id": "collection", "label": "Collection" },
+        { "type": "text", "id": "title", "label": "Custom title" },
+        { "type": "image_picker", "id": "image", "label": "Custom image" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Category tiles" }]
+}
+{% endschema %}
+
+{% stylesheet %}
+.gpl-tiles { display: grid; grid-template-columns: repeat(var(--gpl-cols, 4), 1fr); gap: 0.75rem; padding: 1.5rem 0; }
+.gpl-tiles__tile { position: relative; border-radius: 12px; overflow: hidden; text-decoration: none; }
+.gpl-tiles__img { width: 100%; aspect-ratio: 1; object-fit: cover; display: block; transition: transform 0.3s; }
+.gpl-tiles__tile:hover .gpl-tiles__img { transform: scale(1.05); }
+.gpl-tiles__label {
+  position: absolute;
+  bottom: 0.75rem;
+  left: 0.75rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.92);
+  color: #111;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+@media (max-width: 640px) { .gpl-tiles { grid-template-columns: repeat(2, 1fr); } }
+{% endstylesheet %}

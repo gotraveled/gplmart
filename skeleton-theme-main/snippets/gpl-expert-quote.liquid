@@ -1,0 +1,23 @@
+<figure class="gpl-eq">
+  <div class="gpl-eq__mark" aria-hidden="true">&ldquo;</div>
+  <blockquote class="gpl-eq__quote">{{ quote | escape }}</blockquote>
+  <figcaption class="gpl-eq__by">
+    <span class="gpl-eq__name">{{ name | escape }}</span>
+    <span class="gpl-eq__cred">{{ credential | escape }}</span>
+  </figcaption>
+</figure>
+
+{% stylesheet %}
+.gpl-eq {
+  margin: 0.75rem 0;
+  padding: 1.25rem 1.4rem;
+  border-left: 3px solid rgb(var(--color-button, 21 128 61));
+  background: rgb(var(--color-foreground, 148 163 184) / 0.05);
+  border-radius: 0 12px 12px 0;
+}
+.gpl-eq__mark { font-size: 2.2rem; line-height: 0.8; color: rgb(var(--color-button, 21 128 61)); }
+.gpl-eq__quote { margin: 0.5rem 0 0; font-size: 0.95rem; line-height: 1.6; font-style: italic; }
+.gpl-eq__by { margin-top: 0.8rem; }
+.gpl-eq__name { font-weight: 700; font-size: 0.78rem; }
+.gpl-eq__cred { display: block; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
+{% endstylesheet %}

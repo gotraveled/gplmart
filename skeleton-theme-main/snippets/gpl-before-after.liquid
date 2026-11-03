@@ -1,0 +1,60 @@
+{%- comment -%}
+  Pass before_image / after_image (product.media entries or metafield images).
+  The handle is a range input so keyboard users can drag it too.
+{%- endcomment -%}
+{%- assign b = before_image | default: product.media[0].preview_image -%}
+{%- assign a = after_image | default: product.media[1].preview_image -%}
+{%- if b and a -%}
+  <div class="gpl-ba" data-gpl-ba style="--gpl-accent: {{ accent | default: '#c8f542' }};">
+    <img class="gpl-ba__img" src="{{ a | image_url: width: 1200 }}" alt="After" loading="lazy" width="1200" height="{{ 1200 | divided_by: a.aspect_ratio | round }}">
+    <div class="gpl-ba__before" data-gpl-ba-before>
+      <img class="gpl-ba__img" src="{{ b | image_url: width: 1200 }}" alt="Before" loading="lazy" width="1200" height="{{ 1200 | divided_by: b.aspect_ratio | round }}">
+    </div>
+    <input class="gpl-ba__range" type="range" min="0" max="100" value="50" step="0.5" aria-label="Reveal before and after comparison">
+    <span class="gpl-ba__tag gpl-ba__tag--before">Before</span>
+    <span class="gpl-ba__tag gpl-ba__tag--after">After</span>
+  </div>
+{%- endif -%}
+
+{% stylesheet %}
+.gpl-ba { position: relative; overflow: hidden; border-radius: 1rem; user-select: none; }
+.gpl-ba__img { display: block; width: 100%; height: auto; pointer-events: none; }
+.gpl-ba__before {
+  position: absolute; inset: 0;
+  clip-path: inset(0 50% 0 0);
+  transition: clip-path 0.05s linear;
+}
+.gpl-ba__before .gpl-ba__img { height: 100%; object-fit: cover; }
+.gpl-ba__range {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  opacity: 0; cursor: ew-resize; margin: 0;
+}
+.gpl-ba::after {
+  content: '';
+  position: absolute; top: 0; bottom: 0; left: var(--gpl-pos, 50%);
+  width: 2px; background: var(--gpl-accent); transform: translateX(-1px);
+}
+.gpl-ba__tag {
+  position: absolute; top: 0.75rem;
+  padding: 0.25rem 0.6rem; border-radius: 999px;
+  background: rgb(0 0 0 / 0.55); color: #fff;
+  font-size: 0.65rem; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+}
+.gpl-ba__tag--before { left: 0.75rem; }
+.gpl-ba__tag--after { right: 0.75rem; }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('[data-gpl-ba]').forEach((el) => {
+  const range = el.querySelector('.gpl-ba__range');
+  const before = el.querySelector('[data-gpl-ba-before]');
+  const apply = () => {
+    const p = range.value;
+    before.style.clipPath = 'inset(0 ' + (100 - p) + '% 0 0)';
+    el.style.setProperty('--gpl-pos', p + '%');
+  };
+  range.addEventListener('input', apply);
+  apply();
+});
+{% endjavascript %}

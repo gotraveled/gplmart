@@ -17,18 +17,18 @@ const shopifySteps = [
   },
   {
     icon: FileCode2,
-    title: "Create the snippet or section",
-    text: "Actions > Edit code > open the snippets (or sections) folder > 'Add a new snippet' > name it exactly like the file in the library > paste the full code and save.",
+    title: "Create the snippet or section file",
+    text: "Actions > Edit code > open the snippets (or sections) folder > 'Add a new snippet' > name it exactly like the file in the library > paste the complete code and save.",
   },
   {
     icon: Store,
     title: "Render it in your template",
-    text: "For snippets: add {% render 'snippet-name' %} where you want it, or use the theme editor's Custom Liquid block. For sections: they appear directly in the theme editor's section picker.",
+    text: "For snippets: add {% render 'snippet-name' %} where you want it, or use the theme editor's Custom Liquid block. For sections: they appear directly in the theme editor's section picker (OS 2.0 themes).",
   },
   {
     icon: Download,
-    title: "Add the CSS",
-    text: "Paste the stylesheet into your theme's main CSS file (assets/base.css or theme.css) at the bottom. GPLMart snippets use gpl- prefixes so they can't fight your theme.",
+    title: "Nothing else to install",
+    text: "Every GPLMart file is self-contained - the markup, CSS and JavaScript ship inside the single .liquid file via {% stylesheet %} and {% javascript %} tags. No separate assets to upload, no stylesheet to edit.",
   },
   {
     icon: BookOpen,

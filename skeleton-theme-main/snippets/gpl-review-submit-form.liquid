@@ -1,0 +1,38 @@
+<gpl-revform class="gpl-rf">
+  <p class="gpl-rf__heading">{{ heading | default: 'Share your experience' }}</p>
+  <div class="gpl-rf__stars" data-stars>
+    {%- for i in (1..5) -%}
+      <button type="button" data-star="{{ i }}" aria-label="{{ i }} stars">&#9733;</button>
+    {%- endfor -%}
+  </div>
+  {%- form 'contact', class: 'gpl-rf__form' -%}
+    <input type="hidden" name="contact[tags]" value="review-{{ product.handle }}">
+    <input type="hidden" name="contact[rating]" value="" data-rating>
+    <input type="text" name="contact[name]" placeholder="Your name" required>
+    <textarea name="contact[body]" rows="3" placeholder="What did you think?" required></textarea>
+    <button type="submit">Submit review</button>
+  {%- endform -%}
+</gpl-revform>
+
+{% stylesheet %}
+.gpl-rf { display: block; margin: 1rem 0; padding: 1rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.2); border-radius: 12px; }
+.gpl-rf__heading { margin: 0 0 0.75rem; font-size: 0.85rem; font-weight: 800; }
+.gpl-rf__stars { display: flex; gap: 0.25rem; margin-bottom: 0.75rem; }
+.gpl-rf__stars button { border: 0; background: none; font-size: 1.3rem; cursor: pointer; color: rgb(var(--color-foreground, 148 163 184) / 0.3); padding: 0; }
+.gpl-rf__stars button.is-on { color: rgb(var(--color-button, 245 158 11)); }
+.gpl-rf__form { display: grid; gap: 0.5rem; }
+.gpl-rf__form input[type="text"], .gpl-rf__form textarea { padding: 0.6rem 0.8rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 8px; font: inherit; font-size: 0.78rem; }
+.gpl-rf__form button[type="submit"] { padding: 0.65rem 1.25rem; border: 0; border-radius: 8px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-weight: 700; font-size: 0.75rem; cursor: pointer; justify-self: start; }
+{% endstylesheet %}
+
+{% javascript %}
+document.querySelectorAll('gpl-revform').forEach((el) => {
+  const stars = [...el.querySelectorAll('[data-star]')];
+  const input = el.querySelector('[data-rating]');
+  stars.forEach((s) => s.addEventListener('click', () => {
+    const n = Number(s.dataset.star);
+    input.value = n;
+    stars.forEach((x) => x.classList.toggle('is-on', Number(x.dataset.star) <= n));
+  }));
+});
+{% endjavascript %}
