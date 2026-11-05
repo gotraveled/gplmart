@@ -3882,6 +3882,178 @@ function StockAlert({ v }: P) {
   );
 }
 
+function MegaMenu({ v }: P) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ background: hex(v, "bg") }} className={on(v, "sticky") ? "sticky top-0 z-10" : ""}>
+      <div className="flex items-center gap-4 px-5 py-3">
+        <span className="text-sm font-extrabold">{str(v, "logo_text") || "Store"}</span>
+        <nav className="flex items-center gap-0.5 text-[0.68rem] font-semibold">
+          <a href="#" className="rounded px-2.5 py-1.5">Home</a>
+          <div className="relative">
+            <a href="#" className="flex items-center gap-1 rounded px-2.5 py-1.5" onClick={(e) => { e.preventDefault(); setOpen(!open); }} style={{ color: open ? hex(v, "accent") : undefined }}>
+              Shop <svg className="size-2.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="m6 9 6 6 6-6"/></svg>
+            </a>
+            {open && (
+              <div className="absolute left-0 top-full flex gap-6 border-t border-neutral-200 bg-white p-5 shadow-lg" onMouseLeave={() => setOpen(false)}>
+                {[["New in", "Dresses", "Tops", "Denim"], ["Essentials", "Basics", "Knitwear", "Sale"]].map(([h, ...ls]) => (
+                  <div key={h} className="grid content-start gap-1.5">
+                    <a href="#" className="text-[0.55rem] font-extrabold uppercase tracking-wider" style={{ color: hex(v, "accent") }}>{h}</a>
+                    {ls.map((l) => <a key={l} href="#" className="text-[0.6rem] text-neutral-500">{l}</a>)}
+                  </div>
+                ))}
+                <div className="w-24 overflow-hidden rounded-lg bg-neutral-100">
+                  <div className="h-16 bg-gradient-to-br from-amber-100 to-amber-200" />
+                  <p className="p-1.5 text-[0.5rem] font-semibold">Spring lookbook</p>
+                </div>
+              </div>
+            )}
+          </div>
+          <a href="#" className="rounded px-2.5 py-1.5">About</a>
+          <a href="#" className="rounded px-2.5 py-1.5">Contact</a>
+        </nav>
+        <div className="ml-auto flex items-center gap-2">
+          <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+          <span className="relative">
+            <svg className="size-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span className="absolute -right-1 -top-1 flex size-3 items-center justify-center rounded-full text-[0.4rem] font-extrabold text-white" style={{ background: hex(v, "accent") }}>2</span>
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function Quiz({ v }: P) {
+  const [step, setStep] = useState(0);
+  const [picked, setPicked] = useState<string | null>(null);
+  const steps = [
+    ["What's your vibe?", ["Minimal & clean", "Bold & colourful", "Cozy & casual"]],
+    ["What's the occasion?", ["Everyday", "Work", "Special event"]],
+  ];
+  return (
+    <div className="p-6 text-center">
+      {step === 0 && (
+        <>
+          <h2 className="m-0 text-base font-extrabold">{str(v, "heading") || "Find your perfect match"}</h2>
+          <p className="m-0 mb-4 mt-1.5 text-[0.62rem] text-neutral-500">{str(v, "sub")}</p>
+          <button type="button" onClick={() => setStep(1)} className="rounded-full bg-neutral-900 px-6 py-2 text-[0.65rem] font-bold text-white">Start</button>
+        </>
+      )}
+      {step > 0 && step <= steps.length && !picked && (
+        <>
+          <p className="m-0 mb-3 text-[0.5rem] font-bold uppercase tracking-widest text-neutral-400">{step} / {steps.length}</p>
+          <p className="m-0 mb-3 text-[0.8rem] font-extrabold">{steps[step - 1]![0]}</p>
+          <div className="mx-auto grid max-w-64 gap-1.5">
+            {steps[step - 1]![1].map((o) => (
+              <button key={o} type="button" onClick={() => step === steps.length ? setPicked(o) : setStep(step + 1)} className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.62rem] font-semibold hover:border-neutral-900">{o}</button>
+            ))}
+          </div>
+        </>
+      )}
+      {picked && (
+        <>
+          <p className="m-0 mb-3 text-[0.72rem] font-bold">Done - here is your match:</p>
+          <div className="inline-block rounded-full bg-neutral-900 px-5 py-2 text-[0.65rem] font-bold text-white">See: {picked}</div>
+          <div><button type="button" onClick={() => { setStep(0); setPicked(null); }} className="mt-3 text-[0.55rem] text-neutral-500 underline">Start over</button></div>
+        </>
+      )}
+    </div>
+  );
+}
+
+function SpinWheel({ v }: P) {
+  const [spun, setSpun] = useState(false);
+  const slices = ["10% off", "Try again", "Free gift", "15% off"];
+  const cols = ["#0f172a", "#16a34a", "#7c3aed", "#b45309"];
+  return (
+    <div className="flex h-64 items-center justify-center bg-black/50 p-4">
+      <div className="relative w-56 rounded-2xl bg-white p-4 text-center">
+        <h2 className="m-0 mb-2 text-sm font-extrabold">{str(v, "title") || "Spin to win"}</h2>
+        <div className="relative mx-auto size-36">
+          <svg viewBox="0 0 100 100" className={`size-full transition-transform duration-[3000ms] ease-out ${spun ? "rotate-[1440deg]" : ""}`}>
+            {slices.map((s, i) => {
+              const a0 = (i * 90 - 90) * Math.PI / 180, a1 = ((i + 1) * 90 - 90) * Math.PI / 180;
+              return (
+                <g key={s}>
+                  <path d={`M50 50 L${50 + 48 * Math.cos(a0)} ${50 + 48 * Math.sin(a0)} A48 48 0 0 1 ${50 + 48 * Math.cos(a1)} ${50 + 48 * Math.sin(a1)} Z`} fill={cols[i]} />
+                  <text x="68" y="52" fontSize="7" fill="#fff" fontWeight="700" textAnchor="middle" transform={`rotate(${i * 90}, 50, 50)`}>{s}</text>
+                </g>
+              );
+            })}
+          </svg>
+          <div className="absolute left-1/2 top-0 -translate-x-1/2 border-x-8 border-t-[14px] border-x-transparent border-t-neutral-900" />
+        </div>
+        {spun ? (
+          <div className="mt-3"><code className="rounded border border-dashed border-neutral-800 px-3 py-1 text-[0.7rem] font-extrabold tracking-widest">LUCKY15</code></div>
+        ) : (
+          <button type="button" onClick={() => setSpun(true)} className="mt-3 rounded-full bg-neutral-900 px-5 py-1.5 text-[0.62rem] font-bold text-white">{str(v, "spin_text") || "Spin the wheel"}</button>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function QuickView({ v }: P) {
+  const [open, setOpen] = useState(false);
+  const cards = [["Merino cardigan", "49.00"], ["Linen overshirt", "89.00"], ["Canvas tote", "35.00"], ["Wool scarf", "29.00"]];
+  return (
+    <div className="relative p-5">
+      <h2 className="m-0 mb-3 text-sm font-extrabold">{str(v, "heading") || "Shop the look"}</h2>
+      <div className="grid grid-cols-4 gap-2.5">
+        {cards.slice(0, Number(str(v, "limit")) || 8).map(([n, p]) => (
+          <div key={n}>
+            <div className="group relative aspect-square rounded-lg bg-neutral-100">
+              <button type="button" onClick={() => setOpen(true)} className="absolute bottom-1.5 left-1/2 -translate-x-1/2 rounded-full bg-white/95 px-2.5 py-1 text-[0.45rem] font-extrabold opacity-0 transition-opacity group-hover:opacity-100">Quick view</button>
+            </div>
+            <p className="m-0 mt-1.5 text-[0.52rem] font-bold">{n}</p>
+            <p className="m-0 text-[0.5rem] text-neutral-500">Rs {p}</p>
+          </div>
+        ))}
+      </div>
+      {open && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center bg-black/40" onClick={() => setOpen(false)}>
+          <div className="relative w-64 rounded-xl bg-white p-4" onClick={(e) => e.stopPropagation()}>
+            <button type="button" onClick={() => setOpen(false)} className="absolute right-2.5 top-2 text-lg">&times;</button>
+            <div className="flex gap-3">
+              <div className="size-20 shrink-0 rounded-lg bg-neutral-100" />
+              <div className="min-w-0">
+                <p className="m-0 text-[0.7rem] font-extrabold">Merino cardigan</p>
+                <p className="m-0 mb-1.5 mt-0.5 text-[0.65rem] font-bold">Rs 49.00</p>
+                <select className="mb-2 w-full rounded-md border border-neutral-300 px-1.5 py-1 text-[0.55rem]"><option>S</option><option>M</option><option>L</option></select>
+                <div className="rounded-md bg-neutral-900 py-1.5 text-center text-[0.55rem] font-bold text-white">Add to cart</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function DeliveryDate({ v }: P) {
+  const [saved, setSaved] = useState(false);
+  const min = Number(str(v, "mindays")) || 0;
+  const d = new Date();
+  d.setDate(d.getDate() + min);
+  return (
+    <div className="m-4 rounded-xl border border-neutral-300 p-4">
+      <p className="m-0 mb-2.5 text-[0.68rem] font-extrabold">{str(v, "heading") || "Delivery preferences"}</p>
+      <label className="mb-2 block text-[0.55rem] font-semibold text-neutral-500">
+        Preferred delivery date
+        <input type="date" min={d.toISOString().slice(0, 10)} onChange={() => { setSaved(true); setTimeout(() => setSaved(false), 2000); }} className="mt-1 block w-full rounded-lg border border-neutral-300 px-2.5 py-1.5 text-[0.62rem]" />
+      </label>
+      {on(v, "note") && (
+        <label className="block text-[0.55rem] font-semibold text-neutral-500">
+          Gift / order note
+          <textarea rows={2} placeholder="Leave at door, wrap it" className="mt-1 block w-full rounded-lg border border-neutral-300 px-2.5 py-1.5 text-[0.62rem]" />
+        </label>
+      )}
+      {saved && <p className="m-0 mt-2 text-[0.55rem] font-bold text-emerald-600">Saved to your order.</p>}
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -4091,6 +4263,11 @@ const map: Record<string, (p: P) => ReactNode> = {
   "scratch-card": ScratchCard,
   "buy-box-booster": BuyBox,
   "stock-alert": StockAlert,
+  "mega-menu": MegaMenu,
+  "product-quiz": Quiz,
+  "spin-wheel": SpinWheel,
+  "quick-view": QuickView,
+  "delivery-date": DeliveryDate,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {

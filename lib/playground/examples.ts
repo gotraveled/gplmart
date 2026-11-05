@@ -11059,6 +11059,639 @@ if (!customElements.get('gpl-scratch')) customElements.define('gpl-scratch', Gpl
 .gpl-alert__done { margin: 0.8rem 0 0; font-size: 0.75rem; font-weight: 700; color: #16a34a; }`,
     }),
   },
+  {
+    id: "mega-menu",
+    name: "Mega menu header",
+    description: "A complete header with logo, dropdown panels (sub-links become columns automatically), promo cards, search, cart count, sticky option and a mobile drawer. What paid header apps sell for $15+ alone.",
+    category: "Headers & navigation",
+    kind: "section",
+    controls: [
+      { id: "logo_text", label: "Logo text", type: "text", maxLength: 20 },
+      { id: "sticky", label: "Sticky on scroll", type: "toggle" },
+      { id: "bg", label: "Background", type: "color" },
+      { id: "accent", label: "Accent", type: "color" },
+    ],
+    defaults: { logo_text: "Store", sticky: true, bg: "#ffffff", accent: "#0f172a" },
+    install: [
+      ...sectionSteps,
+      "Add to the Header group, then disable your theme's own header section (one toggle on most OS 2.0 themes).",
+      "Sub-menu items become panel columns automatically. Add a 'Promo card' block and set 'Show under menu item' to the top-level link title you want it under.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-mm class="gpl-mm{% if section.settings.sticky %} gpl-mm--sticky{% endif %}" style="--gpl-mmbg: {{ section.settings.bg }}; --gpl-mmaccent: {{ section.settings.accent }};">
+  <div class="gpl-mm__bar">
+    <button type="button" class="gpl-mm__burger" data-burger aria-label="Menu">
+      <span></span><span></span><span></span>
+    </button>
+    <a class="gpl-mm__logo" href="{{ routes.root_url }}">
+      {%- if section.settings.logo -%}
+        <img src="{{ section.settings.logo | image_url: width: 160 }}" alt="{{ shop.name | escape }}" width="{{ section.settings.logo.width }}" height="{{ section.settings.logo.height }}">
+      {%- else -%}
+        {{ section.settings.logo_text | default: shop.name | escape }}
+      {%- endif -%}
+    </a>
+    <nav class="gpl-mm__nav" aria-label="Main">
+      {%- for link in section.settings.menu.links -%}
+        <div class="gpl-mm__item" data-item>
+          <a class="gpl-mm__link" href="{{ link.url }}">
+            {{ link.title | escape }}
+            {%- if link.links != blank %}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>{% endif -%}
+          </a>
+          {%- if link.links != blank -%}
+            <div class="gpl-mm__panel" data-panel>
+              <div class="gpl-mm__cols">
+                {%- for child in link.links -%}
+                  <div class="gpl-mm__col">
+                    <a class="gpl-mm__colhead" href="{{ child.url }}">{{ child.title | escape }}</a>
+                    {%- for grand in child.links -%}
+                      <a class="gpl-mm__sublink" href="{{ grand.url }}">{{ grand.title | escape }}</a>
+                    {%- endfor -%}
+                  </div>
+                {%- endfor -%}
+              </div>
+              {%- for block in section.blocks -%}
+                {%- if block.settings.match == link.title -%}
+                  <a class="gpl-mm__promo" href="{{ block.settings.link | default: '#' }}" {{ block.shopify_attributes }}>
+                    {%- if block.settings.image -%}<img src="{{ block.settings.image | image_url: width: 400 }}" alt="" width="400" height="400" loading="lazy">{%- endif -%}
+                    {%- if block.settings.text != blank -%}<span>{{ block.settings.text | escape }}</span>{%- endif -%}
+                  </a>
+                {%- endif -%}
+              {%- endfor -%}
+            </div>
+          {%- endif -%}
+        </div>
+      {%- endfor -%}
+    </nav>
+    <div class="gpl-mm__icons">
+      <a class="gpl-mm__icon" href="{{ routes.search_url }}" aria-label="Search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+      </a>
+      <a class="gpl-mm__icon" href="{{ routes.cart_url }}" aria-label="Cart">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+        <span class="gpl-mm__count">{{ cart.item_count }}</span>
+      </a>
+    </div>
+  </div>
+  <div class="gpl-mm__drawer" data-drawer hidden>
+    <div class="gpl-mm__drawerbox">
+      <button type="button" class="gpl-mm__dx" data-burger aria-label="Close">&times;</button>
+      {%- for link in section.settings.menu.links -%}
+        {%- if link.links != blank -%}
+          <details class="gpl-mm__dgroup">
+            <summary>{{ link.title | escape }}</summary>
+            {%- for child in link.links -%}
+              <a href="{{ child.url }}">{{ child.title | escape }}</a>
+            {%- endfor -%}
+          </details>
+        {%- else -%}
+          <a class="gpl-mm__dlink" href="{{ link.url }}">{{ link.title | escape }}</a>
+        {%- endif -%}
+      {%- endfor -%}
+    </div>
+  </div>
+</gpl-mm>
+
+{% schema %}
+{
+  "name": "Mega menu header",
+  "settings": [
+    { "type": "image_picker", "id": "logo", "label": "Logo image" },
+    { "type": "text", "id": "logo_text", "label": "Logo text (used when no image)", "default": ${js(str(v, "logo_text", 20))} },
+    { "type": "link_list", "id": "menu", "label": "Menu", "default": "main-menu" },
+    { "type": "checkbox", "id": "sticky", "label": "Sticky on scroll", "default": true },
+    { "type": "color", "id": "bg", "label": "Background", "default": ${js(str(v, "bg"))} },
+    { "type": "color", "id": "accent", "label": "Accent", "default": ${js(str(v, "accent"))} }
+  ],
+  "blocks": [
+    {
+      "type": "promo",
+      "name": "Promo card",
+      "settings": [
+        { "type": "text", "id": "match", "label": "Show under menu item (exact title)" },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        { "type": "text", "id": "text", "label": "Caption" },
+        { "type": "url", "id": "link", "label": "Link" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Mega menu header" }]
+}
+{% endschema %}`,
+      css: `.gpl-mm { display: block; background: var(--gpl-mmbg, #fff); }
+.gpl-mm--sticky { position: sticky; top: 0; z-index: 60; }
+.gpl-mm__bar { display: flex; align-items: center; gap: 1.5rem; padding: 0.9rem 1.5rem; }
+.gpl-mm__burger { display: none; flex-direction: column; gap: 4px; border: 0; background: none; cursor: pointer; padding: 4px; }
+.gpl-mm__burger span { display: block; width: 1.3rem; height: 2px; background: currentColor; }
+.gpl-mm__logo { font-size: 1.15rem; font-weight: 800; color: inherit; text-decoration: none; }
+.gpl-mm__logo img { max-height: 2.2rem; width: auto; }
+.gpl-mm__nav { display: flex; align-items: center; gap: 0.25rem; flex: 1; }
+.gpl-mm__link { display: flex; align-items: center; gap: 0.3rem; padding: 0.55rem 0.75rem; font-size: 0.78rem; font-weight: 600; color: inherit; text-decoration: none; border-radius: 8px; }
+.gpl-mm__link svg { width: 0.75rem; height: 0.75rem; }
+.gpl-mm__item:hover > .gpl-mm__link, .gpl-mm__item.is-open > .gpl-mm__link { color: var(--gpl-mmaccent, #0f172a); }
+.gpl-mm__panel { position: absolute; left: 0; right: 0; top: 100%; display: none; padding: 1.5rem 2rem; background: var(--gpl-mmbg, #fff); border-top: 1px solid rgba(148,163,184,0.2); box-shadow: 0 24px 40px rgba(0,0,0,0.08); gap: 2rem; }
+.gpl-mm__item:hover > .gpl-mm__panel, .gpl-mm__item.is-open > .gpl-mm__panel { display: flex; }
+.gpl-mm__item { position: static; }
+.gpl-mm { position: relative; }
+.gpl-mm--sticky { position: sticky; }
+.gpl-mm__cols { display: flex; gap: 3rem; flex: 1; }
+.gpl-mm__col { display: grid; gap: 0.45rem; align-content: start; }
+.gpl-mm__colhead { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--gpl-mmaccent, #0f172a); text-decoration: none; margin-bottom: 0.25rem; }
+.gpl-mm__sublink { font-size: 0.75rem; color: inherit; text-decoration: none; opacity: 0.8; }
+.gpl-mm__sublink:hover { opacity: 1; text-decoration: underline; }
+.gpl-mm__promo { display: block; width: 12rem; border-radius: 12px; overflow: hidden; text-decoration: none; color: inherit; }
+.gpl-mm__promo img { display: block; width: 100%; height: 8rem; object-fit: cover; }
+.gpl-mm__promo span { display: block; padding: 0.6rem 0.2rem 0; font-size: 0.72rem; font-weight: 600; }
+.gpl-mm__icons { display: flex; align-items: center; gap: 0.4rem; margin-left: auto; }
+.gpl-mm__icon { position: relative; padding: 0.4rem; color: inherit; }
+.gpl-mm__icon svg { width: 1.1rem; height: 1.1rem; }
+.gpl-mm__count { position: absolute; top: 0; right: -2px; min-width: 1rem; height: 1rem; border-radius: 999px; background: var(--gpl-mmaccent, #0f172a); color: #fff; font-size: 0.55rem; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+.gpl-mm__drawer { position: fixed; inset: 0; z-index: 95; background: rgba(0,0,0,0.4); }
+.gpl-mm__drawer[hidden] { display: none; }
+.gpl-mm__drawerbox { width: min(20rem, 85vw); height: 100%; overflow-y: auto; background: var(--gpl-mmbg, #fff); padding: 1.2rem; }
+.gpl-mm__dx { float: right; border: 0; background: none; font-size: 1.6rem; cursor: pointer; }
+.gpl-mm__dlink { display: block; padding: 0.85rem 0; border-bottom: 1px solid rgba(148,163,184,0.2); font-size: 0.85rem; font-weight: 600; color: inherit; text-decoration: none; }
+.gpl-mm__dgroup { border-bottom: 1px solid rgba(148,163,184,0.2); }
+.gpl-mm__dgroup summary { padding: 0.85rem 0; font-size: 0.85rem; font-weight: 600; cursor: pointer; list-style: none; }
+.gpl-mm__dgroup summary::after { content: '+'; float: right; }
+.gpl-mm__dgroup[open] summary::after { content: '-'; }
+.gpl-mm__dgroup a { display: block; padding: 0.6rem 0.8rem; font-size: 0.78rem; color: inherit; text-decoration: none; opacity: 0.8; }
+@media (max-width: 860px) {
+  .gpl-mm__nav { display: none; }
+  .gpl-mm__burger { display: flex; }
+}`,
+      js: `document.querySelectorAll('gpl-mm').forEach((el) => {
+  const drawer = el.querySelector('[data-drawer]');
+  el.querySelectorAll('[data-burger]').forEach((b) => b.addEventListener('click', () => { drawer.hidden = !drawer.hidden; }));
+  drawer.addEventListener('click', (e) => { if (e.target === drawer) drawer.hidden = true; });
+  el.querySelectorAll('[data-item] > a').forEach((a) => {
+    a.addEventListener('click', (e) => {
+      const item = a.parentElement;
+      if (!item.querySelector('[data-panel]')) return;
+      if (item.classList.contains('is-open')) return;
+      if (e.pointerType === 'touch' || !item.matches(':hover')) { e.preventDefault(); item.classList.toggle('is-open'); }
+    });
+  });
+  document.addEventListener('click', (e) => { if (!el.contains(e.target)) el.querySelectorAll('.is-open').forEach((i) => i.classList.remove('is-open')); });
+});`,
+    }),
+  },
+  {
+    id: "product-quiz",
+    name: "Product finder quiz",
+    description: "A step-by-step 'find your perfect product' quiz - each answer jumps the shopper to a product or collection. What quiz apps charge $50/mo for, in one section.",
+    category: "Marketing",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 40 },
+      { id: "sub", label: "Subtext", type: "text", maxLength: 80 },
+    ],
+    defaults: { heading: "Find your perfect match", sub: "Answer a few quick questions." },
+    install: [
+      ...sectionSteps,
+      "Add a 'Question' block per step; each option has a label and a result link (product or collection).",
+      "The last answer's link is the recommendation - point it at your best product.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-quiz class="gpl-quiz">
+  <div class="gpl-quiz__intro" data-intro>
+    <h2 class="gpl-quiz__heading">{{ section.settings.heading | default: 'Find your perfect match' }}</h2>
+    {%- if section.settings.sub != blank -%}<p class="gpl-quiz__sub">{{ section.settings.sub | escape }}</p>{%- endif -%}
+    <button type="button" class="gpl-quiz__start" data-start>Start</button>
+  </div>
+  <div class="gpl-quiz__steps" data-steps hidden>
+    <p class="gpl-quiz__progress"><span data-step>1</span> / {{ section.blocks.size }}</p>
+    {%- for block in section.blocks -%}
+      <fieldset class="gpl-quiz__step" data-step-block="{{ forloop.index }}" {% unless forloop.first %}hidden{% endunless %} {{ block.shopify_attributes }}>
+        <legend class="gpl-quiz__q">{{ block.settings.question | escape }}</legend>
+        <div class="gpl-quiz__opts">
+          {%- for i in (1..4) -%}
+            {%- capture lkey %}option_{{ i }}{% endcapture -%}
+            {%- capture ukey %}link_{{ i }}{% endcapture -%}
+            {%- if block.settings[lkey] != blank -%}
+              <button type="button" class="gpl-quiz__opt" data-goto="{{ forloop.parent.index | plus: 1 }}" data-last="{{ forloop.parent.index }} == {{ section.blocks.size }}" data-url="{{ block.settings[ukey] }}">{{ block.settings[lkey] | escape }}</button>
+            {%- endif -%}
+          {%- endfor -%}
+        </div>
+      </fieldset>
+    {%- endfor -%}
+    <div class="gpl-quiz__result" data-result hidden>
+      <p class="gpl-quiz__done">Done - here's your match:</p>
+      <a class="gpl-quiz__cta" data-cta href="#">See your pick</a>
+      <button type="button" class="gpl-quiz__restart" data-restart>Start over</button>
+    </div>
+  </div>
+</gpl-quiz>
+
+{% schema %}
+{
+  "name": "Product finder quiz",
+  "max_blocks": 6,
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading", 40))} },
+    { "type": "text", "id": "sub", "label": "Subtext", "default": ${js(str(v, "sub", 80))} }
+  ],
+  "blocks": [
+    {
+      "type": "question",
+      "name": "Question",
+      "settings": [
+        { "type": "text", "id": "question", "label": "Question" },
+        { "type": "text", "id": "option_1", "label": "Option 1" },
+        { "type": "url", "id": "link_1", "label": "Option 1 result link" },
+        { "type": "text", "id": "option_2", "label": "Option 2" },
+        { "type": "url", "id": "link_2", "label": "Option 2 result link" },
+        { "type": "text", "id": "option_3", "label": "Option 3" },
+        { "type": "url", "id": "link_3", "label": "Option 3 result link" },
+        { "type": "text", "id": "option_4", "label": "Option 4" },
+        { "type": "url", "id": "link_4", "label": "Option 4 result link" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Product finder quiz" }]
+}
+{% endschema %}`,
+      css: `.gpl-quiz { display: block; max-width: 36rem; margin: 0 auto; padding: 1.5rem; text-align: center; }
+.gpl-quiz__heading { margin: 0; font-size: 1.4rem; font-weight: 800; }
+.gpl-quiz__sub { margin: 0.5rem 0 1.2rem; font-size: 0.8rem; color: rgb(var(--color-foreground, 100 116 139) / 0.8); }
+.gpl-quiz__start, .gpl-quiz__cta { display: inline-block; border: 0; border-radius: var(--buttons-radius, 999px); padding: 0.75rem 1.8rem; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: none; }
+.gpl-quiz__progress { margin: 0 0 0.9rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; }
+.gpl-quiz__step { border: 0; padding: 0; margin: 0; }
+.gpl-quiz__step[hidden] { display: none; }
+.gpl-quiz__q { margin: 0 0 1rem; font-size: 1.05rem; font-weight: 800; }
+.gpl-quiz__opts { display: grid; gap: 0.55rem; }
+.gpl-quiz__opt { border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.35); border-radius: 10px; background: transparent; color: inherit; padding: 0.75rem 1rem; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
+.gpl-quiz__opt:hover { border-color: rgb(var(--color-button, 15 23 42)); }
+.gpl-quiz__done { margin: 0 0 1rem; font-size: 0.9rem; font-weight: 700; }
+.gpl-quiz__restart { display: block; margin: 0.9rem auto 0; border: 0; background: none; font-size: 0.68rem; text-decoration: underline; cursor: pointer; color: #64748b; }`,
+      js: `class GplQuiz extends HTMLElement {
+  connectedCallback() {
+    this.steps = this.querySelector('[data-steps]');
+    this.querySelector('[data-start]').addEventListener('click', () => {
+      this.querySelector('[data-intro]').hidden = true;
+      this.steps.hidden = false;
+    });
+    this.querySelectorAll('[data-step-block]').forEach((fs) => {
+      fs.querySelectorAll('.gpl-quiz__opt').forEach((btn) => {
+        btn.addEventListener('click', () => {
+          const next = this.querySelector('[data-step-block="' + btn.dataset.goto + '"]');
+          if (next) {
+            fs.hidden = true; next.hidden = false;
+            this.querySelector('[data-step]').textContent = btn.dataset.goto;
+          } else {
+            fs.hidden = true;
+            const res = this.querySelector('[data-result]');
+            res.hidden = false;
+            this.querySelector('[data-cta]').href = btn.dataset.url || '#';
+            this.querySelector('[data-cta]').textContent = 'See: ' + btn.textContent;
+          }
+        });
+      });
+    });
+    this.querySelector('[data-restart]')?.addEventListener('click', () => {
+      this.querySelector('[data-result]').hidden = true;
+      this.steps.querySelectorAll('[data-step-block]').forEach((fs, i) => { fs.hidden = i !== 0; });
+      this.querySelector('[data-step]').textContent = '1';
+    });
+  }
+}
+if (!customElements.get('gpl-quiz')) customElements.define('gpl-quiz', GplQuiz);`,
+    }),
+  },
+  {
+    id: "spin-wheel",
+    name: "Spin to win wheel",
+    description: "The classic gamified popup - a canvas prize wheel with configurable prizes, spins to a random slice and reveals the code. Proven email-list and conversion builder.",
+    category: "Marketing",
+    kind: "section",
+    controls: [
+      { id: "title", label: "Title", type: "text", maxLength: 40 },
+      { id: "spin_text", label: "Button label", type: "text", maxLength: 20 },
+      { id: "delay", label: "Delay (seconds)", type: "select", options: [{ value: "1", label: "1" }, { value: "3", label: "3" }, { value: "8", label: "8" }] },
+    ],
+    defaults: { title: "Spin to win", spin_text: "Spin the wheel", delay: "3" },
+    install: [
+      ...sectionSteps,
+      "Add 'Prize slice' blocks (2-8). The code field is optional - leave blank for 'no win' slices.",
+      "Create matching discounts in Shopify admin so revealed codes actually work.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-wheel class="gpl-wheel" data-delay="{{ section.settings.delay }}" data-key="gpl-wheel-{{ section.id }}" hidden>
+  <div class="gpl-wheel__box" role="dialog" aria-modal="true" aria-label="{{ section.settings.title | escape }}">
+    <button type="button" class="gpl-wheel__x" data-close aria-label="Close">&times;</button>
+    <h2 class="gpl-wheel__title">{{ section.settings.title | default: 'Spin to win' }}</h2>
+    <div class="gpl-wheel__stage">
+      <canvas class="gpl-wheel__canvas" data-canvas width="280" height="280"></canvas>
+      <div class="gpl-wheel__pin"></div>
+    </div>
+    <button type="button" class="gpl-wheel__spin" data-spin>{{ section.settings.spin_text | default: 'Spin the wheel' }}</button>
+    <div class="gpl-wheel__win" data-win hidden>
+      <p data-win-text></p>
+      <code class="gpl-wheel__code" data-win-code></code>
+    </div>
+    {%- for block in section.blocks -%}
+      <span data-slice data-label="{{ block.settings.label | escape }}" data-code="{{ block.settings.code | escape }}" {{ block.shopify_attributes }} hidden></span>
+    {%- endfor -%}
+  </div>
+</gpl-wheel>
+
+{% schema %}
+{
+  "name": "Spin to win wheel",
+  "max_blocks": 8,
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": ${js(str(v, "title", 40))} },
+    { "type": "text", "id": "spin_text", "label": "Button label", "default": ${js(str(v, "spin_text", 20))} },
+    { "type": "range", "id": "delay", "label": "Delay in seconds", "min": 1, "max": 30, "step": 1, "default": ${Number(v.delay) || 3} }
+  ],
+  "blocks": [
+    {
+      "type": "prize",
+      "name": "Prize slice",
+      "settings": [
+        { "type": "text", "id": "label", "label": "Label", "default": "10% off" },
+        { "type": "text", "id": "code", "label": "Code (blank = no win)" }
+      ]
+    }
+  ],
+  "presets": [{ "name": "Spin to win wheel", "blocks": [{ "type": "prize" }, { "type": "prize" }, { "type": "prize" }, { "type": "prize" }] }]
+}
+{% endschema %}`,
+      css: `.gpl-wheel { position: fixed; inset: 0; z-index: 90; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: rgba(0,0,0,0.55); }
+.gpl-wheel[hidden] { display: none; }
+.gpl-wheel__box { position: relative; width: min(24rem, 100%); padding: 1.75rem 1.5rem; border-radius: 18px; background: #fff; text-align: center; box-shadow: 0 24px 60px rgba(0,0,0,0.35); }
+.gpl-wheel__x { position: absolute; top: 0.6rem; right: 0.75rem; border: 0; background: none; font-size: 1.5rem; cursor: pointer; color: #94a3b8; }
+.gpl-wheel__title { margin: 0 0 1rem; font-size: 1.3rem; font-weight: 800; }
+.gpl-wheel__stage { position: relative; width: 17.5rem; height: 17.5rem; margin: 0 auto; }
+.gpl-wheel__canvas { display: block; width: 100%; height: 100%; }
+.gpl-wheel__pin { position: absolute; top: -6px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 10px solid transparent; border-right: 10px solid transparent; border-top: 18px solid #0f172a; }
+.gpl-wheel__spin { margin-top: 1.1rem; border: 0; border-radius: 999px; padding: 0.75rem 2rem; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-size: 0.8rem; font-weight: 800; cursor: pointer; }
+.gpl-wheel__spin:disabled { opacity: 0.5; cursor: default; }
+.gpl-wheel__win { margin-top: 1rem; }
+.gpl-wheel__win p { margin: 0 0 0.4rem; font-size: 0.85rem; font-weight: 700; }
+.gpl-wheel__code { display: inline-block; padding: 0.5rem 1.2rem; border: 1.5px dashed #0f172a; border-radius: 8px; font-size: 1.05rem; font-weight: 800; letter-spacing: 0.1em; }
+.gpl-wheel__win.is-lose p { color: #64748b; }
+.gpl-wheel__win.is-lose code { display: none; }`,
+      js: `class GplWheel extends HTMLElement {
+  connectedCallback() {
+    if (localStorage.getItem(this.dataset.key) === 'done') return;
+    this.slices = [...this.querySelectorAll('[data-slice]')].map((s) => ({ label: s.dataset.label || '?', code: s.dataset.code || '' }));
+    if (this.slices.length < 2) this.slices = [{ label: '10% off', code: 'WIN10' }, { label: 'Try again', code: '' }];
+    this.querySelector('[data-close]').addEventListener('click', () => this.dismiss());
+    this.addEventListener('click', (e) => { if (e.target === this) this.dismiss(); });
+    this.querySelector('[data-spin]').addEventListener('click', () => this.spin());
+    this.timer = setTimeout(() => { this.hidden = false; this.draw(0); }, Number(this.dataset.delay) * 1000 || 3000);
+  }
+  dismiss() { clearTimeout(this.timer); this.hidden = true; localStorage.setItem(this.dataset.key, 'done'); }
+  draw(rot) {
+    const cv = this.querySelector('[data-canvas]');
+    const ctx = cv.getContext('2d');
+    const n = this.slices.length, arc = (Math.PI * 2) / n, r = cv.width / 2;
+    const cols = ['#0f172a', '#334155', '#16a34a', '#b45309', '#7c3aed', '#be123c', '#0369a1', '#4d7c0f'];
+    ctx.clearRect(0, 0, cv.width, cv.height);
+    this.slices.forEach((s, i) => {
+      ctx.beginPath();
+      ctx.moveTo(r, r);
+      ctx.arc(r, r, r - 4, rot + i * arc, rot + (i + 1) * arc);
+      ctx.closePath();
+      ctx.fillStyle = cols[i % cols.length];
+      ctx.fill();
+      ctx.save();
+      ctx.translate(r, r);
+      ctx.rotate(rot + i * arc + arc / 2);
+      ctx.fillStyle = '#fff';
+      ctx.font = '700 13px system-ui';
+      ctx.textAlign = 'right';
+      ctx.fillText(s.label.slice(0, 14), r - 16, 4);
+      ctx.restore();
+    });
+  }
+  spin() {
+    const btn = this.querySelector('[data-spin]');
+    btn.disabled = true;
+    const n = this.slices.length, arc = (Math.PI * 2) / n;
+    const win = Math.floor(Math.random() * n);
+    const target = Math.PI * 2 * 5 + (Math.PI * 1.5) - (win * arc + arc / 2);
+    const dur = 3200, t0 = performance.now();
+    const tick = (t) => {
+      const p = Math.min(1, (t - t0) / dur);
+      const ease = 1 - Math.pow(1 - p, 3);
+      this.draw(target * ease);
+      if (p < 1) requestAnimationFrame(tick);
+      else {
+        const w = this.slices[win];
+        const box = this.querySelector('[data-win]');
+        box.hidden = false;
+        box.classList.toggle('is-lose', !w.code);
+        this.querySelector('[data-win-text]').textContent = w.code ? 'You won: ' + w.label : 'No luck this time - try tomorrow!';
+        this.querySelector('[data-win-code]').textContent = w.code;
+        localStorage.setItem(this.dataset.key, 'done');
+      }
+    };
+    requestAnimationFrame(tick);
+  }
+}
+if (!customElements.get('gpl-wheel')) customElements.define('gpl-wheel', GplWheel);`,
+    }),
+  },
+  {
+    id: "quick-view",
+    name: "Quick-view collection",
+    description: "A product grid where every card has a quick-view button - opens a modal with image, price, variant picker and add-to-cart without leaving the page. The quick-view feature paid themes charge for.",
+    category: "Product page",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 40 },
+      { id: "collection", label: "Collection handle", type: "text", maxLength: 60 },
+      { id: "limit", label: "Products shown", type: "select", options: [{ value: "4", label: "4" }, { value: "8", label: "8" }, { value: "12", label: "12" }] },
+    ],
+    defaults: { heading: "Shop the look", collection: "", limit: "8" },
+    install: [
+      ...sectionSteps,
+      "Set the collection handle in the settings (find it on the collection page in admin).",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-qv class="gpl-qv">
+  {%- if section.settings.heading != blank -%}<h2 class="gpl-qv__heading">{{ section.settings.heading | escape }}</h2>{%- endif -%}
+  <div class="gpl-qv__grid">
+    {%- assign col = collections[section.settings.collection] -%}
+    {%- if col and col.products.size > 0 -%}
+      {%- for product in col.products limit: section.settings.limit -%}
+        <div class="gpl-qv__card">
+          <a class="gpl-qv__imgwrap" href="{{ product.url }}">
+            {%- if product.featured_image -%}
+              <img class="gpl-qv__img" src="{{ product.featured_image | image_url: width: 400 }}" alt="{{ product.title | escape }}" width="400" height="400" loading="lazy">
+            {%- endif -%}
+            <button type="button" class="gpl-qv__btn" data-qv="{{ product.handle }}">Quick view</button>
+          </a>
+          <a class="gpl-qv__name" href="{{ product.url }}">{{ product.title }}</a>
+          <p class="gpl-qv__price">{{ product.price | money }}</p>
+        </div>
+      {%- endfor -%}
+    {%- else -%}
+      <p class="gpl-qv__hint">Set a collection handle in the section settings to show products with quick-view.</p>
+    {%- endif -%}
+  </div>
+  <div class="gpl-qv__modal" data-modal hidden>
+    <div class="gpl-qv__mbox" role="dialog" aria-modal="true">
+      <button type="button" class="gpl-qv__x" data-close aria-label="Close">&times;</button>
+      <div class="gpl-qv__mbody" data-body><p class="gpl-qv__loading">Loading…</p></div>
+    </div>
+  </div>
+</gpl-qv>
+
+{% schema %}
+{
+  "name": "Quick-view collection",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading", 40))} },
+    { "type": "collection", "id": "collection", "label": "Collection" },
+    { "type": "range", "id": "limit", "label": "Products shown", "min": 2, "max": 12, "step": 1, "default": ${Number(v.limit) || 8} }
+  ],
+  "presets": [{ "name": "Quick-view collection" }]
+}
+{% endschema %}`,
+      css: `.gpl-qv { display: block; }
+.gpl-qv__heading { margin: 0 0 1.2rem; font-size: 1.3rem; font-weight: 800; }
+.gpl-qv__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+@media (max-width: 900px) { .gpl-qv__grid { grid-template-columns: repeat(2, 1fr); } }
+.gpl-qv__hint { grid-column: 1 / -1; margin: 2rem 0; text-align: center; font-size: 0.8rem; color: #94a3b8; }
+.gpl-qv__imgwrap { position: relative; display: block; }
+.gpl-qv__img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 12px; }
+.gpl-qv__btn { position: absolute; left: 50%; bottom: 0.6rem; transform: translateX(-50%); border: 0; border-radius: 999px; padding: 0.45rem 1rem; background: rgba(255,255,255,0.92); color: #0f172a; font-size: 0.62rem; font-weight: 800; cursor: pointer; opacity: 0; transition: opacity 0.2s; }
+.gpl-qv__imgwrap:hover .gpl-qv__btn, .gpl-qv__btn:focus { opacity: 1; }
+.gpl-qv__name { display: block; margin-top: 0.55rem; font-size: 0.72rem; font-weight: 700; color: inherit; text-decoration: none; }
+.gpl-qv__price { margin: 0.2rem 0 0; font-size: 0.7rem; color: #64748b; }
+.gpl-qv__modal { position: fixed; inset: 0; z-index: 90; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: rgba(0,0,0,0.5); }
+.gpl-qv__modal[hidden] { display: none; }
+.gpl-qv__mbox { position: relative; width: min(34rem, 100%); max-height: 85vh; overflow-y: auto; border-radius: 16px; background: #fff; padding: 1.5rem; }
+.gpl-qv__x { position: absolute; top: 0.6rem; right: 0.75rem; border: 0; background: none; font-size: 1.5rem; cursor: pointer; }
+.gpl-qv__mprod { display: grid; grid-template-columns: 12rem 1fr; gap: 1.2rem; align-items: start; }
+@media (max-width: 560px) { .gpl-qv__mprod { grid-template-columns: 1fr; } }
+.gpl-qv__mimg { width: 100%; border-radius: 10px; }
+.gpl-qv__mname { margin: 0; font-size: 1rem; font-weight: 800; }
+.gpl-qv__mprice { margin: 0.35rem 0 0.8rem; font-size: 0.9rem; font-weight: 700; }
+.gpl-qv__mdesc { margin: 0 0 0.9rem; font-size: 0.72rem; color: #475569; }
+.gpl-qv__var { width: 100%; padding: 0.6rem; margin-bottom: 0.7rem; border: 1px solid rgba(148,163,184,0.4); border-radius: 8px; font-size: 0.75rem; }
+.gpl-qv__add { width: 100%; border: 0; border-radius: var(--buttons-radius, 10px); padding: 0.75rem; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-size: 0.78rem; font-weight: 800; cursor: pointer; }
+.gpl-qv__view { display: inline-block; margin-top: 0.7rem; font-size: 0.68rem; text-decoration: underline; color: inherit; }
+.gpl-qv__loading { margin: 3rem 0; text-align: center; color: #94a3b8; font-size: 0.8rem; }`,
+      js: `class GplQv extends HTMLElement {
+  connectedCallback() {
+    this.modal = this.querySelector('[data-modal]');
+    this.body = this.querySelector('[data-body]');
+    this.querySelector('[data-close]').addEventListener('click', () => this.close());
+    this.modal.addEventListener('click', (e) => { if (e.target === this.modal) this.close(); });
+    this.querySelectorAll('[data-qv]').forEach((b) => {
+      b.addEventListener('click', (e) => { e.preventDefault(); this.open(b.dataset.qv); });
+    });
+  }
+  money(c) { return (window.Shopify && Shopify.formatMoney) ? Shopify.formatMoney(c) : (c / 100).toFixed(2); }
+  close() { this.modal.hidden = true; }
+  open(handle) {
+    this.modal.hidden = false;
+    this.body.innerHTML = '<p class="gpl-qv__loading">Loading…</p>';
+    fetch('/products/' + handle + '.js').then((r) => r.json()).then((p) => {
+      const vars = (p.variants || []).filter((v) => v.available);
+      this.body.innerHTML =
+        '<div class="gpl-qv__mprod">' +
+        (p.featured_image ? '<img class="gpl-qv__mimg" src="' + p.featured_image + '" alt="">' : '<div></div>') +
+        '<div><h3 class="gpl-qv__mname">' + p.title + '</h3>' +
+        '<p class="gpl-qv__mprice" data-price>' + this.money(p.price) + '</p>' +
+        '<p class="gpl-qv__mdesc">' + (p.description || '').replace(/<[^>]*>/g, '').slice(0, 140) + '…</p>' +
+        (vars.length > 1
+          ? '<select class="gpl-qv__var">' + vars.map((v) => '<option value="' + v.id + '">' + v.title + '</option>').join('') + '</select>'
+          : '') +
+        '<button type="button" class="gpl-qv__add"' + (vars.length ? '' : ' disabled') + '>' + (vars.length ? 'Add to cart' : 'Sold out') + '</button>' +
+        '<a class="gpl-qv__view" href="' + p.url + '">View full details</a></div></div>';
+      const sel = this.body.querySelector('.gpl-qv__var');
+      if (sel) sel.addEventListener('change', () => { const v = vars.find((x) => x.id === Number(sel.value)); if (v) this.body.querySelector('[data-price]').textContent = this.money(v.price); });
+      this.body.querySelector('.gpl-qv__add').addEventListener('click', () => {
+        const vid = sel ? Number(sel.value) : (vars[0] && vars[0].id);
+        if (!vid) return;
+        fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: [{ id: vid, quantity: 1 }] }) })
+          .then(() => { window.location.href = '/cart'; });
+      });
+    }).catch(() => { this.body.innerHTML = '<p class="gpl-qv__loading">Could not load this product.</p>'; });
+  }
+}
+if (!customElements.get('gpl-qv')) customElements.define('gpl-qv', GplQv);`,
+    }),
+  },
+  {
+    id: "delivery-date",
+    name: "Delivery date picker",
+    description: "Let shoppers pick a preferred delivery date and add a note on the cart page - saved as real order attributes your packing team sees. What gifting apps bundle for $10+/mo.",
+    category: "Cart & checkout",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 40 },
+      { id: "mindays", label: "Earliest (days from today)", type: "select", options: [{ value: "0", label: "Today" }, { value: "1", label: "Tomorrow" }, { value: "2", label: "2 days" }] },
+      { id: "note", label: "Allow gift note", type: "toggle" },
+    ],
+    defaults: { heading: "Delivery preferences", mindays: "1", note: true },
+    install: [
+      ...sectionSteps,
+      "Add to your cart template - the date and note save as order attributes and appear on the order in admin.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-date class="gpl-date" data-min="{{ section.settings.mindays }}">
+  <p class="gpl-date__heading">{{ section.settings.heading | default: 'Delivery preferences' }}</p>
+  <label class="gpl-date__lbl">
+    Preferred delivery date
+    <input type="date" class="gpl-date__input" data-date>
+  </label>
+  {%- if section.settings.note -%}
+    <label class="gpl-date__lbl">
+      Gift / order note
+      <textarea class="gpl-date__note" data-note rows="2" placeholder="Leave at door, wrap it…"></textarea>
+    </label>
+  {%- endif -%}
+  <p class="gpl-date__saved" data-saved hidden>Saved to your order.</p>
+</gpl-date>
+
+{% schema %}
+{
+  "name": "Delivery date picker",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading", 40))} },
+    { "type": "range", "id": "mindays", "label": "Earliest selectable (days from today)", "min": 0, "max": 14, "step": 1, "default": ${Number(v.mindays) || 1} },
+    { "type": "checkbox", "id": "note", "label": "Allow gift / order note", "default": true }
+  ],
+  "presets": [{ "name": "Delivery date picker" }]
+}
+{% endschema %}`,
+      css: `.gpl-date { display: block; margin: 1rem 0; padding: 1.1rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 12px; }
+.gpl-date__heading { margin: 0 0 0.8rem; font-size: 0.82rem; font-weight: 800; }
+.gpl-date__lbl { display: block; margin-bottom: 0.7rem; font-size: 0.68rem; font-weight: 600; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
+.gpl-date__input, .gpl-date__note { display: block; width: 100%; margin-top: 0.3rem; padding: 0.6rem 0.75rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.35); border-radius: 8px; font-size: 0.75rem; font-family: inherit; background: transparent; color: inherit; box-sizing: border-box; }
+.gpl-date__saved { margin: 0.5rem 0 0; font-size: 0.65rem; font-weight: 700; color: #16a34a; }`,
+      js: `class GplDate extends HTMLElement {
+  connectedCallback() {
+    const min = Number(this.dataset.min) || 0;
+    const input = this.querySelector('[data-date]');
+    const note = this.querySelector('[data-note]');
+    const d = new Date();
+    d.setDate(d.getDate() + min);
+    input.min = d.toISOString().slice(0, 10);
+    const save = () => {
+      const attrs = {};
+      if (input.value) attrs['Preferred delivery date'] = input.value;
+      if (note && note.value) attrs['Order note'] = note.value;
+      fetch('/cart/update.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ attributes: attrs }) })
+        .then(() => {
+          const s = this.querySelector('[data-saved]');
+          s.hidden = false;
+          clearTimeout(this._t);
+          this._t = setTimeout(() => { s.hidden = true; }, 2500);
+        });
+    };
+    input.addEventListener('change', save);
+    if (note) note.addEventListener('change', save);
+  }
+}
+if (!customElements.get('gpl-date')) customElements.define('gpl-date', GplDate);`,
+    }),
+  },
 ];
 
 export function getExample(id: string | undefined): PlaygroundExample {
