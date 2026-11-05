@@ -3752,6 +3752,136 @@ function SocialUnlock({ v }: P) {
   );
 }
 
+function CartDrawer({ v }: P) {
+  const [open, setOpen] = useState(false);
+  const [qty, setQty] = useState(2);
+  const threshold = Number(str(v, "threshold")) || 0;
+  const total = qty * 4900;
+  const left = Math.max(0, threshold * 100 - total);
+  return (
+    <div className="relative h-64 overflow-hidden bg-neutral-50">
+      {on(v, "floating") && (
+        <button type="button" onClick={() => setOpen(true)} className="absolute bottom-4 right-4 flex items-center gap-1.5 rounded-full bg-neutral-900 px-4 py-2.5 text-[0.65rem] font-bold text-white shadow-lg">
+          Cart <span className="rounded-full bg-white/20 px-1.5">{qty}</span>
+        </button>
+      )}
+      {open && <div className="absolute inset-0 bg-black/40" onClick={() => setOpen(false)} />}
+      <div className={`absolute right-0 top-0 flex h-full w-64 flex-col bg-white shadow-xl transition-transform duration-300 ${open ? "" : "translate-x-full"}`}>
+        <div className="flex items-center justify-between border-b border-neutral-200 px-4 py-3">
+          <p className="m-0 text-[0.7rem] font-extrabold">{str(v, "heading") || "Your cart"} <span className="text-neutral-400">{qty}</span></p>
+          <button type="button" onClick={() => setOpen(false)} className="text-lg leading-none">&times;</button>
+        </div>
+        {threshold > 0 && (
+          <div className="border-b border-neutral-100 px-4 py-2.5">
+            <p className="m-0 mb-1 text-[0.55rem] font-semibold">{left > 0 ? `Rs ${left / 100} away from free shipping` : "Free shipping unlocked!"}</p>
+            <div className="h-1.5 overflow-hidden rounded-full bg-neutral-200"><div className="h-full bg-emerald-500" style={{ width: `${Math.min(100, (total / (threshold * 100)) * 100)}%` }} /></div>
+          </div>
+        )}
+        <div className="flex-1 overflow-y-auto px-4 py-3">
+          <div className="flex gap-2.5 border-b border-neutral-100 pb-3">
+            <div className="size-14 shrink-0 rounded-lg bg-neutral-200" />
+            <div className="flex-1 text-[0.62rem]">
+              <p className="m-0 font-bold">Merino cardigan</p>
+              <p className="m-0 text-neutral-500">Rs 49.00</p>
+              <span className="mt-1 inline-flex items-center gap-2 rounded-md border border-neutral-300 px-2 py-0.5">
+                <button type="button" onClick={() => setQty(Math.max(1, qty - 1))}>-</button><b>{qty}</b><button type="button" onClick={() => setQty(qty + 1)}>+</button>
+              </span>
+            </div>
+            <button type="button" onClick={() => setQty(0)} className="self-start text-neutral-400">&times;</button>
+          </div>
+        </div>
+        <div className="border-t border-neutral-200 px-4 py-3">
+          <p className="m-0 mb-2 flex justify-between text-[0.65rem]"><span>Subtotal</span><b>Rs {(total / 100).toFixed(2)}</b></p>
+          <div className="rounded-lg bg-neutral-900 py-2.5 text-center text-[0.65rem] font-bold text-white">Checkout</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function WishlistPage({ v }: P) {
+  const items = [["Merino cardigan", "49.00"], ["Linen overshirt", "89.00"], ["Canvas tote", "35.00"]];
+  return (
+    <div className="p-6">
+      <h2 className="m-0 mb-4 text-lg font-extrabold">{str(v, "heading") || "My wishlist"}</h2>
+      <div className="grid grid-cols-3 gap-3">
+        {items.map(([n, p]) => (
+          <div key={n} className="overflow-hidden rounded-xl border border-neutral-200">
+            <div className="relative aspect-square bg-neutral-100">
+              <button type="button" className="absolute right-1.5 top-1.5 flex size-6 items-center justify-center rounded-full bg-white/90 text-[0.6rem]">&times;</button>
+            </div>
+            <div className="p-2.5">
+              <p className="m-0 text-[0.6rem] font-bold">{n}</p>
+              <p className="m-0 mb-1.5 text-[0.58rem] text-neutral-500">Rs {p}</p>
+              <div className="rounded-md bg-neutral-900 py-1.5 text-center text-[0.55rem] font-bold text-white">Add to cart</div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ScratchCard({ v }: P) {
+  const [scratched, setScratched] = useState(false);
+  return (
+    <div className="flex h-56 items-center justify-center bg-black/50 p-4">
+      <div className="relative w-64 rounded-2xl bg-white p-5 text-center">
+        <button type="button" className="absolute right-2.5 top-2 text-lg text-neutral-400">&times;</button>
+        <h2 className="m-0 mb-3 text-base font-extrabold">{str(v, "title") || "Scratch & win"}</h2>
+        <div className="relative overflow-hidden rounded-lg">
+          <code className="block py-4 text-base font-extrabold tracking-widest">{str(v, "code") || "LUCKY15"}</code>
+          {!scratched ? (
+            <button type="button" onClick={() => setScratched(true)} className="absolute inset-0 flex items-center justify-center text-[0.6rem] font-bold text-white" style={{ background: hex(v, "foil") }}>SCRATCH HERE</button>
+          ) : null}
+        </div>
+        <p className="m-0 mt-2.5 text-[0.55rem] text-neutral-400">{scratched ? "Use the code at checkout" : "Click to simulate scratching"}</p>
+      </div>
+    </div>
+  );
+}
+
+function BuyBox({ v }: P) {
+  const accent = hex(v, "accent");
+  const rows = [
+    ["dot", "In stock - ready to ship"],
+    ["check", "Free shipping over $50"],
+    ["truck", "Order today - dispatched in 24 hours"],
+    ["shield", "30-day money-back guarantee"],
+    ["text", "Secure checkout - UPI, cards & COD"],
+  ];
+  return (
+    <div className="grid gap-2 p-4">
+      {rows.map(([k, t]) => (
+        <p key={t} className="m-0 flex items-center gap-2 text-[0.62rem]">
+          {k === "dot" ? <span className="size-2 shrink-0 rounded-full" style={{ background: accent }} />
+            : k === "text" ? null
+            : <svg className="size-3.5 shrink-0" viewBox="0 0 24 24" fill="none" stroke={accent} strokeWidth="2.2"><path d={k === "check" ? "m5 13 4 4L19 7" : k === "truck" ? "M5 17h-2v-11a1 1 0 0 1 1-1h9v12m-8 0h8m4 0h2v-6h-6v6m0-9h4l4 4" : "M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"}/></svg>}
+          <span className={k === "text" ? "font-bold" : ""}>{t}</span>
+        </p>
+      ))}
+    </div>
+  );
+}
+
+function StockAlert({ v }: P) {
+  const [sent, setSent] = useState(false);
+  return (
+    <div className="m-4 rounded-xl border border-dashed border-neutral-300 p-4">
+      <p className="m-0 text-[0.68rem] font-extrabold">{str(v, "heading") || "Sold out - notify me"}</p>
+      <p className="m-0 mt-1 text-[0.58rem] text-neutral-500">{str(v, "sub")}</p>
+      {sent ? (
+        <p className="m-0 mt-3 text-[0.6rem] font-bold text-emerald-600">Done - we will email you as soon as it is back.</p>
+      ) : (
+        <div className="mt-3 flex gap-2">
+          <input readOnly placeholder="you@email.com" className="min-w-0 flex-1 rounded-lg border border-neutral-300 px-3 py-1.5 text-[0.62rem]" />
+          <button type="button" onClick={() => setSent(true)} className="rounded-lg bg-neutral-900 px-3.5 py-1.5 text-[0.62rem] font-bold text-white">{str(v, "button") || "Notify me"}</button>
+        </div>
+      )}
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -3956,6 +4086,11 @@ const map: Record<string, (p: P) => ReactNode> = {
   "limited-edition": LimitedEdition,
   "festival-banner": FestivalBanner,
   "social-unlock": SocialUnlock,
+  "cart-drawer": CartDrawer,
+  "wishlist-page": WishlistPage,
+  "scratch-card": ScratchCard,
+  "buy-box-booster": BuyBox,
+  "stock-alert": StockAlert,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {

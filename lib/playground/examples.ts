@@ -10572,6 +10572,493 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
       usage: `{% render 'social-unlock', offer: ${js(str(v, "offer"))}, code: ${js(str(v, "code"))} %}`,
     }),
   },
+  {
+    id: "cart-drawer",
+    name: "Slide-out cart drawer",
+    description: "The flagship replacement for paid cart-drawer apps - free-shipping bar, qty controls, remove, subtotal and an optional upsell card. Intercepts the add-to-cart form and opens automatically.",
+    category: "Cart & checkout",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 30 },
+      { id: "threshold", label: "Free shipping threshold (rupees, 0 = off)", type: "text", maxLength: 8 },
+      { id: "upsell", label: "Upsell product handle", type: "text", maxLength: 60 },
+      { id: "floating", label: "Show floating cart button", type: "toggle" },
+      { id: "hijack", label: "Open drawer on add-to-cart", type: "toggle" },
+    ],
+    defaults: { heading: "Your cart", threshold: "999", upsell: "", floating: true, hijack: true },
+    install: [
+      ...sectionSteps,
+      "Best placement: add the section to the Header group or every template so the drawer is available site-wide.",
+      "To trigger it from your theme's own cart icon instead of the floating button, turn off the floating button and add data-gpl-cart-open to your header cart link.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-cart class="gpl-cart" data-threshold="{{ section.settings.threshold | times: 100 }}" data-hijack="{{ section.settings.hijack }}">
+  {%- if section.settings.floating -%}
+    <button type="button" class="gpl-cart__trigger" data-open aria-label="Open cart">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+      <span class="gpl-cart__count" data-count>0</span>
+    </button>
+  {%- endif -%}
+  <div class="gpl-cart__overlay" data-close hidden></div>
+  <aside class="gpl-cart__drawer" data-drawer aria-hidden="true" aria-label="{{ section.settings.heading | escape }}">
+    <header class="gpl-cart__head">
+      <p class="gpl-cart__title">{{ section.settings.heading | default: 'Your cart' }} <span data-count>0</span></p>
+      <button type="button" class="gpl-cart__x" data-close aria-label="Close">&times;</button>
+    </header>
+    <div class="gpl-cart__ship" data-ship hidden>
+      <p class="gpl-cart__shiptext" data-ship-text></p>
+      <div class="gpl-cart__bar"><span data-ship-fill></span></div>
+    </div>
+    <div class="gpl-cart__items" data-items><p class="gpl-cart__empty">Your cart is empty.</p></div>
+    {%- if section.settings.upsell != blank -%}
+      {%- assign u = all_products[section.settings.upsell] -%}
+      {%- if u -%}
+        <div class="gpl-cart__upsell">
+          {%- if u.featured_image -%}<img src="{{ u.featured_image | image_url: width: 80 }}" alt="{{ u.title | escape }}" width="80" height="80" loading="lazy">{%- endif -%}
+          <div class="gpl-cart__uinfo">
+            <p>{{ u.title }}</p>
+            <span>{{ u.price | money }}</span>
+          </div>
+          <button type="button" class="gpl-cart__uadd" data-add-variant="{{ u.selected_or_first_available_variant.id }}">Add</button>
+        </div>
+      {%- endif -%}
+    {%- endif -%}
+    <footer class="gpl-cart__foot">
+      <p class="gpl-cart__sub"><span>Subtotal</span><b data-subtotal></b></p>
+      <a class="gpl-cart__checkout" href="{{ routes.cart_url }}">Checkout</a>
+    </footer>
+  </aside>
+</gpl-cart>
+
+{% schema %}
+{
+  "name": "Cart drawer",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading", 30))} },
+    { "type": "number", "id": "threshold", "label": "Free shipping threshold (rupees, 0 disables the bar)", "default": ${Number(v.threshold) || 0} },
+    { "type": "text", "id": "upsell", "label": "Upsell product handle" },
+    { "type": "checkbox", "id": "floating", "label": "Show floating cart button", "default": true },
+    { "type": "checkbox", "id": "hijack", "label": "Open drawer when shoppers add to cart", "default": true }
+  ],
+  "presets": [{ "name": "Cart drawer" }]
+}
+{% endschema %}`,
+      css: `.gpl-cart__trigger {
+  position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 80;
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.8rem 1rem; border: 0; border-radius: 999px;
+  background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255));
+  font-weight: 700; cursor: pointer; box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+}
+.gpl-cart__trigger svg { width: 1.1rem; height: 1.1rem; }
+.gpl-cart__overlay { position: fixed; inset: 0; z-index: 88; background: rgba(0,0,0,0.45); }
+.gpl-cart__drawer {
+  position: fixed; top: 0; right: 0; z-index: 90;
+  width: min(24rem, 92vw); height: 100dvh;
+  display: flex; flex-direction: column;
+  background: rgb(var(--color-background, 255 255 255)); color: inherit;
+  transform: translateX(100%); transition: transform 0.28s ease;
+  box-shadow: -10px 0 40px rgba(0,0,0,0.2);
+}
+.gpl-cart.is-open .gpl-cart__drawer { transform: none; }
+.gpl-cart__head { display: flex; align-items: center; justify-content: space-between; padding: 1rem 1.1rem; border-bottom: 1px solid rgba(148,163,184,0.25); }
+.gpl-cart__title { margin: 0; font-size: 0.95rem; font-weight: 800; }
+.gpl-cart__x { border: 0; background: none; font-size: 1.4rem; cursor: pointer; line-height: 1; }
+.gpl-cart__ship { padding: 0.8rem 1.1rem; border-bottom: 1px solid rgba(148,163,184,0.15); }
+.gpl-cart__shiptext { margin: 0 0 0.45rem; font-size: 0.7rem; font-weight: 600; }
+.gpl-cart__bar { height: 5px; border-radius: 999px; background: rgba(148,163,184,0.3); overflow: hidden; }
+.gpl-cart__bar span { display: block; height: 100%; background: #16a34a; transition: width 0.3s; }
+.gpl-cart__items { flex: 1; overflow-y: auto; padding: 0.75rem 1.1rem; }
+.gpl-cart__empty { margin: 2rem 0; text-align: center; font-size: 0.8rem; color: #94a3b8; }
+.gpl-cart__row { display: flex; gap: 0.7rem; padding: 0.6rem 0; border-bottom: 1px solid rgba(148,163,184,0.15); }
+.gpl-cart__row img { width: 3.5rem; height: 3.5rem; object-fit: cover; border-radius: 8px; }
+.gpl-cart__rinfo { flex: 1; font-size: 0.72rem; }
+.gpl-cart__rname { margin: 0 0 0.2rem; font-weight: 700; }
+.gpl-cart__rprice { color: #64748b; }
+.gpl-cart__qty { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 0.4rem; border: 1px solid rgba(148,163,184,0.35); border-radius: 8px; }
+.gpl-cart__qty button { border: 0; background: none; padding: 0.3rem 0.6rem; cursor: pointer; font-size: 0.9rem; }
+.gpl-cart__rm { border: 0; background: none; color: #94a3b8; cursor: pointer; font-size: 0.95rem; align-self: flex-start; }
+.gpl-cart__upsell { display: flex; align-items: center; gap: 0.6rem; margin: 0 1.1rem; padding: 0.7rem; border: 1px dashed rgba(148,163,184,0.45); border-radius: 10px; font-size: 0.7rem; }
+.gpl-cart__upsell img { width: 2.6rem; height: 2.6rem; object-fit: cover; border-radius: 6px; }
+.gpl-cart__uinfo p { margin: 0; font-weight: 700; } .gpl-cart__uinfo span { color: #64748b; }
+.gpl-cart__uadd { margin-left: auto; border: 0; border-radius: 999px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); padding: 0.4rem 0.9rem; font-size: 0.68rem; font-weight: 700; cursor: pointer; }
+.gpl-cart__foot { padding: 1rem 1.1rem; border-top: 1px solid rgba(148,163,184,0.25); }
+.gpl-cart__sub { display: flex; justify-content: space-between; margin: 0 0 0.8rem; font-size: 0.85rem; }
+.gpl-cart__checkout { display: block; padding: 0.85rem; border-radius: var(--buttons-radius, 10px); background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); text-align: center; font-weight: 800; text-decoration: none; }`,
+      js: `class GplCart extends HTMLElement {
+  connectedCallback() {
+    this.threshold = Number(this.dataset.threshold) || 0;
+    this.drawer = this.querySelector('[data-drawer]');
+    this.overlay = this.querySelector('.gpl-cart__overlay');
+    this.querySelectorAll('[data-open]').forEach((b) => b.addEventListener('click', () => this.open()));
+    this.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => this.close()));
+    this.overlay.addEventListener('click', () => this.close());
+    this.querySelector('[data-add-variant]')?.addEventListener('click', (e) => this.addVariant(Number(e.currentTarget.dataset.addVariant)));
+    if (this.dataset.hijack === 'true') {
+      document.addEventListener('submit', (e) => this.onSubmit(e), true);
+      document.addEventListener('click', (e) => { const t = e.target.closest('[data-gpl-cart-open]'); if (t) { e.preventDefault(); this.open(); } });
+    }
+    this.refresh();
+  }
+  money(c) { return (window.Shopify && Shopify.formatMoney) ? Shopify.formatMoney(c) : (c / 100).toFixed(2); }
+  open() { this.classList.add('is-open'); this.drawer.setAttribute('aria-hidden', 'false'); this.overlay.hidden = false; document.documentElement.style.overflow = 'hidden'; this.refresh(); }
+  close() { this.classList.remove('is-open'); this.drawer.setAttribute('aria-hidden', 'true'); this.overlay.hidden = true; document.documentElement.style.overflow = ''; }
+  onSubmit(e) {
+    const form = e.target;
+    if (!(form instanceof HTMLFormElement) || !String(form.action).includes('/cart/add')) return;
+    e.preventDefault();
+    const data = new FormData(form);
+    const id = data.get('id');
+    if (!id) { form.submit(); return; }
+    const properties = {};
+    for (const [k, val] of data.entries()) { const m = k.match(/^properties\\[(.+)\\]$/); if (m && val) properties[m[1]] = val; }
+    fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: [{ id: Number(id), quantity: Number(data.get('quantity')) || 1, properties }] }) })
+      .then(() => { this.refresh(); this.open(); })
+      .catch(() => form.submit());
+  }
+  addVariant(vid) { fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: [{ id: vid, quantity: 1 }] }) }).then(() => this.refresh()); }
+  setQty(key, qty) { fetch('/cart/change.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: key, quantity: qty }) }).then((r) => r.json()).then((c) => this.render(c)); }
+  refresh() { fetch('/cart.js').then((r) => r.json()).then((c) => this.render(c)); }
+  render(cart) {
+    this.querySelectorAll('[data-count]').forEach((el) => { el.textContent = cart.item_count; });
+    const box = this.querySelector('[data-items]');
+    if (!cart.items.length) { box.innerHTML = '<p class="gpl-cart__empty">Your cart is empty.</p>'; }
+    else {
+      box.innerHTML = '';
+      cart.items.forEach((it) => {
+        const row = document.createElement('div');
+        row.className = 'gpl-cart__row';
+        row.innerHTML =
+          (it.image ? '<img src="' + it.image + '" alt="" loading="lazy">' : '<div></div>') +
+          '<div class="gpl-cart__rinfo"><p class="gpl-cart__rname">' + it.product_title + '</p><span class="gpl-cart__rprice">' + this.money(it.final_line_price) + '</span>' +
+          '<span class="gpl-cart__qty"><button type="button" data-dec>-</button><b>' + it.quantity + '</b><button type="button" data-inc>+</button></span></div>' +
+          '<button type="button" class="gpl-cart__rm" aria-label="Remove">&times;</button>';
+        row.querySelector('[data-dec]').addEventListener('click', () => this.setQty(it.key, it.quantity - 1));
+        row.querySelector('[data-inc]').addEventListener('click', () => this.setQty(it.key, it.quantity + 1));
+        row.querySelector('.gpl-cart__rm').addEventListener('click', () => this.setQty(it.key, 0));
+        box.appendChild(row);
+      });
+    }
+    this.querySelector('[data-subtotal]').textContent = this.money(cart.total_price);
+    const ship = this.querySelector('[data-ship]');
+    if (this.threshold > 0) {
+      ship.hidden = false;
+      const left = Math.max(0, this.threshold - cart.total_price);
+      this.querySelector('[data-ship-text]').textContent = left > 0 ? 'You are ' + this.money(left) + ' away from free shipping' : 'You unlocked free shipping!';
+      this.querySelector('[data-ship-fill]').style.width = Math.min(100, Math.round((cart.total_price / this.threshold) * 100)) + '%';
+    } else ship.hidden = true;
+  }
+}
+if (!customElements.get('gpl-cart')) customElements.define('gpl-cart', GplCart);`,
+    }),
+  },
+  {
+    id: "wishlist-page",
+    name: "Wishlist page",
+    description: "A full wishlist page that displays products saved by the Wishlist heart button - fetched live, add-to-cart and remove included. Pair it with wishlist-button for a complete no-app wishlist.",
+    category: "Content",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 40 },
+      { id: "empty", label: "Empty message", type: "text", maxLength: 80 },
+    ],
+    defaults: { heading: "My wishlist", empty: "Nothing saved yet - tap the heart on any product." },
+    install: [
+      ...sectionSteps,
+      "Create a Page (Online Store > Pages), assign it to a template, add this section, then link the page in your navigation as 'Wishlist'.",
+      "Pair with the wishlist-button snippet on product pages - they share the same saved list.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-wishlist class="gpl-wlist" data-empty="{{ section.settings.empty | escape }}">
+  <h2 class="gpl-wlist__heading">{{ section.settings.heading | default: 'My wishlist' }}</h2>
+  <div class="gpl-wlist__grid" data-grid><p class="gpl-wlist__loading">Loading saved items…</p></div>
+</gpl-wishlist>
+
+{% schema %}
+{
+  "name": "Wishlist page",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading", 40))} },
+    { "type": "text", "id": "empty", "label": "Empty message", "default": ${js(str(v, "empty", 80))} }
+  ],
+  "presets": [{ "name": "Wishlist page" }]
+}
+{% endschema %}`,
+      css: `.gpl-wlist { display: block; padding: 1.5rem 0; }
+.gpl-wlist__heading { margin: 0 0 1.25rem; font-size: 1.4rem; font-weight: 800; }
+.gpl-wlist__grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1rem; }
+@media (max-width: 900px) { .gpl-wlist__grid { grid-template-columns: repeat(2, 1fr); } }
+.gpl-wlist__loading, .gpl-wlist__empty { grid-column: 1 / -1; margin: 3rem 0; text-align: center; font-size: 0.85rem; color: #94a3b8; }
+.gpl-wlist__card { position: relative; border: 1px solid rgba(148,163,184,0.3); border-radius: 12px; overflow: hidden; }
+.gpl-wlist__img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+.gpl-wlist__info { padding: 0.7rem 0.8rem; }
+.gpl-wlist__name { margin: 0; font-size: 0.75rem; font-weight: 700; text-decoration: none; color: inherit; display: block; }
+.gpl-wlist__price { margin: 0.25rem 0 0.6rem; font-size: 0.72rem; color: #64748b; }
+.gpl-wlist__add { width: 100%; border: 0; border-radius: 8px; padding: 0.55rem; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-size: 0.68rem; font-weight: 700; cursor: pointer; }
+.gpl-wlist__rm { position: absolute; top: 0.5rem; right: 0.5rem; width: 1.8rem; height: 1.8rem; border: 0; border-radius: 999px; background: rgba(255,255,255,0.9); cursor: pointer; font-size: 0.9rem; line-height: 1; }`,
+      js: `class GplWishlist extends HTMLElement {
+  connectedCallback() {
+    const KEY = 'gpl-wishlist';
+    const grid = this.querySelector('[data-grid]');
+    const handles = JSON.parse(localStorage.getItem(KEY) || '[]');
+    const money = (c) => (window.Shopify && Shopify.formatMoney) ? Shopify.formatMoney(c) : (c / 100).toFixed(2);
+    if (!handles.length) { grid.innerHTML = '<p class="gpl-wlist__empty">' + this.dataset.empty + '</p>'; return; }
+    Promise.all(handles.map((h) => fetch('/products/' + h + '.js').then((r) => (r.ok ? r.json() : null)).catch(() => null)))
+      .then((products) => {
+        grid.innerHTML = '';
+        const real = products.filter(Boolean);
+        if (!real.length) { grid.innerHTML = '<p class="gpl-wlist__empty">' + this.dataset.empty + '</p>'; return; }
+        real.forEach((p) => {
+          const card = document.createElement('div');
+          card.className = 'gpl-wlist__card';
+          const vid = p.variants && p.variants.length ? p.variants[0].id : 0;
+          card.innerHTML =
+            '<button type="button" class="gpl-wlist__rm" aria-label="Remove">&times;</button>' +
+            (p.featured_image ? '<img class="gpl-wlist__img" src="' + p.featured_image + '" alt="" loading="lazy">' : '') +
+            '<div class="gpl-wlist__info"><a class="gpl-wlist__name" href="' + p.url + '">' + p.title + '</a>' +
+            '<p class="gpl-wlist__price">' + money(p.price) + '</p>' +
+            '<button type="button" class="gpl-wlist__add">Add to cart</button></div>';
+          card.querySelector('.gpl-wlist__rm').addEventListener('click', () => {
+            const l = JSON.parse(localStorage.getItem(KEY) || '[]').filter((h) => h !== p.handle);
+            localStorage.setItem(KEY, JSON.stringify(l));
+            card.remove();
+            if (!grid.children.length) grid.innerHTML = '<p class="gpl-wlist__empty">' + this.dataset.empty + '</p>';
+          });
+          card.querySelector('.gpl-wlist__add').addEventListener('click', () => {
+            fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: [{ id: vid, quantity: 1 }] }) })
+              .then(() => { window.location.href = '/cart'; });
+          });
+          grid.appendChild(card);
+        });
+      });
+  }
+}
+if (!customElements.get('gpl-wishlist')) customElements.define('gpl-wishlist', GplWishlist);`,
+    }),
+  },
+  {
+    id: "scratch-card",
+    name: "Scratch card popup",
+    description: "The viral gamified popup - shoppers scratch a foil layer on a real canvas to reveal their coupon code. Session-gated, dismissible, huge email-list and conversion numbers.",
+    category: "Marketing",
+    kind: "section",
+    controls: [
+      { id: "title", label: "Title", type: "text", maxLength: 40 },
+      { id: "code", label: "Coupon code", type: "text", maxLength: 20 },
+      { id: "foil", label: "Foil colour", type: "color" },
+      { id: "delay", label: "Delay (seconds)", type: "select", options: [{ value: "1", label: "1" }, { value: "3", label: "3" }, { value: "8", label: "8" }] },
+    ],
+    defaults: { title: "Scratch & win", code: "LUCKY15", foil: "#8b96a5", delay: "3" },
+    install: [
+      ...sectionSteps,
+      "Create a real discount in Shopify admin first - the popup only reveals it, Shopify applies it at checkout.",
+      "Add once per page. It remembers scratched visitors via localStorage.",
+    ],
+    files: (v) => ({
+      liquid: `<gpl-scratch class="gpl-scratch" data-delay="{{ section.settings.delay }}" data-key="gpl-scratch-{{ section.id }}" data-foil="{{ section.settings.foil }}" hidden>
+  <div class="gpl-scratch__box" role="dialog" aria-modal="true" aria-label="{{ section.settings.title | escape }}">
+    <button type="button" class="gpl-scratch__x" data-close aria-label="Close">&times;</button>
+    <h2 class="gpl-scratch__title">{{ section.settings.title | default: 'Scratch & win' }}</h2>
+    <div class="gpl-scratch__area">
+      <code class="gpl-scratch__code">{{ section.settings.code | default: 'LUCKY15' }}</code>
+      <canvas class="gpl-scratch__foil" data-foil></canvas>
+    </div>
+    <p class="gpl-scratch__hint" data-hint>Scratch the card to reveal your code</p>
+  </div>
+</gpl-scratch>
+
+{% schema %}
+{
+  "name": "Scratch card popup",
+  "settings": [
+    { "type": "text", "id": "title", "label": "Title", "default": ${js(str(v, "title", 40))} },
+    { "type": "text", "id": "code", "label": "Coupon code", "default": ${js(str(v, "code", 20))} },
+    { "type": "color", "id": "foil", "label": "Foil colour", "default": ${js(str(v, "foil"))} },
+    { "type": "range", "id": "delay", "label": "Delay in seconds", "min": 1, "max": 30, "step": 1, "default": ${Number(v.delay) || 3} }
+  ],
+  "presets": [{ "name": "Scratch card popup" }]
+}
+{% endschema %}`,
+      css: `.gpl-scratch { position: fixed; inset: 0; z-index: 90; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: rgba(0,0,0,0.55); }
+.gpl-scratch[hidden] { display: none; }
+.gpl-scratch__box { position: relative; width: min(24rem, 100%); padding: 2rem 1.5rem; border-radius: 16px; background: #fff; text-align: center; box-shadow: 0 24px 60px rgba(0,0,0,0.35); }
+.gpl-scratch__x { position: absolute; top: 0.6rem; right: 0.75rem; border: 0; background: none; font-size: 1.5rem; cursor: pointer; color: #94a3b8; }
+.gpl-scratch__title { margin: 0 0 1rem; font-size: 1.35rem; font-weight: 800; }
+.gpl-scratch__area { position: relative; border-radius: 12px; overflow: hidden; }
+.gpl-scratch__code { display: block; padding: 1.6rem 0.5rem; font-size: 1.5rem; font-weight: 800; letter-spacing: 0.12em; color: #0f172a; }
+.gpl-scratch__foil { position: absolute; inset: 0; width: 100%; height: 100%; cursor: grab; touch-action: none; }
+.gpl-scratch__foil.is-done { pointer-events: none; opacity: 0; transition: opacity 0.4s; }
+.gpl-scratch__hint { margin: 0.9rem 0 0; font-size: 0.7rem; color: #94a3b8; }`,
+      js: `class GplScratch extends HTMLElement {
+  connectedCallback() {
+    if (localStorage.getItem(this.dataset.key) === 'done') return;
+    this.querySelector('[data-close]').addEventListener('click', () => this.dismiss());
+    this.addEventListener('click', (e) => { if (e.target === this) this.dismiss(); });
+    this.timer = setTimeout(() => { this.hidden = false; this.paint(); }, Number(this.dataset.delay) * 1000 || 3000);
+  }
+  dismiss() { clearTimeout(this.timer); this.hidden = true; localStorage.setItem(this.dataset.key, 'done'); }
+  paint() {
+    const canvas = this.querySelector('[data-foil]');
+    const area = canvas.parentElement;
+    canvas.width = area.clientWidth; canvas.height = area.clientHeight;
+    const ctx = canvas.getContext('2d');
+    ctx.fillStyle = this.dataset.foil || '#8b96a5';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.font = '600 13px system-ui';
+    ctx.textAlign = 'center';
+    ctx.fillText('SCRATCH HERE', canvas.width / 2, canvas.height / 2 + 4);
+    let scratching = false;
+    const scratch = (e) => {
+      const r = canvas.getBoundingClientRect();
+      const x = (e.clientX - r.left), y = (e.clientY - r.top);
+      ctx.globalCompositeOperation = 'destination-out';
+      ctx.beginPath(); ctx.arc(x, y, 18, 0, Math.PI * 2); ctx.fill();
+    };
+    canvas.addEventListener('pointerdown', (e) => { scratching = true; canvas.setPointerCapture(e.pointerId); scratch(e); });
+    canvas.addEventListener('pointermove', (e) => { if (scratching) { scratch(e); this.check(ctx, canvas); } });
+    canvas.addEventListener('pointerup', () => { scratching = false; });
+    this.check = (ctx2, cv) => {
+      if (canvas.classList.contains('is-done')) return;
+      if (this.pokes === undefined) this.pokes = 0;
+      this.pokes++;
+      if (this.pokes % 15 !== 0) return;
+      const d = ctx2.getImageData(0, 0, cv.width, cv.height).data;
+      let clear = 0;
+      for (let i = 3; i < d.length; i += 16) if (d[i] < 40) clear++;
+      if (clear / (d.length / 16) > 0.45) {
+        canvas.classList.add('is-done');
+        this.querySelector('[data-hint]').textContent = 'Use the code at checkout';
+        localStorage.setItem(this.dataset.key, 'done');
+      }
+    };
+  }
+}
+if (!customElements.get('gpl-scratch')) customElements.define('gpl-scratch', GplScratch);`,
+    }),
+  },
+  {
+    id: "buy-box-booster",
+    name: "Buy box conversion blocks",
+    description: "A stackable conversion kit for the buy area - reorderable blocks: trust points, stock status, delivery estimate, guarantee and payment icons in one section.",
+    category: "Product page",
+    kind: "section",
+    controls: [
+      { id: "accent", label: "Accent colour", type: "color" },
+    ],
+    defaults: { accent: "#15803d" },
+    install: [
+      ...sectionSteps,
+      "Place directly under the Product information section (or inside it via a Custom Liquid block) - blocks reorder in the theme editor.",
+    ],
+    files: (v) => ({
+      liquid: `<div class="gpl-booster" style="--gpl-accent: {{ section.settings.accent }};">
+  {%- for block in section.blocks -%}
+    {%- case block.type -%}
+      {%- when 'feature' -%}
+        <p class="gpl-booster__row" {{ block.shopify_attributes }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m5 13 4 4L19 7"/></svg>
+          {{ block.settings.text | escape }}
+        </p>
+      {%- when 'stock' -%}
+        <p class="gpl-booster__row gpl-booster__stock" {{ block.shopify_attributes }}>
+          <span class="gpl-booster__dot{% if product.selected_or_first_available_variant.available %} gpl-booster__dot--in{% endif %}"></span>
+          {% if product.selected_or_first_available_variant.available %}{{ block.settings.in_stock | escape }}{% else %}{{ block.settings.out_stock | escape }}{% endif %}
+        </p>
+      {%- when 'delivery' -%}
+        <p class="gpl-booster__row" {{ block.shopify_attributes }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 17h-2v-11a1 1 0 0 1 1-1h9v12m-8 0h8m4 0h2v-6h-6v6m0-9h4l4 4"/><circle cx="7.5" cy="17.5" r="1.5"/><circle cx="17.5" cy="17.5" r="1.5"/></svg>
+          Order today - {{ block.settings.text | escape }}
+        </p>
+      {%- when 'guarantee' -%}
+        <p class="gpl-booster__row" {{ block.shopify_attributes }}>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+          {{ block.settings.text | escape }}
+        </p>
+      {%- when 'payments' -%}
+        <p class="gpl-booster__row gpl-booster__pay" {{ block.shopify_attributes }}>{{ block.settings.text | escape }}</p>
+    {%- endcase -%}
+  {%- endfor -%}
+</div>
+
+{% schema %}
+{
+  "name": "Buy box booster",
+  "settings": [
+    { "type": "color", "id": "accent", "label": "Accent colour", "default": ${js(str(v, "accent"))} }
+  ],
+  "blocks": [
+    { "type": "feature", "name": "Trust point", "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Free shipping over $50" }] },
+    { "type": "stock", "name": "Stock status", "settings": [{ "type": "text", "id": "in_stock", "label": "In stock text", "default": "In stock - ready to ship" }, { "type": "text", "id": "out_stock", "label": "Out of stock text", "default": "Currently out of stock" }] },
+    { "type": "delivery", "name": "Delivery estimate", "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "dispatched in 24 hours" }] },
+    { "type": "guarantee", "name": "Guarantee", "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "30-day money-back guarantee" }] },
+    { "type": "payments", "name": "Payment note", "settings": [{ "type": "text", "id": "text", "label": "Text", "default": "Secure checkout - UPI, cards & COD" }] }
+  ],
+  "presets": [{ "name": "Buy box booster", "blocks": [{ "type": "stock" }, { "type": "feature" }, { "type": "delivery" }, { "type": "guarantee" }, { "type": "payments" }] }]
+}
+{% endschema %}`,
+      css: `.gpl-booster { display: grid; gap: 0.45rem; margin: 0.9rem 0; }
+.gpl-booster__row { display: flex; align-items: center; gap: 0.5rem; margin: 0; font-size: 0.72rem; }
+.gpl-booster__row svg { width: 0.85rem; height: 0.85rem; color: var(--gpl-accent, #15803d); flex-shrink: 0; }
+.gpl-booster__dot { width: 0.5rem; height: 0.5rem; border-radius: 999px; background: #9ca3af; flex-shrink: 0; }
+.gpl-booster__dot--in { background: var(--gpl-accent, #16a34a); }
+.gpl-booster__pay { font-weight: 700; }`,
+    }),
+  },
+  {
+    id: "stock-alert",
+    name: "Back in stock signup",
+    description: "Shows an email capture only when the variant is sold out - submits through Shopify's own customer form so the shopper lands in your customer list tagged with the product. Zero app needed.",
+    category: "Product page",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 50 },
+      { id: "sub", label: "Subtext", type: "text", maxLength: 80 },
+      { id: "button", label: "Button label", type: "text", maxLength: 25 },
+    ],
+    defaults: { heading: "Sold out - notify me", sub: "Leave your email and we'll ping you the moment it's back.", button: "Notify me" },
+    install: [
+      ...sectionSteps,
+      "Add to your product template - it hides itself while the product is in stock.",
+      "Signups appear as customers tagged 'stock-alert:{product-handle}' in admin - email them when you restock (or export to your mail tool).",
+    ],
+    files: (v) => ({
+      liquid: `{%- unless product.selected_or_first_available_variant.available -%}
+<div class="gpl-alert">
+  <p class="gpl-alert__heading">{{ section.settings.heading | default: 'Sold out - notify me' }}</p>
+  {%- if section.settings.sub != blank -%}<p class="gpl-alert__sub">{{ section.settings.sub | escape }}</p>{%- endif -%}
+  {%- form 'customer', class: 'gpl-alert__form' -%}
+    <input type="hidden" name="contact[tags]" value="stock-alert,{{ product.handle }}">
+    {%- if form.posted_successfully? -%}
+      <p class="gpl-alert__done">Done - we'll email you as soon as it's back.</p>
+    {%- else -%}
+      <input type="email" name="contact[email]" class="gpl-alert__input" placeholder="you@email.com" required>
+      <button type="submit" class="gpl-alert__btn">{{ section.settings.button | default: 'Notify me' }}</button>
+    {%- endif -%}
+  {%- endform -%}
+</div>
+{%- endunless -%}
+
+{% schema %}
+{
+  "name": "Back in stock signup",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading", 50))} },
+    { "type": "text", "id": "sub", "label": "Subtext", "default": ${js(str(v, "sub", 80))} },
+    { "type": "text", "id": "button", "label": "Button label", "default": ${js(str(v, "button", 25))} }
+  ],
+  "presets": [{ "name": "Back in stock signup" }]
+}
+{% endschema %}`,
+      css: `.gpl-alert { margin: 1rem 0; padding: 1.1rem; border: 1px dashed rgb(var(--color-foreground, 148 163 184) / 0.4); border-radius: 12px; }
+.gpl-alert__heading { margin: 0; font-size: 0.85rem; font-weight: 800; }
+.gpl-alert__sub { margin: 0.35rem 0 0; font-size: 0.72rem; color: rgb(var(--color-foreground, 100 116 139) / 0.8); }
+.gpl-alert__form { display: flex; gap: 0.5rem; margin-top: 0.8rem; }
+.gpl-alert__input { flex: 1; min-width: 0; padding: 0.6rem 0.8rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.35); border-radius: 8px; font-size: 0.75rem; background: transparent; color: inherit; }
+.gpl-alert__btn { border: 0; border-radius: 8px; padding: 0.6rem 1.1rem; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-size: 0.72rem; font-weight: 700; cursor: pointer; }
+.gpl-alert__done { margin: 0.8rem 0 0; font-size: 0.75rem; font-weight: 700; color: #16a34a; }`,
+    }),
+  },
 ];
 
 export function getExample(id: string | undefined): PlaygroundExample {

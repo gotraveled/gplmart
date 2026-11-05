@@ -57,4 +57,4 @@ for (const ex of examples) {
     }
   }
 }
-console.log(errs.length ? `${errs.length} RENDER ERRORS:\n` + errs.join("\n") : "all 203 + 144 section variants rendered without errors");
+console.log(errs.length ? `${errs.length} RENDER ERRORS:\n` + errs.join("\n") : "all examples + section variants rendered without errors");

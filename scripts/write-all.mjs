@@ -23,4 +23,4 @@ for (const [root, sec, sni] of roots) {
     }
   }
 }
-console.log("wrote 203 + 144 variants x 4 themes");
+console.log(`wrote ${examples.length} + ${examples.filter((e) => e.kind === "snippet").length} variants x 4 themes`);
