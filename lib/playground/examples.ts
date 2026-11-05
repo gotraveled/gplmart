@@ -11520,6 +11520,97 @@ if (!customElements.get('gpl-qv')) customElements.define('gpl-qv', GplQv);`,
     }),
   },
 
+  {
+    id: "upsell-modal",
+    name: "Post-add-to-cart upsell",
+    description: "Shows a one-click 'add this too' offer the moment a shopper adds to cart - intercepts the form, offers the upsell, then continues to the cart. Post-purchase upsell apps charge $20+/mo for this.",
+    category: "Cart & checkout",
+    kind: "section",
+    controls: [
+      { id: "heading", label: "Heading", type: "text", maxLength: 40 },
+      { id: "product", label: "Upsell product handle", type: "text", maxLength: 60 },
+      { id: "add", label: "Add button label", type: "text", maxLength: 25 },
+    ],
+    defaults: { heading: "Complete your order", product: "", add: "Add it too" },
+    install: [
+      ...sectionSteps,
+      "Add once to your product template. It wakes up when any add-to-cart form on the page submits.",
+    ],
+    files: (v) => ({
+      liquid: `{%- assign u = all_products[section.settings.product] -%}
+{%- if u -%}
+<gpl-upsell class="gpl-usmodal" hidden>
+  <div class="gpl-usmodal__box" role="dialog" aria-modal="true" aria-label="{{ section.settings.heading | escape }}">
+    <button type="button" class="gpl-usmodal__x" data-close aria-label="Close">&times;</button>
+    <p class="gpl-usmodal__heading">{{ section.settings.heading | default: 'Complete your order' }}</p>
+    <div class="gpl-usmodal__prod">
+      {%- if u.featured_image -%}
+        <img class="gpl-usmodal__img" src="{{ u.featured_image | image_url: width: 160 }}" alt="{{ u.title | escape }}" width="160" height="160">
+      {%- endif -%}
+      <div>
+        <p class="gpl-usmodal__name">{{ u.title }}</p>
+        <p class="gpl-usmodal__price">{{ u.price | money }}</p>
+      </div>
+    </div>
+    <button type="button" class="gpl-usmodal__add" data-add data-vid="{{ u.selected_or_first_available_variant.id }}">{{ section.settings.add | default: 'Add it too' }}</button>
+    <button type="button" class="gpl-usmodal__no" data-close>No thanks, continue to cart</button>
+  </div>
+</gpl-upsell>
+{%- endif -%}
+
+{% schema %}
+{
+  "name": "Post-cart upsell",
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading", 40))} },
+    { "type": "product", "id": "product", "label": "Upsell product" },
+    { "type": "text", "id": "add", "label": "Add button label", "default": ${js(str(v, "add", 25))} }
+  ],
+  "presets": [{ "name": "Post-cart upsell" }]
+}
+{% endschema %}`,
+      css: `.gpl-usmodal { position: fixed; inset: 0; z-index: 92; display: flex; align-items: center; justify-content: center; padding: 1.5rem; background: rgba(0,0,0,0.5); }
+.gpl-usmodal[hidden] { display: none; }
+.gpl-usmodal__box { position: relative; width: min(22rem, 100%); padding: 1.75rem; border-radius: 16px; background: #fff; text-align: center; box-shadow: 0 24px 60px rgba(0,0,0,0.3); }
+.gpl-usmodal__x { position: absolute; top: 0.6rem; right: 0.75rem; border: 0; background: none; font-size: 1.5rem; cursor: pointer; color: #94a3b8; }
+.gpl-usmodal__heading { margin: 0 0 1rem; font-size: 1rem; font-weight: 800; }
+.gpl-usmodal__prod { display: flex; align-items: center; gap: 0.9rem; padding: 0.9rem; border: 1px solid rgba(148,163,184,0.3); border-radius: 12px; text-align: left; }
+.gpl-usmodal__img { width: 3.5rem; height: 3.5rem; object-fit: cover; border-radius: 8px; }
+.gpl-usmodal__name { margin: 0; font-size: 0.78rem; font-weight: 700; }
+.gpl-usmodal__price { margin: 0.2rem 0 0; font-size: 0.72rem; color: #64748b; }
+.gpl-usmodal__add { margin-top: 1rem; width: 100%; border: 0; border-radius: 10px; padding: 0.75rem; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-size: 0.78rem; font-weight: 800; cursor: pointer; }
+.gpl-usmodal__no { margin-top: 0.6rem; border: 0; background: none; font-size: 0.68rem; color: #64748b; text-decoration: underline; cursor: pointer; }`,
+      js: `class GplUpsellModal extends HTMLElement {
+  connectedCallback() {
+    document.addEventListener('submit', (e) => {
+      const form = e.target;
+      if (!(form instanceof HTMLFormElement) || !String(form.action).includes('/cart/add')) return;
+      e.preventDefault();
+      const data = new FormData(form);
+      const id = data.get('id');
+      if (!id) { form.submit(); return; }
+      const main = { id: Number(id), quantity: Number(data.get('quantity')) || 1 };
+      this.show(main);
+    }, true);
+    this.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => this.finish()));
+    this.addEventListener('click', (e) => { if (e.target === this) this.finish(); });
+    this.querySelector('[data-add]').addEventListener('click', (e) => {
+      this.extra = { id: Number(e.currentTarget.dataset.vid), quantity: 1 };
+      this.finish();
+    });
+  }
+  show(main) { this.pending = main; this.extra = null; this.hidden = false; }
+  finish() {
+    const items = [this.pending];
+    if (this.extra) items.push(this.extra);
+    this.hidden = true;
+    fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items }) })
+      .then(() => { window.location.href = '/cart'; });
+  }
+}
+if (!customElements.get('gpl-upsell')) customElements.define('gpl-upsell', GplUpsellModal);`,
+    }),
+  },
 ];
 
 export function getExample(id: string | undefined): PlaygroundExample {

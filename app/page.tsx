@@ -517,6 +517,39 @@ export default function HomePage() {
         </ul>
       </Section>
 
+      {/* App-replacement comparison */}
+      <Section className="pt-0 sm:pt-0">
+        <SectionHeading
+          eyebrow="Do the math"
+          title="One membership replaces a stack of paid apps"
+          description="These are full sections in the library - paste one file, skip the monthly bill. Typical app pricing shown for comparison."
+        />
+        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          {[
+            { feature: "Slide-out cart drawer", detail: "Free-shipping bar, qty controls, upsell slot, opens on add-to-cart", apps: "Cart drawer apps", cost: "~$15/mo" },
+            { feature: "Wishlist system", detail: "Heart button + full wishlist page, no app or account needed", apps: "Wishlist Plus & similar", cost: "~$20/mo" },
+            { feature: "Back-in-stock signup", detail: "Email capture through Shopify's own customer form", apps: "Notify-me apps", cost: "~$10/mo" },
+            { feature: "Post-cart upsell", detail: "One-click offer the moment an item hits the cart", apps: "Upsell apps", cost: "~$20/mo" },
+            { feature: "Build-a-box bundles", detail: "Pick-N-products bundles with one-click add", apps: "Bundle builders", cost: "~$15/mo" },
+            { feature: "Mega menu header", detail: "Dropdown panels, promo cards, mobile drawer, sticky", apps: "Header & menu apps", cost: "~$15 one-time each" },
+            { feature: "Gamified popups", detail: "Scratch card and spin-to-win wheels that grow your list", apps: "Gamification apps", cost: "~$39/mo" },
+            { feature: "Quick-view + 200 more", detail: "Variant-picker modal grid plus the rest of the library", apps: "Theme feature apps", cost: "priceless" },
+          ].map(({ feature, detail, apps, cost }) => (
+            <li key={feature} className="flex flex-col rounded-2xl border border-line bg-ink-900/60 p-5 transition hover:border-mint/40">
+              <h3 className="font-display text-sm font-semibold">{feature}</h3>
+              <p className="mt-1.5 flex-1 text-xs leading-relaxed text-muted">{detail}</p>
+              <div className="mt-4 flex items-center justify-between border-t border-line pt-3">
+                <span className="text-[0.65rem] text-subtle">{apps}</span>
+                <span className="rounded-full bg-mint/10 px-2.5 py-1 text-[0.65rem] font-bold text-mint">{cost}</span>
+              </div>
+            </li>
+          ))}
+        </ul>
+        <p className="mt-5 text-center text-sm text-muted">
+          Typical replacements total <span className="font-semibold text-accent">$100+/mo in subscriptions</span> - membership is a one-time ₹499.
+        </p>
+      </Section>
+
       {/* Pricing card */}
       <section id="membership" className="border-y border-line bg-ink-900/40">
         <Section>

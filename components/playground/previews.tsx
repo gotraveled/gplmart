@@ -3993,6 +3993,34 @@ function QuickViewGrid({ v }: P) {
   );
 }
 
+
+function UpsellModal({ v }: P) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative flex h-56 items-center justify-center bg-neutral-100 p-4">
+      <div className="rounded-lg border border-neutral-300 bg-white px-8 py-3 text-[0.68rem] font-bold">Add to cart</div>
+      <button type="button" onClick={() => setOpen(true)} className="absolute bottom-3 text-[0.55rem] text-neutral-500 underline">simulate add-to-cart</button>
+      {open && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/45">
+          <div className="relative w-60 rounded-2xl bg-white p-5 text-center">
+            <button type="button" onClick={() => setOpen(false)} className="absolute right-2.5 top-2 text-lg text-neutral-400">&times;</button>
+            <p className="m-0 mb-3 text-[0.72rem] font-extrabold">{str(v, "heading") || "Complete your order"}</p>
+            <div className="flex items-center gap-2.5 rounded-xl border border-neutral-200 p-2.5 text-left">
+              <div className="size-12 shrink-0 rounded-lg bg-neutral-100" />
+              <div>
+                <p className="m-0 text-[0.62rem] font-bold">Silk sleep mask</p>
+                <p className="m-0 mt-0.5 text-[0.58rem] text-neutral-500">Rs 19.00</p>
+              </div>
+            </div>
+            <button type="button" onClick={() => setOpen(false)} className="mt-3 w-full rounded-lg bg-neutral-900 py-2 text-[0.62rem] font-bold text-white">{str(v, "add") || "Add it too"}</button>
+            <button type="button" onClick={() => setOpen(false)} className="mt-2 text-[0.55rem] text-neutral-500 underline">No thanks, continue to cart</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 const map: Record<string, (p: P) => ReactNode> = {
   "announcement-bar": Announcement,
   "product-benefits": Benefits,
@@ -4205,6 +4233,7 @@ const map: Record<string, (p: P) => ReactNode> = {
   "mega-menu": MegaMenu,
   "spin-wheel": SpinWheel,
   "quick-view-grid": QuickViewGrid,
+  "upsell-modal": UpsellModal,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {
