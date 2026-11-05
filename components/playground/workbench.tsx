@@ -95,12 +95,20 @@ const devices = [
 function Card({ ex, onPick }: { ex: PlaygroundExample; onPick: (id: string) => void }) {
   const free = freeExampleIds.has(ex.id);
   return (
-    <button
-      type="button"
+    <div
+      role="button"
+      tabIndex={0}
+      aria-label={`Open ${ex.name}`}
       onClick={() => onPick(ex.id)}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-line bg-ink-900/70 text-left transition hover:-translate-y-1 hover:border-accent/50"
+      onKeyDown={(e) => {
+        if (e.target === e.currentTarget && (e.key === "Enter" || e.key === " ")) {
+          e.preventDefault();
+          onPick(ex.id);
+        }
+      }}
+      className="group flex cursor-pointer flex-col overflow-hidden rounded-2xl border border-line bg-ink-900/70 text-left transition hover:-translate-y-1 hover:border-accent/50"
     >
-      <div className="pointer-events-none relative h-36 overflow-hidden border-b border-line bg-[#eef1e6]">
+      <div aria-hidden inert className="pointer-events-none relative h-36 overflow-hidden border-b border-line bg-[#eef1e6]">
         <div className="absolute inset-0 grid place-items-center">
           <div className="w-full scale-[0.55]">
             <ExamplePreview id={ex.id} values={ex.defaults} />
@@ -123,7 +131,7 @@ function Card({ ex, onPick }: { ex: PlaygroundExample; onPick: (id: string) => v
         <h3 className="mt-2.5 font-display text-sm font-semibold group-hover:text-accent">{ex.name}</h3>
         <p className="mt-1 line-clamp-2 flex-1 text-xs text-muted">{ex.description}</p>
       </div>
-    </button>
+    </div>
   );
 }
 

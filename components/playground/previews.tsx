@@ -3885,7 +3885,7 @@ function StockAlert({ v }: P) {
 function MegaMenu({ v }: P) {
   const [open, setOpen] = useState(false);
   return (
-    <div style={{ background: hex(v, "bg") }} className={on(v, "sticky") ? "sticky top-0 z-10" : ""}>
+    <div style={{ background: hex(v, "bg") }} className="relative min-h-64 overflow-hidden">
       <div className="flex items-center gap-4 px-5 py-3">
         <span className="text-sm font-extrabold">{str(v, "logo_text") || "Store"}</span>
         <nav className="flex items-center gap-0.5 text-[0.68rem] font-semibold">

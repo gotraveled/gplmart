@@ -3759,6 +3759,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   {%- for row in rows -%}
     {%- assign parts = row | strip | split: '|' -%}
     <div class="gpl-sales__card" data-i="{{ forloop.index0 }}" hidden>
+      <button type="button" class="gpl-sales__x" data-close aria-label="Dismiss">&times;</button>
       <p class="gpl-sales__text"><strong>{{ parts[0] | strip }}</strong> from {{ parts[1] | strip }} bought <strong>{{ parts[2] | strip }}</strong></p>
       <p class="gpl-sales__time">{{ parts[3] | strip }}</p>
     </div>
@@ -3778,19 +3779,27 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   background: rgb(var(--color-background, 255 255 255));
   box-shadow: 0 10px 30px rgb(0 0 0 / 0.15);
 }
-.gpl-sales__text { margin: 0; font-size: 0.75rem; line-height: 1.45; }
+.gpl-sales__card { position: relative; }
+.gpl-sales__x { position: absolute; top: 0.2rem; right: 0.5rem; border: 0; background: none; color: inherit; opacity: 0.5; font-size: 1.1rem; line-height: 1; cursor: pointer; }
+.gpl-sales__text { margin: 0; padding-right: 0.8rem; font-size: 0.75rem; line-height: 1.45; }
 .gpl-sales__time { margin: 0.3rem 0 0; font-size: 0.65rem; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }`,
       js: `document.querySelectorAll('gpl-sales').forEach((el) => {
   const cards = [...el.querySelectorAll('.gpl-sales__card')];
-  if (!cards.length) return;
-  el.hidden = false;
-  let i = 0;
-  function show() {
+  if (!cards.length || sessionStorage.getItem('gpl-sales-off') === '1') return;
+  const gap = (Number(el.dataset.interval) || 8) * 1000;
+  let i = 0, timer;
+  function cycle() {
     cards.forEach((c, x) => (c.hidden = x !== i));
+    el.hidden = false;
     i = (i + 1) % cards.length;
+    timer = setTimeout(() => { el.hidden = true; timer = setTimeout(cycle, gap); }, 5000);
   }
-  show();
-  setInterval(show, (Number(el.dataset.interval) || 8) * 1000);
+  el.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => {
+    clearTimeout(timer);
+    el.hidden = true;
+    sessionStorage.setItem('gpl-sales-off', '1');
+  }));
+  timer = setTimeout(cycle, 3000);
 });`,
       usage: `{% render 'sales-notification', entries: ${js(str(v, "entries"))}, interval: ${js(str(v, "interval"))} %}`,
     }),
