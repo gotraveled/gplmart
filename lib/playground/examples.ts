@@ -10604,7 +10604,7 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
     controls: [
       { id: "heading", label: "Heading", type: "text", maxLength: 30 },
       { id: "threshold", label: "Free shipping threshold (rupees, 0 = off)", type: "text", maxLength: 8 },
-      { id: "upsell", label: "Upsell product handle", type: "text", maxLength: 60 },
+      { id: "upsell", label: "Upsell product", type: "text", maxLength: 60 },
       { id: "floating", label: "Show floating cart button", type: "toggle" },
       { id: "hijack", label: "Open drawer on add-to-cart", type: "toggle" },
     ],
@@ -10634,12 +10634,12 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
     </div>
     <div class="gpl-cart__items" data-items><p class="gpl-cart__empty">Your cart is empty.</p></div>
     {%- if section.settings.upsell != blank -%}
-      {%- assign u = all_products[section.settings.upsell] -%}
-      {%- if u -%}
+      {%- assign u = section.settings.upsell -%}
+      {%- if u != blank -%}
         <div class="gpl-cart__upsell">
           {%- if u.featured_image -%}<img src="{{ u.featured_image | image_url: width: 80 }}" alt="{{ u.title | escape }}" width="80" height="80" loading="lazy">{%- endif -%}
           <div class="gpl-cart__uinfo">
-            <p>{{ u.title }}</p>
+            <p>{{ u.title | escape }}</p>
             <span>{{ u.price | money }}</span>
           </div>
           <button type="button" class="gpl-cart__uadd" data-add-variant="{{ u.selected_or_first_available_variant.id }}">Add</button>
@@ -10648,7 +10648,7 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
     {%- endif -%}
     <footer class="gpl-cart__foot">
       <p class="gpl-cart__sub"><span>Subtotal</span><b data-subtotal></b></p>
-      <a class="gpl-cart__checkout" href="{{ routes.cart_url }}">Checkout</a>
+      <a class="gpl-cart__checkout" href="/checkout">Checkout</a>
     </footer>
   </aside>
 </gpl-cart>
@@ -10658,8 +10658,8 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
   "name": "Cart drawer",
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading", 30))} },
-    { "type": "number", "id": "threshold", "label": "Free shipping threshold (rupees, 0 disables the bar)", "default": ${Number(v.threshold) || 0} },
-    { "type": "text", "id": "upsell", "label": "Upsell product handle" },
+    { "type": "number", "id": "threshold", "label": "Free shipping threshold (in your store's currency, 0 disables the bar)", "default": ${Number(v.threshold) || 0} },
+    { "type": "product", "id": "upsell", "label": "Upsell product" },
     { "type": "checkbox", "id": "floating", "label": "Show floating cart button", "default": true },
     { "type": "checkbox", "id": "hijack", "label": "Open drawer when shoppers add to cart", "default": true }
   ],
@@ -10717,9 +10717,9 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
     this.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => this.close()));
     this.overlay.addEventListener('click', () => this.close());
     this.querySelector('[data-add-variant]')?.addEventListener('click', (e) => this.addVariant(Number(e.currentTarget.dataset.addVariant)));
+    document.addEventListener('click', (e) => { const t = e.target.closest('[data-gpl-cart-open]'); if (t) { e.preventDefault(); this.open(); } });
     if (this.dataset.hijack === 'true') {
       document.addEventListener('submit', (e) => this.onSubmit(e), true);
-      document.addEventListener('click', (e) => { const t = e.target.closest('[data-gpl-cart-open]'); if (t) { e.preventDefault(); this.open(); } });
     }
     this.refresh();
   }
@@ -10729,15 +10729,19 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
   onSubmit(e) {
     const form = e.target;
     if (!(form instanceof HTMLFormElement) || !String(form.action).includes('/cart/add')) return;
+    if (form.dataset.gplHandled) return;
     e.preventDefault();
+    form.dataset.gplHandled = '1';
     const data = new FormData(form);
     const id = data.get('id');
     if (!id) { form.submit(); return; }
     const properties = {};
     for (const [k, val] of data.entries()) { const m = k.match(/^properties\\[(.+)\\]$/); if (m && val) properties[m[1]] = val; }
-    fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: [{ id: Number(id), quantity: Number(data.get('quantity')) || 1, properties }] }) })
-      .then(() => { this.refresh(); this.open(); })
-      .catch(() => form.submit());
+    const item = { id: Number(id), quantity: Number(data.get('quantity')) || 1, properties };
+    if (data.get('selling_plan')) item.selling_plan = Number(data.get('selling_plan'));
+    fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: [item] }) })
+      .then(() => { delete form.dataset.gplHandled; this.refresh(); this.open(); })
+      .catch(() => { delete form.dataset.gplHandled; form.submit(); });
   }
   addVariant(vid) { fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items: [{ id: vid, quantity: 1 }] }) }).then(() => this.refresh()); }
   setQty(key, qty) { fetch('/cart/change.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: key, quantity: qty }) }).then((r) => r.json()).then((c) => this.render(c)); }
@@ -10753,7 +10757,7 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
         row.className = 'gpl-cart__row';
         row.innerHTML =
           (it.image ? '<img src="' + it.image + '" alt="" loading="lazy">' : '<div></div>') +
-          '<div class="gpl-cart__rinfo"><p class="gpl-cart__rname">' + it.product_title + '</p><span class="gpl-cart__rprice">' + this.money(it.final_line_price) + '</span>' +
+          '<div class="gpl-cart__rinfo"><p class="gpl-cart__rname">' + String(it.product_title).replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c])) + '</p><span class="gpl-cart__rprice">' + this.money(it.final_line_price) + '</span>' +
           '<span class="gpl-cart__qty"><button type="button" data-dec>-</button><b>' + it.quantity + '</b><button type="button" data-inc>+</button></span></div>' +
           '<button type="button" class="gpl-cart__rm" aria-label="Remove">&times;</button>';
         row.querySelector('[data-dec]').addEventListener('click', () => this.setQty(it.key, it.quantity - 1));
@@ -10838,7 +10842,7 @@ if (!customElements.get('gpl-cart')) customElements.define('gpl-cart', GplCart);
           card.innerHTML =
             '<button type="button" class="gpl-wlist__rm" aria-label="Remove">&times;</button>' +
             (p.featured_image ? '<img class="gpl-wlist__img" src="' + p.featured_image + '" alt="" loading="lazy">' : '') +
-            '<div class="gpl-wlist__info"><a class="gpl-wlist__name" href="' + p.url + '">' + p.title + '</a>' +
+            '<div class="gpl-wlist__info"><a class="gpl-wlist__name" href="' + p.url + '">' + String(p.title).replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c])) + '</a>' +
             '<p class="gpl-wlist__price">' + money(p.price) + '</p>' +
             '<button type="button" class="gpl-wlist__add">Add to cart</button></div>';
           card.querySelector('.gpl-wlist__rm').addEventListener('click', () => {
@@ -11415,8 +11419,8 @@ if (!customElements.get('gpl-wheel')) customElements.define('gpl-wheel', GplWhee
       liquid: `<gpl-qv class="gpl-qv">
   {%- if section.settings.heading != blank -%}<h2 class="gpl-qv__heading">{{ section.settings.heading | escape }}</h2>{%- endif -%}
   <div class="gpl-qv__grid">
-    {%- assign col = collections[section.settings.collection] -%}
-    {%- if col and col.products.size > 0 -%}
+    {%- assign col = section.settings.collection -%}
+    {%- if col != blank and col.products.size > 0 -%}
       {%- for product in col.products limit: section.settings.limit -%}
         <div class="gpl-qv__card">
           <a class="gpl-qv__imgwrap" href="{{ product.url }}">
@@ -11497,7 +11501,7 @@ if (!customElements.get('gpl-wheel')) customElements.define('gpl-wheel', GplWhee
       this.body.innerHTML =
         '<div class="gpl-qv__mprod">' +
         (p.featured_image ? '<img class="gpl-qv__mimg" src="' + p.featured_image + '" alt="">' : '<div></div>') +
-        '<div><h3 class="gpl-qv__mname">' + p.title + '</h3>' +
+        '<div><h3 class="gpl-qv__mname">' + String(p.title).replace(/[<>&]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;' }[c])) + '</h3>' +
         '<p class="gpl-qv__mprice" data-price>' + this.money(p.price) + '</p>' +
         '<p class="gpl-qv__mdesc">' + (p.description || '').replace(/<[^>]*>/g, '').slice(0, 140) + '…</p>' +
         (vars.length > 1
@@ -11535,10 +11539,11 @@ if (!customElements.get('gpl-qv')) customElements.define('gpl-qv', GplQv);`,
     install: [
       ...sectionSteps,
       "Add once to your product template. It wakes up when any add-to-cart form on the page submits.",
+      "Safe alongside the cart drawer - they share a lock so an item never gets added twice.",
     ],
     files: (v) => ({
-      liquid: `{%- assign u = all_products[section.settings.product] -%}
-{%- if u -%}
+      liquid: `{%- assign u = section.settings.product -%}
+{%- if u != blank -%}
 <gpl-upsell class="gpl-usmodal" hidden>
   <div class="gpl-usmodal__box" role="dialog" aria-modal="true" aria-label="{{ section.settings.heading | escape }}">
     <button type="button" class="gpl-usmodal__x" data-close aria-label="Close">&times;</button>
@@ -11548,7 +11553,7 @@ if (!customElements.get('gpl-qv')) customElements.define('gpl-qv', GplQv);`,
         <img class="gpl-usmodal__img" src="{{ u.featured_image | image_url: width: 160 }}" alt="{{ u.title | escape }}" width="160" height="160">
       {%- endif -%}
       <div>
-        <p class="gpl-usmodal__name">{{ u.title }}</p>
+        <p class="gpl-usmodal__name">{{ u.title | escape }}</p>
         <p class="gpl-usmodal__price">{{ u.price | money }}</p>
       </div>
     </div>
@@ -11585,11 +11590,17 @@ if (!customElements.get('gpl-qv')) customElements.define('gpl-qv', GplQv);`,
     document.addEventListener('submit', (e) => {
       const form = e.target;
       if (!(form instanceof HTMLFormElement) || !String(form.action).includes('/cart/add')) return;
+      if (form.dataset.gplHandled) return;
       e.preventDefault();
+      form.dataset.gplHandled = '1';
+      this.form = form;
       const data = new FormData(form);
       const id = data.get('id');
       if (!id) { form.submit(); return; }
-      const main = { id: Number(id), quantity: Number(data.get('quantity')) || 1 };
+      const properties = {};
+      for (const [k, val] of data.entries()) { const m = k.match(/^properties\\[(.+)\\]$/); if (m && val) properties[m[1]] = val; }
+      const main = { id: Number(id), quantity: Number(data.get('quantity')) || 1, properties };
+      if (data.get('selling_plan')) main.selling_plan = Number(data.get('selling_plan'));
       this.show(main);
     }, true);
     this.querySelectorAll('[data-close]').forEach((b) => b.addEventListener('click', () => this.finish()));
@@ -11605,7 +11616,8 @@ if (!customElements.get('gpl-qv')) customElements.define('gpl-qv', GplQv);`,
     if (this.extra) items.push(this.extra);
     this.hidden = true;
     fetch('/cart/add.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ items }) })
-      .then(() => { window.location.href = '/cart'; });
+      .then(() => { if (this.form) delete this.form.dataset.gplHandled; window.location.href = '/cart'; })
+      .catch(() => { if (this.form) delete this.form.dataset.gplHandled; });
   }
 }
 if (!customElements.get('gpl-upsell')) customElements.define('gpl-upsell', GplUpsellModal);`,
