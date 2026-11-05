@@ -3924,44 +3924,6 @@ function MegaMenu({ v }: P) {
   );
 }
 
-function Quiz({ v }: P) {
-  const [step, setStep] = useState(0);
-  const [picked, setPicked] = useState<string | null>(null);
-  const steps = [
-    ["What's your vibe?", ["Minimal & clean", "Bold & colourful", "Cozy & casual"]],
-    ["What's the occasion?", ["Everyday", "Work", "Special event"]],
-  ];
-  return (
-    <div className="p-6 text-center">
-      {step === 0 && (
-        <>
-          <h2 className="m-0 text-base font-extrabold">{str(v, "heading") || "Find your perfect match"}</h2>
-          <p className="m-0 mb-4 mt-1.5 text-[0.62rem] text-neutral-500">{str(v, "sub")}</p>
-          <button type="button" onClick={() => setStep(1)} className="rounded-full bg-neutral-900 px-6 py-2 text-[0.65rem] font-bold text-white">Start</button>
-        </>
-      )}
-      {step > 0 && step <= steps.length && !picked && (
-        <>
-          <p className="m-0 mb-3 text-[0.5rem] font-bold uppercase tracking-widest text-neutral-400">{step} / {steps.length}</p>
-          <p className="m-0 mb-3 text-[0.8rem] font-extrabold">{steps[step - 1]![0]}</p>
-          <div className="mx-auto grid max-w-64 gap-1.5">
-            {steps[step - 1]![1].map((o) => (
-              <button key={o} type="button" onClick={() => step === steps.length ? setPicked(o) : setStep(step + 1)} className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.62rem] font-semibold hover:border-neutral-900">{o}</button>
-            ))}
-          </div>
-        </>
-      )}
-      {picked && (
-        <>
-          <p className="m-0 mb-3 text-[0.72rem] font-bold">Done - here is your match:</p>
-          <div className="inline-block rounded-full bg-neutral-900 px-5 py-2 text-[0.65rem] font-bold text-white">See: {picked}</div>
-          <div><button type="button" onClick={() => { setStep(0); setPicked(null); }} className="mt-3 text-[0.55rem] text-neutral-500 underline">Start over</button></div>
-        </>
-      )}
-    </div>
-  );
-}
-
 function SpinWheel({ v }: P) {
   const [spun, setSpun] = useState(false);
   const slices = ["10% off", "Try again", "Free gift", "15% off"];
@@ -3994,7 +3956,7 @@ function SpinWheel({ v }: P) {
   );
 }
 
-function QuickView({ v }: P) {
+function QuickViewGrid({ v }: P) {
   const [open, setOpen] = useState(false);
   const cards = [["Merino cardigan", "49.00"], ["Linen overshirt", "89.00"], ["Canvas tote", "35.00"], ["Wool scarf", "29.00"]];
   return (
@@ -4027,29 +3989,6 @@ function QuickView({ v }: P) {
           </div>
         </div>
       )}
-    </div>
-  );
-}
-
-function DeliveryDate({ v }: P) {
-  const [saved, setSaved] = useState(false);
-  const min = Number(str(v, "mindays")) || 0;
-  const d = new Date();
-  d.setDate(d.getDate() + min);
-  return (
-    <div className="m-4 rounded-xl border border-neutral-300 p-4">
-      <p className="m-0 mb-2.5 text-[0.68rem] font-extrabold">{str(v, "heading") || "Delivery preferences"}</p>
-      <label className="mb-2 block text-[0.55rem] font-semibold text-neutral-500">
-        Preferred delivery date
-        <input type="date" min={d.toISOString().slice(0, 10)} onChange={() => { setSaved(true); setTimeout(() => setSaved(false), 2000); }} className="mt-1 block w-full rounded-lg border border-neutral-300 px-2.5 py-1.5 text-[0.62rem]" />
-      </label>
-      {on(v, "note") && (
-        <label className="block text-[0.55rem] font-semibold text-neutral-500">
-          Gift / order note
-          <textarea rows={2} placeholder="Leave at door, wrap it" className="mt-1 block w-full rounded-lg border border-neutral-300 px-2.5 py-1.5 text-[0.62rem]" />
-        </label>
-      )}
-      {saved && <p className="m-0 mt-2 text-[0.55rem] font-bold text-emerald-600">Saved to your order.</p>}
     </div>
   );
 }
@@ -4264,10 +4203,8 @@ const map: Record<string, (p: P) => ReactNode> = {
   "buy-box-booster": BuyBox,
   "stock-alert": StockAlert,
   "mega-menu": MegaMenu,
-  "product-quiz": Quiz,
   "spin-wheel": SpinWheel,
-  "quick-view": QuickView,
-  "delivery-date": DeliveryDate,
+  "quick-view-grid": QuickViewGrid,
 };
 
 export function ExamplePreview({ id, values, className, style }: { id: string; values: Values; className?: string; style?: CSSProperties }) {

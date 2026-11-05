@@ -7031,7 +7031,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   {
     id: "product-finder-quiz",
     name: "Product finder quiz",
-    description: "A 3-question 'find your X' quiz that ends on a collection link - converts browsers into buyers, no app needed.",
+    description: "A 'find your X' quiz where every answer points at its own product or collection - converts browsers into buyers, no app needed.",
     category: "Marketing",
     kind: "section",
     controls: [
@@ -7040,31 +7040,37 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     defaults: { heading: "Find your perfect fit" },
     install: [
       ...sectionSteps,
-      "The final answers map to collection URLs in the section blocks - edit each option's target in the theme editor.",
+      "Each answer option has its own result link (product or collection) - the last answer's link is the recommendation.",
     ],
     files: (v) => ({
-      liquid: `<gpl-quiz class="gpl-quiz" data-step="0">
+      liquid: `<gpl-quiz class="gpl-quiz">
   <p class="gpl-quiz__heading">{{ section.settings.heading }}</p>
+  <p class="gpl-quiz__progress" data-progress>1 / {{ section.blocks.size }}</p>
   {%- for block in section.blocks -%}
-    <div class="gpl-quiz__q"{% unless forloop.first %} hidden{% endunless %} data-q="{{ forloop.index0 }}">
-      <p class="gpl-quiz__qtext">{{ block.settings.question }}</p>
+    <div class="gpl-quiz__q"{% unless forloop.first %} hidden{% endunless %} data-q="{{ forloop.index }}" {{ block.shopify_attributes }}>
+      <p class="gpl-quiz__qtext">{{ block.settings.question | escape }}</p>
       <div class="gpl-quiz__opts">
-        {%- assign opts = block.settings.options | split: ',' -%}
-        {%- for o in opts -%}
-          <button type="button" class="gpl-quiz__opt" data-goto="{{ block.settings.result_url }}">{{ o | strip }}</button>
+        {%- for i in (1..4) -%}
+          {%- capture lkey %}option_{{ i }}{% endcapture -%}
+          {%- capture ukey %}link_{{ i }}{% endcapture -%}
+          {%- if block.settings[lkey] != blank -%}
+            <button type="button" class="gpl-quiz__opt" data-url="{{ block.settings[ukey] }}" data-next="{{ forloop.parent.index | plus: 1 }}">{{ block.settings[lkey] | escape }}</button>
+          {%- endif -%}
         {%- endfor -%}
       </div>
     </div>
   {%- endfor -%}
   <div class="gpl-quiz__done" data-done hidden>
     <p class="gpl-quiz__done-text">Here's your match</p>
-    <a class="gpl-quiz__result" href="#" data-result>See the collection &rarr;</a>
+    <a class="gpl-quiz__result" href="#" data-result>See your pick &rarr;</a>
+    <button type="button" class="gpl-quiz__restart" data-restart>Start over</button>
   </div>
 </gpl-quiz>
 
 {% schema %}
 {
   "name": "Product finder quiz",
+  "max_blocks": 6,
   "settings": [
     { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading"))} }
   ],
@@ -7074,8 +7080,14 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
       "name": "Question",
       "settings": [
         { "type": "text", "id": "question", "label": "Question" },
-        { "type": "text", "id": "options", "label": "Options (comma separated)" },
-        { "type": "url", "id": "result_url", "label": "Result collection" }
+        { "type": "text", "id": "option_1", "label": "Option 1" },
+        { "type": "url", "id": "link_1", "label": "Option 1 result link" },
+        { "type": "text", "id": "option_2", "label": "Option 2" },
+        { "type": "url", "id": "link_2", "label": "Option 2 result link" },
+        { "type": "text", "id": "option_3", "label": "Option 3" },
+        { "type": "url", "id": "link_3", "label": "Option 3 result link" },
+        { "type": "text", "id": "option_4", "label": "Option 4" },
+        { "type": "url", "id": "link_4", "label": "Option 4 result link" }
       ]
     }
   ],
@@ -7083,7 +7095,9 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
 }
 {% endschema %}`,
       css: `.gpl-quiz { display: block; padding: 2rem 1rem; text-align: center; }
-.gpl-quiz__heading { margin: 0 0 1.25rem; font-size: 1.2rem; font-weight: 800; }
+.gpl-quiz__heading { margin: 0 0 0.5rem; font-size: 1.2rem; font-weight: 800; }
+.gpl-quiz__progress { margin: 0 0 1.25rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; }
+.gpl-quiz__q[hidden] { display: none; }
 .gpl-quiz__qtext { margin: 0 0 1rem; font-size: 0.95rem; font-weight: 600; }
 .gpl-quiz__opts { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.6rem; }
 .gpl-quiz__opt {
@@ -7091,26 +7105,35 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
   border-radius: 999px;
   background: transparent;
+  color: inherit;
   font-size: 0.78rem;
   cursor: pointer;
 }
 .gpl-quiz__opt:hover { border-color: rgb(var(--color-button, 21 128 61)); }
-.gpl-quiz__result { display: inline-block; margin-top: 1rem; padding: 0.75rem 1.75rem; border-radius: 999px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); text-decoration: none; font-weight: 700; }`,
+.gpl-quiz__result { display: inline-block; margin-top: 1rem; padding: 0.75rem 1.75rem; border-radius: 999px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); text-decoration: none; font-weight: 700; }
+.gpl-quiz__restart { display: block; margin: 0.9rem auto 0; border: 0; background: none; font-size: 0.68rem; text-decoration: underline; cursor: pointer; color: #64748b; }`,
       js: `document.querySelectorAll('gpl-quiz').forEach((el) => {
-  let step = 0;
-  const qs = [...el.querySelectorAll('.gpl-quiz__q')];
+  const total = el.querySelectorAll('.gpl-quiz__q').length;
   el.querySelectorAll('.gpl-quiz__opt').forEach((opt) => {
     opt.addEventListener('click', () => {
-      step++;
-      if (step < qs.length) {
-        qs.forEach((q) => (q.hidden = true));
-        qs[step].hidden = false;
+      const next = el.querySelector('[data-q="' + opt.dataset.next + '"]');
+      opt.closest('.gpl-quiz__q').hidden = true;
+      if (next) {
+        next.hidden = false;
+        el.querySelector('[data-progress]').textContent = opt.dataset.next + ' / ' + total;
       } else {
-        qs.forEach((q) => (q.hidden = true));
-        el.querySelector('[data-result]').href = opt.dataset.goto || '#';
+        el.querySelector('[data-progress]').hidden = true;
+        el.querySelector('[data-result]').href = opt.dataset.url || '#';
+        el.querySelector('[data-result]').textContent = 'See: ' + opt.textContent;
         el.querySelector('[data-done]').hidden = false;
       }
     });
+  });
+  el.querySelector('[data-restart]').addEventListener('click', () => {
+    el.querySelector('[data-done]').hidden = true;
+    el.querySelector('[data-progress]').hidden = false;
+    el.querySelector('[data-progress]').textContent = '1 / ' + total;
+    el.querySelectorAll('.gpl-quiz__q').forEach((q, i) => { q.hidden = i !== 0; });
   });
 });`,
     }),
@@ -11235,128 +11258,7 @@ if (!customElements.get('gpl-scratch')) customElements.define('gpl-scratch', Gpl
 });`,
     }),
   },
-  {
-    id: "product-quiz",
-    name: "Product finder quiz",
-    description: "A step-by-step 'find your perfect product' quiz - each answer jumps the shopper to a product or collection. What quiz apps charge $50/mo for, in one section.",
-    category: "Marketing",
-    kind: "section",
-    controls: [
-      { id: "heading", label: "Heading", type: "text", maxLength: 40 },
-      { id: "sub", label: "Subtext", type: "text", maxLength: 80 },
-    ],
-    defaults: { heading: "Find your perfect match", sub: "Answer a few quick questions." },
-    install: [
-      ...sectionSteps,
-      "Add a 'Question' block per step; each option has a label and a result link (product or collection).",
-      "The last answer's link is the recommendation - point it at your best product.",
-    ],
-    files: (v) => ({
-      liquid: `<gpl-quiz class="gpl-quiz">
-  <div class="gpl-quiz__intro" data-intro>
-    <h2 class="gpl-quiz__heading">{{ section.settings.heading | default: 'Find your perfect match' }}</h2>
-    {%- if section.settings.sub != blank -%}<p class="gpl-quiz__sub">{{ section.settings.sub | escape }}</p>{%- endif -%}
-    <button type="button" class="gpl-quiz__start" data-start>Start</button>
-  </div>
-  <div class="gpl-quiz__steps" data-steps hidden>
-    <p class="gpl-quiz__progress"><span data-step>1</span> / {{ section.blocks.size }}</p>
-    {%- for block in section.blocks -%}
-      <fieldset class="gpl-quiz__step" data-step-block="{{ forloop.index }}" {% unless forloop.first %}hidden{% endunless %} {{ block.shopify_attributes }}>
-        <legend class="gpl-quiz__q">{{ block.settings.question | escape }}</legend>
-        <div class="gpl-quiz__opts">
-          {%- for i in (1..4) -%}
-            {%- capture lkey %}option_{{ i }}{% endcapture -%}
-            {%- capture ukey %}link_{{ i }}{% endcapture -%}
-            {%- if block.settings[lkey] != blank -%}
-              <button type="button" class="gpl-quiz__opt" data-goto="{{ forloop.parent.index | plus: 1 }}" data-last="{{ forloop.parent.index }} == {{ section.blocks.size }}" data-url="{{ block.settings[ukey] }}">{{ block.settings[lkey] | escape }}</button>
-            {%- endif -%}
-          {%- endfor -%}
-        </div>
-      </fieldset>
-    {%- endfor -%}
-    <div class="gpl-quiz__result" data-result hidden>
-      <p class="gpl-quiz__done">Done - here's your match:</p>
-      <a class="gpl-quiz__cta" data-cta href="#">See your pick</a>
-      <button type="button" class="gpl-quiz__restart" data-restart>Start over</button>
-    </div>
-  </div>
-</gpl-quiz>
 
-{% schema %}
-{
-  "name": "Product finder quiz",
-  "max_blocks": 6,
-  "settings": [
-    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading", 40))} },
-    { "type": "text", "id": "sub", "label": "Subtext", "default": ${js(str(v, "sub", 80))} }
-  ],
-  "blocks": [
-    {
-      "type": "question",
-      "name": "Question",
-      "settings": [
-        { "type": "text", "id": "question", "label": "Question" },
-        { "type": "text", "id": "option_1", "label": "Option 1" },
-        { "type": "url", "id": "link_1", "label": "Option 1 result link" },
-        { "type": "text", "id": "option_2", "label": "Option 2" },
-        { "type": "url", "id": "link_2", "label": "Option 2 result link" },
-        { "type": "text", "id": "option_3", "label": "Option 3" },
-        { "type": "url", "id": "link_3", "label": "Option 3 result link" },
-        { "type": "text", "id": "option_4", "label": "Option 4" },
-        { "type": "url", "id": "link_4", "label": "Option 4 result link" }
-      ]
-    }
-  ],
-  "presets": [{ "name": "Product finder quiz" }]
-}
-{% endschema %}`,
-      css: `.gpl-quiz { display: block; max-width: 36rem; margin: 0 auto; padding: 1.5rem; text-align: center; }
-.gpl-quiz__heading { margin: 0; font-size: 1.4rem; font-weight: 800; }
-.gpl-quiz__sub { margin: 0.5rem 0 1.2rem; font-size: 0.8rem; color: rgb(var(--color-foreground, 100 116 139) / 0.8); }
-.gpl-quiz__start, .gpl-quiz__cta { display: inline-block; border: 0; border-radius: var(--buttons-radius, 999px); padding: 0.75rem 1.8rem; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-size: 0.8rem; font-weight: 700; cursor: pointer; text-decoration: none; }
-.gpl-quiz__progress { margin: 0 0 0.9rem; font-size: 0.6rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: #94a3b8; }
-.gpl-quiz__step { border: 0; padding: 0; margin: 0; }
-.gpl-quiz__step[hidden] { display: none; }
-.gpl-quiz__q { margin: 0 0 1rem; font-size: 1.05rem; font-weight: 800; }
-.gpl-quiz__opts { display: grid; gap: 0.55rem; }
-.gpl-quiz__opt { border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.35); border-radius: 10px; background: transparent; color: inherit; padding: 0.75rem 1rem; font-size: 0.78rem; font-weight: 600; cursor: pointer; }
-.gpl-quiz__opt:hover { border-color: rgb(var(--color-button, 15 23 42)); }
-.gpl-quiz__done { margin: 0 0 1rem; font-size: 0.9rem; font-weight: 700; }
-.gpl-quiz__restart { display: block; margin: 0.9rem auto 0; border: 0; background: none; font-size: 0.68rem; text-decoration: underline; cursor: pointer; color: #64748b; }`,
-      js: `class GplQuiz extends HTMLElement {
-  connectedCallback() {
-    this.steps = this.querySelector('[data-steps]');
-    this.querySelector('[data-start]').addEventListener('click', () => {
-      this.querySelector('[data-intro]').hidden = true;
-      this.steps.hidden = false;
-    });
-    this.querySelectorAll('[data-step-block]').forEach((fs) => {
-      fs.querySelectorAll('.gpl-quiz__opt').forEach((btn) => {
-        btn.addEventListener('click', () => {
-          const next = this.querySelector('[data-step-block="' + btn.dataset.goto + '"]');
-          if (next) {
-            fs.hidden = true; next.hidden = false;
-            this.querySelector('[data-step]').textContent = btn.dataset.goto;
-          } else {
-            fs.hidden = true;
-            const res = this.querySelector('[data-result]');
-            res.hidden = false;
-            this.querySelector('[data-cta]').href = btn.dataset.url || '#';
-            this.querySelector('[data-cta]').textContent = 'See: ' + btn.textContent;
-          }
-        });
-      });
-    });
-    this.querySelector('[data-restart]')?.addEventListener('click', () => {
-      this.querySelector('[data-result]').hidden = true;
-      this.steps.querySelectorAll('[data-step-block]').forEach((fs, i) => { fs.hidden = i !== 0; });
-      this.querySelector('[data-step]').textContent = '1';
-    });
-  }
-}
-if (!customElements.get('gpl-quiz')) customElements.define('gpl-quiz', GplQuiz);`,
-    }),
-  },
   {
     id: "spin-wheel",
     name: "Spin to win wheel",
@@ -11494,7 +11396,7 @@ if (!customElements.get('gpl-wheel')) customElements.define('gpl-wheel', GplWhee
     }),
   },
   {
-    id: "quick-view",
+    id: "quick-view-grid",
     name: "Quick-view collection",
     description: "A product grid where every card has a quick-view button - opens a modal with image, price, variant picker and add-to-cart without leaving the page. The quick-view feature paid themes charge for.",
     category: "Product page",
@@ -11617,81 +11519,7 @@ if (!customElements.get('gpl-wheel')) customElements.define('gpl-wheel', GplWhee
 if (!customElements.get('gpl-qv')) customElements.define('gpl-qv', GplQv);`,
     }),
   },
-  {
-    id: "delivery-date",
-    name: "Delivery date picker",
-    description: "Let shoppers pick a preferred delivery date and add a note on the cart page - saved as real order attributes your packing team sees. What gifting apps bundle for $10+/mo.",
-    category: "Cart & checkout",
-    kind: "section",
-    controls: [
-      { id: "heading", label: "Heading", type: "text", maxLength: 40 },
-      { id: "mindays", label: "Earliest (days from today)", type: "select", options: [{ value: "0", label: "Today" }, { value: "1", label: "Tomorrow" }, { value: "2", label: "2 days" }] },
-      { id: "note", label: "Allow gift note", type: "toggle" },
-    ],
-    defaults: { heading: "Delivery preferences", mindays: "1", note: true },
-    install: [
-      ...sectionSteps,
-      "Add to your cart template - the date and note save as order attributes and appear on the order in admin.",
-    ],
-    files: (v) => ({
-      liquid: `<gpl-date class="gpl-date" data-min="{{ section.settings.mindays }}">
-  <p class="gpl-date__heading">{{ section.settings.heading | default: 'Delivery preferences' }}</p>
-  <label class="gpl-date__lbl">
-    Preferred delivery date
-    <input type="date" class="gpl-date__input" data-date>
-  </label>
-  {%- if section.settings.note -%}
-    <label class="gpl-date__lbl">
-      Gift / order note
-      <textarea class="gpl-date__note" data-note rows="2" placeholder="Leave at door, wrap it…"></textarea>
-    </label>
-  {%- endif -%}
-  <p class="gpl-date__saved" data-saved hidden>Saved to your order.</p>
-</gpl-date>
 
-{% schema %}
-{
-  "name": "Delivery date picker",
-  "settings": [
-    { "type": "text", "id": "heading", "label": "Heading", "default": ${js(str(v, "heading", 40))} },
-    { "type": "range", "id": "mindays", "label": "Earliest selectable (days from today)", "min": 0, "max": 14, "step": 1, "default": ${Number(v.mindays) || 1} },
-    { "type": "checkbox", "id": "note", "label": "Allow gift / order note", "default": true }
-  ],
-  "presets": [{ "name": "Delivery date picker" }]
-}
-{% endschema %}`,
-      css: `.gpl-date { display: block; margin: 1rem 0; padding: 1.1rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 12px; }
-.gpl-date__heading { margin: 0 0 0.8rem; font-size: 0.82rem; font-weight: 800; }
-.gpl-date__lbl { display: block; margin-bottom: 0.7rem; font-size: 0.68rem; font-weight: 600; color: rgb(var(--color-foreground, 100 116 139) / 0.85); }
-.gpl-date__input, .gpl-date__note { display: block; width: 100%; margin-top: 0.3rem; padding: 0.6rem 0.75rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.35); border-radius: 8px; font-size: 0.75rem; font-family: inherit; background: transparent; color: inherit; box-sizing: border-box; }
-.gpl-date__saved { margin: 0.5rem 0 0; font-size: 0.65rem; font-weight: 700; color: #16a34a; }`,
-      js: `class GplDate extends HTMLElement {
-  connectedCallback() {
-    const min = Number(this.dataset.min) || 0;
-    const input = this.querySelector('[data-date]');
-    const note = this.querySelector('[data-note]');
-    const d = new Date();
-    d.setDate(d.getDate() + min);
-    input.min = d.toISOString().slice(0, 10);
-    const save = () => {
-      const attrs = {};
-      if (input.value) attrs['Preferred delivery date'] = input.value;
-      if (note && note.value) attrs['Order note'] = note.value;
-      fetch('/cart/update.js', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ attributes: attrs }) })
-        .then(() => {
-          const s = this.querySelector('[data-saved]');
-          s.hidden = false;
-          clearTimeout(this._t);
-          this._t = setTimeout(() => { s.hidden = true; }, 2500);
-        });
-    };
-    input.addEventListener('change', save);
-    if (note) note.addEventListener('change', save);
-  }
-}
-if (!customElements.get('gpl-date')) customElements.define('gpl-date', GplDate);`,
-    }),
-  },
 ];
 
 export function getExample(id: string | undefined): PlaygroundExample {
