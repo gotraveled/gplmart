@@ -35,12 +35,16 @@ import { GeoPrice } from "@/components/ui/geo-price";
 export const metadata: Metadata = {
   title: { absolute: "GPLMart - Shopify Liquid Code, Snippets & Sections" },
   description:
-    "200+ reusable Shopify Liquid snippets and theme sections you can preview live and paste into your store - plus Shopify themes, WordPress themes and plugins in one bundle. One payment, no subscription.",
+    "200+ Shopify Liquid snippets and theme sections to preview live and paste into your store, plus theme bundles. One payment, no subscription.",
   alternates: { canonical: "/" },
   openGraph: {
+    type: "website",
+    siteName: "GPLMart",
     title: "GPLMart - Shopify Liquid Code, Snippets & Sections",
     description:
       "200+ reusable Shopify Liquid snippets and theme sections - live preview, install guides, copy-paste code. One payment, no subscription.",
+    url: "/",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "GPLMart - Shopify Liquid code library" }],
   },
 };
 

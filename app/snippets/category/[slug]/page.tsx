@@ -15,7 +15,7 @@ const CATEGORIES = [...new Set(examples.map((e) => e.category))].map((c) => ({ n
 
 const PITCH: Record<string, string> = {
   "product-page":
-    "Shopify product page snippets that sell - variant swatches, sticky buy bars, trust rows, delivery info, cross-sells and review stars. Every component pastes straight into your product template.",
+    "Shopify product page snippets that sell: variant swatches, sticky buy bars, trust rows, delivery info, cross-sells and review stars. Paste into any template.",
   "cart-checkout":
     "Cart and checkout Liquid code - free-shipping bars, cart upsells, trust badges, notes and express checkout hints that lift order value without apps.",
   "headers-navigation":
@@ -39,12 +39,19 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const cat = CATEGORIES.find((c) => c.slug === slug);
   if (!cat) return {};
   const count = examples.filter((e) => e.category === cat.name).length;
-  const title = `Shopify ${cat.name} Snippets - ${count} Liquid Code Examples`;
+  const title = `Shopify ${cat.name} Snippets - ${count} Liquid Examples`;
+  const description = PITCH[cat.slug] ?? `${count} Shopify Liquid ${cat.name.toLowerCase()} snippets with live previews and install guides.`;
   return {
     title,
-    description: PITCH[cat.slug] ?? `${count} Shopify Liquid ${cat.name.toLowerCase()} snippets with live previews and install guides.`,
+    description,
     alternates: { canonical: `/snippets/category/${slug}` },
-    openGraph: { title, url: absoluteUrl(`/snippets/category/${slug}`) },
+    openGraph: {
+      title,
+      description,
+      url: absoluteUrl(`/snippets/category/${slug}`),
+      images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "GPLMart - Shopify Liquid code library" }],
+    },
+    twitter: { card: "summary_large_image", title, description, images: ["/opengraph-image"] },
   };
 }
 

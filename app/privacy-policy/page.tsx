@@ -1,6 +1,10 @@
 import { InfoPage, infoMetadata } from "@/components/ui/info-page";
 
-export const metadata = infoMetadata("Privacy policy", "Privacy policy for GPLMart.", "/privacy-policy");
+export const metadata = infoMetadata(
+  "Privacy Policy - How GPLMart Handles Your Data",
+  "What personal data GPLMart collects at checkout and sign-in, why we collect it, how long we keep it, which processors we use, and the choices you have.",
+  "/privacy-policy",
+);
 
 export default function PrivacyPolicyPage() {
   return (

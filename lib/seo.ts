@@ -118,7 +118,8 @@ export function codeJsonLd(input: {
   name: string;
   description: string;
   kind: "section" | "snippet";
-  code: string;
+  /** Pass only for publicly viewable source - omit for members-only snippets so paid code never ships in page HTML. */
+  code?: string;
 }) {
   return {
     "@type": "SoftwareSourceCode",
@@ -127,7 +128,7 @@ export function codeJsonLd(input: {
     programmingLanguage: ["Liquid", "HTML", "CSS", "JavaScript"],
     codeRepository: absoluteUrl(`/snippets/${input.id}`),
     url: absoluteUrl(`/snippets/${input.id}`),
-    text: input.code.slice(0, 4000),
+    ...(input.code ? { text: input.code.slice(0, 4000) } : {}),
     author: { "@id": absoluteUrl("/#org") },
     license: absoluteUrl("/licensing"),
     codeSampleType: input.kind === "section" ? "full (compilable) solution" : "code snippet",
@@ -148,5 +149,8 @@ export function collectionJsonLd(items: readonly { name: string; url: string }[]
 
 /** Renders one or more JSON-LD objects as a single script tag payload. */
 export function jsonLdPayload(...schemas: Record<string, unknown>[]) {
-  return JSON.stringify({ "@context": "https://schema.org", "@graph": schemas });
+  return JSON.stringify({ "@context": "https://schema.org", "@graph": schemas })
+    .replace(/</g, "\\u003c")
+    .replace(/\u2028/g, "\\u2028")
+    .replace(/\u2029/g, "\\u2029");
 }

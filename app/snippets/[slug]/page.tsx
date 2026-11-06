@@ -6,9 +6,10 @@ import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
 import { CodeBlock } from "@/components/ui/code-block";
+import { CopyButton } from "@/components/ui/copy-button";
 import { ButtonLink } from "@/components/ui/button";
 import { ExamplePreview } from "@/components/playground/previews";
-import { asSectionFile, completeFile, examples, freeExampleIds } from "@/lib/playground/examples";
+import { asSectionFile, completeFile, examples, freeExampleIds, hasSectionVariant } from "@/lib/playground/examples";
 import { absoluteUrl } from "@/lib/site";
 import { breadcrumbJsonLd, codeJsonLd, jsonLdPayload } from "@/lib/seo";
 import { snippetBenefits, snippetHook } from "@/lib/snippet-copy";
@@ -25,8 +26,18 @@ export async function generateMetadata({ params }: Params): Promise<Metadata> {
   if (!ex) return {};
   const free = freeExampleIds.has(ex.id);
   const kindWord = ex.kind === "section" ? "Section" : "Snippet";
-  const title = `${ex.name} - ${free ? "Free " : ""}Shopify Liquid ${kindWord} Code`;
-  const description = `${ex.description} ${free ? "Copy the complete Liquid, CSS and JS source free" : "Preview it live - members get the complete source"} - paste into any OS 2.0 Shopify theme, no app needed.`;
+  const title =
+    [
+      `${ex.name} - ${free ? "Free " : ""}Shopify Liquid ${kindWord} Code`,
+      `${ex.name} - Shopify Liquid ${kindWord} Code`,
+      `${ex.name} - Shopify Liquid ${kindWord}`,
+      `${ex.name} - Shopify ${kindWord}`,
+    ].find((t) => t.length <= 60) ?? `${ex.name.slice(0, 44).trim()}... - Shopify ${kindWord}`;
+  const tail = free ? " Free copy-paste source. Any OS 2.0 theme." : " Live preview. Works on any OS 2.0 theme.";
+  const room = 155 - tail.length;
+  const flat = ex.description.replace(/\s+/g, " ").trim();
+  const cut = flat.length <= room ? flat : `${flat.slice(0, room - 1).replace(/[\s,;:.-]+\S*$/, "")}...`;
+  const description = `${cut}${tail}`;
   return {
     title,
     description,
@@ -47,7 +58,7 @@ export default async function SnippetPage({ params }: Params) {
   const fileName = `${ex.id}.liquid`;
 
   const jsonLd = jsonLdPayload(
-    codeJsonLd({ id: ex.id, name: ex.name, description: ex.description, kind: ex.kind, code: files.liquid }),
+    codeJsonLd({ id: ex.id, name: ex.name, description: ex.description, kind: ex.kind, code: free ? files.liquid : undefined }),
     breadcrumbJsonLd([
       { name: "Home", url: "/" },
       { name: ex.category, url: `/snippets/category/${catSlug}` },
@@ -96,8 +107,8 @@ export default async function SnippetPage({ params }: Params) {
           </div>
         </div>
 
-        <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_320px]">
-          <div>
+        <div className="mt-10 grid grid-cols-1 gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+          <div className="min-w-0">
             {/* Install */}
             <h2 className="font-display text-xl font-semibold">How to install on your store</h2>
             <ol className="mt-4 space-y-3">
@@ -122,17 +133,29 @@ export default async function SnippetPage({ params }: Params) {
               </div>
               {free ? (
                 <div className="mt-4 space-y-4">
-                  <CodeBlock code={completeFile(files)} lang="liquid" lineNumbers />
-                  {ex.kind === "snippet" && (
+                  <div className="overflow-hidden rounded-xl border border-line bg-ink-900/60">
+                    <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-2">
+                      <span className="truncate font-mono text-xs text-subtle">{ex.kind === "section" ? `sections/${fileName}` : `snippets/${fileName}`}</span>
+                      <CopyButton text={completeFile(files)} label="Copy code" />
+                    </div>
+                    <CodeBlock code={completeFile(files)} lang="liquid" lineNumbers />
+                  </div>
+                  {hasSectionVariant(ex) && (
                     <div>
                       <p className="text-xs font-semibold uppercase tracking-wider text-subtle">Section variant - add in theme editor, no render tag</p>
-                      <CodeBlock code={asSectionFile(ex, files)} lang="liquid" className="mt-2" />
+                      <div className="mt-2 overflow-hidden rounded-xl border border-line bg-ink-900/60">
+                        <div className="flex items-center justify-between gap-3 border-b border-line px-4 py-2">
+                          <span className="truncate font-mono text-xs text-subtle">sections/{fileName}</span>
+                          <CopyButton text={asSectionFile(ex, files)} label="Copy section" />
+                        </div>
+                        <CodeBlock code={asSectionFile(ex, files)} lang="liquid" />
+                      </div>
                     </div>
                   )}
                   {files.usage && (
                     <div className="rounded-xl border border-line bg-ink-900/60 p-4">
                       <p className="text-xs font-semibold uppercase tracking-wider text-subtle">Usage</p>
-                      <code className="mt-2 block text-sm text-accent">{files.usage}</code>
+                      <code className="mt-2 block overflow-x-auto whitespace-pre-wrap break-words text-sm text-accent">{files.usage}</code>
                     </div>
                   )}
                 </div>
@@ -157,7 +180,7 @@ export default async function SnippetPage({ params }: Params) {
           </div>
 
           {/* Sidebar: related + CTA */}
-          <aside className="space-y-4">
+          <aside className="min-w-0 space-y-4">
             <div className="rounded-2xl border border-line bg-ink-900/60 p-5">
               <h3 className="font-display text-sm font-semibold">Why this component</h3>
               <ul className="mt-3 space-y-2.5 text-sm text-muted">

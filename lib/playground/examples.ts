@@ -899,7 +899,7 @@ if (!customElements.get('gpl-slideshow')) customElements.define('gpl-slideshow',
     install: [
       "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
       "In Settings > Custom data > Products, create a metafield custom.size_chart of type File (image) and upload a chart per product.",
-      "Create snippets/size-chart-modal.liquid, paste the Liquid code, and add the JS to your theme or a {% javascript %} tag.",
+      "Create snippets/size-chart-modal.liquid and paste the complete file - the markup, styles and script are all inside it.",
       "Render it from your product template with the usage tag shown in the Usage tab.",
       "Check a product with and without a chart image - the link only appears when the metafield is set.",
     ],
@@ -988,13 +988,15 @@ if (!customElements.get('gpl-slideshow')) customElements.define('gpl-slideshow',
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && !overlay.hidden) hide();
   });
-${on(v, "zoom") ? `  image.addEventListener('click', () => {
-    const zoomed = image.classList.toggle('is-zoomed');
-    image.style.maxWidth = zoomed ? 'none' : '';
-    image.style.width = zoomed ? '160%' : '';
-    image.style.cursor = zoomed ? 'zoom-out' : 'zoom-in';
-  });
-  image.style.cursor = 'zoom-in';` : ""}
+${on(v, "zoom") ? `  if (image) {
+    image.addEventListener('click', () => {
+      const zoomed = image.classList.toggle('is-zoomed');
+      image.style.maxWidth = zoomed ? 'none' : '';
+      image.style.width = zoomed ? '160%' : '';
+      image.style.cursor = zoomed ? 'zoom-out' : 'zoom-in';
+    });
+    image.style.cursor = 'zoom-in';
+  }` : ""}
 });`,
       usage: `{% render 'size-chart-modal', product: product %}`,
     }),
@@ -3221,7 +3223,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     defaults: { label: "Add gift wrap & a handwritten note", price_note: "+ Rs. 49" },
     install: [
       "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
-      "Create snippets/gift-wrap.liquid, paste the code and CSS.",
+      "Create snippets/gift-wrap.liquid and paste the complete file - markup and styles are already inside it.",
       "Render it inside your product <form> so the properties travel with the add-to-cart request.",
       "Fulfil it as a line-item property (shows on the packing slip). Charge for it via a separate product or free - your call.",
     ],
@@ -4766,7 +4768,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
           <tr>
             <td>{{ variant.title }}{% unless variant.available %} <em>(sold out)</em>{% endunless %}</td>
             <td>{{ variant.price | money }}</td>
-            <td><input type="number" min="0" value="0" data-variant="{{ variant.id }}" {% unless variant.available %}disabled{% endunless %}></td>
+            <td><input type="number" min="0" value="0" aria-label="Quantity for {{ variant.title | escape }}" data-variant="{{ variant.id }}" {% unless variant.available %}disabled{% endunless %}></td>
           </tr>
         {%- endfor -%}
       </tbody>
@@ -5058,6 +5060,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
 .gpl-news__form { display: flex; gap: 0.5rem; max-width: 26rem; margin: 1.25rem auto 0; }
 .gpl-news__input {
   flex: 1;
+  min-width: 0;
   padding: 0.75rem 1rem;
   border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3);
   border-radius: 10px;
@@ -5218,7 +5221,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     </details>
   {%- endfor -%}
 </div>`,
-      css: `.gpl-cd2__item { border-bottom: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.18); }
+      css: `.gpl-cd2__item { overflow-x: clip; border-bottom: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.18); }
 .gpl-cd2__item summary {
   display: flex;
   justify-content: space-between;
@@ -5901,7 +5904,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
   </p>
   <div class="gpl-ig__grid">
     {%- for block in section.blocks -%}
-      <a class="gpl-ig__item" href="{{ block.settings.link | default: '#' }}" {{ block.shopify_attributes }}>
+      <a class="gpl-ig__item" href="{{ block.settings.link | default: '#' }}" aria-label="View this post on Instagram" {{ block.shopify_attributes }}>
         {%- if block.settings.image -%}
           {{ block.settings.image | image_url: width: 400 | image_tag: class: 'gpl-ig__img', loading: 'lazy' }}
         {%- endif -%}
@@ -6378,7 +6381,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
 .gpl-soon__timer b { display: block; font-size: 2.5rem; font-weight: 900; font-variant-numeric: tabular-nums; }
 .gpl-soon__timer small { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.1em; color: rgb(var(--color-foreground, 100 116 139) / 0.75); }
 .gpl-soon__form { display: flex; gap: 0.5rem; max-width: 24rem; margin: 2rem auto 0; }
-.gpl-soon__form input { flex: 1; padding: 0.7rem 1rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 10px; background: transparent; font-size: 0.82rem; }
+.gpl-soon__form input { flex: 1; min-width: 0; padding: 0.7rem 1rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 10px; background: transparent; font-size: 0.82rem; }
 .gpl-soon__form button { padding: 0.7rem 1.25rem; border: 0; border-radius: 10px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-weight: 800; cursor: pointer; }`,
       js: `document.querySelectorAll('gpl-soon').forEach((el) => {
   const end = new Date(el.dataset.date + 'T00:00:00').getTime();
@@ -6721,7 +6724,10 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     ],
     files: (v) => ({
       liquid: `<div class="gpl-sw{% if shape == 'square' %} gpl-sw--sq{% endif %}">
-  {%- assign colour_opt = product.options_with_values | where: 'name', 'Color' | first | default: product.options_with_values | where: 'name', 'Colour' | first -%}
+  {%- assign colour_opt = product.options_with_values | where: 'name', 'Color' | first -%}
+  {%- unless colour_opt -%}
+    {%- assign colour_opt = product.options_with_values | where: 'name', 'Colour' | first -%}
+  {%- endunless -%}
   {%- if colour_opt -%}
     <p class="gpl-sw__label">Colour: <b data-gpl-sw-label>{{ colour_opt.selected_value }}</b></p>
     <div class="gpl-sw__row">
@@ -7554,7 +7560,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     files: () => ({
       liquid: `<gpl-qty class="gpl-qty">
   <button type="button" class="gpl-qty__btn" data-minus aria-label="Decrease">&minus;</button>
-  <input type="number" class="gpl-qty__input" name="quantity" value="1" min="1" data-input>
+  <input type="number" class="gpl-qty__input" name="quantity" value="1" min="1" aria-label="Quantity" data-input>
   <button type="button" class="gpl-qty__btn" data-plus aria-label="Increase">+</button>
 </gpl-qty>`,
       css: `.gpl-qty { display: inline-flex; align-items: stretch; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 9px; overflow: hidden; }
@@ -7804,8 +7810,11 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
     ],
     defaults: { label: "Load more" },
     install: [
-      ...snippetSteps("load-more.liquid"),
-      "Render after the product grid in collection - works when paginate is set; falls back to next-page link.",
+      "Back up your theme (Online Store > Themes > Actions > Duplicate) before changing any code.",
+      "Create snippets/load-more.liquid and paste the complete file - markup, styles and script are inside it.",
+      "Render it inside your collection template's paginate block, right after the product grid - it needs the paginate object, so it must be a snippet render (no theme-editor section).",
+      "If your grid uses a different class than .product-grid, set data-target on the gpl-loadmore element to match.",
+      "Preview a collection with more than one page of products.",
     ],
     files: (v) => ({
       liquid: `{%- if paginate.next -%}
@@ -8030,7 +8039,7 @@ if (!customElements.get('gpl-countdown')) customElements.define('gpl-countdown',
 }`,
       js: `document.querySelectorAll('gpl-ref').forEach((el) => {
   el.querySelector('[data-copy]').addEventListener('click', async (e) => {
-    await navigator.clipboard.writeText(el.dataset.url).catch(() => {});
+    try { await navigator.clipboard.writeText(el.dataset.url); } catch (err) {}
     e.target.textContent = 'Copied!';
     setTimeout(() => (e.target.textContent = 'Copy your link'), 2000);
   });
@@ -8877,7 +8886,7 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
 .gpl-vip__heading { margin: 0; font-size: 1.2rem; font-weight: 800; }
 .gpl-vip__text { margin: 0.5rem auto 0; max-width: 26rem; font-size: 0.78rem; color: rgb(var(--color-foreground, 100 116 139) / 0.8); }
 .gpl-vip__form { display: flex; gap: 0.5rem; max-width: 24rem; margin: 1.25rem auto 0; }
-.gpl-vip__form input { flex: 1; padding: 0.7rem 1rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 999px; background: transparent; font-size: 0.8rem; }
+.gpl-vip__form input { flex: 1; min-width: 0; padding: 0.7rem 1rem; border: 1px solid rgb(var(--color-foreground, 148 163 184) / 0.3); border-radius: 999px; background: transparent; font-size: 0.8rem; }
 .gpl-vip__form button { padding: 0.7rem 1.4rem; border: 0; border-radius: 999px; background: rgb(var(--color-button, 15 23 42)); color: rgb(var(--color-button-text, 255 255 255)); font-weight: 700; cursor: pointer; }`,
     }),
   },
@@ -9465,7 +9474,7 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
     <input type="hidden" name="contact[tags]" value="callback-request">
     <input type="text" name="contact[name]" placeholder="Name" required>
     <input type="tel" name="contact[phone]" placeholder="Phone" required>
-    <select name="contact[time]">
+    <select name="contact[time]" aria-label="Preferred call time">
       <option>Best time: morning</option>
       <option>Best time: afternoon</option>
       <option>Best time: evening</option>
@@ -10189,7 +10198,7 @@ body.gpl-a11y-hc a { text-decoration: underline; }`,
   },
   {
     id: "checkout-trust-strip",
-    name: "Checkout trust strip",
+    name: "Secure, returns & COD badges",
     description: "'Secure | Easy returns | COD available' - the three reassurance points buyers check before paying.",
     category: "Trust & social proof",
     kind: "snippet",
@@ -11514,7 +11523,7 @@ if (!customElements.get('gpl-wheel')) customElements.define('gpl-wheel', GplWhee
         '<p class="gpl-qv__mprice" data-price>' + this.money(p.price) + '</p>' +
         '<p class="gpl-qv__mdesc">' + (p.description || '').replace(/<[^>]*>/g, '').slice(0, 140) + '…</p>' +
         (vars.length > 1
-          ? '<select class="gpl-qv__var">' + vars.map((v) => '<option value="' + v.id + '">' + v.title + '</option>').join('') + '</select>'
+          ? '<select class="gpl-qv__var" aria-label="Choose an option">' + vars.map((v) => '<option value="' + v.id + '">' + v.title + '</option>').join('') + '</select>'
           : '') +
         '<button type="button" class="gpl-qv__add"' + (vars.length ? '' : ' disabled') + '>' + (vars.length ? 'Add to cart' : 'Sold out') + '</button>' +
         '<a class="gpl-qv__view" href="' + p.url + '">View full details</a></div></div>';
@@ -11637,6 +11646,11 @@ if (!customElements.get('gpl-upsell')) customElements.define('gpl-upsell', GplUp
 export function getExample(id: string | undefined): PlaygroundExample {
   return examples.find((e) => e.id === id) ?? examples[0]!;
 }
+
+/** Snippets that need a render-context object no section can ever see -
+ * no "As section" variant is offered for these. */
+const noSectionVariant: ReadonlySet<string> = new Set(["load-more"]);
+export const hasSectionVariant = (ex: PlaygroundExample) => ex.kind === "snippet" && !noSectionVariant.has(ex.id);
 
 /**
  * One-file install: merges the generated CSS/JS into the Liquid via Shopify's

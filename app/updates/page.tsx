@@ -4,8 +4,8 @@ import { Badge } from "@/components/ui/badge";
 import updates from "@/data/updates.json";
 
 export const metadata = infoMetadata(
-  "Updates",
-  "What's new in GPLMart - new snippets, bundles and features, newest first.",
+  "GPLMart Updates - New Snippets, Sections & Features",
+  "What's new in GPLMart: new Shopify Liquid snippets and sections, theme bundles and library features, newest first.",
   "/updates",
 );
 

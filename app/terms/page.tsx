@@ -1,6 +1,10 @@
 import { InfoPage, infoMetadata } from "@/components/ui/info-page";
 
-export const metadata = infoMetadata("Terms of service", "Terms of service governing use of GPLMart.", "/terms");
+export const metadata = infoMetadata(
+  "Terms of Service - GPLMart All-Access Membership",
+  "The terms of service governing GPLMart's one-time all-access membership: what you receive, licensing, payments, refunds, acceptable use and liability.",
+  "/terms",
+);
 
 export default function TermsPage() {
   return (

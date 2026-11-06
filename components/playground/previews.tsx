@@ -1526,6 +1526,7 @@ function ImageHotspots({ v }: P) {
           <button
             key={pin.t}
             type="button"
+            aria-label={`Show ${pin.t}`}
             onClick={() => setOpen(i)}
             className="absolute -translate-x-1/2 -translate-y-1/2"
             style={{ left: `${pin.x}%`, top: `${pin.y}%` }}
@@ -1682,7 +1683,7 @@ function BulkOrder({ v }: P) {
               <td className="py-1.5">{t}</td>
               <td className="py-1.5">{pr}</td>
               <td className="py-1.5">
-                <input type="number" min="0" value={qty[t] ?? 0} onChange={(e) => setQty({ ...qty, [t]: Number(e.target.value) })} className="w-14 rounded border border-neutral-300 px-1.5 py-1" />
+                <input type="number" min="0" aria-label={`Quantity for ${t}`} value={qty[t] ?? 0} onChange={(e) => setQty({ ...qty, [t]: Number(e.target.value) })} className="w-14 rounded border border-neutral-300 px-1.5 py-1" />
               </td>
             </tr>
           ))}
@@ -1754,8 +1755,8 @@ function NewsletterDiscount({ v }: P) {
         <p className="m-0 mt-3.5 text-sm font-bold text-emerald-600">You&apos;re in - check your inbox</p>
       ) : (
         <form onSubmit={(e) => { e.preventDefault(); setDone(true); }} className="mx-auto mt-3.5 flex max-w-80 gap-2">
-          <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Your email" className="flex-1 rounded-xl border border-neutral-300 px-3.5 py-2.5 text-sm outline-none" />
-          <button type="submit" className="rounded-xl bg-neutral-900 px-4 py-2.5 text-xs font-extrabold text-white">Subscribe</button>
+          <input required type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Your email" aria-label="Email address" className="min-w-0 flex-1 rounded-xl border border-neutral-300 px-3.5 py-2.5 text-sm outline-none" />
+          <button type="submit" className="shrink-0 rounded-xl bg-neutral-900 px-4 py-2.5 text-xs font-extrabold text-white">Subscribe</button>
         </form>
       )}
     </div>
@@ -2548,7 +2549,7 @@ function QuantitySelector() {
     <div className="p-4">
       <div className="inline-flex items-stretch overflow-hidden rounded-lg border border-neutral-300">
         <button type="button" onClick={() => setN(Math.max(1, n - 1))} className="w-9 bg-neutral-100 text-sm">&minus;</button>
-        <input type="number" readOnly value={n} className="w-10 border-0 text-center text-sm outline-none" />
+        <input type="number" readOnly aria-label="Quantity" value={n} className="w-10 border-0 text-center text-sm outline-none" />
         <button type="button" onClick={() => setN(n + 1)} className="w-9 bg-neutral-100 text-sm">+</button>
       </div>
     </div>
@@ -2577,7 +2578,7 @@ function DeliveryDatePicker({ v }: P) {
   return (
     <div className="p-4">
       <label className="mb-1.5 block text-[0.68rem] font-semibold">{str(v, "label") || "Preferred delivery date"}</label>
-      <input type="date" value={d} onChange={(e) => setD(e.target.value)} className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.75rem] outline-none" />
+      <input type="date" aria-label="Preferred delivery date" value={d} onChange={(e) => setD(e.target.value)} className="rounded-lg border border-neutral-300 px-3 py-2 text-[0.75rem] outline-none" />
       <p className="m-0 mt-1 text-[0.55rem] text-neutral-400">Saves to order attributes</p>
     </div>
   );
@@ -2865,7 +2866,7 @@ function CompatibilityChecker({ v }: P) {
   return (
     <div className="p-4">
       <label className="mb-1.5 block text-[0.68rem] font-semibold">{str(v, "label") || "Check compatibility"}</label>
-      <select value={sel} onChange={(e) => setSel(e.target.value)} className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-[0.72rem] outline-none">
+      <select aria-label="Select your device" value={sel} onChange={(e) => setSel(e.target.value)} className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-[0.72rem] outline-none">
         <option value="">Select model…</option>
         {opts.map((o) => <option key={o}>{o}</option>)}
       </select>
@@ -3170,7 +3171,7 @@ function BirthdayCapture({ v }: P) {
         <p className="m-0 mt-2 text-[0.65rem] font-bold text-emerald-600">Saved - gift incoming on your day</p>
       ) : (
         <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="mt-2 grid gap-1.5">
-          <input required type="date" className="rounded border border-neutral-300 px-2.5 py-1.5 text-[0.65rem] outline-none" />
+          <input required type="date" aria-label="Date of birth" className="rounded border border-neutral-300 px-2.5 py-1.5 text-[0.65rem] outline-none" />
           <input required type="email" placeholder="Your email" className="rounded border border-neutral-300 px-2.5 py-1.5 text-[0.65rem] outline-none" />
           <button type="submit" className="w-fit rounded bg-neutral-900 px-3 py-1.5 text-[0.6rem] font-bold text-white">Save my birthday</button>
         </form>
@@ -3268,7 +3269,7 @@ function CallbackRequest({ v }: P) {
         <form onSubmit={(e) => { e.preventDefault(); setSent(true); }} className="grid gap-1.5">
           <input required placeholder="Name" className="rounded-lg border border-neutral-300 px-2.5 py-1.5 text-[0.62rem] outline-none" />
           <input required type="tel" placeholder="Phone" className="rounded-lg border border-neutral-300 px-2.5 py-1.5 text-[0.62rem] outline-none" />
-          <select className="rounded-lg border border-neutral-300 px-2.5 py-1.5 text-[0.62rem]">
+          <select aria-label="Preferred call time" className="rounded-lg border border-neutral-300 px-2.5 py-1.5 text-[0.62rem]">
             <option>Best time: morning</option><option>Best time: afternoon</option><option>Best time: evening</option>
           </select>
           <button type="submit" className="w-fit rounded-lg bg-neutral-900 px-3.5 py-1.5 text-[0.6rem] font-bold text-white">Call me back</button>
@@ -3553,7 +3554,7 @@ function DeliverySlotPicker() {
   return (
     <div className="p-4">
       <label className="mb-1.5 block text-[0.68rem] font-semibold">Preferred delivery time</label>
-      <select value={slot} onChange={(e) => setSlot(e.target.value)} className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-[0.7rem] outline-none">
+      <select aria-label="Delivery slot" value={slot} onChange={(e) => setSlot(e.target.value)} className="w-full rounded-lg border border-neutral-300 px-3 py-2 text-[0.7rem] outline-none">
         <option value="">Any time</option>
         <option>Morning (9am - 1pm)</option>
         <option>Afternoon (1pm - 5pm)</option>
@@ -3982,7 +3983,7 @@ function QuickViewGrid({ v }: P) {
               <div className="min-w-0">
                 <p className="m-0 text-[0.7rem] font-extrabold">Merino cardigan</p>
                 <p className="m-0 mb-1.5 mt-0.5 text-[0.65rem] font-bold">Rs 49.00</p>
-                <select className="mb-2 w-full rounded-md border border-neutral-300 px-1.5 py-1 text-[0.55rem]"><option>S</option><option>M</option><option>L</option></select>
+                <select aria-label="Choose an option" className="mb-2 w-full rounded-md border border-neutral-300 px-1.5 py-1 text-[0.55rem]"><option>S</option><option>M</option><option>L</option></select>
                 <div className="rounded-md bg-neutral-900 py-1.5 text-center text-[0.55rem] font-bold text-white">Add to cart</div>
               </div>
             </div>

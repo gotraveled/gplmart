@@ -49,7 +49,7 @@ for (const ex of examples) {
     errs.push(`${ex.id}: ${e.message.slice(0, 110)}`);
   }
   // snippet → section variant
-  if (ex.kind === "snippet" && m.exports.asSectionFile) {
+  if (ex.kind === "snippet" && m.exports.hasSectionVariant?.(ex)) {
     try {
       await liquid.parseAndRender(strip(m.exports.asSectionFile(ex, f)), scope);
     } catch (e) {

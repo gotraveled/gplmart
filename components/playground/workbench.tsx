@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Monitor, Smartphone, Tablet, BookOpen, Lock, X, Search } from "lucide-react";
-import { asSectionFile, completeFile, examples, freeExampleIds, getExample } from "@/lib/playground/examples";
+import { asSectionFile, completeFile, examples, freeExampleIds, getExample, hasSectionVariant } from "@/lib/playground/examples";
 import type { ControlDef, ExampleFiles, PlaygroundExample, Values } from "@/lib/playground/types";
 import type { Lang } from "@/lib/highlight";
 import { CodeBlock } from "@/components/ui/code-block";
@@ -26,7 +26,7 @@ function fileTabs(ex: PlaygroundExample, files: ExampleFiles): FileTab[] {
   const tabs: FileTab[] = [
     { id: "liquid", label: ex.kind === "section" ? "Complete file" : "As snippet", filename: `${dir}/${ex.id}.liquid`, code: completeFile(files), lang: "liquid" },
   ];
-  if (ex.kind === "snippet") {
+  if (hasSectionVariant(ex)) {
     tabs.push({ id: "section", label: "As section", filename: `sections/${ex.id}.liquid`, code: asSectionFile(ex, files), lang: "liquid" });
   }
   if (files.usage) tabs.push({ id: "usage", label: "Usage", filename: "usage.liquid", code: files.usage, lang: "liquid" });

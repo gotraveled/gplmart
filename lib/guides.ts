@@ -123,7 +123,7 @@ export const guides: Guide[] = [
   },
   {
     slug: "product-page-elements-that-convert",
-    title: "7 product-page elements that lift conversion (and the snippets that deliver them)",
+    title: "7 product-page elements that lift conversion",
     excerpt:
       "The elements high-converting stores actually use on product pages - ranked by impact, with the honest caveat about each.",
     date: "2026-11-01",

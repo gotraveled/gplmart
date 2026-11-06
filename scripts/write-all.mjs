@@ -6,7 +6,7 @@ const path = require("node:path");
 const src = ts.transpileModule(fs.readFileSync("lib/playground/examples.ts","utf8"),{compilerOptions:{module:"commonjs"}}).outputText;
 const m = {exports:{}};
 new Function("module","exports","require",src)(m,m.exports,(n)=>n==="./types"?{}:require(n));
-const { examples, completeFile, asSectionFile } = m.exports;
+const { examples, completeFile, asSectionFile, hasSectionVariant } = m.exports;
 const roots = [
   ["dawn-main","sections","snippets"],
   ["shopify-theme-lab-main/shopify","sections","snippets"],
@@ -19,8 +19,8 @@ for (const [root, sec, sni] of roots) {
   for (const ex of examples) {
     fs.writeFileSync(path.join(root, ex.kind==="section"?sec:sni, "gpl-"+ex.id+".liquid"), completeFile(ex.files(ex.defaults)));
     if (ex.kind === "snippet") {
-      fs.writeFileSync(path.join(root, sec, "gpl-"+ex.id+"-sec.liquid"), asSectionFile(ex, ex.files(ex.defaults)));
+      if (hasSectionVariant(ex)) fs.writeFileSync(path.join(root, sec, "gpl-"+ex.id+"-sec.liquid"), asSectionFile(ex, ex.files(ex.defaults)));
     }
   }
 }
-console.log(`wrote ${examples.length} + ${examples.filter((e) => e.kind === "snippet").length} variants x 4 themes`);
+console.log(`wrote ${examples.length} + ${examples.filter((e) => hasSectionVariant(e)).length} variants x 4 themes`);

@@ -1,8 +1,8 @@
 import { InfoPage, infoMetadata } from "@/components/ui/info-page";
 
 export const metadata = infoMetadata(
-  "Licensing",
-  "Licensing information for GPLMart all-access resources - member licence, GPL items and Shopify bundles.",
+  "Licensing - GPLMart Member Licence & GPL Items",
+  "Licensing information for GPLMart all-access resources: the member licence for our original Liquid code, GPL items and Shopify bundles.",
   "/licensing",
 );
 

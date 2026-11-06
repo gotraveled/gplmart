@@ -14,6 +14,13 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Shopify Liquid Codes - 200+ Free Snippets & Sections",
     description: "200+ Shopify Liquid codes with live previews. Inspect, customize and copy free samples - no account needed.",
+    images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "GPLMart - Shopify Liquid code library" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Shopify Liquid Codes - 200+ Free Snippets & Sections",
+    description: "200+ Shopify Liquid codes with live previews. Inspect, customize and copy free samples.",
+    images: ["/opengraph-image"],
   },
 };
 

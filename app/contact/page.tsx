@@ -4,8 +4,8 @@ import { InfoPage, infoMetadata } from "@/components/ui/info-page";
 import { ButtonLink } from "@/components/ui/button";
 
 export const metadata = infoMetadata(
-  "Contact",
-  "How to reach GPLMart - support, sales and licensing questions.",
+  "Contact GPLMart - Support, Sales & Licensing",
+  "How to reach GPLMart for pre-purchase questions, order and access help, and licensing or takedown requests. We reply by email and WhatsApp.",
   "/contact",
 );
 
