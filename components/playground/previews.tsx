@@ -2054,12 +2054,15 @@ function CustomLiquidSection() {
 function OpenNow({ v }: P) {
   const open = Number(str(v, "open")) || 10;
   const close = Number(str(v, "close")) || 21;
-  const h = new Date().getHours();
-  const isOpen = h >= open && h < close;
+  const [isOpen, setIsOpen] = useState<boolean | null>(null);
+  useEffect(() => {
+    const h = new Date().getHours();
+    setIsOpen(h >= open && h < close);
+  }, [open, close]);
   return (
     <div className="flex items-center gap-1.5 p-4 text-[0.7rem] font-semibold">
-      <span className={`size-2 rounded-full ${isOpen ? "bg-emerald-500" : "bg-red-500"}`} />
-      {isOpen ? "Open now - replies within the hour" : "Closed - we reply next morning"}
+      <span className={`size-2 rounded-full ${isOpen === null ? "bg-zinc-400" : isOpen ? "bg-emerald-500" : "bg-red-500"}`} />
+      {isOpen === null ? "Checking hours…" : isOpen ? "Open now - replies within the hour" : "Closed - we reply next morning"}
     </div>
   );
 }
