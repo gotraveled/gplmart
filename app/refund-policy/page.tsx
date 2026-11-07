@@ -1,8 +1,8 @@
 import { InfoPage, infoMetadata } from "@/components/ui/info-page";
 
 export const metadata = infoMetadata(
-  "Refund policy",
-  "Refund policy for GPLMart digital products - 30-day money-back guarantee.",
+  "Refund policy - 30-day money-back guarantee",
+  "GPLMart refund policy: 30-day money-back guarantee on the all-access membership, how to request a refund on WhatsApp or email, and what is and is not refundable for digital downloads.",
   "/refund-policy",
 );
 

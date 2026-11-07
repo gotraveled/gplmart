@@ -39,7 +39,6 @@ export const metadata: Metadata = {
     description: siteConfig.description,
     images: ["/opengraph-image"],
   },
-  alternates: { canonical: "/" },
   verification: {
     google: process.env.GOOGLE_SITE_VERIFICATION || undefined,
   },
