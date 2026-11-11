@@ -8,7 +8,7 @@ const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").repla
 import { guides } from "@/lib/guides";
 import { getCatalog } from "@/lib/products";
 import { packs } from "@/lib/packs";
-import { course } from "@/lib/course";
+import { courses } from "@/lib/course";
 import { courseLessons } from "@/lib/course-lessons";
 
 export const dynamic = "force-dynamic";
@@ -69,8 +69,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
 
   const coursePages: MetadataRoute.Sitemap = [
-    ...course.modules.map((m) => ({ url: absoluteUrl(`/course/${m.slug}`), priority: 0.7 })),
-    ...courseLessons.map((l) => ({ url: absoluteUrl(`/course/${l.module}/${l.slug}`), priority: 0.6 })),
+    ...courses.map((c) => ({ url: absoluteUrl(`/course/${c.slug}`), priority: 0.8 })),
+    ...courses.flatMap((c) => c.modules.map((m) => ({ url: absoluteUrl(`/course/${c.slug}/${m.slug}`), priority: 0.7 }))),
+    ...courseLessons.map((l) => ({ url: absoluteUrl(`/course/${l.course}/${l.module}/${l.slug}`), priority: 0.6 })),
   ];
 
   const guidePages: MetadataRoute.Sitemap = guides.map((g) => ({

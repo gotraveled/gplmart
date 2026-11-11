@@ -39,7 +39,20 @@ const WEEKLY = {
   php: Number(process.env.PRODUCTS_PHP ?? 2),
   html: Number(process.env.PRODUCTS_HTML ?? 1),
 };
-const COURSE_MODULES = ["foundations", "product-pages", "cart-checkout", "sections-settings", "performance", "store-features", "client-work"];
+const COURSES = {
+  "store-blueprint": {
+    modules: ["account-setup", "store-content", "products-pricing", "payments-dropshipping", "product-research", "conversion-launch"],
+    context: "Shopify Store Blueprint - merchant course: account setup, theme, menus, products/pricing, payments (Razorpay/Stripe/COD), dropshipping (CJ/AliExpress), product research, conversion & launch. Practical, India+international aware, honest about costs and timelines.",
+  },
+  "liquid-mastery": {
+    modules: ["foundations", "product-pages", "cart-checkout", "sections-settings", "performance", "store-features", "client-work"],
+    context: "Shopify Liquid Mastery - developer course: Liquid syntax, theme anatomy, product objects/metafields, buy boxes, variants, cart AJAX API, sections/schema, performance, store features, client work. Code must be valid Liquid/JS for OS 2.0 themes.",
+  },
+  "facebook-ads": {
+    modules: ["ads-foundation", "campaign-structure", "creative-targeting", "scaling-analytics"],
+    context: "Facebook & Instagram Ads for Shopify - Meta Business setup, pixel/catalog tracking, campaign structure, creative & targeting, budgets, scaling, analytics. Ecommerce-focused, India+international.",
+  },
+};
 
 const FILES = {
   snippets: "lib/playground/generated-examples.json",
@@ -279,7 +292,7 @@ function validateGuide(g) {
 
 function validateLesson(l) {
   const errs = [];
-  if (!COURSE_MODULES.includes(l.module)) errs.push(`bad module ${l.module}`);
+  if (!COURSES[l.course]?.modules.includes(l.module)) errs.push(`bad course/module ${l.course}/${l.module}`);
   if (!/^[a-z0-9][a-z0-9-]{2,60}$/.test(l.slug ?? "")) errs.push("bad slug");
   if (!l.title || l.title.length > 90 || l.title.length < 10) errs.push("bad title");
   if (!l.excerpt || l.excerpt.length > 200 || l.excerpt.length < 40) errs.push("bad excerpt");
@@ -289,9 +302,10 @@ function validateLesson(l) {
   if (!Array.isArray(l.blocks) || l.blocks.length < 4) errs.push("too few blocks");
   for (const b of l.blocks ?? []) {
     const keys = Object.keys(b);
-    if (!keys.some((k) => ["p", "h", "list", "code"].includes(k))) errs.push("empty block");
+    if (!keys.some((k) => ["p", "h", "list", "code", "img"].includes(k))) errs.push("empty block");
     if (b.code && !["liquid", "css", "js", "text"].includes(b.code.lang)) errs.push("bad code lang");
     if (b.list && (!Array.isArray(b.list) || b.list.some((x) => typeof x !== "string"))) errs.push("bad list");
+    if (b.img && !(typeof b.img.src === "string" && (b.img.src.startsWith("https://picsum.photos/") || b.img.src.startsWith("/images/")) && b.img.alt)) errs.push("bad img block");
   }
   return errs;
 }
@@ -338,10 +352,11 @@ RULES:
 - No filler, no motivational fluff, no "in today's fast-paced world".
 - Return ONLY the JSON array.`;
 
-const LESSON_PROMPT = (moduleSlug, n, existingSlugs) => `You are writing lessons for "Shopify Liquid Mastery", an original course on GPLMart teaching Shopify Liquid development to merchants, freelancers and agencies.
+const LESSON_PROMPT = (courseSlug, moduleSlug, n, existingSlugs) => `You are writing lessons for GPLMart's "${courseSlug}" course (${COURSES[courseSlug]?.context ?? courseSlug}).
 
 Write ${n} NEW lesson(s) for module "${moduleSlug}" as a JSON array:
 [{
+  "course": "${courseSlug}",
   "module": "${moduleSlug}",
   "slug": "kebab-case (unique, not: ${existingSlugs.slice(-20).join(", ") || "none yet"})",
   "title": "Lesson title",
@@ -351,16 +366,16 @@ Write ${n} NEW lesson(s) for module "${moduleSlug}" as a JSON array:
     { "p": "paragraph text" },
     { "h": "Section heading" },
     { "list": ["bullet 1", "bullet 2"] },
-    { "code": { "lang": "liquid", "code": "valid Liquid example" } }
+    { "code": { "lang": "liquid", "code": "valid example code" } },
+    { "img": { "src": "https://picsum.photos/seed/<slug>-1/1200/675", "alt": "descriptive alt text", "caption": "what the image shows" } }
   ]
 }]
 
 RULES:
-- Teach genuinely - concrete syntax, real patterns, honest caveats. No filler.
-- Code must be valid Liquid/JS/CSS and production-plausible for Shopify OS 2.0 themes.
-- 6-10 blocks per lesson, mix of p/h/list/code. Code blocks must be correct.
-- Module context: ${moduleSlug} (foundations=Liquid basics & theme anatomy; product-pages=PDP data & conversion; cart-checkout=cart object & AJAX API; sections-settings=schema & theme editor; performance=render cost & caching; store-features=search/filters/i18n; client-work=quoting, licensing, delivery).
-- Never invent Shopify features that don't exist. When unsure, teach the pattern with a caveat.
+- Teach genuinely - concrete steps, real numbers, honest caveats. No filler, no hype.
+- Code must be valid and production-plausible for its domain.
+- 6-10 blocks per lesson, mix of p/h/list/code; include 0-2 img blocks using ONLY https://picsum.photos/seed/... URLs (never external hotlinks to other sites).
+- Never invent platform features that don't exist. When unsure, teach the pattern with a caveat.
 - Return ONLY the JSON array.`;
 
 // ---------- state (weekly cadence) ----------
@@ -499,11 +514,13 @@ async function main() {
   if (dueLessons && WEEKLY.lessons > 0) {
     try {
       const lessons = readJson(FILES.lessons) ?? [];
-      const perModule = {};
-      for (const l of lessons) perModule[l.module] = (perModule[l.module] ?? 0) + 1;
-      const moduleSlug = COURSE_MODULES.reduce((a, b) => ((perModule[a] ?? 0) <= (perModule[b] ?? 0) ? a : b));
+      const pairs = [];
+      for (const [c, cfg] of Object.entries(COURSES)) for (const m of cfg.modules) pairs.push([c, m]);
+      const perPair = {};
+      for (const l of lessons) perPair[`${l.course}/${l.module}`] = (perPair[`${l.course}/${l.module}`] ?? 0) + 1;
+      const [courseSlug, moduleSlug] = pairs.reduce((a, b) => ((perPair[a.join("/")] ?? 0) <= (perPair[b.join("/")] ?? 0) ? a : b));
       const lessonSlugs = lessons.map((l) => l.slug);
-      const text = await llm(LESSON_PROMPT(moduleSlug, WEEKLY.lessons, lessonSlugs));
+      const text = await llm(LESSON_PROMPT(courseSlug, moduleSlug, WEEKLY.lessons, lessonSlugs));
       const arr = parseJson(text);
       const dropIdx = await reviewBatch("course lessons", arr);
       let added = 0;
@@ -520,7 +537,7 @@ async function main() {
       writeJson(FILES.lessons, lessons);
       results.lessons = added;
       if (added > 0) state.lastLessons = today;
-      console.log(`lessons (${moduleSlug}): +${added}`);
+      console.log(`lessons (${courseSlug}/${moduleSlug}): +${added}`);
     } catch (e) {
       console.log(`lessons FAILED: ${e.message}`);
       results.dropped.push({ type: "lessons-batch", errs: [e.message] });

@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" font-family="system-ui,sans-serif">
+  <rect width="800" height="450" rx="16" fill="#0c0f14"/>
+  <rect x="0" y="0" width="170" height="450" rx="16" fill="#11151c"/>
+  <rect x="0" y="0" width="170" height="450" fill="none" stroke="#1f2733"/>
+  <text x="24" y="42" fill="#6ee7b7" font-size="15" font-weight="700">SHOPIFY ADMIN</text>
+  <g fill="#8b95a7" font-size="12.5">
+    <rect x="14" y="64" width="142" height="30" rx="8" fill="#1a2230"/><text x="28" y="83">Home</text>
+    <rect x="14" y="102" width="142" height="30" rx="8" fill="#1a2230"/><text x="28" y="121">Orders</text>
+    <rect x="14" y="140" width="142" height="30" rx="8" fill="#6ee7b7" fill-opacity="0.12"/><text x="28" y="159" fill="#6ee7b7">Products</text>
+    <rect x="14" y="178" width="142" height="30" rx="8" fill="#1a2230"/><text x="28" y="197">Customers</text>
+    <rect x="14" y="216" width="142" height="30" rx="8" fill="#1a2230"/><text x="28" y="235">Content</text>
+    <rect x="14" y="254" width="142" height="30" rx="8" fill="#1a2230"/><text x="28" y="273">Online Store</text>
+    <rect x="14" y="292" width="142" height="30" rx="8" fill="#1a2230"/><text x="28" y="311">Settings</text>
+    <rect x="14" y="330" width="142" height="30" rx="8" fill="#1a2230"/><text x="28" y="349">Analytics</text>
+  </g>
+  <g>
+    <rect x="200" y="36" width="280" height="80" rx="12" fill="#161c26" stroke="#2a3342"/>
+    <text x="222" y="66" fill="#e6e9ef" font-size="16" font-weight="600">Total sales</text>
+    <text x="222" y="94" fill="#6ee7b7" font-size="22" font-weight="700">₹0.00</text>
+    <rect x="500" y="36" width="280" height="80" rx="12" fill="#161c26" stroke="#2a3342"/>
+    <text x="522" y="66" fill="#e6e9ef" font-size="16" font-weight="600">Sessions</text>
+    <text x="522" y="94" fill="#7cc4ff" font-size="22" font-weight="700">0</text>
+    <rect x="200" y="132" width="580" height="120" rx="12" fill="#161c26" stroke="#2a3342"/>
+    <text x="222" y="162" fill="#e6e9ef" font-size="15" font-weight="600">Sales over time</text>
+    <polyline points="230,240 300,225 370,235 440,205 510,215 580,190 650,200 720,175" fill="none" stroke="#6ee7b7" stroke-width="3" stroke-linecap="round"/>
+    <rect x="200" y="268" width="280" height="150" rx="12" fill="#161c26" stroke="#2a3342"/>
+    <text x="222" y="298" fill="#e6e9ef" font-size="15" font-weight="600">Top products</text>
+    <rect x="222" y="316" width="180" height="10" rx="5" fill="#2a3342"/><rect x="222" y="316" width="90" height="10" rx="5" fill="#6ee7b7"/>
+    <rect x="222" y="340" width="180" height="10" rx="5" fill="#2a3342"/><rect x="222" y="340" width="60" height="10" rx="5" fill="#7cc4ff"/>
+    <rect x="222" y="364" width="180" height="10" rx="5" fill="#2a3342"/><rect x="222" y="364" width="40" height="10" rx="5" fill="#c4b5fd"/>
+    <rect x="500" y="268" width="280" height="150" rx="12" fill="#161c26" stroke="#2a3342"/>
+    <text x="522" y="298" fill="#e6e9ef" font-size="15" font-weight="600">Getting started</text>
+    <g fill="#8b95a7" font-size="12">
+      <circle cx="528" cy="326" r="5" fill="#6ee7b7"/><text x="542" y="330">Add your first product</text>
+      <circle cx="528" cy="352" r="5" fill="#6ee7b7"/><text x="542" y="356">Set up payments</text>
+      <circle cx="528" cy="378" r="5" fill="#3a4456"/><text x="542" y="382">Choose a theme</text>
+      <circle cx="528" cy="404" r="5" fill="#3a4456"/><text x="542" y="408">Customise homepage</text>
+    </g>
+  </g>
+</svg>

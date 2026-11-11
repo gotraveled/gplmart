@@ -6,27 +6,53 @@
     "excerpt": "Liquid is Shopify's templating language - server-rendered, sandboxed, and everywhere in your theme. The 10-minute mental model.",
     "readMin": 6,
     "blocks": [
-      { "p": "Liquid is the language Shopify themes are written in. Every product page, cart and collection you see on a Shopify store is Liquid being rendered on Shopify's servers into plain HTML before it reaches the browser." },
-      { "h": "The one-sentence version" },
-      { "p": "Liquid takes data (products, collections, customers, settings) and outputs HTML. It runs on Shopify's servers, not in the browser - there is no JavaScript framework, no build step, no npm install. You write a .liquid file, Shopify renders it, done." },
-      { "h": "The three building blocks" },
-      { "list": [
-        "Objects - {{ product.title }} prints a value. Objects are the data Shopify hands you: product, collection, cart, customer, shop, and hundreds more.",
-        "Tags - {% if %}, {% for %}, {% render %} control logic. They produce no visible output themselves.",
-        "Filters - {{ product.price | money }} transforms output. money formats currency, default provides fallbacks, image_url resizes images."
-      ] },
-      { "h": "A real example" },
-      { "code": { "lang": "liquid", "code": "{% if product.available %}\n  <p>{{ product.title | upcase }}</p>\n  <p>{{ product.price | money }} incl. taxes</p>\n{% else %}\n  <p>Sold out - <a href=\"#notify\">notify me</a></p>\n{% endif %}" } },
-      { "p": "Read it aloud: if the product is available, print its title in capitals and its formatted price. Otherwise show a sold-out message. That is 90% of what Liquid does - conditionals around data." },
-      { "h": "What Liquid is NOT" },
-      { "list": [
-        "Not JavaScript - it never runs in the browser; {% javascript %} blocks are the exception, and they run as plain JS after render.",
-        "Not a database language - you cannot query or write data. You read what Shopify gives you.",
-        "Not theme-agnostic magic - every theme organises its files differently; Dawn's structure is not Impulse's.",
-        "Not unlimited - Shopify enforces render-time and memory limits; deeply nested loops can fail."
-      ] },
-      { "p": "Next lesson: where all this code actually lives inside a theme, and how to navigate the editor without getting lost." }
-    ]
+      {
+        "p": "Liquid is the language Shopify themes are written in. Every product page, cart and collection you see on a Shopify store is Liquid being rendered on Shopify's servers into plain HTML before it reaches the browser."
+      },
+      {
+        "h": "The one-sentence version"
+      },
+      {
+        "p": "Liquid takes data (products, collections, customers, settings) and outputs HTML. It runs on Shopify's servers, not in the browser - there is no JavaScript framework, no build step, no npm install. You write a .liquid file, Shopify renders it, done."
+      },
+      {
+        "h": "The three building blocks"
+      },
+      {
+        "list": [
+          "Objects - {{ product.title }} prints a value. Objects are the data Shopify hands you: product, collection, cart, customer, shop, and hundreds more.",
+          "Tags - {% if %}, {% for %}, {% render %} control logic. They produce no visible output themselves.",
+          "Filters - {{ product.price | money }} transforms output. money formats currency, default provides fallbacks, image_url resizes images."
+        ]
+      },
+      {
+        "h": "A real example"
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "{% if product.available %}\n  <p>{{ product.title | upcase }}</p>\n  <p>{{ product.price | money }} incl. taxes</p>\n{% else %}\n  <p>Sold out - <a href=\"#notify\">notify me</a></p>\n{% endif %}"
+        }
+      },
+      {
+        "p": "Read it aloud: if the product is available, print its title in capitals and its formatted price. Otherwise show a sold-out message. That is 90% of what Liquid does - conditionals around data."
+      },
+      {
+        "h": "What Liquid is NOT"
+      },
+      {
+        "list": [
+          "Not JavaScript - it never runs in the browser; {% javascript %} blocks are the exception, and they run as plain JS after render.",
+          "Not a database language - you cannot query or write data. You read what Shopify gives you.",
+          "Not theme-agnostic magic - every theme organises its files differently; Dawn's structure is not Impulse's.",
+          "Not unlimited - Shopify enforces render-time and memory limits; deeply nested loops can fail."
+        ]
+      },
+      {
+        "p": "Next lesson: where all this code actually lives inside a theme, and how to navigate the editor without getting lost."
+      }
+    ],
+    "course": "liquid-mastery"
   },
   {
     "module": "foundations",
@@ -35,27 +61,48 @@
     "excerpt": "layout/, templates/, sections/, snippets/ - what each folder does, which files load when, and how a page actually gets built.",
     "readMin": 7,
     "blocks": [
-      { "p": "Open any Shopify theme's code editor and you see a folder tree. It looks arbitrary until you know the four folders that matter - everything else is configuration." },
-      { "h": "The four folders that matter" },
-      { "list": [
-        "layout/ - the skeleton. theme.liquid wraps every page: <head>, header, {{ content_for_layout }}, footer. One file for the whole store.",
-        "templates/ - one file per page type: product.json, collection.json, cart.json, index.json. JSON templates (OS 2.0) list which sections render and in what order.",
-        "sections/ - the building blocks. Each .liquid file here is a section the merchant can add, reorder or remove in the theme editor - IF it has a {% schema %} block.",
-        "snippets/ - reusable fragments rendered via {% render 'name' %}. No schema, no editor presence - pure code reuse."
-      ] },
-      { "h": "How a product page gets built" },
-      { "p": "1. Shopify picks templates/product.json. 2. That JSON lists sections in order - typically main-product, then maybe featured-collection, then footer. 3. Each section's .liquid file renders with the product object available. 4. theme.liquid wraps the whole result with header and footer." },
-      { "h": "OS 2.0 vs vintage themes" },
-      { "p": "Online Store 2.0 themes (Dawn and everything built on it) use JSON templates - sections are data-driven and merchants reorder them visually. Vintage themes use .liquid templates with hardcoded {% section %} and {% include %} tags. Most modern work targets OS 2.0, but knowing both matters because client stores run both." },
-      { "h": "Where your code goes" },
-      { "list": [
-        "Product-page feature? sections/your-feature.liquid with a schema block - merchant adds it via editor.",
-        "Reusable piece used in 5 places? snippets/your-piece.liquid, rendered with {% render 'your-piece' %}.",
-        "Store-wide change (announcement bar, custom CSS)? theme.liquid or a section group in the header/footer.",
-        "One-off page? Use a custom template or a section with page-targeted presets."
-      ] },
-      { "p": "The GPLMart library follows this exactly: every snippet ships as one self-contained file - paste it in snippets/ or sections/, and the install notes tell you which. Lesson three covers the syntax you'll actually write." }
-    ]
+      {
+        "p": "Open any Shopify theme's code editor and you see a folder tree. It looks arbitrary until you know the four folders that matter - everything else is configuration."
+      },
+      {
+        "h": "The four folders that matter"
+      },
+      {
+        "list": [
+          "layout/ - the skeleton. theme.liquid wraps every page: <head>, header, {{ content_for_layout }}, footer. One file for the whole store.",
+          "templates/ - one file per page type: product.json, collection.json, cart.json, index.json. JSON templates (OS 2.0) list which sections render and in what order.",
+          "sections/ - the building blocks. Each .liquid file here is a section the merchant can add, reorder or remove in the theme editor - IF it has a {% schema %} block.",
+          "snippets/ - reusable fragments rendered via {% render 'name' %}. No schema, no editor presence - pure code reuse."
+        ]
+      },
+      {
+        "h": "How a product page gets built"
+      },
+      {
+        "p": "1. Shopify picks templates/product.json. 2. That JSON lists sections in order - typically main-product, then maybe featured-collection, then footer. 3. Each section's .liquid file renders with the product object available. 4. theme.liquid wraps the whole result with header and footer."
+      },
+      {
+        "h": "OS 2.0 vs vintage themes"
+      },
+      {
+        "p": "Online Store 2.0 themes (Dawn and everything built on it) use JSON templates - sections are data-driven and merchants reorder them visually. Vintage themes use .liquid templates with hardcoded {% section %} and {% include %} tags. Most modern work targets OS 2.0, but knowing both matters because client stores run both."
+      },
+      {
+        "h": "Where your code goes"
+      },
+      {
+        "list": [
+          "Product-page feature? sections/your-feature.liquid with a schema block - merchant adds it via editor.",
+          "Reusable piece used in 5 places? snippets/your-piece.liquid, rendered with {% render 'your-piece' %}.",
+          "Store-wide change (announcement bar, custom CSS)? theme.liquid or a section group in the header/footer.",
+          "One-off page? Use a custom template or a section with page-targeted presets."
+        ]
+      },
+      {
+        "p": "The GPLMart library follows this exactly: every snippet ships as one self-contained file - paste it in snippets/ or sections/, and the install notes tell you which. Lesson three covers the syntax you'll actually write."
+      }
+    ],
+    "course": "liquid-mastery"
   },
   {
     "module": "foundations",
@@ -64,34 +111,67 @@
     "excerpt": "The complete working vocabulary - every object type, the filters you'll use daily, and the tag patterns that cover 95% of theme code.",
     "readMin": 9,
     "blocks": [
-      { "p": "This is the reference lesson - the syntax table you'll come back to. Skim it now, use it as a cheat sheet later." },
-      { "h": "Output: {{ }}" },
-      { "p": "Double curly braces print a value. Always safe - Liquid escapes HTML by default." },
-      { "code": { "lang": "liquid", "code": "{{ product.title }}\n{{ product.price | money }}\n{{ 'now' | date: '%B %d, %Y' }}\n{{ product.description | strip_html | truncate: 160 }}" } },
-      { "h": "Logic: {% if %} / {% for %}" },
-      { "code": { "lang": "liquid", "code": "{% if product.available %}\n  In stock\n{% elsif product.tags contains 'preorder' %}\n  Pre-order\n{% else %}\n  Sold out\n{% endif %}\n\n{% for variant in product.variants %}\n  <option value=\"{{ variant.id }}\">{{ variant.title }} - {{ variant.price | money }}</option>\n{% endfor %}" } },
-      { "h": "The filters you'll use daily" },
-      { "list": [
-        "money - price in cents to formatted currency: {{ 199900 | money }} → $1,999.00",
-        "default - fallback when nil/false: {{ product.metafields.custom.subtitle | default: product.title }}",
-        "date - format timestamps: {{ article.published_at | date: '%d %b %Y' }}",
-        "image_url - resize CDN images: {{ product.featured_image | image_url: width: 600 }}",
-        "strip_html / escape - clean text for meta tags and JSON-LD",
-        "handleize / handle - turn titles into URL-safe handles",
-        "json - serialize for JSON-LD and data attributes",
-        "where / reject - filter arrays: {{ product.images | where: 'attached_to_variant?', true }}"
-      ] },
-      { "h": "Assignment and capture" },
-      { "p": "{% assign x = value %} sets a variable. {% capture x %}...{% endcapture %} grabs rendered output into a variable - essential for building strings." },
-      { "h": "Render vs include vs section" },
-      { "list": [
-        "{% render 'name', key: value %} - modern, isolated scope, pass data explicitly. Use this.",
-        "{% include 'name' %} - legacy, shares parent scope, deprecated in OS 2.0.",
-        "{% section 'name' %} - renders a section inside a template/section (legacy themes).",
-        "{% stylesheet %} / {% javascript %} - embed CSS/JS inside a single file. This is how every GPLMart one-file snippet works."
-      ] },
-      { "p": "You now have the full vocabulary. Module 2 applies it to the most valuable page type in ecommerce: the product page." }
-    ]
+      {
+        "p": "This is the reference lesson - the syntax table you'll come back to. Skim it now, use it as a cheat sheet later."
+      },
+      {
+        "h": "Output: {{ }}"
+      },
+      {
+        "p": "Double curly braces print a value. Always safe - Liquid escapes HTML by default."
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "{{ product.title }}\n{{ product.price | money }}\n{{ 'now' | date: '%B %d, %Y' }}\n{{ product.description | strip_html | truncate: 160 }}"
+        }
+      },
+      {
+        "h": "Logic: {% if %} / {% for %}"
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "{% if product.available %}\n  In stock\n{% elsif product.tags contains 'preorder' %}\n  Pre-order\n{% else %}\n  Sold out\n{% endif %}\n\n{% for variant in product.variants %}\n  <option value=\"{{ variant.id }}\">{{ variant.title }} - {{ variant.price | money }}</option>\n{% endfor %}"
+        }
+      },
+      {
+        "h": "The filters you'll use daily"
+      },
+      {
+        "list": [
+          "money - price in cents to formatted currency: {{ 199900 | money }} → $1,999.00",
+          "default - fallback when nil/false: {{ product.metafields.custom.subtitle | default: product.title }}",
+          "date - format timestamps: {{ article.published_at | date: '%d %b %Y' }}",
+          "image_url - resize CDN images: {{ product.featured_image | image_url: width: 600 }}",
+          "strip_html / escape - clean text for meta tags and JSON-LD",
+          "handleize / handle - turn titles into URL-safe handles",
+          "json - serialize for JSON-LD and data attributes",
+          "where / reject - filter arrays: {{ product.images | where: 'attached_to_variant?', true }}"
+        ]
+      },
+      {
+        "h": "Assignment and capture"
+      },
+      {
+        "p": "{% assign x = value %} sets a variable. {% capture x %}...{% endcapture %} grabs rendered output into a variable - essential for building strings."
+      },
+      {
+        "h": "Render vs include vs section"
+      },
+      {
+        "list": [
+          "{% render 'name', key: value %} - modern, isolated scope, pass data explicitly. Use this.",
+          "{% include 'name' %} - legacy, shares parent scope, deprecated in OS 2.0.",
+          "{% section 'name' %} - renders a section inside a template/section (legacy themes).",
+          "{% stylesheet %} / {% javascript %} - embed CSS/JS inside a single file. This is how every GPLMart one-file snippet works."
+        ]
+      },
+      {
+        "p": "You now have the full vocabulary. Module 2 applies it to the most valuable page type in ecommerce: the product page."
+      }
+    ],
+    "course": "liquid-mastery"
   },
   {
     "module": "product-pages",
@@ -100,27 +180,53 @@
     "excerpt": "Every field on product.* explained, plus metafields - the structured data layer that makes custom features possible.",
     "readMin": 8,
     "blocks": [
-      { "p": "The product object is the richest object in Liquid - 60+ fields. You don't need all of them; you need to know which exist and which are metafields." },
-      { "h": "Core fields you'll use constantly" },
-      { "list": [
-        "product.title, product.handle, product.vendor, product.product_type",
-        "product.featured_image, product.images (array of image objects)",
-        "product.variants (array: id, title, price, compare_at_price, sku, available, featured_image)",
-        "product.options_with_values (variant option names + choices)",
-        "product.price, product.compare_at_price, product.price_varies",
-        "product.available, product.selected_or_first_available_variant",
-        "product.description, product.content (richer HTML description), product.tags",
-        "product.metafields.namespace.key - custom merchant data"
-      ] },
-      { "h": "Metafields: the unlock" },
-      { "p": "Metafields are custom data fields merchants (or apps) attach to products, collections, customers, shops - anywhere. A 'fabric composition' or 'fit guide' that isn't a native Shopify field lives in a metafield. In Liquid: {{ product.metafields.custom.fabric }}. In JSON templates, section settings can expose metafields via the editor's dynamic sources." },
-      { "h": "A practical pattern: spec table from metafields" },
-      { "code": { "lang": "liquid", "code": "{% assign specs = product.metafields.custom.specs.value %}\n{% if specs %}\n  <table class=\"specs\">\n    {% for spec in specs %}\n      <tr><th>{{ spec.key }}</th><td>{{ spec.value }}</td></tr>\n    {% endfor %}\n  </table>\n{% endif %}" } },
-      { "p": "This renders nothing when the metafield is empty - the {% if %} guard means the section silently disappears instead of showing an empty table. That pattern (render only if data exists) is how you ship features that work across a whole catalogue without touching every product." },
-      { "h": "The variant object trap" },
-      { "p": "product.price shows the *selected or first available* variant's price - but on a product with variants, the displayed price must update when the customer picks a different variant. That's JavaScript territory (product JSON + fetch). For Liquid-only work, use product.selected_or_first_available_variant.price for server-rendered accuracy, and know that real variant switching needs the AJAX API - covered in the cart module." },
-      { "p": "Next: turning this data into the components that actually move conversion - buy boxes, stock indicators and trust elements." }
-    ]
+      {
+        "p": "The product object is the richest object in Liquid - 60+ fields. You don't need all of them; you need to know which exist and which are metafields."
+      },
+      {
+        "h": "Core fields you'll use constantly"
+      },
+      {
+        "list": [
+          "product.title, product.handle, product.vendor, product.product_type",
+          "product.featured_image, product.images (array of image objects)",
+          "product.variants (array: id, title, price, compare_at_price, sku, available, featured_image)",
+          "product.options_with_values (variant option names + choices)",
+          "product.price, product.compare_at_price, product.price_varies",
+          "product.available, product.selected_or_first_available_variant",
+          "product.description, product.content (richer HTML description), product.tags",
+          "product.metafields.namespace.key - custom merchant data"
+        ]
+      },
+      {
+        "h": "Metafields: the unlock"
+      },
+      {
+        "p": "Metafields are custom data fields merchants (or apps) attach to products, collections, customers, shops - anywhere. A 'fabric composition' or 'fit guide' that isn't a native Shopify field lives in a metafield. In Liquid: {{ product.metafields.custom.fabric }}. In JSON templates, section settings can expose metafields via the editor's dynamic sources."
+      },
+      {
+        "h": "A practical pattern: spec table from metafields"
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "{% assign specs = product.metafields.custom.specs.value %}\n{% if specs %}\n  <table class=\"specs\">\n    {% for spec in specs %}\n      <tr><th>{{ spec.key }}</th><td>{{ spec.value }}</td></tr>\n    {% endfor %}\n  </table>\n{% endif %}"
+        }
+      },
+      {
+        "p": "This renders nothing when the metafield is empty - the {% if %} guard means the section silently disappears instead of showing an empty table. That pattern (render only if data exists) is how you ship features that work across a whole catalogue without touching every product."
+      },
+      {
+        "h": "The variant object trap"
+      },
+      {
+        "p": "product.price shows the *selected or first available* variant's price - but on a product with variants, the displayed price must update when the customer picks a different variant. That's JavaScript territory (product JSON + fetch). For Liquid-only work, use product.selected_or_first_available_variant.price for server-rendered accuracy, and know that real variant switching needs the AJAX API - covered in the cart module."
+      },
+      {
+        "p": "Next: turning this data into the components that actually move conversion - buy boxes, stock indicators and trust elements."
+      }
+    ],
+    "course": "liquid-mastery"
   },
   {
     "module": "product-pages",
@@ -129,27 +235,62 @@
     "excerpt": "Why the buy box area decides 80% of product-page outcomes - and the exact Liquid patterns for each element.",
     "readMin": 8,
     "blocks": [
-      { "p": "The 'buy box' is the cluster around the add-to-cart button: price, compare-at, variant picker, stock indicator, trust badges, delivery estimate. It's where purchase intent either survives or dies." },
-      { "h": "Price display done right" },
-      { "code": { "lang": "liquid", "code": "{%- assign variant = product.selected_or_first_available_variant -%}\n<p class=\"price\">\n  <span class=\"price__current\">{{ variant.price | money }}</span>\n  {%- if variant.compare_at_price > variant.price -%}\n    <s class=\"price__compare\">{{ variant.compare_at_price | money }}</s>\n    <span class=\"price__save\">Save {{ variant.compare_at_price | minus: variant.price | money }}</span>\n  {%- endif -%}\n</p>" } },
-      { "p": "Note the minus filter computing the real saving - never hardcode '20% off'; the data already knows the truth." },
-      { "h": "Stock urgency that isn't fake" },
-      { "p": "Fake scarcity ('only 2 left!' on a store with 500 units) is both dishonest and legally risky in some jurisdictions. The honest version reads real inventory levels - but Shopify's product.variants[].inventory_quantity is only exposed when the merchant tracks inventory AND the theme has permission. Pattern: show urgency only when inventory is genuinely low." },
-      { "code": { "lang": "liquid", "code": "{%- assign v = product.selected_or_first_available_variant -%}\n{%- if v.inventory_management == 'shopify' and v.inventory_quantity <= 5 and v.inventory_quantity > 0 -%}\n  <p class=\"stock stock--low\">Only {{ v.inventory_quantity }} left in stock</p>\n{%- elsif v.available -%}\n  <p class=\"stock stock--ok\">In stock</p>\n{%- else -%}\n  <p class=\"stock stock--out\">Sold out</p>\n{%- endif -%}" } },
-      { "h": "Delivery estimate" },
-      { "p": "'Order in next 4 hours - delivery by Thursday' outperforms generic shipping text because it answers the real question (when will it arrive?). Calculate cutoff from shop.metaobjects or a metafield; render only if configured." },
-      { "h": "Trust cluster" },
-      { "p": "Payment icons, returns policy, guarantee strip - placed directly under the buy button where hesitation happens. Every GPLMart product-page snippet (trust-badges, payment-badges, guarantee-strip, delivery-estimator) is built for exactly this slot - preview them in the playground before writing your own." },
-      { "h": "Assignment: build a buy box" },
-      { "list": [
-        "Create sections/buy-box.liquid on a dev theme",
-        "Render price + compare-at + save amount",
-        "Add the inventory-aware stock line",
-        "Add a {% schema %} with settings for trust-badge text and cutoff hour",
-        "Test with a product that has variants AND one that doesn't"
-      ] },
-      { "p": "Module 3 takes you into the cart - where the AJAX API unlocks everything dynamic." }
-    ]
+      {
+        "p": "The 'buy box' is the cluster around the add-to-cart button: price, compare-at, variant picker, stock indicator, trust badges, delivery estimate. It's where purchase intent either survives or dies."
+      },
+      {
+        "h": "Price display done right"
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "{%- assign variant = product.selected_or_first_available_variant -%}\n<p class=\"price\">\n  <span class=\"price__current\">{{ variant.price | money }}</span>\n  {%- if variant.compare_at_price > variant.price -%}\n    <s class=\"price__compare\">{{ variant.compare_at_price | money }}</s>\n    <span class=\"price__save\">Save {{ variant.compare_at_price | minus: variant.price | money }}</span>\n  {%- endif -%}\n</p>"
+        }
+      },
+      {
+        "p": "Note the minus filter computing the real saving - never hardcode '20% off'; the data already knows the truth."
+      },
+      {
+        "h": "Stock urgency that isn't fake"
+      },
+      {
+        "p": "Fake scarcity ('only 2 left!' on a store with 500 units) is both dishonest and legally risky in some jurisdictions. The honest version reads real inventory levels - but Shopify's product.variants[].inventory_quantity is only exposed when the merchant tracks inventory AND the theme has permission. Pattern: show urgency only when inventory is genuinely low."
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "{%- assign v = product.selected_or_first_available_variant -%}\n{%- if v.inventory_management == 'shopify' and v.inventory_quantity <= 5 and v.inventory_quantity > 0 -%}\n  <p class=\"stock stock--low\">Only {{ v.inventory_quantity }} left in stock</p>\n{%- elsif v.available -%}\n  <p class=\"stock stock--ok\">In stock</p>\n{%- else -%}\n  <p class=\"stock stock--out\">Sold out</p>\n{%- endif -%}"
+        }
+      },
+      {
+        "h": "Delivery estimate"
+      },
+      {
+        "p": "'Order in next 4 hours - delivery by Thursday' outperforms generic shipping text because it answers the real question (when will it arrive?). Calculate cutoff from shop.metaobjects or a metafield; render only if configured."
+      },
+      {
+        "h": "Trust cluster"
+      },
+      {
+        "p": "Payment icons, returns policy, guarantee strip - placed directly under the buy button where hesitation happens. Every GPLMart product-page snippet (trust-badges, payment-badges, guarantee-strip, delivery-estimator) is built for exactly this slot - preview them in the playground before writing your own."
+      },
+      {
+        "h": "Assignment: build a buy box"
+      },
+      {
+        "list": [
+          "Create sections/buy-box.liquid on a dev theme",
+          "Render price + compare-at + save amount",
+          "Add the inventory-aware stock line",
+          "Add a {% schema %} with settings for trust-badge text and cutoff hour",
+          "Test with a product that has variants AND one that doesn't"
+        ]
+      },
+      {
+        "p": "Module 3 takes you into the cart - where the AJAX API unlocks everything dynamic."
+      }
+    ],
+    "course": "liquid-mastery"
   },
   {
     "module": "product-pages",
@@ -158,25 +299,58 @@
     "excerpt": "Variant pickers, option swatches, file uploads and personalization - the inputs that turn a product page into a configured order.",
     "readMin": 7,
     "blocks": [
-      { "p": "Variants are Shopify's answer to 'same product, different choices' - size, colour, material. The Liquid challenge: render pickers that update price, image and availability without a page reload." },
-      { "h": "The data model" },
-      { "list": [
-        "product.options = ['Size', 'Colour'] - option names",
-        "product.options_with_values = [{name:'Size', values:['S','M','L']}, ...]",
-        "product.variants[] = every purchasable combination with its own price, sku, image, available flag",
-        "variant.featured_media / variant.image - per-variant imagery"
-      ] },
-      { "h": "The classic pattern: variant JSON + JS" },
-      { "p": "Server-render all variants as JSON in a script tag; JavaScript listens to picker changes, finds the matching variant, and updates price/image/ATC button. Shopify's own themes do exactly this. Liquid provides the data; JS does the switching." },
-      { "code": { "lang": "liquid", "code": "<script type=\"application/json\" data-variants>\n[\n{%- for v in product.variants -%}\n  {\n    \"id\": {{ v.id }},\n    \"title\": {{ v.title | json }},\n    \"price\": {{ v.price }},\n    \"available\": {{ v.available }},\n    \"image\": {{ v.featured_image | image_url: width: 800 | json }}\n  }{%- unless forloop.last -%},{%- endunless -%}\n{%- endfor -%}\n]\n</script>" } },
-      { "h": "Swatches vs dropdowns" },
-      { "p": "Colour options deserve swatches (visual), size deserves buttons or a dropdown. The variant-swatches snippet in the library renders colour swatches from option values with hex mapping via metafields or a settings JSON. For text options, styled radio inputs beat native selects on mobile." },
-      { "h": "Line-item properties: customization without variants" },
-      { "p": "Engraving text, gift messages, file uploads - things that change per order but aren't purchasable variants - use line item properties. Inputs named properties[Engraving] inside the product form flow through to the order automatically. No app needed for basic text personalization." },
-      { "code": { "lang": "liquid", "code": "<input type=\"text\" name=\"properties[Engraving text]\" maxlength=\"40\" placeholder=\"Name to engrave\">\n<textarea name=\"properties[Gift message]\" rows=\"2\"></textarea>" } },
-      { "p": "These show up in the order admin and confirmation email automatically. The personalization-field and file-upload snippets in the library implement this pattern with validation." },
-      { "p": "You've covered the product page's data and inputs. Module 3: what happens after add-to-cart." }
-    ]
+      {
+        "p": "Variants are Shopify's answer to 'same product, different choices' - size, colour, material. The Liquid challenge: render pickers that update price, image and availability without a page reload."
+      },
+      {
+        "h": "The data model"
+      },
+      {
+        "list": [
+          "product.options = ['Size', 'Colour'] - option names",
+          "product.options_with_values = [{name:'Size', values:['S','M','L']}, ...]",
+          "product.variants[] = every purchasable combination with its own price, sku, image, available flag",
+          "variant.featured_media / variant.image - per-variant imagery"
+        ]
+      },
+      {
+        "h": "The classic pattern: variant JSON + JS"
+      },
+      {
+        "p": "Server-render all variants as JSON in a script tag; JavaScript listens to picker changes, finds the matching variant, and updates price/image/ATC button. Shopify's own themes do exactly this. Liquid provides the data; JS does the switching."
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "<script type=\"application/json\" data-variants>\n[\n{%- for v in product.variants -%}\n  {\n    \"id\": {{ v.id }},\n    \"title\": {{ v.title | json }},\n    \"price\": {{ v.price }},\n    \"available\": {{ v.available }},\n    \"image\": {{ v.featured_image | image_url: width: 800 | json }}\n  }{%- unless forloop.last -%},{%- endunless -%}\n{%- endfor -%}\n]\n</script>"
+        }
+      },
+      {
+        "h": "Swatches vs dropdowns"
+      },
+      {
+        "p": "Colour options deserve swatches (visual), size deserves buttons or a dropdown. The variant-swatches snippet in the library renders colour swatches from option values with hex mapping via metafields or a settings JSON. For text options, styled radio inputs beat native selects on mobile."
+      },
+      {
+        "h": "Line-item properties: customization without variants"
+      },
+      {
+        "p": "Engraving text, gift messages, file uploads - things that change per order but aren't purchasable variants - use line item properties. Inputs named properties[Engraving] inside the product form flow through to the order automatically. No app needed for basic text personalization."
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "<input type=\"text\" name=\"properties[Engraving text]\" maxlength=\"40\" placeholder=\"Name to engrave\">\n<textarea name=\"properties[Gift message]\" rows=\"2\"></textarea>"
+        }
+      },
+      {
+        "p": "These show up in the order admin and confirmation email automatically. The personalization-field and file-upload snippets in the library implement this pattern with validation."
+      },
+      {
+        "p": "You've covered the product page's data and inputs. Module 3: what happens after add-to-cart."
+      }
+    ],
+    "course": "liquid-mastery"
   },
   {
     "module": "cart-checkout",
@@ -185,34 +359,430 @@
     "excerpt": "cart.* fields, /cart/add.js and /cart.js - the endpoints that power drawers, upsells and mini-carts without reloads.",
     "readMin": 9,
     "blocks": [
-      { "p": "The cart object (cart.item_count, cart.total_price, cart.items[]) renders server-side on cart pages. But modern storefronts need a live cart drawer that updates without navigation - that's the AJAX API." },
-      { "h": "The two endpoints you need" },
-      { "list": [
-        "GET /cart.js - returns the whole cart as JSON",
-        "POST /cart/add.js - adds an item {id, quantity, properties}",
-        "POST /cart/change.js - updates quantities",
-        "POST /cart/update.js - batch changes",
-        "POST /cart/clear.js - empties the cart"
-      ] },
-      { "h": "A minimal add-to-cart fetch" },
-      { "code": { "lang": "js", "code": "const res = await fetch('/cart/add.js', {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({ items: [{ id: variantId, quantity: 1 }] })\n});\nconst cart = await res.json();\n// cart.item_count, cart.total_price, cart.items are now fresh" } },
-      { "h": "The drawer pattern" },
-      { "list": [
-        "Render the drawer markup hidden in a section (cart-drawer snippet does this)",
-        "On add-to-cart success: fetch /cart.js, re-render item rows client-side or re-fetch a rendered snippet",
-        "Show free-shipping progress: (cart.total_price / threshold) - pure JS math on the JSON",
-        "Open the drawer with a CSS class toggle - no library needed"
-      ] },
-      { "h": "Upsells that don't break checkout" },
-      { "p": "Post-add upsells use the same /cart/add.js call with a 'continue shopping' vs 'checkout' choice. Pre-purchase upsells (before ATC) are simpler - they're just links that add a different variant. The cart-upsell and upsell-modal snippets implement both patterns." },
-      { "h": "Limits to respect" },
-      { "list": [
-        "Checkout itself (checkout page) is NOT customizable via Liquid on standard plans - Shopify checkout extensibility is a separate system.",
-        "Cart page IS a JSON template - you can rebuild it entirely.",
-        "Always handle the error response - /cart/add.js returns 422 with description when a variant is unavailable.",
-        "Debounce rapid clicks; double-adds are the #1 AJAX cart bug."
-      ] },
-      { "p": "Module 4: making all of this controllable by merchants through the theme editor." }
+      {
+        "p": "The cart object (cart.item_count, cart.total_price, cart.items[]) renders server-side on cart pages. But modern storefronts need a live cart drawer that updates without navigation - that's the AJAX API."
+      },
+      {
+        "h": "The two endpoints you need"
+      },
+      {
+        "list": [
+          "GET /cart.js - returns the whole cart as JSON",
+          "POST /cart/add.js - adds an item {id, quantity, properties}",
+          "POST /cart/change.js - updates quantities",
+          "POST /cart/update.js - batch changes",
+          "POST /cart/clear.js - empties the cart"
+        ]
+      },
+      {
+        "h": "A minimal add-to-cart fetch"
+      },
+      {
+        "code": {
+          "lang": "js",
+          "code": "const res = await fetch('/cart/add.js', {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({ items: [{ id: variantId, quantity: 1 }] })\n});\nconst cart = await res.json();\n// cart.item_count, cart.total_price, cart.items are now fresh"
+        }
+      },
+      {
+        "h": "The drawer pattern"
+      },
+      {
+        "list": [
+          "Render the drawer markup hidden in a section (cart-drawer snippet does this)",
+          "On add-to-cart success: fetch /cart.js, re-render item rows client-side or re-fetch a rendered snippet",
+          "Show free-shipping progress: (cart.total_price / threshold) - pure JS math on the JSON",
+          "Open the drawer with a CSS class toggle - no library needed"
+        ]
+      },
+      {
+        "h": "Upsells that don't break checkout"
+      },
+      {
+        "p": "Post-add upsells use the same /cart/add.js call with a 'continue shopping' vs 'checkout' choice. Pre-purchase upsells (before ATC) are simpler - they're just links that add a different variant. The cart-upsell and upsell-modal snippets implement both patterns."
+      },
+      {
+        "h": "Limits to respect"
+      },
+      {
+        "list": [
+          "Checkout itself (checkout page) is NOT customizable via Liquid on standard plans - Shopify checkout extensibility is a separate system.",
+          "Cart page IS a JSON template - you can rebuild it entirely.",
+          "Always handle the error response - /cart/add.js returns 422 with description when a variant is unavailable.",
+          "Debounce rapid clicks; double-adds are the #1 AJAX cart bug."
+        ]
+      },
+      {
+        "p": "Module 4: making all of this controllable by merchants through the theme editor."
+      }
+    ],
+    "course": "liquid-mastery"
+  },
+  {
+    "course": "store-blueprint",
+    "module": "account-setup",
+    "slug": "create-shopify-account-plan",
+    "title": "Create your Shopify account and pick the right plan",
+    "excerpt": "From signup to a live store shell - which plan to choose, domain basics, and the settings to fix on day one.",
+    "readMin": 8,
+    "blocks": [
+      {
+        "p": "Everything starts at shopify.com. You'll create an account, answer a few onboarding questions, and land inside the admin - the control room for your entire store."
+      },
+      {
+        "h": "Step 1 - Create the account"
+      },
+      {
+        "list": [
+          "Go to shopify.com and click 'Start for free' - every plan gets a 3-day trial (sometimes extended offers appear).",
+          "Enter your email, create a password, and name your store. The store name becomes your myshopify.com subdomain - pick something short and brandable; you can connect a real domain later.",
+          "Answer the onboarding questions honestly (what you sell, where) - they only affect suggested apps, nothing is locked in."
+        ]
+      },
+      {
+        "img": {
+          "src": "/images/course/admin-home.svg",
+          "alt": "Shopify admin dashboard home screen",
+          "caption": "The admin home - your store's mission control. Everything below lives in this sidebar."
+        }
+      },
+      {
+        "h": "Step 2 - Pick a plan (this decision matters)"
+      },
+      {
+        "list": [
+          "Basic (~₹2,000/mo or ~$39): right for 95% of new stores. Full theme editing, reports, discount codes - everything you need.",
+          "Shopify (~₹7,500/mo): only when you outgrow Basic's staff accounts or need professional reports.",
+          "Advanced/Plus: for high-volume stores - ignore these for now."
+        ]
+      },
+      {
+        "p": "Honest advice: start on Basic. Upgrading later takes 2 minutes and doesn't break anything - downgrading mid-month does, so don't buy Advanced 'just in case'."
+      },
+      {
+        "h": "Step 3 - Day-one settings checklist"
+      },
+      {
+        "list": [
+          "Settings > General: store name, sender email, store currency, timezone, units.",
+          "Settings > Locations: add your real business address - required for payments and shipping anyway.",
+          "Settings > Markets (or International): decide India-only first, expand later - simpler shipping and taxes.",
+          "Settings > Policies: generate the refund/privacy/terms templates Shopify provides, then edit them to match your store."
+        ]
+      },
+      {
+        "p": "Next lesson: installing a theme and making it look like YOUR brand, not a template."
+      }
+    ]
+  },
+  {
+    "course": "store-blueprint",
+    "module": "account-setup",
+    "slug": "install-customise-theme",
+    "title": "Install a theme and make it yours",
+    "excerpt": "Free vs paid themes, theme editor basics, brand colours/fonts, and the 5 changes that make a store look professional.",
+    "readMin": 8,
+    "blocks": [
+      {
+        "p": "Your theme is the skeleton of the store - everything customers see is controlled by it. Choose well once; switching themes later means rebuilding pages."
+      },
+      {
+        "h": "Free vs paid themes"
+      },
+      {
+        "list": [
+          "Free themes (Dawn is the default and genuinely good): fast, OS 2.0, section-based, zero cost. Start here.",
+          "Paid themes ($180-400 one-time on Theme Store): more built-in sections and presets. Worth it only if a specific feature saves you building it.",
+          "Avoid 'nulled' or shared premium themes from random sites - they contain malware and violate licenses. This is non-negotiable."
+        ]
+      },
+      {
+        "h": "Install & customise"
+      },
+      {
+        "list": [
+          "Online Store > Themes > Add theme > 'Visit Theme Store' - install Dawn (free) or your pick.",
+          "Click 'Customize' to open the theme editor - the left panel lists every section, the right shows live preview.",
+          "Brand basics: Theme settings > Colors (pick 2-3 brand colours), Typography (1-2 fonts max), Favicon (your logo mark)."
+        ]
+      },
+      {
+        "h": "The 5 changes that make it look professional"
+      },
+      {
+        "list": [
+          "Announcement bar: one line - free shipping threshold or a offer. Online Store > Themes > Customize > Announcement bar.",
+          "Logo + brand colours everywhere - inconsistent branding is the #1 'cheap store' tell.",
+          "Real product photos - never supplier stock images alone; even a clean phone photo beats a generic one.",
+          "Footer: real contact info, policy links, social icons. Empty footers scream unfinished.",
+          "Remove demo content: Dawn ships with placeholder products/images - delete or replace ALL of it before launch."
+        ]
+      },
+      {
+        "p": "Rule of thumb: a store with 5 real products and honest content beats a store with 500 demo items. Next: menus and homepage."
+      }
+    ]
+  },
+  {
+    "course": "store-blueprint",
+    "module": "store-content",
+    "slug": "menus-homepage",
+    "title": "Menus, homepage & the pages that build trust",
+    "excerpt": "Header/footer navigation, a homepage that converts, and the About/Contact/Policy pages customers check before buying.",
+    "readMin": 9,
+    "blocks": [
+      {
+        "p": "Navigation decides whether shoppers find products; the homepage decides whether they stay. Both take 30 minutes and most stores get them wrong."
+      },
+      {
+        "h": "Menus (Online Store > Navigation)"
+      },
+      {
+        "img": {
+          "src": "/images/course/menu-structure.svg",
+          "alt": "Header and footer menu structure diagram",
+          "caption": "Keep the header to 4-6 items max. Dropdowns for collections, not everything flat."
+        }
+      },
+      {
+        "list": [
+          "Main menu: Home, Shop (dropdown: collections), maybe Sale or New. That's it - 4-6 items.",
+          "Footer menu: Shop, Help (Shipping/Returns/FAQ), Company (About/Contact), Legal (Privacy/Terms/Refund).",
+          "Never link to pages that don't exist yet - a 404 in the menu kills trust instantly."
+        ]
+      },
+      {
+        "h": "Homepage sections that convert"
+      },
+      {
+        "list": [
+          "Hero: one clear promise + one CTA button ('Shop now'), real product image - not a slider of 5 banners.",
+          "Featured collection: your bestsellers or hero products, 4-8 items.",
+          "Trust strip: shipping time, returns policy, payment icons, rating - the answers to 'is this legit?'.",
+          "Social proof: testimonials or review quotes once you have them.",
+          "Newsletter signup with a reason to join ('10% off first order')."
+        ]
+      },
+      {
+        "h": "The trust pages nobody reads until they do"
+      },
+      {
+        "list": [
+          "About: who you are, why the store exists - 2 short paragraphs + a real photo.",
+          "Contact: email + WhatsApp number + address. A store with no contact page is an automatic refund-risk flag.",
+          "Shipping/Returns/FAQ: concrete answers - 'delivery in 5-12 days', '7-day returns', not vague promises."
+        ]
+      },
+      {
+        "p": "These pages are also where the GPLMart snippets shine - FAQ accordion, trust grid, announcement bar are all one-file installs. Next: products and pricing."
+      }
+    ]
+  },
+  {
+    "course": "store-blueprint",
+    "module": "products-pricing",
+    "slug": "add-products-price",
+    "title": "Add products properly: variants, pricing and collections",
+    "excerpt": "The product form field-by-field, pricing psychology that protects margin, and collections that sell.",
+    "readMin": 9,
+    "blocks": [
+      {
+        "p": "Products → Add product is where stores are won or lost. A sloppy product page converts at half the rate of a clean one."
+      },
+      {
+        "h": "The product form, field by field"
+      },
+      {
+        "list": [
+          "Title: specific, not clever - 'Men's Cotton Oversized T-Shirt - Black' beats 'Awesome Tee'.",
+          "Description: features AND benefits, scannable bullets, sizing/fit info, what's in the box. ~150-300 words.",
+          "Media: 3-7 images minimum - front, back, detail, size chart, lifestyle. Video helps if you have it.",
+          "Pricing: enter cost-per-item mentally - price must cover product + shipping + fees + profit (next lesson covers the math).",
+          "Variants: Size/Colour options under 'Options' - Shopify generates every combination automatically.",
+          "Organization: product type, vendor, tags, and WHICH collections it belongs to."
+        ]
+      },
+      {
+        "h": "Pricing psychology that isn't manipulation"
+      },
+      {
+        "list": [
+          "Charm pricing works (₹499 vs ₹500) but don't overdo it - round numbers signal quality for premium goods.",
+          "Compare-at price must be a REAL former price - fake 'was ₹999' prices violate consumer law in India (and Meta ad policies).",
+          "Bundle math: '3 for ₹1,299' lifts AOV better than 10% off - the bundle-save and quantity-breaks snippets automate this.",
+          "Free shipping threshold: set it ~20% above your average order so it pulls carts over the line (free-shipping-bar snippet shows progress)."
+        ]
+      },
+      {
+        "h": "Collections that sell"
+      },
+      {
+        "list": [
+          "Manual collections for curated drops ('New arrivals', 'Best sellers').",
+          "Smart collections for rules ('price < ₹999 AND tag:summer').",
+          "Name collections like customers search: ' Men's Kurtas' not 'Collection 3'."
+        ]
+      },
+      {
+        "p": "Inventory tip: for dropshipping you don't stock anything - set inventory tracking OFF or use 'continue selling when out of stock' until you understand supplier lead times."
+      }
+    ]
+  },
+  {
+    "course": "store-blueprint",
+    "module": "payments-dropshipping",
+    "slug": "payments-india-international",
+    "title": "Payments: Razorpay, Stripe and COD for India + international",
+    "excerpt": "Activate the payment methods your buyers actually use - UPI/COD for India, cards for the world.",
+    "readMin": 9,
+    "blocks": [
+      {
+        "p": "Payment setup is where new stores lose sales silently - a checkout that doesn't offer the buyer's preferred method is an abandoned cart."
+      },
+      {
+        "h": "India: Razorpay + COD"
+      },
+      {
+        "list": [
+          "Razorpay: Settings > Payments > Razorpay - KYC (PAN, bank details, business proof) takes 2-5 days. Supports UPI, cards, netbanking, wallets.",
+          "Cash on Delivery: enable under COD settings - COD still drives 40-60% of Indian ecommerce orders. Set a COD fee or minimum order to cover RTO risk.",
+          "RTO (return-to-origin) is the COD killer: orders never delivered cost you shipping both ways. Mitigate with partial advance payment or phone verification apps."
+        ]
+      },
+      {
+        "h": "International: Stripe + PayPal"
+      },
+      {
+        "list": [
+          "Stripe: activate via Shopify Payments where available, or the Stripe app - needs business docs; supports 135+ currencies and cards globally.",
+          "PayPal: the trust signal international buyers look for - especially for unknown brands.",
+          "Shopify Payments isn't available in India directly - Razorpay is the standard Indian gateway; international sellers often run Razorpay (India entity) + Stripe (foreign entity) together."
+        ]
+      },
+      {
+        "h": "Test before launch"
+      },
+      {
+        "p": "Place a real test order on your own store with a small amount. Check: order confirmation email, admin order view, payment capture, and that the customer gets tracking later. An untested payment flow is a launch blocker."
+      },
+      {
+        "p": "Next lesson: connecting CJdropshipping and the full order-fulfilment flow."
+      }
+    ]
+  },
+  {
+    "course": "store-blueprint",
+    "module": "payments-dropshipping",
+    "slug": "cj-dropshipping-fulfilment",
+    "title": "CJdropshipping: sourcing and fulfilment without inventory",
+    "excerpt": "Connect CJ to Shopify, import products, and the exact flow an order takes from your store to the customer's door.",
+    "readMin": 10,
+    "blocks": [
+      {
+        "p": "Dropshipping = you sell, the supplier ships. You never hold stock - which means zero inventory risk, but also zero quality control. Supplier choice IS your business."
+      },
+      {
+        "h": "The flow"
+      },
+      {
+        "img": {
+          "src": "/images/course/dropship-flow.svg",
+          "alt": "Dropshipping order flow diagram",
+          "caption": "Four steps - the customer never knows (or cares) you didn't ship it."
+        }
+      },
+      {
+        "h": "Setup steps"
+      },
+      {
+        "list": [
+          "Create a CJdropshipping account (free) - verify email, complete basic profile.",
+          "Install the CJdropshipping app from the Shopify App Store and connect your store.",
+          "Browse products: filter by category, shipping country, and 'US warehouse'/'India warehouse' stock for faster delivery.",
+          "Import with 'List to Shopify' - CJ auto-maps title, images, variants and pricing. Then EDIT everything: rewrite descriptions, replace images, fix pricing.",
+          "Set your shipping rates in Shopify (Settings > Shipping) to roughly match CJ's shipping cost + margin."
+        ]
+      },
+      {
+        "h": "When an order comes in"
+      },
+      {
+        "list": [
+          "Order appears in Shopify admin AND syncs to CJ automatically (if auto-fulfilment is on).",
+          "CJ ships direct to customer with YOUR store name on the packing slip option (enable branded invoicing in CJ settings - critical for trust).",
+          "Tracking number syncs back to Shopify and emails the customer automatically."
+        ]
+      },
+      {
+        "h": "The honest risks"
+      },
+      {
+        "list": [
+          "Shipping times: India 5-12 days, US/EU 10-25 days - your product pages MUST state this or you drown in 'where is my order' tickets.",
+          "Quality varies - order samples of anything you'll scale ($5-15 well spent).",
+          "Don't sell branded/trademarked items (Nike, Disney etc) - legal trouble, not a grey area.",
+          "Alternatives worth knowing: AliExpress Dropshipping, Zendrop, Spocket (US/EU focus, faster shipping, higher cost)."
+        ]
+      },
+      {
+        "p": "Next module: finding products people actually want to buy - before you import a single one."
+      }
+    ]
+  },
+  {
+    "course": "facebook-ads",
+    "module": "ads-foundation",
+    "slug": "meta-business-pixel-setup",
+    "title": "Meta setup: Business Manager, pixel and the tracking that matters",
+    "excerpt": "Business portfolio, ad account, pixel installation and verifying that Purchase events actually fire.",
+    "readMin": 9,
+    "blocks": [
+      {
+        "p": "Every rupee of ad spend is wasted if tracking is broken. This lesson is unglamorous and non-negotiable - do it before writing a single ad."
+      },
+      {
+        "h": "Step 1 - Business portfolio & ad account"
+      },
+      {
+        "list": [
+          "business.facebook.com → create a Business Portfolio (one per business, not per ad account).",
+          "Add your ad account inside it - start with one account; don't fragment budgets early.",
+          "Add a payment method and complete account verification - unverified accounts get restricted fast."
+        ]
+      },
+      {
+        "h": "Step 2 - Install the pixel"
+      },
+      {
+        "list": [
+          "Shopify makes this easy: Settings > Customer events > 'Add custom pixel' OR use the official Facebook & Instagram sales channel which auto-installs it.",
+          "Verify in Events Manager → Test events: browse your store, add to cart, and watch PageView/AddToCart/Purchase events fire in real time.",
+          "Enable 'Automatic advanced matching' - it improves attribution significantly."
+        ]
+      },
+      {
+        "h": "Step 3 - Product catalog"
+      },
+      {
+        "list": [
+          "Meta catalog = your product feed for dynamic ads and shopping placements.",
+          "Connect via the Facebook channel or feed URL - Shopify generates it automatically.",
+          "Check catalog diagnostics weekly - disapproved items (policy violations, missing prices) silently kill ad delivery."
+        ]
+      },
+      {
+        "h": "The metrics that matter (memorise these)"
+      },
+      {
+        "list": [
+          "CTR (click-through rate): below 1% = weak creative or wrong audience.",
+          "CPC / CPM: your traffic cost - compare against product margin, not vanity benchmarks.",
+          "ROAS: revenue ÷ ad spend. Break-even ROAS = 1 ÷ your margin (40% margin → need 2.5x just to break even).",
+          "CPA: cost per purchase - the number that decides if ads are profitable."
+        ]
+      },
+      {
+        "p": "Tracking done right = every later lesson works. Next: campaign structure that scales without chaos."
+      }
     ]
   }
 ]

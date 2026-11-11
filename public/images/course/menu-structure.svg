@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 450" font-family="system-ui,sans-serif">
+  <rect width="800" height="450" rx="16" fill="#0c0f14"/>
+  <text x="40" y="52" fill="#e6e9ef" font-size="20" font-weight="700">Navigation menu structure</text>
+  <text x="40" y="78" fill="#8b95a7" font-size="13">How a typical store menu is organised - header (top) and footer (bottom)</text>
+  <rect x="40" y="110" width="720" height="54" rx="10" fill="#161c26" stroke="#2a3342"/>
+  <text x="60" y="143" fill="#6ee7b7" font-size="14" font-weight="700">HEADER</text>
+  <g font-size="12.5" fill="#8b95a7">
+    <rect x="170" y="122" width="90" height="30" rx="8" fill="#1a2230"/><text x="185" y="142" fill="#e6e9ef">Home</text>
+    <rect x="270" y="122" width="130" height="30" rx="8" fill="#1a2230"/><text x="290" y="142" fill="#e6e9ef">Shop ▾</text>
+    <rect x="410" y="122" width="110" height="30" rx="8" fill="#1a2230"/><text x="428" y="142" fill="#e6e9ef">Collections</text>
+    <rect x="530" y="122" width="90" height="30" rx="8" fill="#1a2230"/><text x="548" y="142" fill="#e6e9ef">Blog</text>
+    <rect x="630" y="122" width="110" height="30" rx="8" fill="#1a2230"/><text x="648" y="142" fill="#e6e9ef">Contact</text>
+  </g>
+  <rect x="270" y="180" width="200" height="130" rx="10" fill="#10151d" stroke="#2a3342" stroke-dasharray="5 4"/>
+  <text x="290" y="206" fill="#7cc4ff" font-size="12" font-weight="700">Shop dropdown</text>
+  <g font-size="12" fill="#8b95a7">
+    <text x="290" y="232">├─ All products</text>
+    <text x="290" y="254">├─ New arrivals</text>
+    <text x="290" y="276">├─ Best sellers</text>
+    <text x="290" y="298">└─ Sale</text>
+  </g>
+  <rect x="40" y="330" width="720" height="80" rx="10" fill="#161c26" stroke="#2a3342"/>
+  <text x="60" y="358" fill="#c4b5fd" font-size="14" font-weight="700">FOOTER</text>
+  <g font-size="12.5" fill="#8b95a7">
+    <text x="60" y="382">Shop</text><text x="140" y="382">Help</text><text x="210" y="382">Company</text><text x="290" y="382">Legal</text>
+    <text x="60" y="402" fill="#5a6478">Products · Shipping · Returns · FAQ · About · Privacy · Terms</text>
+  </g>
+</svg>
