@@ -40,7 +40,7 @@ jobs:
         run: node scripts/generate-daily.mjs
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash' }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.5-flash' }}
           DAILY_SNIPPETS: ${{ vars.DAILY_SNIPPETS || '3' }}
           DAILY_GUIDES: ${{ vars.DAILY_GUIDES || '1' }}
           DAILY_HTML: ${{ vars.DAILY_HTML || '1' }}
