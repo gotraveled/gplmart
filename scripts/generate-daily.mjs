@@ -172,16 +172,80 @@ ${isHtml
 - Useful micro-tools: URL shortener, QR code generator (pure PHP/SVG), JSON formatter API, visit counter, simple invoice/receipt generator, password generator, IP geolocation stub, CSV-to-JSON converter, uptime/status page, guestbook, sitemap generator.
 - Must include: input validation, htmlspecialchars() on all output, no eval, no SQL without PDO prepared statements, clear comments.`}
 - Code must be genuinely working - no placeholders, no TODO, no lorem ipsum.
+- IMAGES: every HTML template must include real imagery - use https://picsum.photos/seed/<slug>-<n>/800/600 (deterministic seeds) for photos and inline SVG for logos/icons. Document the image approach in README.md. A template with no images looks unfinished and does not sell.
 - Return ONLY the JSON array.`;
 };
 
+// ---------- AI reviewer pass ----------
+// Second LLM call per batch (rotates to the other API key) that audits items
+// for correctness, uniqueness, SEO quality and policy risk before publish.
+const REVIEW_PROMPT = (kind, items) => `You are a strict quality reviewer for GPLMart, a paid Shopify/digital-products store. Audit these ${kind} and return a JSON array of verdicts - one per item, same order:
+[{ "index": 0, "pass": true, "issues": ["short problem list or empty"] }]
+
+REJECT (pass:false) if an item has ANY of:
+- Broken or invalid code (syntax errors, missing tags, logic that cannot work)
+- Placeholder/TODO/lorem ipsum/unfinished content
+- Near-duplicate of common free snippets or obviously copied code
+- SEO problems: title >70 or <20 chars, description/excerpt missing or generic, no clear keyword focus
+- Policy risk: claims to be official Shopify/WordPress product, requires nulled software, collects credentials, loads external trackers
+- Missing essentials: files incoherent, README absent where needed, install steps absent
+
+Items:
+${JSON.stringify(items).slice(0, 60000)}
+
+Be strict but fair - minor style nits are "issues" on a pass:true item, not rejections. Return ONLY the JSON array.`;
+
+async function reviewBatch(kind, items) {
+  if (!items.length) return new Set();
+  try {
+    const text = await llm(REVIEW_PROMPT(kind, items.map((it, i) => ({ index: i, ...summarizeForReview(it) }))));
+    const verdicts = parseJson(text);
+    const drop = new Set();
+    for (const v of verdicts ?? []) {
+      if (v && v.pass === false) drop.add(Number(v.index));
+    }
+    return drop;
+  } catch (e) {
+    // Reviewer failure must not silently publish - fail closed for risky kinds.
+    console.log(`reviewer FAILED for ${kind}: ${e.message} - dropping batch (fail-closed)`);
+    return new Set(items.map((_, i) => i));
+  }
+}
+
+function summarizeForReview(it) {
+  const s = { ...it };
+  for (const k of ["liquid", "css", "js"]) if (s[k]) s[k] = String(s[k]).slice(0, 4000);
+  if (Array.isArray(s.files)) s.files = s.files.map((f) => ({ path: f.path, content: String(f.content ?? "").slice(0, 3000) }));
+  if (Array.isArray(s.blocks)) s.blocks = s.blocks.slice(0, 12).map((b) => ({ ...b, p: b.p?.slice(0, 500), h: b.h, code: b.code ? { lang: b.code.lang, code: String(b.code.code).slice(0, 1200) } : undefined, list: b.list?.slice(0, 6) }));
+  return s;
+}
+
+// ---------- near-duplicate detection (generated snippets vs existing) ----------
+function shingles(text, n = 8) {
+  const norm = text.toLowerCase().replace(/\s+/g, " ").trim();
+  const set = new Set();
+  for (let i = 0; i + n <= norm.length; i += 4) set.add(norm.slice(i, i + n));
+  return set;
+}
+function jaccard(a, b) {
+  if (!a.size || !b.size) return 0;
+  let inter = 0;
+  for (const x of a) if (b.has(x)) inter++;
+  return inter / (a.size + b.size - inter);
+}
+const existingShingles = (readJson(FILES.snippets) ?? []).map((e) => shingles(e.liquid ?? ""));
+
 // ---------- validators ----------
+const PLACEHOLDER_RE = /lorem ipsum|\bTODO\b|\bFIXME\b|placeholder text|insert (image|logo|text) here|coming soon/i;
+const hasPlaceholder = (...vals) => vals.filter(Boolean).join(" ").match(PLACEHOLDER_RE);
+
 function validateSnippet(e) {
   const errs = [];
   if (!/^[a-z0-9][a-z0-9-]{2,48}$/.test(e.id ?? "")) errs.push("bad id");
   if (existingIds.has(e.id)) errs.push("duplicate id");
-  if (!e.name || e.name.length > 60) errs.push("bad name");
-  if (!e.description || e.description.length > 220) errs.push("bad description");
+  if (!e.name || e.name.length > 60 || e.name.length < 8) errs.push("bad name");
+  if (!e.description || e.description.length > 220 || e.description.length < 30) errs.push("bad description");
+  if (hasPlaceholder(e.name, e.description, e.liquid, e.css, e.js)) errs.push("placeholder/TODO text");
   if (!e.liquid || e.liquid.length < 40) errs.push("liquid too short");
   if (e.liquid?.includes("{% schema %}")) errs.push("schema in snippet");
   if (!existingCategories.includes(e.category)) errs.push(`unknown category "${e.category}"`);
@@ -198,10 +262,13 @@ function validateGuide(g) {
   const errs = [];
   if (!/^[a-z0-9][a-z0-9-]{2,60}$/.test(g.slug ?? "")) errs.push("bad slug");
   if (existingSlugs.has(g.slug)) errs.push("duplicate slug");
-  if (!g.title || g.title.length > 80) errs.push("bad title");
-  if (!g.excerpt || g.excerpt.length > 200) errs.push("bad excerpt");
+  if (!g.title || g.title.length > 70 || g.title.length < 15) errs.push("bad title (SEO: 15-70 chars)");
+  if (!g.excerpt || g.excerpt.length > 200 || g.excerpt.length < 50) errs.push("bad excerpt");
   if (!/^\d{4}-\d{2}-\d{2}$/.test(g.date ?? "")) errs.push("bad date");
-  if (!Array.isArray(g.blocks) || g.blocks.length < 3) errs.push("too few blocks");
+  if (!Array.isArray(g.blocks) || g.blocks.length < 4) errs.push("too few blocks");
+  if (!g.blocks?.some((b) => b.h)) errs.push("no headings (SEO structure)");
+  const allText = (g.blocks ?? []).map((b) => [b.p, b.h, ...(b.list ?? []), b.code?.code].filter(Boolean).join(" ")).join(" ");
+  if (hasPlaceholder(allText)) errs.push("placeholder/TODO text");
   for (const b of g.blocks ?? []) {
     const keys = Object.keys(b);
     if (!keys.some((k) => ["p", "h", "list", "code"].includes(k))) errs.push("empty block");
@@ -214,8 +281,10 @@ function validateLesson(l) {
   const errs = [];
   if (!COURSE_MODULES.includes(l.module)) errs.push(`bad module ${l.module}`);
   if (!/^[a-z0-9][a-z0-9-]{2,60}$/.test(l.slug ?? "")) errs.push("bad slug");
-  if (!l.title || l.title.length > 90) errs.push("bad title");
-  if (!l.excerpt || l.excerpt.length > 200) errs.push("bad excerpt");
+  if (!l.title || l.title.length > 90 || l.title.length < 10) errs.push("bad title");
+  if (!l.excerpt || l.excerpt.length > 200 || l.excerpt.length < 40) errs.push("bad excerpt");
+  const lessonText = (l.blocks ?? []).map((b) => [b.p, b.h, ...(b.list ?? []), b.code?.code].filter(Boolean).join(" ")).join(" ");
+  if (hasPlaceholder(lessonText)) errs.push("placeholder/TODO text");
   if (!Number.isInteger(l.readMin) || l.readMin < 3 || l.readMin > 30) errs.push("bad readMin");
   if (!Array.isArray(l.blocks) || l.blocks.length < 4) errs.push("too few blocks");
   for (const b of l.blocks ?? []) {
@@ -231,12 +300,14 @@ function validateProduct(p) {
   const errs = [];
   if (!/^[a-z0-9][a-z0-9-]{2,60}$/.test(p.slug ?? "")) errs.push("bad slug");
   if (existingProducts.has(p.slug)) errs.push("duplicate slug");
-  if (!p.title || p.title.length > 80) errs.push("bad title");
-  if (!p.description || p.description.length > 400) errs.push("bad description");
+  if (!p.title || p.title.length > 80 || p.title.length < 10) errs.push("bad title");
+  if (!p.description || p.description.length > 400 || p.description.length < 60) errs.push("bad description (SEO meta)");
+  if (hasPlaceholder(p.title, p.description)) errs.push("placeholder/TODO text");
   if (!Array.isArray(p.files) || !p.files.length) errs.push("no files");
   for (const f of p.files ?? []) {
     if (!/^[a-zA-Z0-9_./-]+$/.test(f.path) || f.path.includes("..")) errs.push(`bad path ${f.path}`);
     if (!f.content || f.content.length < 50) errs.push(`empty ${f.path}`);
+    if (hasPlaceholder(f.content)) errs.push(`placeholder/TODO in ${f.path}`);
     if (f.path.endsWith(".php") && !f.content.includes("<?php")) errs.push(`${f.path} missing php tag`);
     if (f.path.endsWith(".html") && !/<!doctype|<html/i.test(f.content)) errs.push(`${f.path} not html`);
     if (f.path.endsWith(".md") && f.content.length < 500) errs.push(`${f.path} too short for ebook content`);
@@ -316,9 +387,17 @@ async function main() {
     try {
       const text = await llm(SNIPPET_PROMPT(DAILY.snippets, existingCategories, existingIds));
       const arr = parseJson(text);
+      const dropIdx = await reviewBatch("snippets", arr);
       const list = readJson(FILES.snippets) ?? [];
       let added = 0;
-      for (const e of arr) {
+      for (let i = 0; i < arr.length; i++) {
+        const e = arr[i];
+        if (dropIdx.has(i)) { results.dropped.push({ type: "snippet", id: e.id, errs: ["reviewer rejected"] }); continue; }
+        const cand = shingles(e.liquid ?? "");
+        if (existingShingles.some((s) => jaccard(cand, s) > 0.55)) {
+          results.dropped.push({ type: "snippet", id: e.id, errs: ["near-duplicate of existing snippet"] });
+          continue;
+        }
         const errs = validateSnippet(e);
         if (errs.length) { results.dropped.push({ type: "snippet", id: e.id, errs }); continue; }
         list.push({
@@ -327,6 +406,7 @@ async function main() {
           liquid: e.liquid, css: e.css, js: e.js, usage: e.usage,
         });
         existingIds.add(e.id);
+        existingShingles.push(cand);
         added++;
       }
       writeJson(FILES.snippets, list);
@@ -344,9 +424,12 @@ async function main() {
     try {
       const text = await llm(GUIDE_PROMPT(DAILY.guides, existingSlugs));
       const arr = parseJson(text);
+      const dropIdx = await reviewBatch("guides", arr);
       const list = readJson(FILES.guides) ?? [];
       let added = 0;
-      for (const g of arr) {
+      for (let i = 0; i < arr.length; i++) {
+        const g = arr[i];
+        if (dropIdx.has(i)) { results.dropped.push({ type: "guide", slug: g.slug, errs: ["reviewer rejected"] }); continue; }
         const errs = validateGuide(g);
         if (errs.length) { results.dropped.push({ type: "guide", slug: g.slug, errs }); continue; }
         list.push(g);
@@ -374,9 +457,12 @@ async function main() {
     try {
       const text = await llm(prompt);
       const arr = parseJson(text);
+      const dropIdx = await reviewBatch(`${kind} products`, arr);
       const catalog = readJson(FILES.catalog) ?? { updated: today, notes: [], items: [] };
       let added = 0;
-      for (const p of arr) {
+      for (let i = 0; i < arr.length; i++) {
+        const p = arr[i];
+        if (dropIdx.has(i)) { results.dropped.push({ type: `product-${kind}`, slug: p.slug, errs: ["reviewer rejected"] }); continue; }
         const errs = validateProduct(p);
         if (errs.length) { results.dropped.push({ type: `product-${kind}`, slug: p.slug, errs }); continue; }
         const dir = path.join("products", "src", p.slug);
@@ -419,8 +505,11 @@ async function main() {
       const lessonSlugs = lessons.map((l) => l.slug);
       const text = await llm(LESSON_PROMPT(moduleSlug, WEEKLY.lessons, lessonSlugs));
       const arr = parseJson(text);
+      const dropIdx = await reviewBatch("course lessons", arr);
       let added = 0;
-      for (const l of arr) {
+      for (let i = 0; i < arr.length; i++) {
+        const l = arr[i];
+        if (dropIdx.has(i)) { results.dropped.push({ type: "lesson", slug: l?.slug, errs: ["reviewer rejected"] }); continue; }
         const errs = validateLesson(l);
         if (lessonSlugs.includes(l.slug)) errs.push("duplicate slug");
         if (errs.length) { results.dropped.push({ type: "lesson", slug: l?.slug, errs }); continue; }

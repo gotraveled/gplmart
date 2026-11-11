@@ -1,0 +1,43 @@
+name: weekly-devin-review
+
+# Once a week, hand the last 7 days of AI-generated content to a Devin
+# session for a deep review: syntax, logic bugs, SEO quality, duplication
+# and policy risk. Devin works in its own session and can open a PR with
+# fixes - this workflow only triggers it.
+#
+# Requires secret: DEVIN_API_KEY (apk_... service key)
+# Optional vars: DEVIN_REVIEW_ENABLED ('true' to run), DEVIN_MAX_ACU (default 10)
+
+on:
+  schedule:
+    - cron: "0 4 * * 0" # Sundays 04:00 UTC
+  workflow_dispatch:
+
+jobs:
+  trigger-review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check enabled
+        id: gate
+        run: |
+          if [ "${{ vars.DEVIN_REVIEW_ENABLED || 'true' }}" = "true" ] && [ -n "${{ secrets.DEVIN_API_KEY }}" ]; then
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "Devin review disabled or DEVIN_API_KEY not set - skipping."
+          fi
+
+      - name: Create Devin review session
+        if: steps.gate.outputs.run == 'true'
+        env:
+          DEVIN_API_KEY: ${{ secrets.DEVIN_API_KEY }}
+        run: |
+          PROMPT='You are reviewing AI-generated content in the GPLMart repo (github.com/gotraveled/gplmart). Audit everything committed in the last 7 days under: lib/playground/generated-examples.json, lib/guides-generated.json, lib/course-lessons.json, products/catalog.json and products/src/. Check for: Liquid/PHP/HTML syntax errors, logic bugs, near-duplicate or plagiarized content, SEO problems (title/description length, missing headings), policy risks (third-party code presented as original, external trackers), and missing files referenced by the catalog. Fix real problems directly and open a PR titled "weekly content review". If everything is clean, just report that - do not open an empty PR.'
+          curl -sf -X POST "https://api.devin.ai/v1/sessions" \
+            -H "Authorization: Bearer $DEVIN_API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$(jq -n --arg p "$PROMPT" '{prompt: $p, idempotent: true, max_acu_limit: ($ENV.DEVIN_MAX_ACU // 10 | tonumber)}')" \
+            | tee devin-session.json
+          echo "Devin session created - track it in the Devin dashboard."
+        env:
+          DEVIN_MAX_ACU: ${{ vars.DEVIN_MAX_ACU || '10' }}
