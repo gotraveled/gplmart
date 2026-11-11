@@ -7,6 +7,7 @@ import { isSupabaseConfigured } from "@/lib/env";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { createSessionClient } from "@/lib/supabase/server";
+import { ilikeEmail } from "@/lib/members";
 
 export interface AccessState {
   error?: string;
@@ -36,7 +37,7 @@ export async function requestAccessCode(prev: AccessState | undefined, formData:
   const { data: order } = await createServiceClient()
     .from("orders")
     .select("id")
-    .ilike("customer_email", email)
+    .ilike("customer_email", ilikeEmail(email))
     .eq("status", "paid")
     .limit(1)
     .maybeSingle();
@@ -63,6 +64,17 @@ export async function verifyAccessCode(prev: AccessState | undefined, formData: 
   const supabase = await createSessionClient();
   const { error } = await supabase.auth.verifyOtp({ email, token, type: "email" });
   if (error) return { error: "That code is invalid or expired. Request a fresh one." };
+
+  // OTPs can also be obtained for non-paying accounts - re-verify a paid
+  // order exists before granting member access.
+  const { data: order } = await createServiceClient()
+    .from("orders")
+    .select("id")
+    .ilike("customer_email", ilikeEmail(email))
+    .eq("status", "paid")
+    .limit(1)
+    .maybeSingle();
+  if (!order) return { error: "No purchase found for this email. Check the address you paid with." };
 
   await grantAccess();
   redirect("/access");

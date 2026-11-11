@@ -41,7 +41,7 @@ Return JSON:
 }
 
 RULES:
-- Script must teach the lesson's core idea in under 90 seconds when spoken (~150-18wpm).
+- Script must teach the lesson's core idea in under 90 seconds when spoken (~150-180 wpm).
 - Captions: 8-14 cues covering the whole script, timestamps in seconds, each cue max ~10 words.
 - Friendly expert tone, no fluff, no "in this video we will". Start with the hook.
 - Return ONLY JSON.`;
@@ -70,7 +70,12 @@ async function main() {
   const scripts = readJson(FILES.scripts) ?? {};
   const state = readJson(FILES.state) ?? {};
   const done = new Set(Object.keys(scripts));
-  const queue = lessons.filter((l) => !l.video && !done.has(`${l.course}/${l.module}/${l.slug}`)).slice(0, PER_RUN);
+  const queue = lessons
+    .filter((l) => {
+      const k = `${l.course}/${l.module}/${l.slug}`;
+      return !l.video && !done.has(k) && (state[`fail:${k}`] ?? 0) < 3;
+    })
+    .slice(0, PER_RUN);
   console.log(`${lessons.length} lessons, ${queue.length} queued for scripts (keys=${API_KEYS.length})`);
 
   let made = 0;

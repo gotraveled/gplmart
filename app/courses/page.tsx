@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { courses } from "@/lib/course";
 import { courseLessons, lessonsForCourse } from "@/lib/course-lessons";
 import { formatOfferPrice } from "@/lib/offer";
+import { CourseNotifyForm } from "@/components/courses/notify-form";
 
 export const metadata: Metadata = {
   title: "All Courses - Shopify, WordPress & AI | GPLMart",
@@ -88,9 +89,7 @@ export default function CoursesPage() {
                         <span className="inline-flex items-center gap-1"><Lock aria-hidden className="size-3" /> members</span>
                       </div>
                       {coming ? (
-                        <span className="mt-5 inline-flex cursor-not-allowed items-center justify-center gap-1.5 rounded-lg border border-line px-4 py-2.5 text-sm font-semibold text-subtle">
-                          Notify me
-                        </span>
+                        <CourseNotifyForm slug={c.slug} />
                       ) : (
                         <Link
                           href={`/course/${c.slug}`}

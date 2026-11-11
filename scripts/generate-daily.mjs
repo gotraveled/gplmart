@@ -95,8 +95,7 @@ const existingCategories = [...new Set(
 )];
 
 // ---------- LLM ----------
-async function llm(prompt, { json = true } = {}) {
-  const key = nextKey();
+async function llmOnce(prompt, key, { json = true, maxTokens = 16000 } = {}) {
   const res = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${key}`,
     {
@@ -104,14 +103,34 @@ async function llm(prompt, { json = true } = {}) {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         contents: [{ parts: [{ text: prompt }] }],
-        generationConfig: { temperature: 0.9, maxOutputTokens: 16000, ...(json ? { responseMimeType: "application/json" } : {}) },
+        generationConfig: { temperature: 0.9, maxOutputTokens: maxTokens, ...(json ? { responseMimeType: "application/json" } : {}) },
       }),
     },
   );
-  if (!res.ok) throw new Error(`LLM ${res.status}: ${(await res.text()).slice(0, 300)}`);
+  if (!res.ok) {
+    const body = await res.text();
+    const err = new Error(`LLM ${res.status}: ${body.slice(0, 300)}`);
+    err.status = res.status;
+    throw err;
+  }
   const data = await res.json();
   const text = data.candidates?.[0]?.content?.parts?.map((p) => p.text ?? "").join("") ?? "";
   return text;
+}
+
+async function llm(prompt, opts = {}) {
+  // Retry transient 429/503 with backoff; each retry rotates to the next key.
+  let lastErr;
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      return await llmOnce(prompt, nextKey(), opts);
+    } catch (e) {
+      lastErr = e;
+      if (![429, 500, 502, 503, 504].includes(e.status)) throw e;
+      await new Promise((r) => setTimeout(r, 2000 * (attempt + 1)));
+    }
+  }
+  throw lastErr;
 }
 
 function parseJson(text) {
@@ -274,8 +293,14 @@ function validateSnippet(e) {
   if (!e.liquid || e.liquid.length < 40) errs.push("liquid too short");
   if (e.liquid?.includes("{% schema %}")) errs.push("schema in snippet");
   if (!existingCategories.includes(e.category)) errs.push(`unknown category "${e.category}"`);
-  for (const bad of ["http://", "https://cdn", "unpkg", "jsdelivr", "eval(", "innerHTML = data"]) {
-    if ((e.liquid + (e.js ?? "")).includes(bad) && !bad.startsWith("http")) errs.push(`forbidden: ${bad}`);
+  for (const bad of ["unpkg", "jsdelivr", "eval(", "innerHTML = data"]) {
+    if ((e.liquid + (e.js ?? "")).includes(bad)) errs.push(`forbidden: ${bad}`);
+  }
+  // No external hot-linked resources except our own images/domain - snippets
+  // must be self-contained Liquid + vanilla JS.
+  const ext = (e.liquid + (e.js ?? "")).match(/https?:\/\/[^\s"')\]]+/g) ?? [];
+  for (const u of ext) {
+    if (!/gplmart\.com|picsum\.photos|w3\.org|schema\.org/.test(u)) errs.push(`external URL: ${u.slice(0, 80)}`);
   }
   if (/\{\{\s*[a-z_]+\s*\}\}/.test(e.liquid ?? "") && !e.controls?.length) {
     // bare {{ var }} with no controls is suspicious but legal liquid - only warn
@@ -412,8 +437,16 @@ async function main() {
   // --- snippets ---
   if (DAILY.snippets > 0) {
     try {
-      const text = await llm(SNIPPET_PROMPT(DAILY.snippets, existingCategories, existingIds));
-      const arr = parseJson(text);
+      // One snippet per call - batches of 3 overflowed the JSON output cap.
+      const arr = [];
+      for (let i = 0; i < DAILY.snippets; i++) {
+        try {
+          const one = parseJson(await llm(SNIPPET_PROMPT(1, existingCategories, existingIds), { maxTokens: 20000 }));
+          arr.push(...(Array.isArray(one) ? one : [one]));
+        } catch (e) {
+          results.dropped.push({ type: "snippet-item", errs: [e.message] });
+        }
+      }
       const dropIdx = await reviewBatch("snippets", arr);
       const list = readJson(FILES.snippets) ?? [];
       let added = 0;
@@ -480,10 +513,18 @@ async function main() {
   if (dueEbooks) batches.push(["ebook", WEEKLY.ebooks]);
   for (const [kind, count] of batches) {
     if (!count) continue;
-    const prompt = kind === "ebook" ? EBOOK_PROMPT(count, existingProducts) : PRODUCT_PROMPT(kind, count, existingProducts);
     try {
-      const text = await llm(prompt);
-      const arr = parseJson(text);
+      // One product/ebook per call - multi-item batches overflow the output cap.
+      const arr = [];
+      for (let i = 0; i < count; i++) {
+        try {
+          const prompt = kind === "ebook" ? EBOOK_PROMPT(1, existingProducts) : PRODUCT_PROMPT(kind, 1, existingProducts);
+          const one = parseJson(await llm(prompt, { maxTokens: 32000 }));
+          arr.push(...(Array.isArray(one) ? one : [one]));
+        } catch (e) {
+          results.dropped.push({ type: `product-${kind}-item`, errs: [e.message] });
+        }
+      }
       const dropIdx = await reviewBatch(`${kind} products`, arr);
       const catalog = readJson(FILES.catalog) ?? { updated: today, notes: [], items: [] };
       let added = 0;

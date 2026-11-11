@@ -24,7 +24,9 @@ export const fulfil: Fulfil = async (a) => {
   // Guest checkout: the RPC marks the order paid but can't grant an
   // entitlement (no user_id). Provision the member account here so verify,
   // webhook and admin reconcile all converge on the same account.
-  if (result === "fulfilled") {
+  // Run for already_fulfilled too: if the webhook beat the browser verify,
+  // the guest-order account still needs provisioning (idempotent).
+  if (result === "fulfilled" || result === "already_fulfilled") {
     try {
       const { data: order } = await db
         .from("orders")

@@ -3,6 +3,11 @@ import { randomBytes } from "node:crypto";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { isMailerConfigured, sendMail, siteUrl } from "@/lib/mailer";
 
+/** Escape LIKE/ILIKE wildcards so email lookups can't be pattern-injected. */
+export function ilikeEmail(email: string): string {
+  return email.replace(/[\\%_]/g, (c) => `\\${c}`);
+}
+
 function randomPassword(): string {
   // 16 chars, unambiguous alphabet (no 0/O, 1/l/I)
   const alphabet = "abcdefghjkmnpqrstuvwxyzABCDEFGHJKMNPQRSTUVWXYZ23456789";
@@ -67,7 +72,7 @@ export async function provisionMemberAccount(email: string): Promise<ProvisionRe
   const { data: orders } = await db
     .from("orders")
     .update({ user_id: userId })
-    .ilike("customer_email", normalized)
+    .ilike("customer_email", ilikeEmail(normalized))
     .eq("status", "paid")
     .is("user_id", null)
     .select("id, plan");
