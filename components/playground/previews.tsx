@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore, type CSSProperties, type ReactNode } from "react";
 import { hex, on, str } from "@/lib/playground/examples";
 import type { Values } from "@/lib/playground/types";
 
@@ -2054,11 +2054,16 @@ function CustomLiquidSection() {
 function OpenNow({ v }: P) {
   const open = Number(str(v, "open")) || 10;
   const close = Number(str(v, "close")) || 21;
-  const [isOpen, setIsOpen] = useState<boolean | null>(null);
-  useEffect(() => {
-    const h = new Date().getHours();
-    setIsOpen(h >= open && h < close);
-  }, [open, close]);
+  // Server snapshot is null so SSR and hydration match; the client snapshot
+  // computes the real open/closed state from the visitor's local hour.
+  const isOpen = useSyncExternalStore(
+    () => () => {},
+    () => {
+      const h = new Date().getHours();
+      return h >= open && h < close;
+    },
+    () => null,
+  );
   return (
     <div className="flex items-center gap-1.5 p-4 text-[0.7rem] font-semibold">
       <span className={`size-2 rounded-full ${isOpen === null ? "bg-zinc-400" : isOpen ? "bg-emerald-500" : "bg-red-500"}`} />

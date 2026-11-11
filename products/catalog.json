@@ -1,0 +1,9 @@
+{
+  "updated": "2026-11-10",
+  "notes": [
+    "Products are GPLMart-original code generated and validated by the daily content pipeline - no third-party or nulled items.",
+    "HTML templates are static files; PHP scripts are self-contained with no external dependencies unless documented.",
+    "Downloads are member-gated: /access/products/[slug]/download checks the all-access entitlement and serves a zip."
+  ],
+  "items": []
+}

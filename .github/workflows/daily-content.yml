@@ -1,0 +1,59 @@
+name: daily-content
+
+on:
+  schedule:
+    # 06:30 UTC = 12:00 IST daily
+    - cron: "30 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.3"
+          coverage: none
+
+      - name: Lint generated PHP
+        run: |
+          fail=0
+          while IFS= read -r f; do
+            php -l "$f" >/dev/null || { echo "PHP lint failed: $f"; fail=1; }
+          done < <(find products/src -name '*.php' -type f 2>/dev/null || true)
+          exit $fail
+
+      - name: Generate daily content
+        run: node scripts/generate-daily.mjs
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-2.5-flash' }}
+          DAILY_SNIPPETS: ${{ vars.DAILY_SNIPPETS || '3' }}
+          DAILY_GUIDES: ${{ vars.DAILY_GUIDES || '1' }}
+          DAILY_HTML: ${{ vars.DAILY_HTML || '1' }}
+          DAILY_PHP: ${{ vars.DAILY_PHP || '2' }}
+
+      - name: Commit generated content
+        run: |
+          git config user.name "gplmart-content-bot"
+          git config user.email "content-bot@gplmart.com"
+          git add lib/playground/generated-examples.json lib/guides-generated.json products/catalog.json products/src generated-report.json
+          if git diff --cached --quiet; then
+            echo "No new content generated - nothing to commit."
+            exit 0
+          fi
+          git commit -m "Daily content: $(node -e "const r=require('./generated-report.json');console.log(\`+${r.snippets} snippets, +${r.guides} guides, +${r.products} products\`)")"
+          git push

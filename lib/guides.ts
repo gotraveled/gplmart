@@ -1,4 +1,5 @@
 import type { Lang } from "@/lib/highlight";
+import { generatedGuides } from "./guides-generated";
 
 export interface GuideBlock {
   h?: string;
@@ -17,7 +18,7 @@ export interface Guide {
   blocks: GuideBlock[];
 }
 
-export const guides: Guide[] = [
+const coreGuides: Guide[] = [
   {
     slug: "countdown-timer-on-dawn",
     title: "How to add a countdown timer to Dawn without an app",
@@ -167,3 +168,6 @@ export const guides: Guide[] = [
     ],
   },
 ];
+
+/** Hand-written guides plus AI-generated ones appended by the daily content job. */
+export const guides: Guide[] = [...coreGuides, ...generatedGuides];

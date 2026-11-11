@@ -19,6 +19,7 @@ export const footerLinks = {
   GPLMart: [
     { href: "/playground", label: "Shopify Liquid codes" },
     { href: "/library", label: "Library" },
+    { href: "/products", label: "Products" },
     { href: "/prompts", label: "Free prompts" },
     { href: "/install", label: "Install guide" },
     { href: "/checkout", label: "Get access" },

@@ -1,4 +1,5 @@
 import type { ExampleFiles, PlaygroundExample, Values } from "./types";
+import { generatedExamples } from "./generated-examples";
 
 /**
  * Demonstration snippets for the free playground: teaching examples, NOT the
@@ -40,7 +41,7 @@ export const freeExampleIds: ReadonlySet<string> = new Set([
   "logo-marquee",
 ]);
 
-export const examples: readonly PlaygroundExample[] = [
+const coreExamples: readonly PlaygroundExample[] = [
   {
     id: "announcement-bar",
     name: "Announcement bar",
@@ -11642,6 +11643,9 @@ if (!customElements.get('gpl-upsell')) customElements.define('gpl-upsell', GplUp
     }),
   },
 ];
+
+/** Hand-written examples plus AI-generated ones appended by the daily content job. */
+export const examples: readonly PlaygroundExample[] = [...coreExamples, ...generatedExamples];
 
 export function getExample(id: string | undefined): PlaygroundExample {
   return examples.find((e) => e.id === id) ?? examples[0]!;

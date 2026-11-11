@@ -6,12 +6,14 @@ import { examples } from "@/lib/playground/examples";
 
 const slugify = (s: string) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 import { guides } from "@/lib/guides";
+import { getCatalog } from "@/lib/products";
 
 export const dynamic = "force-dynamic";
 
 const staticRoutes: { path: string; priority: number }[] = [
   { path: "/", priority: 1 },
   { path: "/playground", priority: 0.9 },
+  { path: "/products", priority: 0.8 },
   { path: "/library", priority: 0.8 },
   { path: "/how-it-works", priority: 0.8 },
   { path: "/guides", priority: 0.7 },
@@ -48,23 +50,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "weekly",
   }));
 
+  const productPages: MetadataRoute.Sitemap = getCatalog().items.map((p) => ({
+    url: absoluteUrl(`/products/${p.slug}`),
+    priority: 0.7,
+    changeFrequency: "weekly",
+  }));
+
   const guidePages: MetadataRoute.Sitemap = guides.map((g) => ({
     url: absoluteUrl(`/guides/${g.slug}`),
     priority: 0.6,
     changeFrequency: "monthly",
   }));
 
-  if (!isSupabaseConfigured()) return [...base, ...snippetPages, ...categoryPages, ...guidePages];
+  if (!isSupabaseConfigured()) return [...base, ...snippetPages, ...categoryPages, ...productPages, ...guidePages];
   try {
     const items = await listPublicSummaries();
     return [
       ...base,
       ...snippetPages,
       ...categoryPages,
+      ...productPages,
       ...guidePages,
       ...items.map((s) => ({ url: absoluteUrl(`/library/${s.slug}`), priority: 0.5 })),
     ];
   } catch {
-    return [...base, ...snippetPages, ...categoryPages, ...guidePages];
+    return [...base, ...snippetPages, ...categoryPages, ...productPages, ...guidePages];
   }
 }
