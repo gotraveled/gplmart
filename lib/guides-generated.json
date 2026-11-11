@@ -1,1 +1,46 @@
-[]
+[
+  {
+    "slug": "custom-free-shipping-progress-bar-liquid",
+    "title": "How to Build a Custom Free Shipping Progress Bar in Shopify Liquid",
+    "excerpt": "Boost average order value by adding a dynamic, cart-aware free shipping progress bar using pure Liquid and JavaScript.",
+    "date": "2024-03-18",
+    "readMin": 5,
+    "tag": "Liquid guide",
+    "blocks": [
+      {
+        "p": "Standard Shopify themes lack an interactive free shipping threshold indicator in the cart drawer. Adding a dynamic progress bar encourages customers to add more items to hit the free shipping minimum, directly improving your Average Order Value (AOV)."
+      },
+      {
+        "h": "Create the Snippet Component"
+      },
+      {
+        "p": "Create a new snippet file named free-shipping-bar.liquid in your theme's snippets folder. This self-contained Liquid snippet calculates the remaining amount required based on your target threshold."
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "{%- liquid\n  assign threshold = settings.free_shipping_threshold | default: 10000\n  assign cart_total = cart.total_price\n  assign remaining = threshold | minus: cart_total\n  assign percentage = cart_total | times: 100 | divided_by: threshold | at_most: 100\n-%}\n\n<div class=\"free-shipping-wrapper\" data-threshold=\"{{ threshold }}\">\n  {%- if remaining > 0 -%}\n    <p class=\"shipping-message\">Add <strong>{{ remaining | money }}</strong> more to unlock <strong>FREE Shipping</strong>!</p>\n  {%- else -%}\n    <p class=\"shipping-message\">🎉 Congratulations! You have unlocked <strong>FREE Shipping</strong>.</p>\n  {%- endif -%}\n  <div class=\"progress-track\">\n    <div class=\"progress-fill\" style=\"width: {{ percentage }}%;\"></div>\n  </div>\n</div>"
+        }
+      },
+      {
+        "h": "Add Scoped Styles and Dynamic Cart Updates"
+      },
+      {
+        "p": "Style the progress bar using Liquid stylesheet tags and listen for cart changes using standard Shopify fetch API triggers so the progress bar updates seamlessly when items are added or removed."
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "{% stylesheet %}\n  .free-shipping-wrapper { margin: 1rem 0; padding: 1rem; background: #f8f9fa; border-radius: 6px; }\n  .shipping-message { font-size: 0.9rem; margin-bottom: 0.5rem; text-align: center; }\n  .progress-track { height: 8px; background: #e0e0e0; border-radius: 4px; overflow: hidden; }\n  .progress-fill { height: 100%; background: #000; transition: width 0.3s ease; }\n{% endstylesheet %}"
+        }
+      },
+      {
+        "list": [
+          "Place {% render 'free-shipping-bar' %} inside snippets/cart-drawer.liquid above the checkout button.",
+          "Set your target threshold in cents via theme settings (e.g., 10000 cents for $100.00).",
+          "Re-evaluate the cart dynamically by calling Shopify's /cart.js endpoint whenever cart state mutates."
+        ]
+      }
+    ]
+  }
+]

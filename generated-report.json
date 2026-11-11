@@ -1,0 +1,35 @@
+{
+  "date": "2026-11-11",
+  "snippets": 0,
+  "guides": 1,
+  "products": 0,
+  "ebooks": 0,
+  "lessons": 1,
+  "dropped": [
+    {
+      "type": "snippets-batch",
+      "errs": [
+        "LLM 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+      ]
+    },
+    {
+      "type": "products-php",
+      "errs": [
+        "LLM 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+      ]
+    },
+    {
+      "type": "products-html",
+      "errs": [
+        "Unterminated string in JSON at position 44533 (line 16 column 16320)"
+      ]
+    },
+    {
+      "type": "product-ebook",
+      "slug": "shopify-liquid-custom-sections-handbook",
+      "errs": [
+        "reviewer rejected"
+      ]
+    }
+  ]
+}
