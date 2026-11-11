@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Code2, Download, Lightbulb, MessageCircle, Sparkles, Users } from "lucide-react";
+import { ArrowRight, Code2, Download, Layers, Lightbulb, MessageCircle, Sparkles, Users } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 
@@ -12,6 +12,7 @@ const wa = (msg: string) =>
 
 const areas = [
   { href: "/access/liquid-library", icon: Code2, title: "Shopify Liquid library", text: "Search, preview, copy and download Liquid snippets." },
+  { href: "/access/packs", icon: Layers, title: "Snippet packs", text: "Curated bundles by use-case - download each pack as a zip." },
   { href: "/access/products", icon: Download, title: "Digital products", text: "HTML templates, PHP scripts and ebooks - instant zip downloads." },
   { href: "/prompts", icon: Sparkles, title: "AI prompt pack", text: "50 free AI prompts for product copy, ads, emails and more - plus the prompt builder." },
 ];

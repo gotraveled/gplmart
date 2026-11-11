@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Code2, Download, FileCode2, Layers, MessageSquareQuote } from "lucide-react";
+import { ArrowRight, Code2, Download, FileCode2, GraduationCap, Layers, Package, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -45,7 +45,24 @@ const sections = [
     cta: "Read the guides",
   },
   {
-    icon: MessageSquareQuote,
+    icon: Package,
+    title: "Snippet packs",
+    tag: "6 packs",
+    text: "The library curated by job-to-be-done - product page, cart upsells, trust, marketing, navigation and content. Download each pack as a zip.",
+    href: "/packs",
+    cta: "Browse packs",
+  },
+  {
+    icon: GraduationCap,
+    title: "Liquid course",
+    tag: "Free",
+    text: "Shopify Liquid Mastery - a structured course from Liquid basics to shipping client work. Lessons publish weekly.",
+    href: "/course",
+    cta: "Start the course",
+    accent: true,
+  },
+  {
+    icon: Sparkles,
     title: "AI prompts",
     tag: "Free",
     text: "Battle-tested prompts for store copy, product descriptions, marketing and support - free for everyone, no account needed.",

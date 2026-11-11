@@ -45,12 +45,13 @@ jobs:
           DAILY_GUIDES: ${{ vars.DAILY_GUIDES || '1' }}
           WEEKLY_PRODUCTS: ${{ vars.WEEKLY_PRODUCTS || '3' }}
           WEEKLY_EBOOKS: ${{ vars.WEEKLY_EBOOKS || '1' }}
+          WEEKLY_LESSONS: ${{ vars.WEEKLY_LESSONS || '1' }}
 
       - name: Commit generated content
         run: |
           git config user.name "gplmart-content-bot"
           git config user.email "content-bot@gplmart.com"
-          git add lib/playground/generated-examples.json lib/guides-generated.json products/catalog.json products/src .content-state.json generated-report.json
+          git add lib/playground/generated-examples.json lib/guides-generated.json lib/course-lessons.json products/catalog.json products/src .content-state.json generated-report.json
           if git diff --cached --quiet; then
             echo "No new content generated - nothing to commit."
             exit 0

@@ -35,14 +35,17 @@ const DAILY = {
 const WEEKLY = {
   products: Number(process.env.WEEKLY_PRODUCTS ?? 3),
   ebooks: Number(process.env.WEEKLY_EBOOKS ?? 1),
+  lessons: Number(process.env.WEEKLY_LESSONS ?? 1),
   php: Number(process.env.PRODUCTS_PHP ?? 2),
   html: Number(process.env.PRODUCTS_HTML ?? 1),
 };
+const COURSE_MODULES = ["foundations", "product-pages", "cart-checkout", "sections-settings", "performance", "store-features", "client-work"];
 
 const FILES = {
   snippets: "lib/playground/generated-examples.json",
   guides: "lib/guides-generated.json",
   catalog: "products/catalog.json",
+  lessons: "lib/course-lessons.json",
 };
 
 const readJson = (p) => (fs.existsSync(p) ? JSON.parse(fs.readFileSync(p, "utf8")) : null);
@@ -207,6 +210,23 @@ function validateGuide(g) {
   return errs;
 }
 
+function validateLesson(l) {
+  const errs = [];
+  if (!COURSE_MODULES.includes(l.module)) errs.push(`bad module ${l.module}`);
+  if (!/^[a-z0-9][a-z0-9-]{2,60}$/.test(l.slug ?? "")) errs.push("bad slug");
+  if (!l.title || l.title.length > 90) errs.push("bad title");
+  if (!l.excerpt || l.excerpt.length > 200) errs.push("bad excerpt");
+  if (!Number.isInteger(l.readMin) || l.readMin < 3 || l.readMin > 30) errs.push("bad readMin");
+  if (!Array.isArray(l.blocks) || l.blocks.length < 4) errs.push("too few blocks");
+  for (const b of l.blocks ?? []) {
+    const keys = Object.keys(b);
+    if (!keys.some((k) => ["p", "h", "list", "code"].includes(k))) errs.push("empty block");
+    if (b.code && !["liquid", "css", "js", "text"].includes(b.code.lang)) errs.push("bad code lang");
+    if (b.list && (!Array.isArray(b.list) || b.list.some((x) => typeof x !== "string"))) errs.push("bad list");
+  }
+  return errs;
+}
+
 function validateProduct(p) {
   const errs = [];
   if (!/^[a-z0-9][a-z0-9-]{2,60}$/.test(p.slug ?? "")) errs.push("bad slug");
@@ -247,12 +267,38 @@ RULES:
 - No filler, no motivational fluff, no "in today's fast-paced world".
 - Return ONLY the JSON array.`;
 
+const LESSON_PROMPT = (moduleSlug, n, existingSlugs) => `You are writing lessons for "Shopify Liquid Mastery", an original course on GPLMart teaching Shopify Liquid development to merchants, freelancers and agencies.
+
+Write ${n} NEW lesson(s) for module "${moduleSlug}" as a JSON array:
+[{
+  "module": "${moduleSlug}",
+  "slug": "kebab-case (unique, not: ${existingSlugs.slice(-20).join(", ") || "none yet"})",
+  "title": "Lesson title",
+  "excerpt": "1 sentence summary, max 160 chars",
+  "readMin": 6,
+  "blocks": [
+    { "p": "paragraph text" },
+    { "h": "Section heading" },
+    { "list": ["bullet 1", "bullet 2"] },
+    { "code": { "lang": "liquid", "code": "valid Liquid example" } }
+  ]
+}]
+
+RULES:
+- Teach genuinely - concrete syntax, real patterns, honest caveats. No filler.
+- Code must be valid Liquid/JS/CSS and production-plausible for Shopify OS 2.0 themes.
+- 6-10 blocks per lesson, mix of p/h/list/code. Code blocks must be correct.
+- Module context: ${moduleSlug} (foundations=Liquid basics & theme anatomy; product-pages=PDP data & conversion; cart-checkout=cart object & AJAX API; sections-settings=schema & theme editor; performance=render cost & caching; store-features=search/filters/i18n; client-work=quoting, licensing, delivery).
+- Never invent Shopify features that don't exist. When unsure, teach the pattern with a caveat.
+- Return ONLY the JSON array.`;
+
 // ---------- state (weekly cadence) ----------
 const STATE_FILE = ".content-state.json";
 const state = fs.existsSync(STATE_FILE) ? JSON.parse(fs.readFileSync(STATE_FILE, "utf8")) : {};
 const daysSince = (d) => (d ? Math.floor((Date.now() - new Date(d).getTime()) / 864e5) : Infinity);
 const dueProducts = daysSince(state.lastProducts) >= 7;
 const dueEbooks = daysSince(state.lastEbooks) >= 7;
+const dueLessons = daysSince(state.lastLessons) >= 7;
 
 // ---------- main ----------
 async function main() {
@@ -263,7 +309,7 @@ async function main() {
   const today = new Date().toISOString().slice(0, 10);
   console.log(`daily-content ${today} | model=${MODEL} | keys=${API_KEYS.length} | daily=${JSON.stringify(DAILY)} weekly=${JSON.stringify(WEEKLY)} dueProducts=${dueProducts} dueEbooks=${dueEbooks}`);
 
-  const results = { snippets: 0, guides: 0, products: 0, ebooks: 0, dropped: [] };
+  const results = { snippets: 0, guides: 0, products: 0, ebooks: 0, lessons: 0, dropped: [] };
 
   // --- snippets ---
   if (DAILY.snippets > 0) {
@@ -360,6 +406,35 @@ async function main() {
     } catch (e) {
       console.log(`${kind} FAILED: ${e.message}`);
       results.dropped.push({ type: `products-${kind}`, errs: [e.message] });
+    }
+  }
+
+  // --- course lessons (weekly, fills the emptiest module) ---
+  if (dueLessons && WEEKLY.lessons > 0) {
+    try {
+      const lessons = readJson(FILES.lessons) ?? [];
+      const perModule = {};
+      for (const l of lessons) perModule[l.module] = (perModule[l.module] ?? 0) + 1;
+      const moduleSlug = COURSE_MODULES.reduce((a, b) => ((perModule[a] ?? 0) <= (perModule[b] ?? 0) ? a : b));
+      const lessonSlugs = lessons.map((l) => l.slug);
+      const text = await llm(LESSON_PROMPT(moduleSlug, WEEKLY.lessons, lessonSlugs));
+      const arr = parseJson(text);
+      let added = 0;
+      for (const l of arr) {
+        const errs = validateLesson(l);
+        if (lessonSlugs.includes(l.slug)) errs.push("duplicate slug");
+        if (errs.length) { results.dropped.push({ type: "lesson", slug: l?.slug, errs }); continue; }
+        lessons.push(l);
+        lessonSlugs.push(l.slug);
+        added++;
+      }
+      writeJson(FILES.lessons, lessons);
+      results.lessons = added;
+      if (added > 0) state.lastLessons = today;
+      console.log(`lessons (${moduleSlug}): +${added}`);
+    } catch (e) {
+      console.log(`lessons FAILED: ${e.message}`);
+      results.dropped.push({ type: "lessons-batch", errs: [e.message] });
     }
   }
 
