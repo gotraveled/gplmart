@@ -784,5 +784,928 @@
         "p": "Tracking done right = every later lesson works. Next: campaign structure that scales without chaos."
       }
     ]
+  },
+  {
+    "course": "shopify-advanced",
+    "module": "store-design",
+    "slug": "theme-customisation-brand-system",
+    "title": "Professional theme customisation: build a brand system, not a template",
+    "excerpt": "Theme settings deep-dive - colours, typography, spacing and the reusable patterns that make a store look designed, not assembled.",
+    "readMin": 10,
+    "blocks": [
+      {
+        "p": "A store that looks 'template-y' loses trust before the first product click. The fix isn't a fancier theme - it's a consistent system: 2-3 colours, 1-2 fonts, consistent spacing, and the same visual language on every page."
+      },
+      {
+        "h": "Step 1 - Lock your brand tokens"
+      },
+      {
+        "p": "Decide these once, write them down, and never deviate:"
+      },
+      {
+        "list": [
+          "Primary colour: buttons, links, accents (one bold colour).",
+          "Secondary colour: badges, sale tags, secondary buttons.",
+          "Neutral background + text colours: usually near-white bg, near-black text.",
+          "Font pairing: one display font for headings, one body font for everything else. Google Fonts is fine."
+        ]
+      },
+      {
+        "h": "Step 2 - Apply them in Theme settings"
+      },
+      {
+        "list": [
+          "Online Store > Themes > Customize > Theme settings > Colors: set every colour role - background, foreground, primary button, secondary button, sale price, sale badge.",
+          "Typography: heading font + body font, then set heading weight/letter-spacing. Bigger headings with tighter spacing look premium.",
+          "Product cards: set card style (border vs shadow), image ratio (square or portrait consistently), and badge positions."
+        ]
+      },
+      {
+        "img": {
+          "src": "/images/course/admin-home.svg",
+          "alt": "Shopify admin dashboard",
+          "caption": "Theme editor lives under Online Store > Themes > Customize - every change previews live on the right."
+        }
+      },
+      {
+        "h": "Step 3 - The details that signal 'real store'"
+      },
+      {
+        "list": [
+          "Announcement bar: rotate 2-3 short messages (free shipping, new drop, sale) - set rotation in the section settings.",
+          "Product image consistency: same background colour, same angle style, same crop ratio across the catalogue. Mixed photos scream marketplace, not brand.",
+          "Whitespace: resist filling every section. Premium stores breathe - one strong section beats three crowded ones.",
+          "Favicon + social share image: Settings for favicon; upload a branded OG image so shared links look professional."
+        ]
+      },
+      {
+        "p": "Rule: if a customer can't tell your store apart from a generic template in 5 seconds, the design isn't done. Next lesson: catalogue operations at scale."
+      }
+    ]
+  },
+  {
+    "course": "shopify-advanced",
+    "module": "catalog-operations",
+    "slug": "inventory-fulfilment-workflows",
+    "title": "Catalogue & fulfilment operations: run the store like a system",
+    "excerpt": "Bulk editing, inventory locations, fulfilment workflows and the operational habits that prevent stock disasters.",
+    "readMin": 10,
+    "blocks": [
+      {
+        "p": "Operations is where growing stores break. The goal: systems that keep stock, orders and fulfilment accurate without daily manual heroics."
+      },
+      {
+        "h": "Catalogue hygiene"
+      },
+      {
+        "list": [
+          "Weekly 15-minute audit: Products > All products > filter 'No collection' and 'No image' - fix or delete.",
+          "Bulk editor (Products > Select products > Bulk edit): change prices, tags, collections across hundreds of SKUs at once. Learn it once, save hours weekly.",
+          "Duplicate products before seasonal relaunches - never edit last year's product that has order history.",
+          "Tags are your search/filter power: use a consistent scheme (color:black, material:cotton, season:summer) - spaces not hyphens."
+        ]
+      },
+      {
+        "h": "Inventory that stays truthful"
+      },
+      {
+        "list": [
+          "Settings > Locations: one location per physical stock point. Multi-location only if you actually ship from multiple places.",
+          "Inventory tracking ON for products you stock; for dropshipped items decide per supplier - tracking OFF avoids oversell confusion, but watch supplier stock.",
+          "Set 'continue selling when out of stock' OFF unless you can fulfil backorders - overselling kills reviews.",
+          "Low-stock alerts: Shopify doesn't email you natively - use the free Stocky app or a simple scheduled check."
+        ]
+      },
+      {
+        "h": "Fulfilment workflow"
+      },
+      {
+        "list": [
+          "Orders > Unfulfilled: process daily, not weekly - fast dispatch = fewer cancellations and better reviews.",
+          "Print packing slips in batches; group orders by shipping method.",
+          "Mark fulfilled ONLY after the courier scans - premature 'fulfilled' emails lie to customers.",
+          "Returns: decide policy upfront (7-day? who pays return shipping?), write it on the policy page, and honour it consistently."
+        ]
+      },
+      {
+        "p": "Operations done right is invisible - customers just get their orders on time, every time. Next: marketing and conversion."
+      }
+    ]
+  },
+  {
+    "course": "shopify-advanced",
+    "module": "marketing-conversion",
+    "slug": "email-whatsapp-marketing",
+    "title": "Email & WhatsApp marketing: the owned channels that convert",
+    "excerpt": "Build your list, send campaigns that sell, and use WhatsApp broadcasts - the highest-ROI marketing for Indian stores.",
+    "readMin": 10,
+    "blocks": [
+      {
+        "p": "Ads rent attention; email and WhatsApp own it. For Indian ecommerce especially, WhatsApp campaigns routinely outperform email on open rates."
+      },
+      {
+        "h": "Build the list first"
+      },
+      {
+        "list": [
+          "Every signup needs a reason: '10% off first order', 'early access to drops', 'restock alerts'. No reason = no emails.",
+          "Place the signup form site-wide (footer + popup on exit-intent or after 30s) - but ONE popup, not three stacked.",
+          "Import existing customers from Orders (Customers > Export CSV) - they've already bought, they're your warmest list."
+        ]
+      },
+      {
+        "h": "Email that sells (not just newsletters)"
+      },
+      {
+        "list": [
+          "Welcome series (3 emails): discount code → bestsellers → social proof. Set-and-forget revenue.",
+          "Abandoned cart: Shopify Emails or Klaviyo free tier sends automatically - recover 5-15% of lost carts.",
+          "Weekly campaign formula: one product/story + one clear CTA. Subject lines under 50 chars, preview text that adds info not repeats.",
+          "Segment: send sale alerts only to buyers, new-arrival alerts to everyone - irrelevant emails train people to unsubscribe."
+        ]
+      },
+      {
+        "h": "WhatsApp for Indian stores"
+      },
+      {
+        "list": [
+          "Broadcast lists (up to 256 contacts per list) via WhatsApp Business app - free to start.",
+          "Use it for: order updates, restock alerts, festival sale announcements, COD order confirmations.",
+          "Rules: get opt-in first (checkout checkbox 'Order updates on WhatsApp'), keep messages short, always identify the store.",
+          "Never blast promotions to people who didn't opt in - WhatsApp bans for spam and you lose the channel."
+        ]
+      },
+      {
+        "p": "Measure: email revenue and WhatsApp reply rates weekly. If a channel isn't driving sales in 30 days, fix the offer before blaming the channel."
+      }
+    ]
+  },
+  {
+    "course": "shopify-advanced",
+    "module": "scaling-growth",
+    "slug": "analytics-margins-scaling",
+    "title": "Analytics, margins & scaling: grow without breaking profit",
+    "excerpt": "Read your numbers correctly, protect margin at scale, and know the real signals that you're ready to spend on ads.",
+    "readMin": 10,
+    "blocks": [
+      {
+        "p": "Most stores don't fail from lack of traffic - they fail from not knowing their numbers. This lesson is the financial dashboard every owner needs."
+      },
+      {
+        "h": "The five numbers that matter"
+      },
+      {
+        "list": [
+          "Revenue: total sales - but meaningless without context.",
+          "AOV (average order value): revenue ÷ orders. Bundles and free-shipping thresholds exist to lift this.",
+          "Gross margin: (price - product cost - shipping cost) ÷ price. Know it per product, not as an average.",
+          "CAC (customer acquisition cost): ad spend ÷ new customers. Only meaningful once you run paid.",
+          "Repeat rate: % of customers who buy again. Above 20-25% = healthy; below 10% = fix retention first."
+        ]
+      },
+      {
+        "h": "Margin protection at scale"
+      },
+      {
+        "list": [
+          "Razorpay/Stripe fees (~2% + GST) and shipping subsidies eat margin silently - recalculate pricing quarterly.",
+          "Returns/RTO are a margin line item, not an ops issue: COD stores often lose 15-25% to RTO. Track it monthly.",
+          "Price increases: test on new customers first (they don't know the old price). Loyal customers forgive 5-10% rises if quality held.",
+          "Never discount below margin floor - a 'sale' that loses money per order is just subsidised growth."
+        ]
+      },
+      {
+        "h": "When you're ready for ads"
+      },
+      {
+        "list": [
+          "Checklist: 20+ orders, know your margin per product, email/WhatsApp flows live, tracking verified, return policy honoured consistently.",
+          "Start small: ₹500-1000/day test budget, one campaign, one audience - enough data in 3-5 days to judge.",
+          "Scale only winners: double budget on campaigns with ROAS above break-even for 5+ consecutive days, not on day-one spikes."
+        ]
+      },
+      {
+        "p": "The Facebook Ads course takes over from here - but only after these foundations are solid. Scaling broken unit economics with ads just loses money faster."
+      }
+    ]
+  },
+  {
+    "course": "liquid-snippets",
+    "module": "sections-settings",
+    "slug": "schema-settings-theme-editor",
+    "title": "{% schema %} and theme editor settings: make merchants love your sections",
+    "excerpt": "The JSON schema block that turns a hardcoded section into a customisable, editor-friendly component.",
+    "readMin": 9,
+    "blocks": [
+      {
+        "p": "A section without {% schema %} is invisible to the theme editor - merchants can't add, configure or reorder it. Schema is what separates 'code snippet' from 'professional theme component'."
+      },
+      {
+        "h": "Minimal viable schema"
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "{% schema %}\n{\n  \"name\": \"Announcement bar\",\n  \"settings\": [\n    {\n      \"type\": \"text\",\n      \"id\": \"text\",\n      \"label\": \"Announcement text\",\n      \"default\": \"Free shipping on orders over ₹999\"\n    },\n    {\n      \"type\": \"color\",\n      \"id\": \"bg_color\",\n      \"label\": \"Background\",\n      \"default\": \"#0f766e\"\n    },\n    {\n      \"type\": \"checkbox\",\n      \"id\": \"show_close\",\n      \"label\": \"Show dismiss button\",\n      \"default\": true\n    }\n  ],\n  \"presets\": [{ \"name\": \"Announcement bar\" }]\n}\n{% endschema %}"
+        }
+      },
+      {
+        "h": "Reading settings in Liquid"
+      },
+      {
+        "p": "Every setting becomes section.settings.<id>: {{ section.settings.text }}, and colour settings work directly in style attributes. Toggle/checkbox returns true/false for {% if %} checks."
+      },
+      {
+        "h": "Setting types you'll use daily"
+      },
+      {
+        "list": [
+          "text / textarea / richtext - strings; richtext allows basic HTML",
+          "color - hex picker; pair with background/style usage",
+          "checkbox - boolean toggles",
+          "range - number slider (min/max/step/unit)",
+          "select - dropdown from options array",
+          "url - link picker (pages, products, collections, or external)",
+          "image_picker - media library image",
+          "font_picker / color_background - theme-editor native pickers",
+          "header - visual group divider in the editor panel",
+          "paragraph - plain-text instructions inside the editor"
+        ]
+      },
+      {
+        "h": "Presets and blocks"
+      },
+      {
+        "list": [
+          "presets: [{name}] - what appears when merchant clicks 'Add section'. Multiple presets = multiple pre-configured variants.",
+          "blocks: [...] inside schema - repeatable inner items (slides, features, testimonials). Merchants add/remove/reorder them in the editor.",
+          "max_blocks - cap how many blocks a section accepts."
+        ]
+      },
+      {
+        "p": "Design rule: every setting needs a sensible default so the section looks right before the merchant touches anything. Test by adding the section to a fresh page with zero configuration."
+      }
+    ]
+  },
+  {
+    "course": "liquid-snippets",
+    "module": "performance",
+    "slug": "render-cost-caching",
+    "title": "Performance: render cost, caching and keeping custom code fast",
+    "excerpt": "Why custom Liquid slows stores down, how to measure it, and the patterns that keep snippets cheap at scale.",
+    "readMin": 9,
+    "blocks": [
+      {
+        "p": "Shopify renders every page server-side with strict time and memory budgets. A snippet that's fast on your dev store can time out on a 10,000-product catalogue. Performance isn't optional polish - it's correctness."
+      },
+      {
+        "h": "What actually costs render time"
+      },
+      {
+        "list": [
+          "Nested loops: {% for product in collection.products %} inside another {% for %} multiplies work fast - paginate or limit.",
+          "Repeated object access: {{ product.metafields... }} called 10 times re-evaluates - {% assign %} once, reuse.",
+          "Huge arrays: all_products, collection.products without limit render EVERYTHING - always paginate or slice.",
+          "External requests: image_url with extreme sizes, many render calls per page - each adds latency.",
+          "JavaScript weight: big {% javascript %} blocks parse on every page - keep under ~10KB per snippet."
+        ]
+      },
+      {
+        "h": "The cheap patterns"
+      },
+      {
+        "list": [
+          "limit + offset: {{ collection.products | limit: 12 }} never renders more than needed.",
+          "assign once: {% assign img = product.featured_image | image_url: width: 600 %} then reuse {{ img }}.",
+          "lazy-render below fold: wrap heavy sections in details/summary or render on interaction.",
+          "Cache-friendly markup: avoid random values in class names that bust CDN caching.",
+          "image_url sizing: request the size you'll display, not the original - width: 600 not width: 2000."
+        ]
+      },
+      {
+        "h": "Measure before optimising"
+      },
+      {
+        "list": [
+          "Theme editor > ... > 'View render time' isn't exposed - use Shopify's built-in 'Theme check' plus Lighthouse on the storefront.",
+          "Lighthouse mobile: aim LCP < 2.5s, TBT < 200ms - custom snippets should add < 50ms.",
+          "If a page slows after adding a snippet, binary-search: disable sections one at a time to isolate."
+        ]
+      },
+      {
+        "p": "Rule of thumb: if your snippet needs a nested loop over products AND collections, it's probably doing too much - split it into two smaller snippets."
+      }
+    ]
+  },
+  {
+    "course": "liquid-snippets",
+    "module": "store-features",
+    "slug": "search-filters-localization",
+    "title": "Search, filters & localization: the store features merchants ask for",
+    "excerpt": "Customise search results, collection filtering and multi-currency/multi-language without apps.",
+    "readMin": 9,
+    "blocks": [
+      {
+        "p": "Search and filtering directly affect whether shoppers find products. Shopify's defaults work but are generic - here's how to make them actually good."
+      },
+      {
+        "h": "Search that finds things"
+      },
+      {
+        "list": [
+          "Search results page uses search.results / search.filters - check which template your theme uses (main-search.liquid).",
+          "Improve relevance: ensure product titles/descriptions/tags contain the words customers actually type - SEO and search share vocabulary.",
+          "Empty state matters: 'No results for X' should suggest collections or bestsellers, not dead-end.",
+          "Predictive search (OS 2.0 themes have it built-in) uses the /search/suggest.json endpoint - ensure product data is complete for it to shine."
+        ]
+      },
+      {
+        "h": "Collection filtering & sorting"
+      },
+      {
+        "list": [
+          "OS 2.0 themes have filter groups in the editor - enable price, availability, and up to 2 custom filter sources.",
+          "Custom filters need metafields: create a 'filterable' metafield definition, tag products, then enable it in the collection section's filter settings.",
+          "Sort options: price low-high, newest, best-selling - enable only the ones your catalogue supports meaningfully.",
+          "Filter UX rule: show result count live updating; hide empty filter values rather than letting users pick nothing."
+        ]
+      },
+      {
+        "h": "Localization basics"
+      },
+      {
+        "list": [
+          "Markets (Settings > Markets): sell in multiple countries/currencies - Shopify handles currency conversion and domain/subfolder structure.",
+          "request.locale / localization.country in Liquid - show country-appropriate content (shipping promises, phone formats).",
+          "Translations: Themes > Edit languages - translate theme text without touching code; product content needs separate translation apps or manual entry.",
+          "Don't over-engineer: India-only store = single market, INR, en-IN. Add markets when you actually sell internationally."
+        ]
+      },
+      {
+        "p": "These features feel 'app-like' but they're theme-level - no monthly fees, no script bloat. That's the GPLMart advantage."
+      }
+    ]
+  },
+  {
+    "course": "liquid-snippets",
+    "module": "client-work",
+    "slug": "scope-quote-deliver-liquid",
+    "title": "Shipping client work: scope, quote, deliver and get paid",
+    "excerpt": "The business side of Liquid freelancing - what to charge, how to scope, and how to deliver work clients actually pay for.",
+    "readMin": 9,
+    "blocks": [
+      {
+        "p": "Liquid skills are worthless without a delivery process. This lesson is the playbook for turning snippet knowledge into invoiceable work."
+      },
+      {
+        "h": "What clients actually pay for"
+      },
+      {
+        "list": [
+          "Not 'Liquid code' - outcomes: 'product page that converts better', 'cart that recovers abandoned sales', 'store that looks premium'.",
+          "Clients pay for certainty: fixed scope, clear deliverables, a date. Hourly billing invites scope creep arguments.",
+          "Your unfair advantage: a tested snippet library. 'I already have a battle-tested solution for this' justifies premium pricing."
+        ]
+      },
+      {
+        "h": "Scoping a project"
+      },
+      {
+        "list": [
+          "Discovery questions: theme name/version, OS 2.0 or vintage, existing customisations, deadline, budget range.",
+          "Always ask for admin/staff access OR a copy of the theme - never work blind on live stores.",
+          "Deliverable definition: '3 custom sections + installation + 1 revision round + 7-day bugfix window' beats 'customise my store'.",
+          "Red flags: 'just quickly change this', no access, expecting apps-level features in pure Liquid, budget under your floor."
+        ]
+      },
+      {
+        "h": "Pricing benchmarks (India market, 2025)"
+      },
+      {
+        "list": [
+          "Single snippet customisation: ₹1,500-5,000 depending on complexity.",
+          "Custom section build from scratch: ₹8,000-25,000.",
+          "Full product-page or cart rebuild: ₹30,000-80,000.",
+          "Retainer for ongoing tweaks: ₹10,000-25,000/month for 2-3 small changes/month.",
+          "Charge 50% upfront, 50% on delivery - non-negotiable for new clients."
+        ]
+      },
+      {
+        "h": "Delivery checklist"
+      },
+      {
+        "list": [
+          "Test on a development theme/store first - never edit live directly.",
+          "Document what you changed: which files, which settings, how to revert.",
+          "Hand over clean code with comments - clients who can read it trust you more and pay faster.",
+          "Follow up at day 7: 'everything working? anything need adjusting?' - prevents refund requests and earns referrals."
+        ]
+      },
+      {
+        "p": "Your own GPLMart library is also a portfolio - 'here's my production snippet library' sells better than any profile page."
+      }
+    ]
+  },
+  {
+    "course": "dropshipping-india",
+    "module": "product-research-in",
+    "slug": "find-winning-products-india",
+    "title": "Find winning products for the Indian market (without guessing)",
+    "excerpt": "Validated research methods - trending searches, margin math after shipping, and how to spot products Indian buyers will actually pay for.",
+    "readMin": 10,
+    "blocks": [
+      {
+        "p": "The #1 reason Indian dropshipping stores fail: they import random 'trending' products with no Indian demand. Winning product research is a system, not luck."
+      },
+      {
+        "h": "Where to look for demand signals"
+      },
+      {
+        "list": [
+          "Google Trends (India): rising searches = rising demand. Filter 'Past 12 months' to spot sustained trends vs one-day spikes.",
+          "Amazon India bestsellers + Flipkart trends: what's already selling proves demand - you're looking for better-priced supply, not new categories.",
+          "Instagram Reels/YouTube Shorts: products going viral in Indian content (kitchen gadgets, phone accessories, fitness, car accessories) - early signal before it peaks.",
+          "Meesho/GlowRoad trending: what Indian resellers already push successfully - validated demand, thin margins though."
+        ]
+      },
+      {
+        "h": "The margin math that kills most picks"
+      },
+      {
+        "p": "A product isn't winning until the math works. For a ₹799 sell price:"
+      },
+      {
+        "list": [
+          "Product cost from supplier: ₹250-400",
+          "Shipping to customer (India): ₹60-120",
+          "Payment gateway fee (Razorpay ~2%): ~₹16",
+          "Platform/ads cost per order: ₹50-150 (once you advertise)",
+          "Realistic margin: ₹150-300 per order = 20-35% - thin but workable at volume"
+        ]
+      },
+      {
+        "p": "Products under ₹499 sell on volume but razor-thin margins; ₹999-1999 hits the sweet spot - high enough margin, impulse-buyable price."
+      },
+      {
+        "h": "Red flags that mean 'skip this product'"
+      },
+      {
+        "list": [
+          "Fragile/glass items - Indian shipping breaks them, returns kill you.",
+          "Electronics with batteries - shipping restrictions + warranty nightmares.",
+          "Anything branded/trademarked - legal risk, not worth it.",
+          "Products needing size/fit certainty (clothing without size charts) - return rates explode.",
+          "Oversized/heavy items - shipping eats the margin entirely."
+        ]
+      },
+      {
+        "p": "Validate before importing: check 3-5 competitors' prices, read their reviews for complaints (those are your opportunities), and order a sample if the margin justifies it."
+      }
+    ]
+  },
+  {
+    "course": "dropshipping-india",
+    "module": "payments-cod-in",
+    "slug": "cod-rto-management",
+    "title": "Cash on Delivery & RTO: the India-specific profit killer",
+    "excerpt": "COD drives orders but return-to-origin destroys margins - the exact rules and tools to keep COD profitable.",
+    "readMin": 9,
+    "blocks": [
+      {
+        "p": "Cash on Delivery is non-negotiable in India - 40-60% of orders are COD. But every undelivered COD order costs you product + shipping both ways. RTO management is the difference between profit and loss."
+      },
+      {
+        "h": "Why RTO happens"
+      },
+      {
+        "list": [
+          "Fake orders: bots and prank orders with random phone numbers - biggest RTO source.",
+          "Changed mind: customer orders impulsively, refuses at door.",
+          "Address problems: incomplete addresses, remote areas, wrong phone numbers.",
+          "Courier failures: multiple delivery attempts missed."
+        ]
+      },
+      {
+        "h": "Prevention rules that actually work"
+      },
+      {
+        "list": [
+          "Phone verification: require OTP verification on the phone number at checkout - kills fake orders instantly. Shopify apps like 'OTP Verification' do this.",
+          "Partial advance payment: even ₹50-99 advance filters fake orders massively while keeping COD available.",
+          "COD limits by pin code: disable COD for high-RTO areas (remote/jhuggi zones) - delivery partners share RTO data.",
+          "Address quality: require landmark field, disable COD on PO boxes/incomplete addresses.",
+          "Order velocity check: flag orders >3x your average daily volume - often bot attacks."
+        ]
+      },
+      {
+        "h": "Set your COD economics"
+      },
+      {
+        "list": [
+          "COD fee: charge ₹30-50 handling fee or bake into price - never offer free COD, it attracts the worst customers.",
+          "Minimum order value for COD: ₹299-499 filters tiny orders where fees exceed margin.",
+          "Razorpay/PayU both support COD with configurable rules - check Settings > Payments > COD options."
+        ]
+      },
+      {
+        "p": "Track RTO rate weekly: (returned COD orders ÷ total COD orders). Under 15% = healthy; 15-25% = fix something; above 25% = stop COD on those products/pincodes immediately."
+      }
+    ]
+  },
+  {
+    "course": "dropshipping-india",
+    "module": "marketing-in",
+    "slug": "whatsapp-instagram-marketing-india",
+    "title": "Marketing to Indian buyers: WhatsApp, Instagram and regional reach",
+    "excerpt": "The channels that actually work in India - WhatsApp broadcasts, Instagram Reels, regional content and festive-season spikes.",
+    "readMin": 10,
+    "blocks": [
+      {
+        "p": "Indian ecommerce marketing is different: WhatsApp beats email, vernacular content outperforms English, and festival calendars drive 40% of annual sales."
+      },
+      {
+        "h": "WhatsApp: your highest-ROI channel"
+      },
+      {
+        "list": [
+          "Opt-in at checkout: 'Get order updates + exclusive deals on WhatsApp' checkbox - builds your list automatically.",
+          "Broadcast strategy: weekly catalogue drops, festival announcements, back-in-stock alerts. Keep it to 1-2 messages/week max.",
+          "WhatsApp Business app (free): labels for customers, quick replies, catalog feature built-in.",
+          "Click-to-WhatsApp ads: Facebook/Instagram ads that open a chat - highest intent traffic in India right now."
+        ]
+      },
+      {
+        "h": "Instagram & short video"
+      },
+      {
+        "list": [
+          "Reels > static posts: 15-30 second product demos, before/after, unboxing - Indian audiences discover products here first.",
+          "Regional languages: Hindi, Tamil, Telugu, Bengali content massively outperforms English-only for non-metro audiences.",
+          "Collabs > ads early: micro-influencers (10k-100k followers) in your niche charge ₹2k-15k per post - better ROI than cold ads for new stores."
+        ]
+      },
+      {
+        "h": "The Indian ecommerce calendar"
+      },
+      {
+        "list": [
+          "Big sale windows: Republic Day, Holi, Eid, Raksha Bandhan, Diwali (Oct-Nov = biggest), New Year, Republic Day sales.",
+          "Start preparing 3-4 weeks before: stock check, creatives ready, WhatsApp broadcast drafted, ad budget set.",
+          "COD demand spikes during festivals - ensure your RTO rules are tightened before big sale days."
+        ]
+      },
+      {
+        "p": "Reality check: organic reach is limited - plan to spend ₹500-2000/day on Meta ads once product-market fit is proven. Marketing amplifies a working store; it doesn't fix a broken one."
+      }
+    ]
+  },
+  {
+    "course": "dropshipping-international",
+    "module": "product-research-intl",
+    "slug": "global-product-research",
+    "title": "Global product research: find winners for US & EU markets",
+    "excerpt": "Trend tools, ad-spy research and margin validation for international dropshipping - data over guessing.",
+    "readMin": 10,
+    "blocks": [
+      {
+        "p": "International dropshipping rewards research discipline - US/EU markets are more competitive but pay 3-5x the margins of India. The tools exist; most people skip them."
+      },
+      {
+        "h": "The research stack (free tier is enough)"
+      },
+      {
+        "list": [
+          "Google Trends (US/EU): rising queries in your target market - filter by country, compare regions.",
+          "TikTok Creative Center: trending products and top ads by country - the fastest product discovery tool right now.",
+          "Facebook Ad Library: search competitor ads in your niche - what's being advertised heavily = proven demand.",
+          "Amazon Movers & Shakers / Best Sellers: products gaining rank fast = emerging demand.",
+          "CJdropshipping 'Hot products' + Zendrop curated lists: supplier-validated winners."
+        ]
+      },
+      {
+        "h": "Validate before importing"
+      },
+      {
+        "list": [
+          "Search the product on Amazon US - if it's already a bestseller at $30, you can't compete on price; find a differentiated angle (bundle, colour, niche use-case).",
+          "Check shipping cost + delivery time from your supplier BEFORE calculating margin - slow shipping kills conversion.",
+          "Read 20+ reviews of competitor products - complaints are your product improvement opportunity.",
+          "Seasonality: use Google Trends 5-year view - avoid products that only spike one month unless you plan around it."
+        ]
+      },
+      {
+        "h": "The margin math (USD example)"
+      },
+      {
+        "list": [
+          "Sell price: $39.99 (psychological price point)",
+          "Product cost: $8-12",
+          "Shipping (ePacket/CJPacket): $3-6",
+          "Payment processing (~3%): ~$1.20",
+          "Ad cost per order (target): $10-15",
+          "Net margin target: $10-18 per order = 25-45% - healthy for scaling"
+        ]
+      },
+      {
+        "p": "Rule: if you can't hit 25% net margin AFTER ads, the product doesn't work - no amount of creative fixes bad unit economics."
+      }
+    ]
+  },
+  {
+    "course": "dropshipping-international",
+    "module": "sourcing-fulfilment-intl",
+    "slug": "international-suppliers-shipping",
+    "title": "International suppliers & shipping: CJ, Zendrop, AliExpress compared",
+    "excerpt": "Choose the right supplier for US/EU fulfilment - shipping times, costs, quality and the honest trade-offs of each.",
+    "readMin": 10,
+    "blocks": [
+      {
+        "p": "Supplier choice determines your shipping time, cost and product quality - the three things international customers judge you on. Get this wrong and nothing else matters."
+      },
+      {
+        "h": "The three main options"
+      },
+      {
+        "list": [
+          "CJdropshipping: largest catalogue, own warehouses (US/EU/Asia), 7-15 day US shipping, ~$0.5-2/order platform fee. Best all-rounder for beginners.",
+          "Zendrop: curated US-based suppliers, 3-7 day US shipping, higher product cost but faster + better quality control. Best for brand-building.",
+          "AliExpress Dropshipping: cheapest product costs, 10-20 day shipping, inconsistent quality, highest RTO/dispute risk. Only for ultra-price-sensitive niches.",
+          "Spocket: US/EU suppliers only, 2-5 day shipping, premium pricing - best for high-AOV stores where speed matters."
+        ]
+      },
+      {
+        "h": "How to evaluate a specific product"
+      },
+      {
+        "list": [
+          "Check actual shipping time TO your target country - '7-15 days' means to China warehouse; US warehouse stock ships faster.",
+          "Calculate landed cost: product + shipping + any platform fee + payment processing - that's your true cost.",
+          "Order a sample: $5-15 well spent. Check packaging quality, product accuracy vs photos, and whether it arrives undamaged.",
+          "Read supplier reviews on the platform - look for 'late shipping' and 'wrong item' complaints specifically."
+        ]
+      },
+      {
+        "h": "Setting delivery expectations on your store"
+      },
+      {
+        "list": [
+          "Product pages MUST state: 'Ships from [country], delivery in X-Y business days'. Vague shipping = chargebacks.",
+          "Order confirmation email: set clear timeline ('ships within 24-48h, delivery 7-12 days').",
+          "Tracking: CJ/Zendrop auto-sync tracking to Shopify - customer gets updates automatically.",
+          "Pro tip: say 'estimated delivery' not 'guaranteed' - protects you legally while staying honest."
+        ]
+      },
+      {
+        "p": "Start with CJdropshipping for catalogue breadth; move bestsellers to Zendrop/Spocket for faster shipping once revenue justifies it."
+      }
+    ]
+  },
+  {
+    "course": "dropshipping-international",
+    "module": "payments-intl",
+    "slug": "stripe-paypal-international",
+    "title": "International payments: Stripe, PayPal and multi-currency done right",
+    "excerpt": "Accept cards globally, handle currencies correctly, and avoid the tax/duty mistakes that kill international stores.",
+    "readMin": 9,
+    "blocks": [
+      {
+        "p": "International customers expect card checkout, PayPal option, and prices in their currency. Get payments wrong and cart abandonment spikes to 70%+."
+      },
+      {
+        "h": "The payment stack"
+      },
+      {
+        "list": [
+          "Stripe: primary card processor - 135+ currencies, ~2.9% + $0.30 per transaction, fraud protection built-in. Activate via Shopify Payments or Stripe app.",
+          "PayPal: the trust signal - many US/EU buyers won't buy without it. ~3.49% + fixed fee. Worth the slightly higher fee for conversion.",
+          "Shopify Payments (where available): native integration, fastest checkout, lower fees than third-party. Check availability for your entity country."
+        ]
+      },
+      {
+        "h": "Multi-currency strategy"
+      },
+      {
+        "list": [
+          "Markets feature: create separate markets for US, EU, UK - each with own currency, pricing, and optionally domain.",
+          "Price in local currency, not 'USD converted': round prices psychologically ($49.99 not $52.37).",
+          "Shopify Payments auto-converts; third-party gateways need Markets + manual price adjustments.",
+          "Don't show all currencies to everyone - confuse buyers, kill conversion. One market = one currency."
+        ]
+      },
+      {
+        "h": "Taxes & duties - the honest basics"
+      },
+      {
+        "list": [
+          "US: most states charge sales tax - Shopify can auto-collect via Tax settings or apps like TaxJar. Don't ignore it.",
+          "EU/UK: VAT/GST rules are complex - use Shopify's tax settings or hire an accountant for EU sales.",
+          "Duties/customs: decide DDP (delivered duty paid - you cover it, higher price) vs DDU (buyer pays at door - cheaper for you, surprise costs for them). DDP converts better.",
+          "Start US-only if possible: single tax regime, English market, largest dropshipping market."
+        ]
+      },
+      {
+        "p": "Test checkout in every currency before launch - currency conversion bugs are silent killers."
+      }
+    ]
+  },
+  {
+    "course": "dropshipping-international",
+    "module": "marketing-intl",
+    "slug": "cross-border-ad-marketing",
+    "title": "Cross-border marketing: run profitable Meta ads for US/EU",
+    "excerpt": "Campaign structure, creative localisation and budget pacing for international ecommerce - where most dropshippers lose money.",
+    "readMin": 10,
+    "blocks": [
+      {
+        "p": "International dropshipping lives or dies on paid ads - organic won't cut it in competitive US/EU markets. The Facebook Ads course covers Meta deeply; this lesson focuses on what's different for cross-border."
+      },
+      {
+        "h": "Campaign structure for international"
+      },
+      {
+        "list": [
+          "Start US-only: largest market, English creatives, single timezone for testing. Expand to EU/UK after US is profitable.",
+          "Advantage+ Shopping campaigns (ASC): Meta's AI-driven campaign type - simplest for beginners, decent results for ecommerce.",
+          "Manual campaigns once scaling: separate ad sets per audience/angle, clearer testing.",
+          "Budget pacing: start $20-50/day per campaign - enough data in 3-5 days without burning cash."
+        ]
+      },
+      {
+        "h": "Creative that works internationally"
+      },
+      {
+        "list": [
+          "UGC-style ads outperform polished ads: phone-shot videos, 'I tried this' hooks, before/after - feels authentic not advertised.",
+          "First 3 seconds decide everything: pattern interrupt (unexpected visual, bold claim, question) before your product appears.",
+          "Localise: UK English ≠ US English ('checkout' vs 'check out', colour vs color). EU needs translated creatives - don't assume English works.",
+          "Test 3-5 creative angles per product: problem-solution, demo, testimonial, offer-led, curiosity."
+        ]
+      },
+      {
+        "h": "Audience targeting basics"
+      },
+      {
+        "list": [
+          "Broad targeting + good creative often beats hyper-specific interests in 2025 - let Meta's algorithm find buyers.",
+          "Lookalikes once you have 100+ customers: 1% lookalike of purchasers is gold.",
+          "Exclude past purchasers from prospecting campaigns - they're for retention/upsell campaigns instead.",
+          "Geo-targeting: US nationwide or top 10 states by your product's appeal - don't spray globally."
+        ]
+      },
+      {
+        "p": "The golden rule: kill campaigns at $100-150 spend with zero purchases, scale winners at 2x ROAS for 5+ days. Everything else is noise."
+      }
+    ]
+  },
+  {
+    "course": "facebook-ads",
+    "module": "campaign-structure",
+    "slug": "asc-vs-manual-campaigns",
+    "title": "ASC vs manual campaigns: which structure for your stage",
+    "excerpt": "Advantage+ Shopping vs manual campaigns - when to use each, how budgets flow, and the structure that scales without chaos.",
+    "readMin": 9,
+    "blocks": [
+      {
+        "p": "Campaign structure is where most ad accounts bleed money - too many campaigns fragment learning, too few give Meta no room to optimize."
+      },
+      {
+        "h": "Advantage+ Shopping (ASC) - the beginner's choice"
+      },
+      {
+        "list": [
+          "What it is: Meta's AI-driven campaign - you provide products, budget, country; Meta finds buyers automatically.",
+          "Best for: new stores, <$5k/month ad spend, when you don't have proven audiences yet.",
+          "Pros: simplest setup, leverages Meta's data, good for testing products fast.",
+          "Cons: less control over audiences/placements, can overspend on bad placements, harder to scale systematically."
+        ]
+      },
+      {
+        "h": "Manual campaigns - when you're ready"
+      },
+      {
+        "list": [
+          "Structure: Campaign (objective) > Ad Set (audience/budget/placements) > Ads (creatives).",
+          "Best for: proven products, >$5k/month spend, when you need controlled testing.",
+          "Typical structure: 1 campaign per product/angle, 2-3 ad sets (broad, interest, lookalike), 3-5 ads per ad set.",
+          "Budget: set at ad set level for control; CBO (campaign budget optimization) once you trust the structure."
+        ]
+      },
+      {
+        "h": "The structure that actually scales"
+      },
+      {
+        "list": [
+          "One campaign per product or per angle - don't mix winners and losers in one campaign.",
+          "Ad set budget $20-50/day minimum - below that, not enough data for Meta to optimize.",
+          "Kill fast: ad sets with $100+ spend and zero purchases = dead. Don't wait 'just in case'.",
+          "Scale gradually: 20-30% budget increases every 2-3 days on winners - sudden 10x jumps reset learning.",
+          "Always keep a testing campaign separate from scaling campaigns - 80% budget on proven, 20% on new tests."
+        ]
+      },
+      {
+        "p": "Start with ASC for simplicity; graduate to manual once you have data on what audiences/creatives actually convert for YOUR store."
+      }
+    ]
+  },
+  {
+    "course": "facebook-ads",
+    "module": "creative-targeting",
+    "slug": "hooks-creatives-audiences",
+    "title": "Hooks, creatives & audiences: stop the scroll and find buyers",
+    "excerpt": "Write hooks that stop thumbs, build creatives that convert, and target audiences without wasting spend.",
+    "readMin": 10,
+    "blocks": [
+      {
+        "p": "Your ad has 1.5 seconds to stop a scroll. The hook is everything - creative is the hook + proof + offer, in that order."
+      },
+      {
+        "h": "Hooks that actually stop scrolls"
+      },
+      {
+        "list": [
+          "Pattern interrupt: unexpected visual (before/after, weird product use, bold text overlay).",
+          "Curiosity gap: 'This ₹499 gadget replaced my ₹5000 one' - creates open loop.",
+          "Relatable pain: 'Still paying ₹2000/month for [problem]?' - speaks to frustration.",
+          "Social proof: '10,000+ Indians bought this last month' - numbers create FOMO.",
+          "Direct offer: '50% off ends tonight' - works for retargeting, weaker for cold traffic."
+        ]
+      },
+      {
+        "h": "Creative formats ranked by performance"
+      },
+      {
+        "list": [
+          "UGC-style video (15-30s): phone-shot, authentic, 'I tried this' - highest CTR for ecommerce.",
+          "Before/after: transformation results - skincare, home organisation, car accessories.",
+          "Demo video: show product working, not just talking about it.",
+          "Static images: still work for simple products - clean product shot + benefit text + price.",
+          "Carousel: multiple products or angles in one ad - good for collections."
+        ]
+      },
+      {
+        "h": "Audience targeting without overthinking"
+      },
+      {
+        "list": [
+          "Broad (Advantage+ audience): let Meta find buyers - often best for ecommerce with good creative.",
+          "Interest stacking: 3-5 related interests (e.g., 'online shopping' + 'smartphone accessories' + 'mens fashion') - don't stack 20 unrelated ones.",
+          "Lookalike 1-3%: once you have 100+ customers, seed from purchasers - highest quality audience.",
+          "Retargeting: website visitors (30 days), add-to-cart abandoners (7 days), past purchasers (30 days) - separate campaigns, warmer audiences convert at 3-5x cold."
+        ]
+      },
+      {
+        "p": "Testing rule: one variable at a time - new hook OR new audience OR new offer, never all three. Otherwise you don't know what worked."
+      }
+    ]
+  },
+  {
+    "course": "facebook-ads",
+    "module": "scaling-analytics",
+    "slug": "metrics-scaling-roas",
+    "title": "Metrics, scaling & knowing your real numbers",
+    "excerpt": "Read ROAS/CPA correctly, scale winners without breaking them, and build the weekly optimisation habit.",
+    "readMin": 9,
+    "blocks": [
+      {
+        "p": "Most advertisers look at the wrong metrics and make bad decisions. This lesson is the financial literacy your ad account needs."
+      },
+      {
+        "h": "The metrics that actually matter"
+      },
+      {
+        "list": [
+          "ROAS (Return on Ad Spend): revenue ÷ ad spend. Break-even = 1 ÷ your margin. 40% margin → need 2.5x just to break even; aim for 3-4x to scale profitably.",
+          "CPA (Cost Per Acquisition): ad spend ÷ purchases. Compare against your gross margin per order, not arbitrary benchmarks.",
+          "CTR (Click-Through Rate): below 1% = weak creative or wrong audience; above 2% = healthy for cold traffic.",
+          "CPC (Cost Per Click): your traffic cost - compare across campaigns, not against 'industry averages'.",
+          "Frequency: how many times same person sees your ad. Above 3-4 = ad fatigue, refresh creative."
+        ]
+      },
+      {
+        "h": "Scaling winners without breaking them"
+      },
+      {
+        "list": [
+          "Gradual increases: 20-30% every 2-3 days on campaigns with consistent 3x+ ROAS - sudden jumps reset learning.",
+          "Duplicate before scaling: copy winning campaign, increase budget - keeps original stable while testing higher spend.",
+          "Vertical scaling: increase budget on same audience/creative until frequency hits 3+, then horizontal scale (new audiences, new creatives).",
+          "Kill losers fast: $100-150 spend with zero purchases = dead. Don't 'give it more time' - that's hope not strategy."
+        ]
+      },
+      {
+        "h": "The weekly optimisation routine (30 minutes)"
+      },
+      {
+        "list": [
+          "Monday: review last week's ROAS/CPA per campaign - kill underperformers, note winners.",
+          "Wednesday: check frequency - above 3 = refresh creative on that ad set.",
+          "Friday: scale winners 20%, launch 1-2 new creative tests for next week.",
+          "Monthly: review total spend vs revenue - are you actually profitable after product costs and fees?"
+        ]
+      },
+      {
+        "p": "The brutal truth: 80% of ad tests fail. The skill isn't picking winners upfront - it's killing losers fast and doubling down on what works. That's the whole game."
+      }
+    ]
   }
 ]

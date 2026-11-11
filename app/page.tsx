@@ -7,6 +7,7 @@ import {
   Eye,
   FileCode2,
   FolderDown,
+  GraduationCap,
   Handshake,
   Layers,
   LayoutTemplate,
@@ -80,6 +81,12 @@ const resources = [
     tag: "Member downloads",
     title: "Digital products",
     text: "Original HTML landing-page templates and self-contained PHP scripts - GPL-licensed code, zipped and ready to deploy.",
+  },
+  {
+    icon: GraduationCap,
+    tag: "Structured courses",
+    title: "Courses",
+    text: "Shopify Basic to Advanced, Liquid Snippets, India & international dropshipping, Facebook ads - step-by-step lessons with visuals.",
   },
   {
     icon: FileCode2,
@@ -229,17 +236,17 @@ export default function HomePage() {
               Shopify Liquid code + digital products
             </p>
             <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.02] tracking-tight text-balance sm:text-5xl lg:text-6xl">
-              <span className="sm:whitespace-nowrap">Shopify Liquid Codes.</span>
+              Shopify Liquid Codes,
               <br />
               <span className="text-gradient">Digital Products</span>
               <br />
-              &amp; Ebooks in One Payment
+              Courses &amp; Ebooks in One Payment
             </h1>
             <p className="mt-6 max-w-xl font-display text-lg text-pretty text-muted">
               Not getting the conversions your store deserves? GPLMart gives you conversion-focused Liquid sections
               &amp; snippets - countdowns, trust badges, delivery ETA, buy bars and more - without stacking
-              high-cost apps. Plus original HTML templates, PHP scripts and practical ebooks,
-              all GPL-licensed and downloadable instantly.
+              high-cost apps. Plus step-by-step courses from store setup to dropshipping, original HTML templates,
+              PHP scripts and practical ebooks - all in one payment.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-3">
               <ButtonLink href="/checkout" size="lg">
