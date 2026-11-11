@@ -13,10 +13,16 @@ export function AuthForm({
   next,
 }: {
   action: (prev: AuthState, fd: FormData) => Promise<AuthState>;
-  mode: "login" | "signup";
+  mode: "login" | "signup" | "email" | "reset";
   next: string;
 }) {
   const [state, formAction, pending] = useActionState(action, {});
+  const labels = {
+    login: "Sign in",
+    signup: "Create account",
+    email: "Send reset link",
+    reset: "Set new password",
+  } as const;
   return (
     <form action={formAction} className="space-y-4">
       <input type="hidden" name="next" value={next} />
@@ -26,20 +32,38 @@ export function AuthForm({
         </label>
         <input id="email" name="email" type="email" autoComplete="email" required className={input} />
       </div>
-      <div>
-        <label htmlFor="password" className="mb-1.5 block text-sm font-medium">
-          Password
-        </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete={mode === "login" ? "current-password" : "new-password"}
-          minLength={mode === "signup" ? 8 : undefined}
-          required
-          className={input}
-        />
-      </div>
+      {mode !== "email" && (
+        <div>
+          <label htmlFor="password" className="mb-1.5 block text-sm font-medium">
+            {mode === "reset" ? "New password" : "Password"}
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            autoComplete={mode === "login" ? "current-password" : "new-password"}
+            minLength={mode === "signup" || mode === "reset" ? 8 : undefined}
+            required
+            className={input}
+          />
+        </div>
+      )}
+      {mode === "reset" && (
+        <div>
+          <label htmlFor="confirm" className="mb-1.5 block text-sm font-medium">
+            Confirm password
+          </label>
+          <input
+            id="confirm"
+            name="confirm"
+            type="password"
+            autoComplete="new-password"
+            minLength={8}
+            required
+            className={input}
+          />
+        </div>
+      )}
       {state.error && (
         <p role="alert" className="rounded-lg border border-rose-400/30 bg-rose-400/10 p-3 text-sm text-rose-100">
           {state.error}
@@ -51,7 +75,7 @@ export function AuthForm({
         </p>
       )}
       <Button type="submit" size="lg" className="w-full" disabled={pending}>
-        {pending ? "Please wait…" : mode === "login" ? "Sign in" : "Create account"}
+        {pending ? "Please wait…" : labels[mode]}
       </Button>
     </form>
   );

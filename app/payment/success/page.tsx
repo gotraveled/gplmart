@@ -25,7 +25,7 @@ export default async function PaymentSuccessPage({ searchParams }: { searchParam
   // Only a server-recorded "paid" status is treated as confirmed; the redirect itself proves nothing.
   const view =
     status === "paid"
-      ? { Icon: CheckCircle2, color: "text-emerald-400", title: "Payment verified", text: "Your payment is confirmed. Tap below to message us on WhatsApp and we will send you the access link right away." }
+      ? { Icon: CheckCircle2, color: "text-emerald-400", title: "Payment verified", text: "Your payment is confirmed and your all-access account has been created. Check your email for login credentials, then open your dashboard." }
       : status === "created"
         ? { Icon: Clock, color: "text-mint", title: "Confirming your payment", text: "We are waiting for confirmation from the payment processor. This usually takes a few seconds - you can safely continue to WhatsApp; we will verify your order there." }
         : { Icon: XCircle, color: "text-rose-400", title: "We could not confirm this payment", text: "If money was deducted, it will be reconciled automatically or reversed by your bank. Message us on WhatsApp with your order reference and we will sort it out." };
@@ -38,6 +38,11 @@ export default async function PaymentSuccessPage({ searchParams }: { searchParam
         <p className="mt-3 text-muted">{view.text}</p>
         {valid && <p className="mt-2 text-xs text-subtle">Order reference: {orderId}</p>}
         <div className="mt-8 flex flex-wrap justify-center gap-3">
+          {status === "paid" && (
+            <ButtonLink href="/dashboard" size="lg">
+              Open my dashboard
+            </ButtonLink>
+          )}
           {waUrl ? (
             <ButtonLink href={waUrl} size="lg">
               <MessageCircle aria-hidden className="size-4" /> Continue on WhatsApp

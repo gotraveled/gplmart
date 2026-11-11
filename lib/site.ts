@@ -27,6 +27,7 @@ export const footerLinks = {
     { href: "/install", label: "Install guide" },
     { href: "/checkout", label: "Get access" },
     { href: "/access", label: "Members area" },
+    { href: "/dashboard", label: "Dashboard" },
   ],
   Company: [
     { href: "/about", label: "About" },

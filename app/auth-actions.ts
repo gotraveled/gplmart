@@ -58,6 +58,34 @@ export async function signupAction(_prev: AuthState, formData: FormData): Promis
   return { notice: "Check your email to confirm your account, then sign in." };
 }
 
+export async function forgotPasswordAction(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  const blocked = await guard("forgot");
+  if (blocked) return { error: blocked };
+  const email = String(formData.get("email") ?? "").trim().toLowerCase();
+  if (!EMAIL.test(email)) return { error: "Enter a valid email address." };
+  const origin = (await headers()).get("origin") ?? "";
+  const supabase = await createSessionClient();
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${origin}/auth/callback?next=${encodeURIComponent("/reset-password")}`,
+  });
+  // Always show the same message - don't reveal whether the email has an account.
+  if (error) console.error("resetPasswordForEmail failed", error.message);
+  return { notice: "If an account exists for that email, a reset link is on its way. Check spam too." };
+}
+
+export async function resetPasswordAction(_prev: AuthState, formData: FormData): Promise<AuthState> {
+  const blocked = await guard("reset");
+  if (blocked) return { error: blocked };
+  const password = String(formData.get("password") ?? "");
+  const confirm = String(formData.get("confirm") ?? "");
+  if (password.length < 8) return { error: "Use a password of at least 8 characters." };
+  if (password !== confirm) return { error: "Passwords do not match." };
+  const supabase = await createSessionClient();
+  const { error } = await supabase.auth.updateUser({ password });
+  if (error) return { error: "Could not update the password. Request a fresh reset link." };
+  redirect("/dashboard");
+}
+
 export async function signOutAction() {
   if (isSupabaseConfigured()) await (await createSessionClient()).auth.signOut();
   redirect("/");

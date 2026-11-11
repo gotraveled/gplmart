@@ -1,6 +1,7 @@
 import "server-only";
 import { randomUUID } from "node:crypto";
 import { createServiceClient } from "@/lib/supabase/admin";
+import { provisionMemberAccount } from "@/lib/members";
 import { razorpayCreds } from "@/lib/env";
 import { OFFER } from "@/lib/offer";
 import { geoPrice } from "@/lib/geo";
@@ -8,7 +9,8 @@ import { createRazorpayOrder, fetchOrderPayments, fetchRazorpayPayment } from ".
 import type { Fulfil, FulfilResult, WebhookStore } from "./fulfil";
 
 export const fulfil: Fulfil = async (a) => {
-  const { data, error } = await createServiceClient().rpc("fulfill_payment", {
+  const db = createServiceClient();
+  const { data, error } = await db.rpc("fulfill_payment", {
     p_razorpay_order_id: a.razorpayOrderId,
     p_payment_id: a.paymentId,
     p_amount_paise: a.amountPaise,
@@ -16,7 +18,29 @@ export const fulfil: Fulfil = async (a) => {
     p_source: a.source,
   });
   if (error) throw new Error(`fulfill_payment failed: ${error.message}`);
-  return data as FulfilResult;
+  const result = data as FulfilResult;
+
+  // Guest checkout: the RPC marks the order paid but can't grant an
+  // entitlement (no user_id). Provision the member account here so verify,
+  // webhook and admin reconcile all converge on the same account.
+  if (result === "fulfilled") {
+    try {
+      const { data: order } = await db
+        .from("orders")
+        .select("user_id, customer_email, status")
+        .eq("razorpay_order_id", a.razorpayOrderId)
+        .maybeSingle();
+      if (order && !order.user_id && order.customer_email && order.status === "paid") {
+        const prov = await provisionMemberAccount(order.customer_email as string);
+        console.log(`member provisioned for ${order.customer_email}: created=${prov.created} emailed=${prov.emailed}`);
+      }
+    } catch (e) {
+      // Provisioning must never break fulfilment - the order is already paid;
+      // a retry via webhook/reconcile will pick it up.
+      console.error("member provisioning failed", e instanceof Error ? e.message : e);
+    }
+  }
+  return result;
 };
 
 export function requireCreds() {
