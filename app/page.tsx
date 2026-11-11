@@ -35,7 +35,7 @@ import { GeoPrice } from "@/components/ui/geo-price";
 export const metadata: Metadata = {
   title: { absolute: "GPLMart - Shopify Liquid Code, Snippets & Sections" },
   description:
-    "200+ Shopify Liquid snippets and theme sections to preview live and paste into your store, plus theme bundles. One payment, no subscription.",
+    "200+ Shopify Liquid snippets and sections to preview live, plus original HTML templates, PHP scripts and ebooks. One payment, no subscription.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -77,21 +77,21 @@ const resources = [
   },
   {
     icon: ShoppingBag,
-    tag: "Bundle download",
-    title: "Shopify themes",
-    text: "Theme bundles delivered through the members-only page via a secure Google Drive link - only items GPLMart owns or is authorised to distribute.",
+    tag: "Member downloads",
+    title: "Digital products",
+    text: "Original HTML landing-page templates and self-contained PHP scripts - GPL-licensed code, zipped and ready to deploy.",
   },
   {
-    icon: LayoutTemplate,
-    tag: "GPL licensed",
-    title: "WordPress themes & landing pages",
-    text: "GPL-licensed WordPress themes and ready-made landing-page template packs - the GPL licence legally permits redistribution, and we pass the same freedoms to you.",
+    icon: FileCode2,
+    tag: "Weekly releases",
+    title: "Ebooks & guides",
+    text: "Practical ebooks and step-by-step guides on Liquid, conversion and digital products - new titles every week.",
   },
   {
     icon: Puzzle,
-    tag: "GPL licensed",
-    title: "WordPress plugins",
-    text: "Popular GPL-licensed plugins across page building, SEO, caching, forms, security and e-commerce - the full files, no vendor keys or auto-updates.",
+    tag: "Always growing",
+    title: "New every week",
+    text: "Fresh snippets, products and guides ship weekly - your membership keeps growing after you join.",
   },
 ];
 
@@ -226,20 +226,20 @@ export default function HomePage() {
           <div className="animate-rise max-w-3xl">
             <p className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-1.5 text-xs font-semibold text-accent">
               <Zap aria-hidden className="size-3.5" />
-              Shopify conversion code + WordPress resources
+              Shopify Liquid code + digital products
             </p>
             <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.02] tracking-tight text-balance sm:text-5xl lg:text-6xl">
               <span className="sm:whitespace-nowrap">Shopify Liquid Codes.</span>
               <br />
-              <span className="text-gradient">WordPress/Shopify Themes</span>
+              <span className="text-gradient">Digital Products</span>
               <br />
-              &amp; Plugins in One Payment
+              &amp; Ebooks in One Payment
             </h1>
             <p className="mt-6 max-w-xl font-display text-lg text-pretty text-muted">
               Not getting the conversions your store deserves? GPLMart gives you conversion-focused Liquid sections
               &amp; snippets - countdowns, trust badges, delivery ETA, buy bars and more - without stacking
-              high-cost apps. Plus WordPress themes, landing-page templates and popular GPL-licensed plugins,
-              alongside Shopify theme bundles.
+              high-cost apps. Plus original HTML templates, PHP scripts and practical ebooks,
+              all GPL-licensed and downloadable instantly.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-3">
               <ButtonLink href="/checkout" size="lg">
@@ -339,7 +339,7 @@ export default function HomePage() {
             <ul className="mt-5 space-y-3.5 text-sm text-muted">
               {[
                 `One payment - full access, zero recurring charges`,
-                "Liquid code library plus theme & WordPress bundles",
+                "Liquid code library plus original digital products & ebooks",
                 "Native components - they run on Shopify's own servers",
                 "Readable source you customise in the theme editor",
                 "A live sandbox to preview before you paste anything",
@@ -382,7 +382,7 @@ export default function HomePage() {
         <SectionHeading
           eyebrow="More than just Liquid"
           title="One library, the whole storefront stack"
-          description="Liquid is the core. Themes, WordPress pages and GPLMart's own tools ship alongside it - honestly labelled by how each is delivered."
+          description="Liquid is the core. Original digital products, ebooks and guides ship alongside it - every item labelled by exactly what you get."
         />
         <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {resources.map(({ icon: Icon, tag, title, text, accent }) => (
@@ -498,8 +498,8 @@ export default function HomePage() {
             },
             {
               icon: FolderDown,
-              title: "Bundles alongside the code",
-              text: "Shopify themes, WordPress landing pages and plugins ship together via a secure Drive link - one payment, one library.",
+              title: "Products alongside the code",
+              text: "HTML templates, PHP scripts and ebooks ship in the same membership - one payment, one library, instant zip downloads.",
             },
             {
               icon: Zap,
@@ -560,7 +560,7 @@ export default function HomePage() {
           <SectionHeading
             eyebrow="One-time payment - full access"
             title="GPLMart All-Access"
-            description="The Liquid library, template bundles and the sandbox - one payment, no renewal."
+            description="The Liquid library, digital products, ebooks and the sandbox - one payment, no renewal."
           />
           <div className="mx-auto max-w-xl rounded-3xl border border-accent/35 bg-gradient-to-b from-ink-800 to-ink-900 p-8 text-center shadow-card sm:p-10">
             <p className="text-sm font-medium text-mint">All-access membership</p>
@@ -570,7 +570,7 @@ export default function HomePage() {
               {[
                 "Conversion-focused components for every storefront touchpoint",
                 "Members-only Liquid code library: source, previews, copy & downloads",
-                "Shopify theme & WordPress page bundles via secure Drive link",
+                "Digital products & ebooks - new items every week",
                 "Live sandbox to test components before installing",
                 "Instant access after payment - no account or signup needed",
               ].map((t) => (
@@ -637,7 +637,7 @@ export default function HomePage() {
             Start building a faster, more custom storefront
           </h2>
           <p className="mx-auto mt-4 max-w-xl text-muted">
-            Try the free sandbox first - then unlock the library and bundles with one payment.
+            Try the free sandbox first - then unlock the library and products with one payment.
           </p>
           <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
             <ButtonLink href="/checkout" size="lg">
@@ -652,7 +652,7 @@ export default function HomePage() {
               <Store aria-hidden className="size-3.5 text-accent" /> One-time payment
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <FolderDown aria-hidden className="size-3.5 text-accent" /> Bundles via secure link
+              <FolderDown aria-hidden className="size-3.5 text-accent" /> Instant zip downloads
             </span>
             <span className="inline-flex items-center gap-1.5">
               <Handshake aria-hidden className="size-3.5 text-accent" /> Rights-checked releases

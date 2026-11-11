@@ -39,18 +39,18 @@ jobs:
       - name: Generate daily content
         run: node scripts/generate-daily.mjs
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEYS: ${{ secrets.GEMINI_API_KEYS || secrets.GEMINI_API_KEY }}
           GEMINI_MODEL: ${{ vars.GEMINI_MODEL || 'gemini-3.5-flash' }}
           DAILY_SNIPPETS: ${{ vars.DAILY_SNIPPETS || '3' }}
           DAILY_GUIDES: ${{ vars.DAILY_GUIDES || '1' }}
-          DAILY_HTML: ${{ vars.DAILY_HTML || '1' }}
-          DAILY_PHP: ${{ vars.DAILY_PHP || '2' }}
+          WEEKLY_PRODUCTS: ${{ vars.WEEKLY_PRODUCTS || '3' }}
+          WEEKLY_EBOOKS: ${{ vars.WEEKLY_EBOOKS || '1' }}
 
       - name: Commit generated content
         run: |
           git config user.name "gplmart-content-bot"
           git config user.email "content-bot@gplmart.com"
-          git add lib/playground/generated-examples.json lib/guides-generated.json products/catalog.json products/src generated-report.json
+          git add lib/playground/generated-examples.json lib/guides-generated.json products/catalog.json products/src .content-state.json generated-report.json
           if git diff --cached --quiet; then
             echo "No new content generated - nothing to commit."
             exit 0

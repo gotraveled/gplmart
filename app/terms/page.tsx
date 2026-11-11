@@ -28,13 +28,11 @@ export default function TermsPage() {
       </p>
       <ul>
         <li>Access to the GPLMart Shopify Liquid code library (sections and snippets)</li>
-        <li>Access to template and theme bundles delivered through the members resource hub</li>
-        <li>New components and bundles added during your access period</li>
+        <li>Access to original digital products - HTML templates, PHP scripts and ebooks</li>
+        <li>New components, products and guides added during your access period</li>
       </ul>
       <p>
-        What is included is described on the home page and the resource library at the time of purchase. Features
-        that depend on third-party services (for example vendor update servers or activation keys for GPL items)
-        are explicitly excluded and described on the licensing page.
+        What is included is described on the home page and the resource library at the time of purchase.
       </p>
 
       <h2>3. Pricing and payment</h2>
@@ -76,10 +74,9 @@ export default function TermsPage() {
       <h2>5. Acceptable use</h2>
       <p>Your membership is personal. You agree not to:</p>
       <ul>
-        <li>Share your account, access password or the members Drive link with anyone else</li>
-        <li>Republish, resell or redistribute the raw code library, the Drive bundle link or its contents as a competing product</li>
+        <li>Share your account, access password or members-area access with anyone else</li>
+        <li>Republish, resell or redistribute the raw code library, product files or ebook content as a competing product</li>
         <li>Claim GPLMart resources as official Shopify or WordPress products</li>
-        <li>Misrepresent bundled GPL-licensed items - for example implying vendor support or automatic updates that are not included</li>
         <li>Use the resources to build phishing, spam, deceptive or otherwise unlawful storefronts</li>
         <li>Attempt to bypass access controls, scrape the library in bulk, or disrupt the service</li>
       </ul>
@@ -91,8 +88,8 @@ export default function TermsPage() {
       <p>Subject to these terms, GPLMart grants you a non-exclusive, non-transferable licence to:</p>
       <ul>
         <li>Install GPLMart-original snippets and sections on Shopify stores you own or manage, including stores you build for clients</li>
-        <li>Use bundled GPL-licensed WordPress items under their GPL licence, on unlimited sites including client sites</li>
-        <li>Use bundled Shopify themes only where the specific item&apos;s licence permits it - stated per item</li>
+        <li>Use digital products (HTML templates, PHP scripts) in unlimited projects, including client work</li>
+        <li>Read and share ebooks and guides within your organisation</li>
       </ul>
       <p>
         You retain no ownership of the GPLMart-original code itself. The licence covers use; redistribution of
@@ -101,10 +98,10 @@ export default function TermsPage() {
 
       <h2>7. Third-party content and trademarks</h2>
       <p>
-        Some bundles contain third-party works distributed under their own licences (notably the GNU General
-        Public License for WordPress items). Those items remain under their original licences, which are included
-        in the files. Trademarks, product names and brand names referenced on this site belong to their
-        respective owners and are used for compatibility description only.
+        The catalogue consists of GPLMart-original work. Third-party services used to operate the site
+        (hosting, payments, WhatsApp) are governed by their own terms. Trademarks, product names and brand
+        names referenced on this site belong to their respective owners and are used for compatibility
+        description only.
       </p>
 
       <h2>8. Refunds</h2>
@@ -131,7 +128,7 @@ export default function TermsPage() {
         To the maximum extent permitted by law, GPLMart&apos;s total liability for any claim arising from the
         service or a purchase is limited to the amount you paid for the membership. We are not liable for
         indirect, incidental or consequential damages, lost profits, or losses from third-party services
-        (hosting, payment processors, Google Drive, WhatsApp) outside our reasonable control.
+        (hosting, payment processors, WhatsApp) outside our reasonable control.
       </p>
 
       <h2>11. Changes to the service or terms</h2>

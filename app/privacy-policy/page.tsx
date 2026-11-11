@@ -70,7 +70,6 @@ export default function PrivacyPolicyPage() {
         <li><strong>Supabase</strong> - database and authentication for accounts, orders and access records.</li>
         <li><strong>Hosting provider</strong> (Vercel) - serves the site and keeps standard logs.</li>
         <li><strong>WhatsApp / email</strong> - delivery of access details and support conversations.</li>
-        <li><strong>Google Drive</strong> - delivery of template bundles to members.</li>
       </ul>
       <p>Each provider handles data under its own policies; we share only what is needed for them to operate.</p>
 

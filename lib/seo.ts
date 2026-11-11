@@ -15,8 +15,9 @@ export const SEO_KEYWORDS = [
   "copy paste shopify sections",
   "shopify liquid tutorial",
   "shopify theme customization code",
-  "wordpress themes gpl",
-  "shopify plugins bundle",
+  "html landing page templates",
+  "php scripts collection",
+  "digital products for developers",
 ] as const;
 
 const orgBase = {
@@ -26,7 +27,7 @@ const orgBase = {
   url: absoluteUrl("/"),
   logo: absoluteUrl("/logo-gpl.png"),
   description:
-    "Independent library of Shopify Liquid snippets and theme sections plus authorised theme and plugin bundles for merchants, developers and agencies.",
+    "Independent library of Shopify Liquid snippets and sections plus original digital products and ebooks for merchants, developers and agencies.",
   email: "info@gplmart.com",
   address: [
     {
@@ -68,7 +69,7 @@ export function productJsonLd() {
     "@type": "Product",
     name: "GPLMart All-Access Membership",
     description:
-      "One-time membership: 200+ Shopify Liquid snippets and sections, Shopify theme bundles, GPL-licensed WordPress themes and plugins.",
+      "One-time membership: 200+ Shopify Liquid snippets and sections, original HTML templates, PHP scripts and ebooks.",
     brand: { "@type": "Brand", name: "GPLMart" },
     offers: [
       {

@@ -75,50 +75,44 @@ const coreGuides: Guide[] = [
   },
   {
     slug: "gpl-licenses-explained",
-    title: "GPL licences and WordPress bundles - what's actually legal",
+    title: "GPL licences explained - what GPL-3.0 means for code you buy",
     excerpt:
-      "Why GPL clubs can sell premium plugins legally, what the licence actually covers, and the two traps that make it go wrong.",
+      "What the GPL actually grants you, why it matters for client work, and the honest limits - no legalese, just the practical version.",
     date: "2026-10-30",
     readMin: 5,
     tag: "Licensing",
     blocks: [
       {
-        p: "GPLMart includes WordPress themes and plugins in the bundle - and people understandably ask 'is that legal?'. Short answer: yes, and it's the same licence WordPress itself ships under. Here's the honest explanation.",
+        p: "Every digital product on GPLMart - Liquid snippets, HTML templates, PHP scripts - is released under GPL-3.0-or-later where the licence applies. People ask what that actually means for them. Here's the plain-English version.",
       },
-      { h: "Why it's legal" },
-      {
-        p: "WordPress core is released under the GNU General Public License (GPL). Plugins and themes are derivative works - they call WordPress functions - so they inherit the GPL. The GPL's whole purpose is that software covered by it stays free to share: anyone who has a copy may redistribute it, modified or not, including for a fee. That right isn't a loophole or a gray area; it is the licence's core design.",
-      },
-      { h: "What you actually get" },
+      { h: "What GPL-3.0 gives you" },
       {
         list: [
-          "The complete product files - identical to what the vendor distributes",
-          "The right to install on as many sites as you like, including client sites",
-          "The GPL freedoms themselves: use, modify, redistribute",
+          "Use the code on unlimited sites, stores and projects you own or manage",
+          "Modify it freely - change the design, the logic, the copy, anything",
+          "Ship it inside client work and commercial products you build",
+          "Share it with your team",
         ],
       },
-      { h: "What you don't get" },
+      { h: "The one thing it asks back" },
+      {
+        p: "GPL is a copyleft licence: if you distribute a *derivative work* of the GPL code itself, that derivative must also be GPL. In practice, using GPL code inside a larger product (a theme, an app, a client site) does not make your whole product GPL - the licence attaches to the GPL files, not to what you build around them.",
+      },
+      { h: "What membership covers vs the licence" },
       {
         list: [
-          "A vendor licence key or activation - those are a separate paid service",
-          "Automatic updates from the original developer - updates ship through the bundle as new bundles publish",
-          "Official support from the vendor's team",
-          "Cloud features that phone home to vendor servers - some of those require an active key",
+          "Membership = access to download the files while your access period is active",
+          "The GPL licence = what you may do with files you've legitimately downloaded - that survives after access ends",
+          "What neither covers: redistributing the catalogue itself as a competing product",
         ],
       },
-      { h: "The two traps" },
+      { h: "Why we chose GPL for our own code" },
       {
-        p: "First trap: 'split licence' products. ThemeForest and CodeCanyon items use Envato's split licence - only the PHP is GPL; the bundled CSS, images and JavaScript are not. Redistributing the whole package is legally shaky, which is why we don't include those items.",
+        p: "GPL-3.0-or-later is the most buyer-friendly licence for code assets: maximum freedom, zero per-seat fees, clear legal ground. It's the same licence family WordPress itself ships under - a well-tested framework, not an experiment.",
       },
+      { h: "The honest caveat" },
       {
-        p: "Second trap: tampered downloads. Random 'free premium plugin' sites sometimes repack zips with injected code - this is a real malware vector, not a hypothetical one. Buying the product once from the vendor and redistributing that exact file is the defensible path.",
-      },
-      { h: "What it means for you" },
-      {
-        p: "As a buyer, GPL items in a bundle are clean, complete and lawful to use on any site you own or manage. What you're paying for is curation, delivery and convenience - not a licence key. If you want automatic updates or official support for a specific plugin, buying direct from its vendor is the right call, and you should.",
-      },
-      {
-        p: "Shopify themes, for the record, are different: they are not GPL. Third-party paid themes can't legally be redistributed, which is why GPLMart's Shopify bundle only includes themes we own or are explicitly authorised to distribute.",
+        p: "GPL covers the code, not outcomes. It doesn't guarantee conversions, rankings or uptime - and it doesn't include support contracts. If you need a vendor SLA for a specific component, that's a different product; ours is code you own the rights to use.",
       },
     ],
   },

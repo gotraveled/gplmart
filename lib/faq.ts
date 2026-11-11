@@ -9,7 +9,7 @@ export const faqs: FAQ[] = [
   {
     question: "What exactly do members get?",
     answer:
-      "Access to the members-only Liquid code library (full source, previews, copy and downloads) plus the Google Drive link to authorised Shopify theme bundles, WordPress themes, landing-page templates and GPL-licensed WordPress plugins - delivered right after payment.",
+      "Access to the members-only Liquid code library (full source, previews, copy and downloads) plus original digital products - HTML templates, PHP scripts and ebooks - all included with one payment and delivered right after checkout.",
   },
   {
     question: "Is this a subscription?",
@@ -21,9 +21,9 @@ export const faqs: FAQ[] = [
       "They are written for Online Store 2.0 themes such as Dawn and its siblings, using your theme's own font stack and its button/foreground colour variables where sensible - so they blend in instead of looking bolted on. Compatibility notes ship with each resource.",
   },
   {
-    question: "Why are WordPress plugins and themes in the bundle legal to distribute?",
+    question: "Are the digital products and ebooks original?",
     answer:
-      "WordPress core is released under the GPL licence, and plugins/themes built on it are derivative works that inherit the GPL. The GPL explicitly permits redistribution - even for a fee. We pass the full files and the same freedoms to you; what is not included is a vendor licence key, automatic updates or official vendor support.",
+      "Yes - every HTML template, PHP script, ebook and guide on GPLMart is original code and content written for GPLMart, released under GPL-3.0-or-later where applicable. There is no third-party or nulled software anywhere in the catalogue.",
   },
   {
     question: "How do I get access after paying?",
@@ -33,7 +33,7 @@ export const faqs: FAQ[] = [
   {
     question: "Can I use snippets on client stores?",
     answer:
-      "Yes - GPLMart-written snippets are licensed for your own stores and client projects. GPL-licensed WordPress items carry the GPL's freedoms, so you can install them on any site you manage. Redistributing the raw code library itself is not permitted.",
+      "Yes - GPLMart code and content are licensed for your own stores, client projects and commercial use. Install snippets on client stores, use templates and scripts in client work, and share ebooks with your team. Redistributing the raw catalogue itself as a competing product is not permitted.",
   },
   {
     question: "What currency will I be charged in?",
@@ -48,7 +48,7 @@ export const faqs: FAQ[] = [
   {
     question: "How long does access last?",
     answer:
-      "Standard all-access is 30 days. The optional order bump at checkout extends it to a full 12 months - including every new snippet and bundle published in that period. Downloaded files remain usable under the licence after access ends.",
+      "Standard all-access is 30 days. The optional order bump at checkout extends it to a full 12 months - including every new snippet, product, ebook and guide published in that period. Downloaded files remain usable under the licence after access ends.",
   },
   {
     question: "What if the snippets don't work for me?",

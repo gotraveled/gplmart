@@ -1,11 +1,11 @@
 import Link from "next/link";
-import { Code2, Globe2, Handshake, LayoutTemplate, MapPin, Puzzle, ShoppingBag } from "lucide-react";
+import { Code2, Download, FileText, Globe2, Handshake, MapPin } from "lucide-react";
 import { InfoPage, infoMetadata } from "@/components/ui/info-page";
 import { Badge } from "@/components/ui/badge";
 
 export const metadata = infoMetadata(
   "About GPLMart",
-  "GPLMart is a digital resource platform for Shopify merchants and developers - a Liquid code library, theme bundles and GPL-licensed WordPress resources under one payment.",
+  "GPLMart is a digital resource platform for Shopify merchants and developers - a Liquid code library, original digital products and ebooks under one payment.",
   "/about",
 );
 
@@ -17,22 +17,22 @@ const pillars = [
     text: "200+ original, conversion-focused components for the product page, cart, checkout, collections, trust and navigation. Every item ships with readable source, a live playground preview and an install guide - no apps, no monthly fees.",
   },
   {
-    icon: ShoppingBag,
-    tag: "Bundle",
-    title: "Shopify themes",
-    text: "Theme packs we own or are authorised to distribute, delivered through the members resource hub. Chosen for speed, mobile layout and conversion structure - not just appearance.",
+    icon: Download,
+    tag: "Member downloads",
+    title: "Digital products",
+    text: "Original HTML landing-page templates and self-contained PHP scripts - GPL-licensed code you can use, modify and ship in client work. Downloaded as instant zips from the members area.",
   },
   {
-    icon: LayoutTemplate,
-    tag: "GPL licensed",
-    title: "WordPress themes & templates",
-    text: "GPL-licensed WordPress themes and landing-page template packs. The GPL licence legally permits redistribution, so these ship complete with the vendor licence preserved.",
+    icon: FileText,
+    tag: "Weekly releases",
+    title: "Ebooks & guides",
+    text: "Practical ebooks and step-by-step guides on Liquid, ecommerce conversion and digital products - written to be used, not browsed. New titles ship weekly.",
   },
   {
-    icon: Puzzle,
-    tag: "GPL licensed",
-    title: "Plugins",
-    text: "GPL-licensed plugins for page building, SEO, caching, forms, security and ecommerce - full files, no vendor keys required. Cloud features that call vendor servers are always flagged honestly.",
+    icon: Globe2,
+    tag: "Worldwide",
+    title: "Built for everyone",
+    text: "Merchants, freelancers, agencies and creators - one membership works for a solo store owner in Mumbai and a dev shop in California alike.",
   },
 ];
 
@@ -42,8 +42,8 @@ const principles = [
     text: "We publish only what we have the right to distribute, and we say plainly where each resource comes from. No \u201Cofficial\u201D claims, no fake scarcity, no promises of inventory we do not have yet. If a component needs a metafield or a theme feature, the listing says so.",
   },
   {
-    title: "GPL done properly",
-    text: "GPL-licensed WordPress items are redistributable by law - and we honour that licence fully: complete files, licence text preserved, no nulled plugins, no stolen keys. What the GPL does not include (vendor support, auto-update servers) is stated clearly.",
+    title: "Original code, always",
+    text: "Everything on GPLMart is code we wrote - the Liquid library, the HTML templates, the PHP scripts, the ebooks. There is no third-party bundle, no nulled software, no scraped content. What you download is exactly what the page says it is.",
   },
   {
     title: "Original code where it matters",
@@ -59,20 +59,20 @@ export default function AboutPage() {
   return (
     <InfoPage
       title="About GPLMart"
-      description="One payment for a Shopify Liquid code library plus theme, template and plugin bundles - built for merchants, developers and agencies worldwide."
+      description="One payment for a Shopify Liquid code library plus original digital products and ebooks - built for merchants, developers and agencies worldwide."
     >
       <h2>What GPLMart is</h2>
       <p>
         GPLMart sells a single, simple offer: a one-time all-access membership. It is not a subscription and it
         does not renew. Members get a protected library of Shopify Liquid code - 200+ sections and snippets -
-        plus a Google Drive bundle of themes, templates and plugins.
+        plus original digital products (HTML templates, PHP scripts) and ebooks, all downloadable instantly.
       </p>
       <p>
         The platform exists because of a gap we kept running into: the components that actually move conversion
         are either locked inside expensive themes, sold per-item for more than the whole membership, or scattered
         across low-quality GPL-club sites with no provenance, no previews and no install guidance. GPLMart is the
-        version of that resource built the way we would want it as buyers - previewable, documented, honest about
-        licensing and priced once.
+        version of that resource built the way we would want it as buyers - previewable, documented, original
+        code, honestly licensed and priced once.
       </p>
 
       <h2>Four product lines, one payment</h2>
@@ -92,8 +92,8 @@ export default function AboutPage() {
       <h2>Who it is for</h2>
       <ul>
         <li>
-          <strong>Merchants</strong> - store owners who want the features premium themes charge for, installed
-          once, with real install guides instead of a forum thread.
+          <strong>Merchants</strong> - store owners who want the features premium themes and apps charge for,
+          installed once, with real install guides instead of a forum thread.
         </li>
         <li>
           <strong>Shopify developers</strong> - freelancers and agencies who need production patterns - cart API,
@@ -145,8 +145,8 @@ export default function AboutPage() {
       <h2>Independence</h2>
       <p>
         GPLMart is an independent project. It is not affiliated with, endorsed by or sponsored by Shopify Inc.,
-        Automattic or any plugin or theme vendor. Product and platform names belong to their respective owners.
-        See the <Link href="/disclaimer">disclaimer</Link>.
+        Automattic, WordPress or any theme/plugin vendor. Product and platform names belong to their
+        respective owners. See the <Link href="/disclaimer">disclaimer</Link>.
       </p>
 
       <h2>Rights and licensing</h2>

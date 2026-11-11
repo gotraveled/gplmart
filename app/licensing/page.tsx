@@ -2,7 +2,7 @@ import { InfoPage, infoMetadata } from "@/components/ui/info-page";
 
 export const metadata = infoMetadata(
   "Licensing - GPLMart Member Licence & GPL Items",
-  "Licensing information for GPLMart all-access resources: the member licence for our original Liquid code, GPL items and Shopify bundles.",
+  "Licensing information for GPLMart all-access resources: the member licence covering our original Liquid code, digital products and ebooks.",
   "/licensing",
 );
 
@@ -12,7 +12,7 @@ export default function LicensingPage() {
       <h2>1. Your access is personal</h2>
       <p>
         All-access membership is linked to your account and contact details. Do not assume it lets you
-        redistribute, resell or share the bundles, the Drive link or the code library. Terms for specific
+        redistribute, resell or share the downloads or the code library. Terms for specific
         resources may differ and are stated with them.
       </p>
       <p>
@@ -33,40 +33,31 @@ export default function LicensingPage() {
       <p>You may not:</p>
       <ul>
         <li>Redistribute the raw code library itself, in whole or part, as a competing product</li>
-        <li>Share your access details, the members password or the Drive link</li>
+        <li>Share your access details or the members password</li>
         <li>Claim the code is an official Shopify product or written by Shopify</li>
       </ul>
 
-      <h2>3. GPL-licensed WordPress resources</h2>
+      <h2>3. Digital products (HTML templates, PHP scripts)</h2>
       <p>
-        WordPress itself is released under the GNU General Public License (GPL). Because WordPress themes and
-        plugins are derivative works of WordPress, they are GPL-licensed too - and the GPL explicitly permits
-        anyone to redistribute them, including for a fee. That is the legal basis on which GPLMart can include
-        third-party WordPress themes and plugins in the bundle.
+        Products in the catalogue are GPLMart-original code released under GPL-3.0-or-later. Under your
+        membership licence you may:
       </p>
-      <p>What a GPL-licensed item from the bundle includes:</p>
       <ul>
-        <li>The complete product files, identical to what the vendor distributes</li>
-        <li>The right to install it on as many sites as you like - including client sites</li>
-        <li>The same GPL freedoms: use, modify and redistribute the item itself</li>
+        <li>Use them on unlimited sites, stores and projects you own or manage</li>
+        <li>Modify them freely - they are designed to be edited</li>
+        <li>Ship them inside client work and commercial products you build</li>
       </ul>
-      <p>What it does not include:</p>
+      <p>You may not:</p>
       <ul>
-        <li>A vendor licence key, activation or account access</li>
-        <li>Automatic updates from the original developer - updates ship through the bundle as new bundles are published</li>
-        <li>Official support from the original vendor</li>
-        <li>Cloud features that phone home to the vendor&apos;s servers - those may require a key from the vendor</li>
+        <li>Redistribute the product files themselves as a competing catalogue or bundle</li>
+        <li>Remove licence notices from the files</li>
       </ul>
-      <p>
-        The GPL licence text is preserved inside every bundled item. Where an item has known cloud features or
-        third-party assets with separate terms, that is noted in the bundle manifest.
-      </p>
 
-      <h2>4. Shopify themes and non-GPL items</h2>
+      <h2>4. Ebooks and guides</h2>
       <p>
-        Shopify themes are not GPL-licensed - third-party paid themes cannot legally be redistributed. Shopify
-        bundles therefore contain only themes GPLMart owns or has explicit distribution rights for. Each item in
-        the bundle is labelled with its licence status.
+        Ebooks and written guides are GPLMart-original content licensed for personal and team use under your
+        membership. You may read, follow and share them inside your organisation. You may not republish,
+        resell or redistribute the text itself.
       </p>
 
       <h2>5. No official-status claims</h2>

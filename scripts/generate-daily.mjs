@@ -7,25 +7,36 @@
  * is dropped - the script never publishes unverified code.
  *
  * Env:
- *   GEMINI_API_KEY   - required (free tier: https://aistudio.google.com)
- *   GEMINI_MODEL     - default gemini-2.5-flash
- *   DAILY_SNIPPETS   - default 3
- *   DAILY_GUIDES     - default 1
- *   DAILY_HTML       - default 1
- *   DAILY_PHP        - default 2
+ *   GEMINI_API_KEY / GEMINI_API_KEYS - comma-separated keys, rotated per call
+ *   GEMINI_MODEL     - default gemini-3.5-flash
+ *   DAILY_SNIPPETS   - default 3 (every run)
+ *   DAILY_GUIDES     - default 1 (every run)
+ *   WEEKLY_PRODUCTS  - default 3 (only when 7+ days since last product batch)
+ *   WEEKLY_EBOOKS    - default 1 (only when 7+ days since last ebook)
+ *   PRODUCTS_PHP / PRODUCTS_HTML - split of the weekly product batch (2/1)
  *   SKIP_LINT        - set to skip tsc/validators (debug only)
  */
 import fs from "node:fs";
 import path from "node:path";
 import { execSync } from "node:child_process";
 
-const API_KEY = process.env.GEMINI_API_KEY || process.env.GOOGLE_API_KEY || "";
+// API keys: GEMINI_API_KEYS (comma-separated) or GEMINI_API_KEY; calls rotate.
+const API_KEYS = (process.env.GEMINI_API_KEYS || process.env.GEMINI_API_KEY || "")
+  .split(",")
+  .map((k) => k.trim())
+  .filter(Boolean);
+let keyCursor = 0;
+const nextKey = () => API_KEYS[keyCursor++ % API_KEYS.length];
 const MODEL = process.env.GEMINI_MODEL || "gemini-3.5-flash";
-const COUNTS = {
+const DAILY = {
   snippets: Number(process.env.DAILY_SNIPPETS ?? 3),
   guides: Number(process.env.DAILY_GUIDES ?? 1),
-  html: Number(process.env.DAILY_HTML ?? 1),
-  php: Number(process.env.DAILY_PHP ?? 2),
+};
+const WEEKLY = {
+  products: Number(process.env.WEEKLY_PRODUCTS ?? 3),
+  ebooks: Number(process.env.WEEKLY_EBOOKS ?? 1),
+  php: Number(process.env.PRODUCTS_PHP ?? 2),
+  html: Number(process.env.PRODUCTS_HTML ?? 1),
 };
 
 const FILES = {
@@ -57,8 +68,9 @@ const existingCategories = [...new Set(
 
 // ---------- LLM ----------
 async function llm(prompt, { json = true } = {}) {
+  const key = nextKey();
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${key}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -207,25 +219,56 @@ function validateProduct(p) {
     if (!f.content || f.content.length < 50) errs.push(`empty ${f.path}`);
     if (f.path.endsWith(".php") && !f.content.includes("<?php")) errs.push(`${f.path} missing php tag`);
     if (f.path.endsWith(".html") && !/<!doctype|<html/i.test(f.content)) errs.push(`${f.path} not html`);
+    if (f.path.endsWith(".md") && f.content.length < 500) errs.push(`${f.path} too short for ebook content`);
   }
   return errs;
 }
 
+const EBOOK_PROMPT = (n, usedSlugs) => `You are a non-fiction ghostwriter for GPLMart, a Shopify/digital-tools resource store.
+
+Generate ${n} NEW ebook product(s) as a JSON array:
+[{
+  "slug": "kebab-case (unique, not: ${[...usedSlugs].slice(-20).join(", ")})",
+  "title": "Ebook title (clear outcome, e.g. 'The Shopify Liquid Handbook')",
+  "description": "2-3 sentences: who it's for, what they'll be able to do",
+  "category": "ebook",
+  "version": "1.0.0",
+  "license": "GPL-3.0-or-later (original GPLMart content)",
+  "files": [
+    { "path": "README.md", "content": "# Title\\n\\nShort pitch, what's inside, who it's for." },
+    { "path": "book.md", "content": "FULL ebook in Markdown: title, intro, 6-10 chapters with ## headings, practical examples, conclusion. 3000-6000 words total." }
+  ]
+}]
+
+RULES:
+- Practical, specific, genuinely useful - the reader finishes able to DO something.
+- Topics that fit the store: Shopify Liquid development, ecommerce conversion, freelancing with code assets, PHP micro-tools, selling digital products.
+- Markdown only, no images, clean structure: # title, ## chapters, code fences where useful.
+- No filler, no motivational fluff, no "in today's fast-paced world".
+- Return ONLY the JSON array.`;
+
+// ---------- state (weekly cadence) ----------
+const STATE_FILE = ".content-state.json";
+const state = fs.existsSync(STATE_FILE) ? JSON.parse(fs.readFileSync(STATE_FILE, "utf8")) : {};
+const daysSince = (d) => (d ? Math.floor((Date.now() - new Date(d).getTime()) / 864e5) : Infinity);
+const dueProducts = daysSince(state.lastProducts) >= 7;
+const dueEbooks = daysSince(state.lastEbooks) >= 7;
+
 // ---------- main ----------
 async function main() {
-  if (!API_KEY) {
-    console.log("GEMINI_API_KEY not set - skipping daily generation.");
+  if (!API_KEYS.length) {
+    console.log("GEMINI_API_KEY(S) not set - skipping daily generation.");
     return;
   }
   const today = new Date().toISOString().slice(0, 10);
-  console.log(`daily-content ${today} | model=${MODEL} | counts=${JSON.stringify(COUNTS)}`);
+  console.log(`daily-content ${today} | model=${MODEL} | keys=${API_KEYS.length} | daily=${JSON.stringify(DAILY)} weekly=${JSON.stringify(WEEKLY)} dueProducts=${dueProducts} dueEbooks=${dueEbooks}`);
 
-  const results = { snippets: 0, guides: 0, products: 0, dropped: [] };
+  const results = { snippets: 0, guides: 0, products: 0, ebooks: 0, dropped: [] };
 
   // --- snippets ---
-  if (COUNTS.snippets > 0) {
+  if (DAILY.snippets > 0) {
     try {
-      const text = await llm(SNIPPET_PROMPT(COUNTS.snippets, existingCategories, existingIds));
+      const text = await llm(SNIPPET_PROMPT(DAILY.snippets, existingCategories, existingIds));
       const arr = parseJson(text);
       const list = readJson(FILES.snippets) ?? [];
       let added = 0;
@@ -251,9 +294,9 @@ async function main() {
   }
 
   // --- guides ---
-  if (COUNTS.guides > 0) {
+  if (DAILY.guides > 0) {
     try {
-      const text = await llm(GUIDE_PROMPT(COUNTS.guides, existingSlugs));
+      const text = await llm(GUIDE_PROMPT(DAILY.guides, existingSlugs));
       const arr = parseJson(text);
       const list = readJson(FILES.guides) ?? [];
       let added = 0;
@@ -273,11 +316,17 @@ async function main() {
     }
   }
 
-  // --- products (html + php) ---
-  for (const [kind, count] of [["html", COUNTS.html], ["php", COUNTS.php]]) {
+  // --- products + ebooks (weekly cadence, gated by state file) ---
+  const batches = [];
+  if (dueProducts) {
+    batches.push(["php", WEEKLY.php], ["html", WEEKLY.html]);
+  }
+  if (dueEbooks) batches.push(["ebook", WEEKLY.ebooks]);
+  for (const [kind, count] of batches) {
     if (!count) continue;
+    const prompt = kind === "ebook" ? EBOOK_PROMPT(count, existingProducts) : PRODUCT_PROMPT(kind, count, existingProducts);
     try {
-      const text = await llm(PRODUCT_PROMPT(kind, count, existingProducts));
+      const text = await llm(prompt);
       const arr = parseJson(text);
       const catalog = readJson(FILES.catalog) ?? { updated: today, notes: [], items: [] };
       let added = 0;
@@ -302,10 +351,14 @@ async function main() {
       }
       catalog.updated = today;
       writeJson(FILES.catalog, catalog);
-      results.products += added;
-      console.log(`${kind} products: +${added}`);
+      if (kind === "ebook") results.ebooks += added; else results.products += added;
+      console.log(`${kind}: +${added}`);
+      if (added > 0) {
+        if (kind === "ebook") state.lastEbooks = today;
+        else if (!state.lastProducts || kind === "php" || kind === "html") state.lastProducts = today;
+      }
     } catch (e) {
-      console.log(`${kind} products FAILED: ${e.message}`);
+      console.log(`${kind} FAILED: ${e.message}`);
       results.dropped.push({ type: `products-${kind}`, errs: [e.message] });
     }
   }
@@ -326,6 +379,7 @@ async function main() {
     }
   }
 
+  fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2) + "\n");
   fs.writeFileSync("generated-report.json", JSON.stringify({ date: today, ...results }, null, 2));
   console.log(`done: ${JSON.stringify(results)}`);
 }

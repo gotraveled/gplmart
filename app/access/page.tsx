@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Code2, FolderDown, Lightbulb, MessageCircle, Sparkles, Users } from "lucide-react";
+import { ArrowRight, Code2, Download, Lightbulb, MessageCircle, Sparkles, Users } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 
@@ -11,8 +11,8 @@ const wa = (msg: string) =>
   whatsapp.length > 5 ? `https://wa.me/${whatsapp}?text=${encodeURIComponent(msg)}` : null;
 
 const areas = [
-  { href: "/access/templates", icon: FolderDown, title: "Template bundles", text: "Open the Google Drive link and download the bundles." },
   { href: "/access/liquid-library", icon: Code2, title: "Shopify Liquid library", text: "Search, preview, copy and download Liquid snippets." },
+  { href: "/access/products", icon: Download, title: "Digital products", text: "HTML templates, PHP scripts and ebooks - instant zip downloads." },
   { href: "/prompts", icon: Sparkles, title: "AI prompt pack", text: "50 free AI prompts for product copy, ads, emails and more - plus the prompt builder." },
 ];
 
@@ -70,7 +70,7 @@ export default async function AccessHub() {
             {
               icon: Sparkles,
               title: "What's new",
-              text: "New components and bundles ship monthly. The changelog shows exactly what's live today.",
+              text: "New snippets, products and guides ship weekly. The changelog shows exactly what's live today.",
               href: "/updates",
               cta: "View updates",
               external: false,

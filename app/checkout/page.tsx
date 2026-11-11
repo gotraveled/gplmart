@@ -20,7 +20,7 @@ export default async function CheckoutPage() {
     <Container className="grid min-h-[70vh] place-items-center py-16">
       <div className="w-full max-w-lg rounded-2xl border border-line-strong bg-ink-900/70 p-8 shadow-card">
         <h1 className="font-display text-3xl font-semibold">GPLMart All-Access</h1>
-        <p className="mt-2 text-muted">One-time payment. Includes the Drive template bundles and the Liquid code library.</p>
+        <p className="mt-2 text-muted">One-time payment. Includes the Liquid code library, digital products and ebooks.</p>
         <p className="mt-6 font-display text-5xl font-semibold"><GeoPrice fallback={price} /></p>
         <p className="mt-1 text-sm text-subtle">One-time, in your local currency. No account needed.</p>
 

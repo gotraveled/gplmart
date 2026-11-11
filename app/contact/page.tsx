@@ -16,7 +16,7 @@ const topics = [
   {
     icon: HelpCircle,
     title: "Pre-purchase questions",
-    text: "Theme compatibility, what's inside the bundle, whether a specific snippet fits your use case - ask before paying. Include your theme name and what you're trying to build.",
+    text: "Theme compatibility, what's inside the membership, whether a specific snippet or product fits your use case - ask before paying. Include your theme name and what you're trying to build.",
   },
   {
     icon: Wallet,

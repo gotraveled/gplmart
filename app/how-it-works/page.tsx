@@ -6,11 +6,9 @@ import {
   CreditCard,
   Download,
   Eye,
+  FileText,
   KeyRound,
-  LayoutTemplate,
   MessageCircle,
-  Puzzle,
-  ShoppingBag,
   Store,
 } from "lucide-react";
 import { InfoPage, infoMetadata } from "@/components/ui/info-page";
@@ -21,7 +19,7 @@ import { freeExampleIds } from "@/lib/playground/examples";
 
 export const metadata = infoMetadata(
   "How it works",
-  "Step-by-step: preview components in the sandbox, pay once, unlock the members library and template bundles.",
+  "Step-by-step: preview components in the sandbox, pay once, unlock the members library and digital products.",
   "/how-it-works",
 );
 
@@ -56,22 +54,16 @@ const inside = [
     text: "200+ conversion-focused sections and snippets - product pages, cart, collections, trust and urgency. Full Liquid, CSS and JS source, install guides, copy and download buttons.",
   },
   {
-    icon: ShoppingBag,
-    tag: "Drive bundle",
-    title: "Shopify themes",
-    text: "Theme packs GPLMart owns or is authorised to distribute, delivered through a private Google Drive link shown on the members page.",
+    icon: Download,
+    tag: "Member downloads",
+    title: "Digital products",
+    text: "Original HTML landing-page templates and self-contained PHP scripts - GPL-licensed code, zipped and ready to deploy.",
   },
   {
-    icon: LayoutTemplate,
-    tag: "GPL licensed",
-    title: "WordPress themes & templates",
-    text: "GPL-licensed WordPress themes and ready-made landing-page templates - the GPL licence legally allows redistribution, and we pass those freedoms to you.",
-  },
-  {
-    icon: Puzzle,
-    tag: "GPL licensed",
-    title: "WordPress plugins",
-    text: "Popular GPL-licensed plugins across page building, SEO, caching, forms, security and e-commerce - full files, no vendor keys or auto-updates.",
+    icon: FileText,
+    tag: "Weekly releases",
+    title: "Ebooks & guides",
+    text: "Practical ebooks and step-by-step guides on Liquid, conversion and digital products - new titles ship weekly.",
   },
 ];
 
@@ -157,8 +149,8 @@ export default function HowItWorksPage() {
           Automattic or any plugin vendor.
         </li>
         <li>
-          <strong>GPL bundles explained</strong> - GPL-licensed WordPress items are legally redistributable;
-          vendor keys, auto-updates and official support are not part of the deal.
+          <strong>Original code only</strong> - every product on GPLMart is code we wrote. No third-party bundles,
+          no nulled software, no scraped content - the page always says exactly what you get.
         </li>
         <li>
           <strong>Access after payment</strong> - the members area opens through your paid email with a one-time

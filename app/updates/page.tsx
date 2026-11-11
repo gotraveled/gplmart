@@ -5,7 +5,7 @@ import updates from "@/data/updates.json";
 
 export const metadata = infoMetadata(
   "GPLMart Updates - New Snippets, Sections & Features",
-  "What's new in GPLMart: new Shopify Liquid snippets and sections, theme bundles and library features, newest first.",
+  "What's new in GPLMart: new Shopify Liquid snippets, digital products, ebooks and library features, newest first.",
   "/updates",
 );
 
@@ -13,7 +13,7 @@ export default function UpdatesPage() {
   return (
     <InfoPage
       title="Updates & changelog"
-      description="What ships, when. New snippets and bundles land here first - newest at the top."
+      description="What ships, when. New snippets, products and ebooks land here first - newest at the top."
     >
       <div className="not-prose space-y-8">
         {updates.map((u) => (
@@ -37,7 +37,7 @@ export default function UpdatesPage() {
         ))}
       </div>
       <p className="mt-10 text-sm text-subtle">
-        New components are planned monthly - the changelog is the honest record of what actually exists today.
+        New snippets ship daily and new products weekly - the changelog is the honest record of what actually exists today.
       </p>
     </InfoPage>
   );

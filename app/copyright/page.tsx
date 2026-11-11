@@ -12,13 +12,13 @@ export default function CopyrightPage() {
       <h2>1. Our commitment</h2>
       <p>
         GPLMart only publishes or distributes resources where it holds the rights - original content created for
-        GPLMart, properly licensed third-party work, or items whose licences permit redistribution (such as
-        GPL-licensed WordPress themes and plugins). We do not knowingly distribute pirated, nulled or
-        unauthorised copies of commercial products.
+        GPLMart, properly licensed third-party work, or items whose licences permit redistribution. Every product
+        in the catalogue today is GPLMart-original code or content. We do not knowingly distribute pirated, nulled
+        or unauthorised copies of commercial products.
       </p>
       <p>
         Every item in the catalogue is recorded against its licence status before it ships. Where an item is
-        third-party, its licence terms are preserved inside the bundle.
+        third-party, its licence terms are preserved inside the download.
       </p>
 
       <h2>2. If you believe your work appears here without authorisation</h2>
@@ -38,7 +38,7 @@ export default function CopyrightPage() {
       <ul>
         <li>The report is reviewed against our distribution records for the item</li>
         <li>Where a claim is valid, we remove or correct the listing promptly - without waiting for legal escalation</li>
-        <li>Where the listing is legitimate (for example GPL-licensed items, which the law permits us to redistribute), we explain the basis clearly</li>
+        <li>Where the listing is legitimate (for example GPL-licensed items, which the law permits redistribution of), we explain the basis clearly</li>
         <li>Repeat or bulk reporters are handled on the same standard - every claim is reviewed individually</li>
       </ul>
 

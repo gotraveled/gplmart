@@ -168,7 +168,7 @@ export default async function SnippetPage({ params }: Params) {
                     <div className="text-center">
                       <LockKeyhole aria-hidden className="mx-auto size-6 text-accent" />
                       <p className="mt-2 max-w-xs text-sm font-medium">Full source is for members</p>
-                      <p className="mt-1 text-xs text-muted">One payment - every snippet, guide and bundle</p>
+                      <p className="mt-1 text-xs text-muted">One payment - every snippet, product and ebook</p>
                       <ButtonLink href="/checkout" className="mt-4">
                         Get all-access
                       </ButtonLink>

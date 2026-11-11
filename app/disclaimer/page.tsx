@@ -53,7 +53,7 @@ export default function DisclaimerPage() {
 
       <h2>5. Third-party services</h2>
       <p>
-        The site uses third-party services for hosting, payments, email, WhatsApp messaging and Drive delivery.
+        The site uses third-party services for hosting, payments and WhatsApp messaging.
         We are not responsible for outages, delays or policies of those services, though we will always help
         resolve delivery issues on our side.
       </p>

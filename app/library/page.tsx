@@ -1,18 +1,22 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Code2, FileCode2, Layers, LockKeyhole, MessageSquareQuote, Puzzle, ShoppingBag } from "lucide-react";
+import { ArrowRight, Code2, Download, FileCode2, Layers, MessageSquareQuote } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { examples } from "@/lib/playground/examples";
+import { getCatalog } from "@/lib/products";
+import { guides } from "@/lib/guides";
 
 export const metadata: Metadata = {
   title: "Resource library",
   description:
-    "Everything included in GPLMart all-access: Shopify Liquid snippets and sections, theme bundles, WordPress themes, plugins and AI prompts.",
+    "Everything included in GPLMart all-access: Shopify Liquid snippets and sections, original digital products, ebooks and guides.",
   alternates: { canonical: "/library" },
 };
+
+const productCount = getCatalog().items.length;
 
 const sections = [
   {
@@ -25,28 +29,20 @@ const sections = [
     accent: true,
   },
   {
-    icon: ShoppingBag,
-    title: "Shopify themes",
-    tag: "Members",
-    text: "Storefront themes packaged for Shopify stores - picked for speed, mobile layout and conversion structure. Delivered through the members resource hub.",
-    href: "/access/templates",
-    cta: "Members area",
+    icon: Download,
+    title: "Digital products",
+    tag: `${productCount} products`,
+    text: "Original HTML landing-page templates and self-contained PHP scripts - GPL-licensed code, zipped and ready to deploy.",
+    href: "/products",
+    cta: "Browse products",
   },
   {
     icon: Layers,
-    title: "WordPress themes",
-    tag: "GPL-licensed",
-    text: "GPL-licensed WordPress themes with the vendor licence preserved - install on unlimited sites including client projects. Complete files, no keys required.",
-    href: "/access/templates",
-    cta: "Members area",
-  },
-  {
-    icon: Puzzle,
-    title: "Shopify plugins",
-    tag: "Members",
-    text: "Plugin and extension bundles for storefront functionality - delivered with the same one-time access. No monthly app fees.",
-    href: "/access/templates",
-    cta: "Members area",
+    title: "Ebooks & guides",
+    tag: `${guides.length}+ guides`,
+    text: "Practical step-by-step guides and downloadable ebooks on Liquid, conversion and digital products - new titles every week.",
+    href: "/guides",
+    cta: "Read the guides",
   },
   {
     icon: MessageSquareQuote,
@@ -64,7 +60,7 @@ export default function LibraryPage() {
     <>
       <PageHeader
         title="Resource library"
-        description="Everything included in GPLMart all-access - code you can preview, and bundles delivered through the members area."
+        description="Everything included in GPLMart all-access - code you can preview, and products you can download instantly."
         crumbs={[{ label: "Library" }]}
       />
       <Container className="py-10">
@@ -80,7 +76,7 @@ export default function LibraryPage() {
                   <s.icon aria-hidden className="size-5" />
                 </span>
                 <Badge className={"accent" in s && s.accent ? "border-mint/40 bg-mint/10 text-mint" : "border-line-strong text-subtle"}>
-                  {s.tag !== "Members" && s.tag !== "Free" ? s.tag : s.tag === "Free" ? "Free" : <><LockKeyhole aria-hidden className="size-3" /> Members</>}
+                  {s.tag !== "Free" ? s.tag : "Free"}
                 </Badge>
               </div>
               <h2 className="mt-4 font-display text-lg font-semibold group-hover:text-accent">{s.title}</h2>
@@ -99,7 +95,7 @@ export default function LibraryPage() {
             </div>
             <h2 className="mt-4 font-display text-lg font-semibold">One payment. Everything.</h2>
             <p className="mt-2 flex-1 text-sm leading-relaxed text-muted">
-              All-access unlocks every snippet, section, theme bundle, plugin and future drop - in your local
+              All-access unlocks every snippet, section, digital product, ebook and future drop - in your local
               currency, with a 30-day money-back guarantee.
             </p>
             <ButtonLink href="/checkout" className="mt-5 w-full">

@@ -1,11 +1,11 @@
-import { ArrowRight, BookOpen, Download, FileCode2, Grid2x2, Package, PanelTop, ShieldAlert, Store, Upload } from "lucide-react";
+import { ArrowRight, BookOpen, Download, FileCode2, Grid2x2, Package, PanelTop, ShieldAlert, Store } from "lucide-react";
 import { InfoPage, infoMetadata } from "@/components/ui/info-page";
 import { ButtonLink } from "@/components/ui/button";
 import { ThemeChecker } from "@/components/install/theme-checker";
 
 export const metadata = infoMetadata(
   "How to Install Shopify Liquid Snippets - Step-by-Step Guide",
-  "Step-by-step install guides for Shopify Liquid snippets and sections, WordPress plugins and theme bundles - paste into any OS 2.0 theme, no developer needed.",
+  "Step-by-step install guides for Shopify Liquid snippets and sections, plus how to deploy the digital products - no developer needed.",
   "/install",
 );
 
@@ -37,35 +37,27 @@ const shopifySteps = [
   },
 ];
 
-const wpSteps = [
+const productSteps = [
   {
-    icon: Upload,
-    title: "Upload the plugin zip",
-    text: "WordPress admin > Plugins > Add New > Upload Plugin > choose the .zip from the bundle > Install Now > Activate.",
+    icon: Download,
+    title: "Download the zip",
+    text: "Members area > Digital products > pick an item > Download zip. The archive contains the complete product - every file it needs.",
   },
   {
-    icon: Upload,
-    title: "Upload a theme",
-    text: "Appearance > Themes > Add New > Upload Theme > choose the theme .zip > Install > Activate (or use Appearance > Customize to preview first).",
+    icon: FileCode2,
+    title: "HTML templates",
+    text: "Unzip and open index.html in a browser to preview. Upload the folder to any static host (Netlify Drop, Vercel, GitHub Pages, your own server) - no build step, no dependencies beyond optional Google Fonts.",
+  },
+  {
+    icon: FileCode2,
+    title: "PHP scripts",
+    text: "Unzip and upload the .php file to any PHP 8.1+ host (shared hosting, VPS, cPanel). Most scripts run with zero configuration - the README inside explains each one.",
   },
   {
     icon: BookOpen,
-    title: "Import templates",
-    text: "For starter-template packs, most ship as theme customiser presets or block-pattern files - the included readme in the bundle explains the import for that specific pack.",
+    title: "Ebooks & guides",
+    text: "Ebooks download as Markdown - open in any Markdown viewer or convert to PDF. Guides are readable right on the site, no download needed.",
   },
-  {
-    icon: ShieldAlert,
-    title: "No keys, no problem",
-    text: "GPL items work without vendor licence keys for their core features. Cloud/phone-home features (premium template libraries, license-gated APIs) may need a key from the vendor - the bundle listing says which.",
-  },
-];
-
-const driveSteps = [
-  "Open the members page and click the Google Drive link - it opens in a new tab.",
-  "Browse the folder structure by category - plugins, themes, templates, snippets.",
-  "To download a file or folder, select it, click the three-dot menu or right-click, choose Download.",
-  "Large folders are zipped by Google and may download in parts - allow multiple downloads if your browser asks.",
-  "If Drive shows a quota message, wait and retry, or use 'Add shortcut to Drive' and download from your own account.",
 ];
 
 export default function InstallPage() {
@@ -114,9 +106,9 @@ export default function InstallPage() {
         ))}
       </div>
 
-      <h2 className="mt-12">WordPress plugins &amp; themes</h2>
+      <h2 className="mt-12">Digital products, ebooks &amp; guides</h2>
       <div className="not-prose mt-5 grid gap-4 sm:grid-cols-2">
-        {wpSteps.map(({ icon: Icon, title, text }) => (
+        {productSteps.map(({ icon: Icon, title, text }) => (
           <div key={title} className="rounded-2xl border border-line bg-ink-900/60 p-5">
             <Icon aria-hidden className="size-5 text-mint" />
             <h3 className="mt-3 font-display text-sm font-semibold">{title}</h3>
@@ -124,18 +116,6 @@ export default function InstallPage() {
           </div>
         ))}
       </div>
-
-      <h2 className="mt-12">Downloading the Drive bundle</h2>
-      <ol className="not-prose mt-5 space-y-3">
-        {driveSteps.map((s, i) => (
-          <li key={s} className="flex gap-3 rounded-xl border border-line bg-ink-900/60 p-4 text-sm text-muted">
-            <span className="grid size-6 shrink-0 place-items-center rounded-full bg-accent/20 text-xs font-semibold text-fg">
-              {i + 1}
-            </span>
-            {s}
-          </li>
-        ))}
-      </ol>
 
       <div className="not-prose mt-10 flex items-start gap-3 rounded-xl border border-line bg-ink-900/60 p-4 text-sm text-muted">
         <Package aria-hidden className="mt-0.5 size-5 shrink-0" />
