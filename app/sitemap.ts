@@ -24,7 +24,7 @@ const staticRoutes: { path: string; priority: number }[] = [
   { path: "/install", priority: 0.7 },
   { path: "/prompts", priority: 0.7 },
   { path: "/tools/liquid-check", priority: 0.7 },
-  { path: "/course", priority: 0.8 },
+  { path: "/courses", priority: 0.8 },
   { path: "/faq", priority: 0.7 },
   { path: "/about", priority: 0.6 },
   { path: "/contact", priority: 0.6 },
@@ -68,9 +68,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     changeFrequency: "weekly",
   }));
 
+  const liveCourses = courses.filter((c) => c.status === "live");
   const coursePages: MetadataRoute.Sitemap = [
-    ...courses.map((c) => ({ url: absoluteUrl(`/course/${c.slug}`), priority: 0.8 })),
-    ...courses.flatMap((c) => c.modules.map((m) => ({ url: absoluteUrl(`/course/${c.slug}/${m.slug}`), priority: 0.7 }))),
+    ...liveCourses.map((c) => ({ url: absoluteUrl(`/course/${c.slug}`), priority: 0.8 })),
+    ...liveCourses.flatMap((c) => c.modules.map((m) => ({ url: absoluteUrl(`/course/${c.slug}/${m.slug}`), priority: 0.7 }))),
     ...courseLessons.map((l) => ({ url: absoluteUrl(`/course/${l.course}/${l.module}/${l.slug}`), priority: 0.6 })),
   ];
 

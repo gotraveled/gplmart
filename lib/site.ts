@@ -21,7 +21,7 @@ export const footerLinks = {
     { href: "/library", label: "Library" },
     { href: "/products", label: "Products" },
     { href: "/packs", label: "Snippet packs" },
-    { href: "/course", label: "Course" },
+    { href: "/courses", label: "Courses" },
     { href: "/tools/liquid-check", label: "Free Liquid checker" },
     { href: "/prompts", label: "Free prompts" },
     { href: "/install", label: "Install guide" },

@@ -51,12 +51,8 @@
       {
         "p": "Next lesson: where all this code actually lives inside a theme, and how to navigate the editor without getting lost."
       }
-<<<<<<< HEAD
     ],
-    "course": "liquid-mastery"
-=======
-    ]
->>>>>>> a4d6b0271086a9932c573c7035ca65bc1f5d9f63
+    "course": "liquid-snippets"
   },
   {
     "module": "foundations",
@@ -105,12 +101,8 @@
       {
         "p": "The GPLMart library follows this exactly: every snippet ships as one self-contained file - paste it in snippets/ or sections/, and the install notes tell you which. Lesson three covers the syntax you'll actually write."
       }
-<<<<<<< HEAD
     ],
-    "course": "liquid-mastery"
-=======
-    ]
->>>>>>> a4d6b0271086a9932c573c7035ca65bc1f5d9f63
+    "course": "liquid-snippets"
   },
   {
     "module": "foundations",
@@ -178,12 +170,8 @@
       {
         "p": "You now have the full vocabulary. Module 2 applies it to the most valuable page type in ecommerce: the product page."
       }
-<<<<<<< HEAD
     ],
-    "course": "liquid-mastery"
-=======
-    ]
->>>>>>> a4d6b0271086a9932c573c7035ca65bc1f5d9f63
+    "course": "liquid-snippets"
   },
   {
     "module": "product-pages",
@@ -237,12 +225,8 @@
       {
         "p": "Next: turning this data into the components that actually move conversion - buy boxes, stock indicators and trust elements."
       }
-<<<<<<< HEAD
     ],
-    "course": "liquid-mastery"
-=======
-    ]
->>>>>>> a4d6b0271086a9932c573c7035ca65bc1f5d9f63
+    "course": "liquid-snippets"
   },
   {
     "module": "product-pages",
@@ -305,12 +289,8 @@
       {
         "p": "Module 3 takes you into the cart - where the AJAX API unlocks everything dynamic."
       }
-<<<<<<< HEAD
     ],
-    "course": "liquid-mastery"
-=======
-    ]
->>>>>>> a4d6b0271086a9932c573c7035ca65bc1f5d9f63
+    "course": "liquid-snippets"
   },
   {
     "module": "product-pages",
@@ -369,12 +349,8 @@
       {
         "p": "You've covered the product page's data and inputs. Module 3: what happens after add-to-cart."
       }
-<<<<<<< HEAD
     ],
-    "course": "liquid-mastery"
-=======
-    ]
->>>>>>> a4d6b0271086a9932c573c7035ca65bc1f5d9f63
+    "course": "liquid-snippets"
   },
   {
     "module": "cart-checkout",
@@ -438,12 +414,11 @@
       {
         "p": "Module 4: making all of this controllable by merchants through the theme editor."
       }
-<<<<<<< HEAD
     ],
-    "course": "liquid-mastery"
+    "course": "liquid-snippets"
   },
   {
-    "course": "store-blueprint",
+    "course": "shopify-basic",
     "module": "account-setup",
     "slug": "create-shopify-account-plan",
     "title": "Create your Shopify account and pick the right plan",
@@ -500,7 +475,7 @@
     ]
   },
   {
-    "course": "store-blueprint",
+    "course": "shopify-basic",
     "module": "account-setup",
     "slug": "install-customise-theme",
     "title": "Install a theme and make it yours",
@@ -548,7 +523,7 @@
     ]
   },
   {
-    "course": "store-blueprint",
+    "course": "shopify-basic",
     "module": "store-content",
     "slug": "menus-homepage",
     "title": "Menus, homepage & the pages that build trust",
@@ -603,7 +578,7 @@
     ]
   },
   {
-    "course": "store-blueprint",
+    "course": "shopify-basic",
     "module": "products-pricing",
     "slug": "add-products-price",
     "title": "Add products properly: variants, pricing and collections",
@@ -653,8 +628,8 @@
     ]
   },
   {
-    "course": "store-blueprint",
-    "module": "payments-dropshipping",
+    "course": "shopify-basic",
+    "module": "payments-basics",
     "slug": "payments-india-international",
     "title": "Payments: Razorpay, Stripe and COD for India + international",
     "excerpt": "Activate the payment methods your buyers actually use - UPI/COD for India, cards for the world.",
@@ -695,8 +670,8 @@
     ]
   },
   {
-    "course": "store-blueprint",
-    "module": "payments-dropshipping",
+    "course": "dropshipping-india",
+    "module": "sourcing-fulfilment-in",
     "slug": "cj-dropshipping-fulfilment",
     "title": "CJdropshipping: sourcing and fulfilment without inventory",
     "excerpt": "Connect CJ to Shopify, import products, and the exact flow an order takes from your store to the customer's door.",
@@ -807,57 +782,6 @@
       },
       {
         "p": "Tracking done right = every later lesson works. Next: campaign structure that scales without chaos."
-=======
-    ]
-  },
-  {
-    "module": "sections-settings",
-    "slug": "section-blocks-schema-iteration",
-    "title": "Building Flexible Sections with Dynamic Block Schemas",
-    "excerpt": "Master section blocks in Liquid schema, from configuring repeatable item limits to adding interactive Theme Editor attributes.",
-    "readMin": 7,
-    "blocks": [
-      {
-        "h": "Understanding Shopify Section Blocks"
-      },
-      {
-        "p": "Shopify section blocks empower merchants to add, reorder, remove, and configure repeatable content elements within a section. Rather than hardcoding fixed columns or rows, blocks allow flexible layout structures—such as sliders, feature grids, accordions, and custom icon lists."
-      },
-      {
-        "h": "Defining Blocks in Section Schema"
-      },
-      {
-        "p": "Blocks are declared inside the JSON object within the section's {% schema %} tag. Each block entry requires a unique type identifier, a display name, an array of block-specific settings, and optionally a block-level limit or section-wide max_blocks restriction."
-      },
-      {
-        "code": {
-          "lang": "liquid",
-          "code": "{% schema %}\n{\n  \"name\": \"Feature Grid\",\n  \"max_blocks\": 4,\n  \"settings\": [\n    {\n      \"type\": \"text\",\n      \"id\": \"heading\",\n      \"label\": \"Grid Heading\",\n      \"default\": \"Why Choose Us\"\n    }\n  ],\n  \"blocks\": [\n    {\n      \"type\": \"feature_card\",\n      \"name\": \"Feature Card\",\n      \"settings\": [\n        {\n          \"type\": \"image_picker\",\n          \"id\": \"image\",\n          \"label\": \"Card Image\"\n        },\n        {\n          \"type\": \"inline_richtext\",\n          \"id\": \"title\",\n          \"label\": \"Card Title\",\n          \"default\": \"Feature Title\"\n        },\n        {\n          \"type\": \"richtext\",\n          \"id\": \"description\",\n          \"label\": \"Card Description\"\n        }\n      ]\n    }\n  ],\n  \"presets\": [\n    {\n      \"name\": \"Feature Grid\",\n      \"blocks\": [\n        { \"type\": \"feature_card\" },\n        { \"type\": \"feature_card\" },\n        { \"type\": \"feature_card\" }\n      ]\n    }\n  ]\n}\n{% endschema %}"
-        }
-      },
-      {
-        "h": "Rendering Block Iterations in Liquid Markup"
-      },
-      {
-        "p": "In the HTML area of your section, iterate over section.blocks using a for loop. Access each block's settings via block.settings.setting_id. Crucially, you must append {{ block.shopify_attributes }} to the container element of each block inside the loop so the Theme Editor JS engine can highlight blocks live during customization."
-      },
-      {
-        "code": {
-          "lang": "liquid",
-          "code": "<section class=\"feature-grid-section\">\n  {% if section.settings.heading != blank %}\n    <h2>{{ section.settings.heading | escape }}</h2>\n  {% endif %}\n\n  <div class=\"feature-grid\">\n    {% for block in section.blocks %}\n      <div class=\"feature-grid__item\" {{ block.shopify_attributes }}>\n        {% case block.type %}\n          {% when 'feature_card' %}\n            {% if block.settings.image != blank %}\n              {{ block.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', class: 'feature-grid__image' }}\n            {% endif %}\n            <h3>{{ block.settings.title }}</h3>\n            <div class=\"feature-grid__text\">{{ block.settings.description }}</div>\n        {% endcase %}\n      </div>\n    {% endfor %}\n  </div>\n</section>"
-        }
-      },
-      {
-        "h": "Essential Block Implementation Rules"
-      },
-      {
-        "list": [
-          "Always include {{ block.shopify_attributes }} on the root wrapper of each block in your loop to enable active selection in the Theme Editor preview.",
-          "Use block types efficiently with dynamic Liquid case statements when supporting multiple block styles (e.g., image card vs. text column).",
-          "Define default blocks inside section presets so the section looks populated immediately when added by a merchant.",
-          "Set reasonable max_blocks limits to protect grid layouts from breaking on narrow viewports."
-        ]
->>>>>>> a4d6b0271086a9932c573c7035ca65bc1f5d9f63
       }
     ]
   }

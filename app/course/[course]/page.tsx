@@ -39,7 +39,7 @@ export default async function CoursePage({ params }: Props) {
       <PageHeader
         title={c.title}
         description={c.description}
-        crumbs={[{ label: "Courses", href: "/course" }, { label: c.title }]}
+        crumbs={[{ label: "Courses", href: "/courses" }, { label: c.title }]}
       />
       <Container className="py-10">
         <div className="mx-auto max-w-3xl">
@@ -48,6 +48,17 @@ export default async function CoursePage({ params }: Props) {
           </p>
 
           <h2 className="mt-8 font-display text-lg font-semibold">Curriculum</h2>
+          {c.status === "coming-soon" || c.modules.length === 0 ? (
+            <div className="mt-4 rounded-2xl border border-dashed border-line-strong px-6 py-12 text-center">
+              <p className="font-display text-lg font-semibold">This course is coming soon</p>
+              <p className="mt-2 text-sm text-muted">
+                We&apos;re writing the full curriculum now - lessons publish weekly. Browse the live courses meanwhile.
+              </p>
+              <Link href="/courses" className="mt-4 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline">
+                Browse all courses <ArrowRight aria-hidden className="size-4" />
+              </Link>
+            </div>
+          ) : (
           <ol className="mt-5 space-y-6">
             {c.modules.map((m, i) => {
               const modLessons = lessons.filter((l) => l.module === m.slug);
@@ -86,6 +97,7 @@ export default async function CoursePage({ params }: Props) {
               );
             })}
           </ol>
+          )}
 
           <div className="mt-10 rounded-2xl border border-accent/30 bg-accent/[0.06] p-6 text-center">
             <p className="text-sm text-muted">

@@ -38,7 +38,7 @@ export default async function CourseModulePage({ params }: Props) {
       <PageHeader
         title={mod.title}
         description={mod.summary}
-        crumbs={[{ label: "Courses", href: "/course" }, { label: course.title, href: `/course/${course.slug}` }, { label: mod.title }]}
+        crumbs={[{ label: "Courses", href: "/courses" }, { label: course.title, href: `/course/${course.slug}` }, { label: mod.title }]}
       />
       <Container className="py-10">
         <div className="mx-auto max-w-3xl">

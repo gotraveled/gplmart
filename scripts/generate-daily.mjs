@@ -40,13 +40,25 @@ const WEEKLY = {
   html: Number(process.env.PRODUCTS_HTML ?? 1),
 };
 const COURSES = {
-  "store-blueprint": {
-    modules: ["account-setup", "store-content", "products-pricing", "payments-dropshipping", "product-research", "conversion-launch"],
-    context: "Shopify Store Blueprint - merchant course: account setup, theme, menus, products/pricing, payments (Razorpay/Stripe/COD), dropshipping (CJ/AliExpress), product research, conversion & launch. Practical, India+international aware, honest about costs and timelines.",
+  "shopify-basic": {
+    modules: ["account-setup", "store-content", "products-pricing", "payments-basics"],
+    context: "Shopify Basic Course - beginner merchant course: account creation, plan choice, theme install/customise, menus & homepage, adding products with variants and pricing, payments basics (Razorpay/Stripe/COD), pre-launch checklist. Practical steps, honest costs, India-aware.",
   },
-  "liquid-mastery": {
+  "shopify-advanced": {
+    modules: ["store-design", "catalog-operations", "marketing-conversion", "scaling-growth"],
+    context: "Shopify Advanced Course - complete ecommerce store creation & management: professional theme customisation, catalogue & inventory operations, fulfilment workflows, returns, email/WhatsApp marketing, SEO basics, analytics, margins and scaling past first sales.",
+  },
+  "liquid-snippets": {
     modules: ["foundations", "product-pages", "cart-checkout", "sections-settings", "performance", "store-features", "client-work"],
-    context: "Shopify Liquid Mastery - developer course: Liquid syntax, theme anatomy, product objects/metafields, buy boxes, variants, cart AJAX API, sections/schema, performance, store features, client work. Code must be valid Liquid/JS for OS 2.0 themes.",
+    context: "Shopify Liquid Snippets Codes Course - developer course: Liquid syntax, theme anatomy, product objects/metafields, buy boxes, variants, cart AJAX API, sections/schema, performance, store features, client work. Code must be valid Liquid/JS for OS 2.0 themes.",
+  },
+  "dropshipping-india": {
+    modules: ["product-research-in", "sourcing-fulfilment-in", "payments-cod-in", "marketing-in"],
+    context: "Shopify Indian Dropshipping Course - India-focused: product research for Indian buyers, local+Chinese sourcing (CJ/AliExpress/local suppliers), COD/UPI/Razorpay, shipping times, RTO management, WhatsApp/regional marketing.",
+  },
+  "dropshipping-international": {
+    modules: ["product-research-intl", "sourcing-fulfilment-intl", "payments-intl", "marketing-intl"],
+    context: "Shopify International Dropshipping Course - global markets (US/EU): winning product research with trend/ad-spy tools, CJ/Zendrop/AliExpress sourcing, Stripe/PayPal/multi-currency, 10-25 day shipping expectations, cross-border ads.",
   },
   "facebook-ads": {
     modules: ["ads-foundation", "campaign-structure", "creative-targeting", "scaling-analytics"],
