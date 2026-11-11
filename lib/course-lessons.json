@@ -6,26 +6,51 @@
     "excerpt": "Liquid is Shopify's templating language - server-rendered, sandboxed, and everywhere in your theme. The 10-minute mental model.",
     "readMin": 6,
     "blocks": [
-      { "p": "Liquid is the language Shopify themes are written in. Every product page, cart and collection you see on a Shopify store is Liquid being rendered on Shopify's servers into plain HTML before it reaches the browser." },
-      { "h": "The one-sentence version" },
-      { "p": "Liquid takes data (products, collections, customers, settings) and outputs HTML. It runs on Shopify's servers, not in the browser - there is no JavaScript framework, no build step, no npm install. You write a .liquid file, Shopify renders it, done." },
-      { "h": "The three building blocks" },
-      { "list": [
-        "Objects - {{ product.title }} prints a value. Objects are the data Shopify hands you: product, collection, cart, customer, shop, and hundreds more.",
-        "Tags - {% if %}, {% for %}, {% render %} control logic. They produce no visible output themselves.",
-        "Filters - {{ product.price | money }} transforms output. money formats currency, default provides fallbacks, image_url resizes images."
-      ] },
-      { "h": "A real example" },
-      { "code": { "lang": "liquid", "code": "{% if product.available %}\n  <p>{{ product.title | upcase }}</p>\n  <p>{{ product.price | money }} incl. taxes</p>\n{% else %}\n  <p>Sold out - <a href=\"#notify\">notify me</a></p>\n{% endif %}" } },
-      { "p": "Read it aloud: if the product is available, print its title in capitals and its formatted price. Otherwise show a sold-out message. That is 90% of what Liquid does - conditionals around data." },
-      { "h": "What Liquid is NOT" },
-      { "list": [
-        "Not JavaScript - it never runs in the browser; {% javascript %} blocks are the exception, and they run as plain JS after render.",
-        "Not a database language - you cannot query or write data. You read what Shopify gives you.",
-        "Not theme-agnostic magic - every theme organises its files differently; Dawn's structure is not Impulse's.",
-        "Not unlimited - Shopify enforces render-time and memory limits; deeply nested loops can fail."
-      ] },
-      { "p": "Next lesson: where all this code actually lives inside a theme, and how to navigate the editor without getting lost." }
+      {
+        "p": "Liquid is the language Shopify themes are written in. Every product page, cart and collection you see on a Shopify store is Liquid being rendered on Shopify's servers into plain HTML before it reaches the browser."
+      },
+      {
+        "h": "The one-sentence version"
+      },
+      {
+        "p": "Liquid takes data (products, collections, customers, settings) and outputs HTML. It runs on Shopify's servers, not in the browser - there is no JavaScript framework, no build step, no npm install. You write a .liquid file, Shopify renders it, done."
+      },
+      {
+        "h": "The three building blocks"
+      },
+      {
+        "list": [
+          "Objects - {{ product.title }} prints a value. Objects are the data Shopify hands you: product, collection, cart, customer, shop, and hundreds more.",
+          "Tags - {% if %}, {% for %}, {% render %} control logic. They produce no visible output themselves.",
+          "Filters - {{ product.price | money }} transforms output. money formats currency, default provides fallbacks, image_url resizes images."
+        ]
+      },
+      {
+        "h": "A real example"
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "{% if product.available %}\n  <p>{{ product.title | upcase }}</p>\n  <p>{{ product.price | money }} incl. taxes</p>\n{% else %}\n  <p>Sold out - <a href=\"#notify\">notify me</a></p>\n{% endif %}"
+        }
+      },
+      {
+        "p": "Read it aloud: if the product is available, print its title in capitals and its formatted price. Otherwise show a sold-out message. That is 90% of what Liquid does - conditionals around data."
+      },
+      {
+        "h": "What Liquid is NOT"
+      },
+      {
+        "list": [
+          "Not JavaScript - it never runs in the browser; {% javascript %} blocks are the exception, and they run as plain JS after render.",
+          "Not a database language - you cannot query or write data. You read what Shopify gives you.",
+          "Not theme-agnostic magic - every theme organises its files differently; Dawn's structure is not Impulse's.",
+          "Not unlimited - Shopify enforces render-time and memory limits; deeply nested loops can fail."
+        ]
+      },
+      {
+        "p": "Next lesson: where all this code actually lives inside a theme, and how to navigate the editor without getting lost."
+      }
     ]
   },
   {
@@ -35,26 +60,46 @@
     "excerpt": "layout/, templates/, sections/, snippets/ - what each folder does, which files load when, and how a page actually gets built.",
     "readMin": 7,
     "blocks": [
-      { "p": "Open any Shopify theme's code editor and you see a folder tree. It looks arbitrary until you know the four folders that matter - everything else is configuration." },
-      { "h": "The four folders that matter" },
-      { "list": [
-        "layout/ - the skeleton. theme.liquid wraps every page: <head>, header, {{ content_for_layout }}, footer. One file for the whole store.",
-        "templates/ - one file per page type: product.json, collection.json, cart.json, index.json. JSON templates (OS 2.0) list which sections render and in what order.",
-        "sections/ - the building blocks. Each .liquid file here is a section the merchant can add, reorder or remove in the theme editor - IF it has a {% schema %} block.",
-        "snippets/ - reusable fragments rendered via {% render 'name' %}. No schema, no editor presence - pure code reuse."
-      ] },
-      { "h": "How a product page gets built" },
-      { "p": "1. Shopify picks templates/product.json. 2. That JSON lists sections in order - typically main-product, then maybe featured-collection, then footer. 3. Each section's .liquid file renders with the product object available. 4. theme.liquid wraps the whole result with header and footer." },
-      { "h": "OS 2.0 vs vintage themes" },
-      { "p": "Online Store 2.0 themes (Dawn and everything built on it) use JSON templates - sections are data-driven and merchants reorder them visually. Vintage themes use .liquid templates with hardcoded {% section %} and {% include %} tags. Most modern work targets OS 2.0, but knowing both matters because client stores run both." },
-      { "h": "Where your code goes" },
-      { "list": [
-        "Product-page feature? sections/your-feature.liquid with a schema block - merchant adds it via editor.",
-        "Reusable piece used in 5 places? snippets/your-piece.liquid, rendered with {% render 'your-piece' %}.",
-        "Store-wide change (announcement bar, custom CSS)? theme.liquid or a section group in the header/footer.",
-        "One-off page? Use a custom template or a section with page-targeted presets."
-      ] },
-      { "p": "The GPLMart library follows this exactly: every snippet ships as one self-contained file - paste it in snippets/ or sections/, and the install notes tell you which. Lesson three covers the syntax you'll actually write." }
+      {
+        "p": "Open any Shopify theme's code editor and you see a folder tree. It looks arbitrary until you know the four folders that matter - everything else is configuration."
+      },
+      {
+        "h": "The four folders that matter"
+      },
+      {
+        "list": [
+          "layout/ - the skeleton. theme.liquid wraps every page: <head>, header, {{ content_for_layout }}, footer. One file for the whole store.",
+          "templates/ - one file per page type: product.json, collection.json, cart.json, index.json. JSON templates (OS 2.0) list which sections render and in what order.",
+          "sections/ - the building blocks. Each .liquid file here is a section the merchant can add, reorder or remove in the theme editor - IF it has a {% schema %} block.",
+          "snippets/ - reusable fragments rendered via {% render 'name' %}. No schema, no editor presence - pure code reuse."
+        ]
+      },
+      {
+        "h": "How a product page gets built"
+      },
+      {
+        "p": "1. Shopify picks templates/product.json. 2. That JSON lists sections in order - typically main-product, then maybe featured-collection, then footer. 3. Each section's .liquid file renders with the product object available. 4. theme.liquid wraps the whole result with header and footer."
+      },
+      {
+        "h": "OS 2.0 vs vintage themes"
+      },
+      {
+        "p": "Online Store 2.0 themes (Dawn and everything built on it) use JSON templates - sections are data-driven and merchants reorder them visually. Vintage themes use .liquid templates with hardcoded {% section %} and {% include %} tags. Most modern work targets OS 2.0, but knowing both matters because client stores run both."
+      },
+      {
+        "h": "Where your code goes"
+      },
+      {
+        "list": [
+          "Product-page feature? sections/your-feature.liquid with a schema block - merchant adds it via editor.",
+          "Reusable piece used in 5 places? snippets/your-piece.liquid, rendered with {% render 'your-piece' %}.",
+          "Store-wide change (announcement bar, custom CSS)? theme.liquid or a section group in the header/footer.",
+          "One-off page? Use a custom template or a section with page-targeted presets."
+        ]
+      },
+      {
+        "p": "The GPLMart library follows this exactly: every snippet ships as one self-contained file - paste it in snippets/ or sections/, and the install notes tell you which. Lesson three covers the syntax you'll actually write."
+      }
     ]
   },
   {
@@ -64,33 +109,65 @@
     "excerpt": "The complete working vocabulary - every object type, the filters you'll use daily, and the tag patterns that cover 95% of theme code.",
     "readMin": 9,
     "blocks": [
-      { "p": "This is the reference lesson - the syntax table you'll come back to. Skim it now, use it as a cheat sheet later." },
-      { "h": "Output: {{ }}" },
-      { "p": "Double curly braces print a value. Always safe - Liquid escapes HTML by default." },
-      { "code": { "lang": "liquid", "code": "{{ product.title }}\n{{ product.price | money }}\n{{ 'now' | date: '%B %d, %Y' }}\n{{ product.description | strip_html | truncate: 160 }}" } },
-      { "h": "Logic: {% if %} / {% for %}" },
-      { "code": { "lang": "liquid", "code": "{% if product.available %}\n  In stock\n{% elsif product.tags contains 'preorder' %}\n  Pre-order\n{% else %}\n  Sold out\n{% endif %}\n\n{% for variant in product.variants %}\n  <option value=\"{{ variant.id }}\">{{ variant.title }} - {{ variant.price | money }}</option>\n{% endfor %}" } },
-      { "h": "The filters you'll use daily" },
-      { "list": [
-        "money - price in cents to formatted currency: {{ 199900 | money }} → $1,999.00",
-        "default - fallback when nil/false: {{ product.metafields.custom.subtitle | default: product.title }}",
-        "date - format timestamps: {{ article.published_at | date: '%d %b %Y' }}",
-        "image_url - resize CDN images: {{ product.featured_image | image_url: width: 600 }}",
-        "strip_html / escape - clean text for meta tags and JSON-LD",
-        "handleize / handle - turn titles into URL-safe handles",
-        "json - serialize for JSON-LD and data attributes",
-        "where / reject - filter arrays: {{ product.images | where: 'attached_to_variant?', true }}"
-      ] },
-      { "h": "Assignment and capture" },
-      { "p": "{% assign x = value %} sets a variable. {% capture x %}...{% endcapture %} grabs rendered output into a variable - essential for building strings." },
-      { "h": "Render vs include vs section" },
-      { "list": [
-        "{% render 'name', key: value %} - modern, isolated scope, pass data explicitly. Use this.",
-        "{% include 'name' %} - legacy, shares parent scope, deprecated in OS 2.0.",
-        "{% section 'name' %} - renders a section inside a template/section (legacy themes).",
-        "{% stylesheet %} / {% javascript %} - embed CSS/JS inside a single file. This is how every GPLMart one-file snippet works."
-      ] },
-      { "p": "You now have the full vocabulary. Module 2 applies it to the most valuable page type in ecommerce: the product page." }
+      {
+        "p": "This is the reference lesson - the syntax table you'll come back to. Skim it now, use it as a cheat sheet later."
+      },
+      {
+        "h": "Output: {{ }}"
+      },
+      {
+        "p": "Double curly braces print a value. Always safe - Liquid escapes HTML by default."
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "{{ product.title }}\n{{ product.price | money }}\n{{ 'now' | date: '%B %d, %Y' }}\n{{ product.description | strip_html | truncate: 160 }}"
+        }
+      },
+      {
+        "h": "Logic: {% if %} / {% for %}"
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "{% if product.available %}\n  In stock\n{% elsif product.tags contains 'preorder' %}\n  Pre-order\n{% else %}\n  Sold out\n{% endif %}\n\n{% for variant in product.variants %}\n  <option value=\"{{ variant.id }}\">{{ variant.title }} - {{ variant.price | money }}</option>\n{% endfor %}"
+        }
+      },
+      {
+        "h": "The filters you'll use daily"
+      },
+      {
+        "list": [
+          "money - price in cents to formatted currency: {{ 199900 | money }} → $1,999.00",
+          "default - fallback when nil/false: {{ product.metafields.custom.subtitle | default: product.title }}",
+          "date - format timestamps: {{ article.published_at | date: '%d %b %Y' }}",
+          "image_url - resize CDN images: {{ product.featured_image | image_url: width: 600 }}",
+          "strip_html / escape - clean text for meta tags and JSON-LD",
+          "handleize / handle - turn titles into URL-safe handles",
+          "json - serialize for JSON-LD and data attributes",
+          "where / reject - filter arrays: {{ product.images | where: 'attached_to_variant?', true }}"
+        ]
+      },
+      {
+        "h": "Assignment and capture"
+      },
+      {
+        "p": "{% assign x = value %} sets a variable. {% capture x %}...{% endcapture %} grabs rendered output into a variable - essential for building strings."
+      },
+      {
+        "h": "Render vs include vs section"
+      },
+      {
+        "list": [
+          "{% render 'name', key: value %} - modern, isolated scope, pass data explicitly. Use this.",
+          "{% include 'name' %} - legacy, shares parent scope, deprecated in OS 2.0.",
+          "{% section 'name' %} - renders a section inside a template/section (legacy themes).",
+          "{% stylesheet %} / {% javascript %} - embed CSS/JS inside a single file. This is how every GPLMart one-file snippet works."
+        ]
+      },
+      {
+        "p": "You now have the full vocabulary. Module 2 applies it to the most valuable page type in ecommerce: the product page."
+      }
     ]
   },
   {
@@ -100,26 +177,51 @@
     "excerpt": "Every field on product.* explained, plus metafields - the structured data layer that makes custom features possible.",
     "readMin": 8,
     "blocks": [
-      { "p": "The product object is the richest object in Liquid - 60+ fields. You don't need all of them; you need to know which exist and which are metafields." },
-      { "h": "Core fields you'll use constantly" },
-      { "list": [
-        "product.title, product.handle, product.vendor, product.product_type",
-        "product.featured_image, product.images (array of image objects)",
-        "product.variants (array: id, title, price, compare_at_price, sku, available, featured_image)",
-        "product.options_with_values (variant option names + choices)",
-        "product.price, product.compare_at_price, product.price_varies",
-        "product.available, product.selected_or_first_available_variant",
-        "product.description, product.content (richer HTML description), product.tags",
-        "product.metafields.namespace.key - custom merchant data"
-      ] },
-      { "h": "Metafields: the unlock" },
-      { "p": "Metafields are custom data fields merchants (or apps) attach to products, collections, customers, shops - anywhere. A 'fabric composition' or 'fit guide' that isn't a native Shopify field lives in a metafield. In Liquid: {{ product.metafields.custom.fabric }}. In JSON templates, section settings can expose metafields via the editor's dynamic sources." },
-      { "h": "A practical pattern: spec table from metafields" },
-      { "code": { "lang": "liquid", "code": "{% assign specs = product.metafields.custom.specs.value %}\n{% if specs %}\n  <table class=\"specs\">\n    {% for spec in specs %}\n      <tr><th>{{ spec.key }}</th><td>{{ spec.value }}</td></tr>\n    {% endfor %}\n  </table>\n{% endif %}" } },
-      { "p": "This renders nothing when the metafield is empty - the {% if %} guard means the section silently disappears instead of showing an empty table. That pattern (render only if data exists) is how you ship features that work across a whole catalogue without touching every product." },
-      { "h": "The variant object trap" },
-      { "p": "product.price shows the *selected or first available* variant's price - but on a product with variants, the displayed price must update when the customer picks a different variant. That's JavaScript territory (product JSON + fetch). For Liquid-only work, use product.selected_or_first_available_variant.price for server-rendered accuracy, and know that real variant switching needs the AJAX API - covered in the cart module." },
-      { "p": "Next: turning this data into the components that actually move conversion - buy boxes, stock indicators and trust elements." }
+      {
+        "p": "The product object is the richest object in Liquid - 60+ fields. You don't need all of them; you need to know which exist and which are metafields."
+      },
+      {
+        "h": "Core fields you'll use constantly"
+      },
+      {
+        "list": [
+          "product.title, product.handle, product.vendor, product.product_type",
+          "product.featured_image, product.images (array of image objects)",
+          "product.variants (array: id, title, price, compare_at_price, sku, available, featured_image)",
+          "product.options_with_values (variant option names + choices)",
+          "product.price, product.compare_at_price, product.price_varies",
+          "product.available, product.selected_or_first_available_variant",
+          "product.description, product.content (richer HTML description), product.tags",
+          "product.metafields.namespace.key - custom merchant data"
+        ]
+      },
+      {
+        "h": "Metafields: the unlock"
+      },
+      {
+        "p": "Metafields are custom data fields merchants (or apps) attach to products, collections, customers, shops - anywhere. A 'fabric composition' or 'fit guide' that isn't a native Shopify field lives in a metafield. In Liquid: {{ product.metafields.custom.fabric }}. In JSON templates, section settings can expose metafields via the editor's dynamic sources."
+      },
+      {
+        "h": "A practical pattern: spec table from metafields"
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "{% assign specs = product.metafields.custom.specs.value %}\n{% if specs %}\n  <table class=\"specs\">\n    {% for spec in specs %}\n      <tr><th>{{ spec.key }}</th><td>{{ spec.value }}</td></tr>\n    {% endfor %}\n  </table>\n{% endif %}"
+        }
+      },
+      {
+        "p": "This renders nothing when the metafield is empty - the {% if %} guard means the section silently disappears instead of showing an empty table. That pattern (render only if data exists) is how you ship features that work across a whole catalogue without touching every product."
+      },
+      {
+        "h": "The variant object trap"
+      },
+      {
+        "p": "product.price shows the *selected or first available* variant's price - but on a product with variants, the displayed price must update when the customer picks a different variant. That's JavaScript territory (product JSON + fetch). For Liquid-only work, use product.selected_or_first_available_variant.price for server-rendered accuracy, and know that real variant switching needs the AJAX API - covered in the cart module."
+      },
+      {
+        "p": "Next: turning this data into the components that actually move conversion - buy boxes, stock indicators and trust elements."
+      }
     ]
   },
   {
@@ -129,26 +231,60 @@
     "excerpt": "Why the buy box area decides 80% of product-page outcomes - and the exact Liquid patterns for each element.",
     "readMin": 8,
     "blocks": [
-      { "p": "The 'buy box' is the cluster around the add-to-cart button: price, compare-at, variant picker, stock indicator, trust badges, delivery estimate. It's where purchase intent either survives or dies." },
-      { "h": "Price display done right" },
-      { "code": { "lang": "liquid", "code": "{%- assign variant = product.selected_or_first_available_variant -%}\n<p class=\"price\">\n  <span class=\"price__current\">{{ variant.price | money }}</span>\n  {%- if variant.compare_at_price > variant.price -%}\n    <s class=\"price__compare\">{{ variant.compare_at_price | money }}</s>\n    <span class=\"price__save\">Save {{ variant.compare_at_price | minus: variant.price | money }}</span>\n  {%- endif -%}\n</p>" } },
-      { "p": "Note the minus filter computing the real saving - never hardcode '20% off'; the data already knows the truth." },
-      { "h": "Stock urgency that isn't fake" },
-      { "p": "Fake scarcity ('only 2 left!' on a store with 500 units) is both dishonest and legally risky in some jurisdictions. The honest version reads real inventory levels - but Shopify's product.variants[].inventory_quantity is only exposed when the merchant tracks inventory AND the theme has permission. Pattern: show urgency only when inventory is genuinely low." },
-      { "code": { "lang": "liquid", "code": "{%- assign v = product.selected_or_first_available_variant -%}\n{%- if v.inventory_management == 'shopify' and v.inventory_quantity <= 5 and v.inventory_quantity > 0 -%}\n  <p class=\"stock stock--low\">Only {{ v.inventory_quantity }} left in stock</p>\n{%- elsif v.available -%}\n  <p class=\"stock stock--ok\">In stock</p>\n{%- else -%}\n  <p class=\"stock stock--out\">Sold out</p>\n{%- endif -%}" } },
-      { "h": "Delivery estimate" },
-      { "p": "'Order in next 4 hours - delivery by Thursday' outperforms generic shipping text because it answers the real question (when will it arrive?). Calculate cutoff from shop.metaobjects or a metafield; render only if configured." },
-      { "h": "Trust cluster" },
-      { "p": "Payment icons, returns policy, guarantee strip - placed directly under the buy button where hesitation happens. Every GPLMart product-page snippet (trust-badges, payment-badges, guarantee-strip, delivery-estimator) is built for exactly this slot - preview them in the playground before writing your own." },
-      { "h": "Assignment: build a buy box" },
-      { "list": [
-        "Create sections/buy-box.liquid on a dev theme",
-        "Render price + compare-at + save amount",
-        "Add the inventory-aware stock line",
-        "Add a {% schema %} with settings for trust-badge text and cutoff hour",
-        "Test with a product that has variants AND one that doesn't"
-      ] },
-      { "p": "Module 3 takes you into the cart - where the AJAX API unlocks everything dynamic." }
+      {
+        "p": "The 'buy box' is the cluster around the add-to-cart button: price, compare-at, variant picker, stock indicator, trust badges, delivery estimate. It's where purchase intent either survives or dies."
+      },
+      {
+        "h": "Price display done right"
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "{%- assign variant = product.selected_or_first_available_variant -%}\n<p class=\"price\">\n  <span class=\"price__current\">{{ variant.price | money }}</span>\n  {%- if variant.compare_at_price > variant.price -%}\n    <s class=\"price__compare\">{{ variant.compare_at_price | money }}</s>\n    <span class=\"price__save\">Save {{ variant.compare_at_price | minus: variant.price | money }}</span>\n  {%- endif -%}\n</p>"
+        }
+      },
+      {
+        "p": "Note the minus filter computing the real saving - never hardcode '20% off'; the data already knows the truth."
+      },
+      {
+        "h": "Stock urgency that isn't fake"
+      },
+      {
+        "p": "Fake scarcity ('only 2 left!' on a store with 500 units) is both dishonest and legally risky in some jurisdictions. The honest version reads real inventory levels - but Shopify's product.variants[].inventory_quantity is only exposed when the merchant tracks inventory AND the theme has permission. Pattern: show urgency only when inventory is genuinely low."
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "{%- assign v = product.selected_or_first_available_variant -%}\n{%- if v.inventory_management == 'shopify' and v.inventory_quantity <= 5 and v.inventory_quantity > 0 -%}\n  <p class=\"stock stock--low\">Only {{ v.inventory_quantity }} left in stock</p>\n{%- elsif v.available -%}\n  <p class=\"stock stock--ok\">In stock</p>\n{%- else -%}\n  <p class=\"stock stock--out\">Sold out</p>\n{%- endif -%}"
+        }
+      },
+      {
+        "h": "Delivery estimate"
+      },
+      {
+        "p": "'Order in next 4 hours - delivery by Thursday' outperforms generic shipping text because it answers the real question (when will it arrive?). Calculate cutoff from shop.metaobjects or a metafield; render only if configured."
+      },
+      {
+        "h": "Trust cluster"
+      },
+      {
+        "p": "Payment icons, returns policy, guarantee strip - placed directly under the buy button where hesitation happens. Every GPLMart product-page snippet (trust-badges, payment-badges, guarantee-strip, delivery-estimator) is built for exactly this slot - preview them in the playground before writing your own."
+      },
+      {
+        "h": "Assignment: build a buy box"
+      },
+      {
+        "list": [
+          "Create sections/buy-box.liquid on a dev theme",
+          "Render price + compare-at + save amount",
+          "Add the inventory-aware stock line",
+          "Add a {% schema %} with settings for trust-badge text and cutoff hour",
+          "Test with a product that has variants AND one that doesn't"
+        ]
+      },
+      {
+        "p": "Module 3 takes you into the cart - where the AJAX API unlocks everything dynamic."
+      }
     ]
   },
   {
@@ -158,24 +294,56 @@
     "excerpt": "Variant pickers, option swatches, file uploads and personalization - the inputs that turn a product page into a configured order.",
     "readMin": 7,
     "blocks": [
-      { "p": "Variants are Shopify's answer to 'same product, different choices' - size, colour, material. The Liquid challenge: render pickers that update price, image and availability without a page reload." },
-      { "h": "The data model" },
-      { "list": [
-        "product.options = ['Size', 'Colour'] - option names",
-        "product.options_with_values = [{name:'Size', values:['S','M','L']}, ...]",
-        "product.variants[] = every purchasable combination with its own price, sku, image, available flag",
-        "variant.featured_media / variant.image - per-variant imagery"
-      ] },
-      { "h": "The classic pattern: variant JSON + JS" },
-      { "p": "Server-render all variants as JSON in a script tag; JavaScript listens to picker changes, finds the matching variant, and updates price/image/ATC button. Shopify's own themes do exactly this. Liquid provides the data; JS does the switching." },
-      { "code": { "lang": "liquid", "code": "<script type=\"application/json\" data-variants>\n[\n{%- for v in product.variants -%}\n  {\n    \"id\": {{ v.id }},\n    \"title\": {{ v.title | json }},\n    \"price\": {{ v.price }},\n    \"available\": {{ v.available }},\n    \"image\": {{ v.featured_image | image_url: width: 800 | json }}\n  }{%- unless forloop.last -%},{%- endunless -%}\n{%- endfor -%}\n]\n</script>" } },
-      { "h": "Swatches vs dropdowns" },
-      { "p": "Colour options deserve swatches (visual), size deserves buttons or a dropdown. The variant-swatches snippet in the library renders colour swatches from option values with hex mapping via metafields or a settings JSON. For text options, styled radio inputs beat native selects on mobile." },
-      { "h": "Line-item properties: customization without variants" },
-      { "p": "Engraving text, gift messages, file uploads - things that change per order but aren't purchasable variants - use line item properties. Inputs named properties[Engraving] inside the product form flow through to the order automatically. No app needed for basic text personalization." },
-      { "code": { "lang": "liquid", "code": "<input type=\"text\" name=\"properties[Engraving text]\" maxlength=\"40\" placeholder=\"Name to engrave\">\n<textarea name=\"properties[Gift message]\" rows=\"2\"></textarea>" } },
-      { "p": "These show up in the order admin and confirmation email automatically. The personalization-field and file-upload snippets in the library implement this pattern with validation." },
-      { "p": "You've covered the product page's data and inputs. Module 3: what happens after add-to-cart." }
+      {
+        "p": "Variants are Shopify's answer to 'same product, different choices' - size, colour, material. The Liquid challenge: render pickers that update price, image and availability without a page reload."
+      },
+      {
+        "h": "The data model"
+      },
+      {
+        "list": [
+          "product.options = ['Size', 'Colour'] - option names",
+          "product.options_with_values = [{name:'Size', values:['S','M','L']}, ...]",
+          "product.variants[] = every purchasable combination with its own price, sku, image, available flag",
+          "variant.featured_media / variant.image - per-variant imagery"
+        ]
+      },
+      {
+        "h": "The classic pattern: variant JSON + JS"
+      },
+      {
+        "p": "Server-render all variants as JSON in a script tag; JavaScript listens to picker changes, finds the matching variant, and updates price/image/ATC button. Shopify's own themes do exactly this. Liquid provides the data; JS does the switching."
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "<script type=\"application/json\" data-variants>\n[\n{%- for v in product.variants -%}\n  {\n    \"id\": {{ v.id }},\n    \"title\": {{ v.title | json }},\n    \"price\": {{ v.price }},\n    \"available\": {{ v.available }},\n    \"image\": {{ v.featured_image | image_url: width: 800 | json }}\n  }{%- unless forloop.last -%},{%- endunless -%}\n{%- endfor -%}\n]\n</script>"
+        }
+      },
+      {
+        "h": "Swatches vs dropdowns"
+      },
+      {
+        "p": "Colour options deserve swatches (visual), size deserves buttons or a dropdown. The variant-swatches snippet in the library renders colour swatches from option values with hex mapping via metafields or a settings JSON. For text options, styled radio inputs beat native selects on mobile."
+      },
+      {
+        "h": "Line-item properties: customization without variants"
+      },
+      {
+        "p": "Engraving text, gift messages, file uploads - things that change per order but aren't purchasable variants - use line item properties. Inputs named properties[Engraving] inside the product form flow through to the order automatically. No app needed for basic text personalization."
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "<input type=\"text\" name=\"properties[Engraving text]\" maxlength=\"40\" placeholder=\"Name to engrave\">\n<textarea name=\"properties[Gift message]\" rows=\"2\"></textarea>"
+        }
+      },
+      {
+        "p": "These show up in the order admin and confirmation email automatically. The personalization-field and file-upload snippets in the library implement this pattern with validation."
+      },
+      {
+        "p": "You've covered the product page's data and inputs. Module 3: what happens after add-to-cart."
+      }
     ]
   },
   {
@@ -185,34 +353,111 @@
     "excerpt": "cart.* fields, /cart/add.js and /cart.js - the endpoints that power drawers, upsells and mini-carts without reloads.",
     "readMin": 9,
     "blocks": [
-      { "p": "The cart object (cart.item_count, cart.total_price, cart.items[]) renders server-side on cart pages. But modern storefronts need a live cart drawer that updates without navigation - that's the AJAX API." },
-      { "h": "The two endpoints you need" },
-      { "list": [
-        "GET /cart.js - returns the whole cart as JSON",
-        "POST /cart/add.js - adds an item {id, quantity, properties}",
-        "POST /cart/change.js - updates quantities",
-        "POST /cart/update.js - batch changes",
-        "POST /cart/clear.js - empties the cart"
-      ] },
-      { "h": "A minimal add-to-cart fetch" },
-      { "code": { "lang": "js", "code": "const res = await fetch('/cart/add.js', {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({ items: [{ id: variantId, quantity: 1 }] })\n});\nconst cart = await res.json();\n// cart.item_count, cart.total_price, cart.items are now fresh" } },
-      { "h": "The drawer pattern" },
-      { "list": [
-        "Render the drawer markup hidden in a section (cart-drawer snippet does this)",
-        "On add-to-cart success: fetch /cart.js, re-render item rows client-side or re-fetch a rendered snippet",
-        "Show free-shipping progress: (cart.total_price / threshold) - pure JS math on the JSON",
-        "Open the drawer with a CSS class toggle - no library needed"
-      ] },
-      { "h": "Upsells that don't break checkout" },
-      { "p": "Post-add upsells use the same /cart/add.js call with a 'continue shopping' vs 'checkout' choice. Pre-purchase upsells (before ATC) are simpler - they're just links that add a different variant. The cart-upsell and upsell-modal snippets implement both patterns." },
-      { "h": "Limits to respect" },
-      { "list": [
-        "Checkout itself (checkout page) is NOT customizable via Liquid on standard plans - Shopify checkout extensibility is a separate system.",
-        "Cart page IS a JSON template - you can rebuild it entirely.",
-        "Always handle the error response - /cart/add.js returns 422 with description when a variant is unavailable.",
-        "Debounce rapid clicks; double-adds are the #1 AJAX cart bug."
-      ] },
-      { "p": "Module 4: making all of this controllable by merchants through the theme editor." }
+      {
+        "p": "The cart object (cart.item_count, cart.total_price, cart.items[]) renders server-side on cart pages. But modern storefronts need a live cart drawer that updates without navigation - that's the AJAX API."
+      },
+      {
+        "h": "The two endpoints you need"
+      },
+      {
+        "list": [
+          "GET /cart.js - returns the whole cart as JSON",
+          "POST /cart/add.js - adds an item {id, quantity, properties}",
+          "POST /cart/change.js - updates quantities",
+          "POST /cart/update.js - batch changes",
+          "POST /cart/clear.js - empties the cart"
+        ]
+      },
+      {
+        "h": "A minimal add-to-cart fetch"
+      },
+      {
+        "code": {
+          "lang": "js",
+          "code": "const res = await fetch('/cart/add.js', {\n  method: 'POST',\n  headers: { 'Content-Type': 'application/json' },\n  body: JSON.stringify({ items: [{ id: variantId, quantity: 1 }] })\n});\nconst cart = await res.json();\n// cart.item_count, cart.total_price, cart.items are now fresh"
+        }
+      },
+      {
+        "h": "The drawer pattern"
+      },
+      {
+        "list": [
+          "Render the drawer markup hidden in a section (cart-drawer snippet does this)",
+          "On add-to-cart success: fetch /cart.js, re-render item rows client-side or re-fetch a rendered snippet",
+          "Show free-shipping progress: (cart.total_price / threshold) - pure JS math on the JSON",
+          "Open the drawer with a CSS class toggle - no library needed"
+        ]
+      },
+      {
+        "h": "Upsells that don't break checkout"
+      },
+      {
+        "p": "Post-add upsells use the same /cart/add.js call with a 'continue shopping' vs 'checkout' choice. Pre-purchase upsells (before ATC) are simpler - they're just links that add a different variant. The cart-upsell and upsell-modal snippets implement both patterns."
+      },
+      {
+        "h": "Limits to respect"
+      },
+      {
+        "list": [
+          "Checkout itself (checkout page) is NOT customizable via Liquid on standard plans - Shopify checkout extensibility is a separate system.",
+          "Cart page IS a JSON template - you can rebuild it entirely.",
+          "Always handle the error response - /cart/add.js returns 422 with description when a variant is unavailable.",
+          "Debounce rapid clicks; double-adds are the #1 AJAX cart bug."
+        ]
+      },
+      {
+        "p": "Module 4: making all of this controllable by merchants through the theme editor."
+      }
+    ]
+  },
+  {
+    "module": "sections-settings",
+    "slug": "section-blocks-schema-iteration",
+    "title": "Building Flexible Sections with Dynamic Block Schemas",
+    "excerpt": "Master section blocks in Liquid schema, from configuring repeatable item limits to adding interactive Theme Editor attributes.",
+    "readMin": 7,
+    "blocks": [
+      {
+        "h": "Understanding Shopify Section Blocks"
+      },
+      {
+        "p": "Shopify section blocks empower merchants to add, reorder, remove, and configure repeatable content elements within a section. Rather than hardcoding fixed columns or rows, blocks allow flexible layout structures—such as sliders, feature grids, accordions, and custom icon lists."
+      },
+      {
+        "h": "Defining Blocks in Section Schema"
+      },
+      {
+        "p": "Blocks are declared inside the JSON object within the section's {% schema %} tag. Each block entry requires a unique type identifier, a display name, an array of block-specific settings, and optionally a block-level limit or section-wide max_blocks restriction."
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "{% schema %}\n{\n  \"name\": \"Feature Grid\",\n  \"max_blocks\": 4,\n  \"settings\": [\n    {\n      \"type\": \"text\",\n      \"id\": \"heading\",\n      \"label\": \"Grid Heading\",\n      \"default\": \"Why Choose Us\"\n    }\n  ],\n  \"blocks\": [\n    {\n      \"type\": \"feature_card\",\n      \"name\": \"Feature Card\",\n      \"settings\": [\n        {\n          \"type\": \"image_picker\",\n          \"id\": \"image\",\n          \"label\": \"Card Image\"\n        },\n        {\n          \"type\": \"inline_richtext\",\n          \"id\": \"title\",\n          \"label\": \"Card Title\",\n          \"default\": \"Feature Title\"\n        },\n        {\n          \"type\": \"richtext\",\n          \"id\": \"description\",\n          \"label\": \"Card Description\"\n        }\n      ]\n    }\n  ],\n  \"presets\": [\n    {\n      \"name\": \"Feature Grid\",\n      \"blocks\": [\n        { \"type\": \"feature_card\" },\n        { \"type\": \"feature_card\" },\n        { \"type\": \"feature_card\" }\n      ]\n    }\n  ]\n}\n{% endschema %}"
+        }
+      },
+      {
+        "h": "Rendering Block Iterations in Liquid Markup"
+      },
+      {
+        "p": "In the HTML area of your section, iterate over section.blocks using a for loop. Access each block's settings via block.settings.setting_id. Crucially, you must append {{ block.shopify_attributes }} to the container element of each block inside the loop so the Theme Editor JS engine can highlight blocks live during customization."
+      },
+      {
+        "code": {
+          "lang": "liquid",
+          "code": "<section class=\"feature-grid-section\">\n  {% if section.settings.heading != blank %}\n    <h2>{{ section.settings.heading | escape }}</h2>\n  {% endif %}\n\n  <div class=\"feature-grid\">\n    {% for block in section.blocks %}\n      <div class=\"feature-grid__item\" {{ block.shopify_attributes }}>\n        {% case block.type %}\n          {% when 'feature_card' %}\n            {% if block.settings.image != blank %}\n              {{ block.settings.image | image_url: width: 600 | image_tag: loading: 'lazy', class: 'feature-grid__image' }}\n            {% endif %}\n            <h3>{{ block.settings.title }}</h3>\n            <div class=\"feature-grid__text\">{{ block.settings.description }}</div>\n        {% endcase %}\n      </div>\n    {% endfor %}\n  </div>\n</section>"
+        }
+      },
+      {
+        "h": "Essential Block Implementation Rules"
+      },
+      {
+        "list": [
+          "Always include {{ block.shopify_attributes }} on the root wrapper of each block in your loop to enable active selection in the Theme Editor preview.",
+          "Use block types efficiently with dynamic Liquid case statements when supporting multiple block styles (e.g., image card vs. text column).",
+          "Define default blocks inside section presets so the section looks populated immediately when added by a merchant.",
+          "Set reasonable max_blocks limits to protect grid layouts from breaking on narrow viewports."
+        ]
+      }
     ]
   }
 ]
