@@ -2,6 +2,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { createServiceClient } from "@/lib/supabase/admin";
 import { provisionMemberAccount } from "@/lib/members";
+import { notifyAdmin } from "@/lib/notify";
 import { razorpayCreds } from "@/lib/env";
 import { OFFER } from "@/lib/offer";
 import { geoPrice } from "@/lib/geo";
@@ -30,14 +31,36 @@ export const fulfil: Fulfil = async (a) => {
         .select("user_id, customer_email, status")
         .eq("razorpay_order_id", a.razorpayOrderId)
         .maybeSingle();
-      if (order && !order.user_id && order.customer_email && order.status === "paid") {
-        const prov = await provisionMemberAccount(order.customer_email as string);
-        console.log(`member provisioned for ${order.customer_email}: created=${prov.created} emailed=${prov.emailed}`);
+      if (order && order.status === "paid") {
+        // Guest checkout: the RPC marks the order paid but can't grant an
+        // entitlement (no user_id). Provision the member account here so
+        // verify, webhook and admin reconcile all converge on the same account.
+        let prov = { userId: null as string | null, created: false, emailed: false };
+        if (!order.user_id && order.customer_email) {
+          prov = await provisionMemberAccount(order.customer_email as string);
+          console.log(`member provisioned for ${order.customer_email}: created=${prov.created} emailed=${prov.emailed}`);
+        }
+        const { data: full } = await db
+          .from("orders")
+          .select("customer_name, customer_email, customer_phone, plan, amount_paise, currency, addon, razorpay_order_id")
+          .eq("razorpay_order_id", a.razorpayOrderId)
+          .maybeSingle();
+        await notifyAdmin("New purchase", {
+          "Customer": full?.customer_name,
+          "Email": full?.customer_email,
+          "Phone": full?.customer_phone,
+          "Plan": full?.plan,
+          "Addon": full?.addon,
+          "Amount": full ? `${(full.amount_paise as number) / 100} ${full.currency}` : null,
+          "Order": full?.razorpay_order_id,
+          "Account": order.user_id ? "existing member" : prov.userId ? "created" : "guest (no account)",
+          "Credentials emailed": prov.emailed ? "yes" : prov.created ? "no (check Resend/Supabase logs)" : "-",
+        });
       }
     } catch (e) {
-      // Provisioning must never break fulfilment - the order is already paid;
-      // a retry via webhook/reconcile will pick it up.
-      console.error("member provisioning failed", e instanceof Error ? e.message : e);
+      // Notification/provisioning must never break fulfilment - the order is
+      // already paid; a retry via webhook/reconcile will pick it up.
+      console.error("post-fulfil hook failed", e instanceof Error ? e.message : e);
     }
   }
   return result;
