@@ -49,6 +49,7 @@ jobs:
 
       - name: Commit generated content
         run: |
+          mkdir -p products/src
           git config user.name "gplmart-content-bot"
           git config user.email "content-bot@gplmart.com"
           git add lib/playground/generated-examples.json lib/guides-generated.json lib/course-lessons.json products/catalog.json products/src .content-state.json generated-report.json
@@ -56,5 +57,5 @@ jobs:
             echo "No new content generated - nothing to commit."
             exit 0
           fi
-          git commit -m "Daily content: $(node -e "const r=require('./generated-report.json');console.log(\`+${r.snippets} snippets, +${r.guides} guides, +${r.products} products\`)")"
+          git commit -m "Daily content: $(node -e "const r=require('./generated-report.json');console.log(\`+${r.snippets} snippets, +${r.guides} guides, +${r.products} products, +${r.ebooks} ebooks, +${r.lessons} lessons\`)")"
           git push
