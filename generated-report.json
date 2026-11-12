@@ -1,15 +1,21 @@
 {
-  "date": "2026-11-11",
+  "date": "2026-11-12",
   "snippets": 0,
-  "guides": 1,
+  "guides": 0,
   "products": 0,
   "ebooks": 0,
-  "lessons": 1,
+  "lessons": 0,
   "dropped": [
     {
       "type": "snippets-batch",
       "errs": [
         "LLM 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+      ]
+    },
+    {
+      "type": "guides-batch",
+      "errs": [
+        "Bad control character in string literal in JSON at position 1209 (line 22 column 235)"
       ]
     },
     {
@@ -21,14 +27,13 @@
     {
       "type": "products-html",
       "errs": [
-        "Unterminated string in JSON at position 44533 (line 16 column 16320)"
+        "Unterminated string in JSON at position 41319 (line 16 column 12746)"
       ]
     },
     {
-      "type": "product-ebook",
-      "slug": "shopify-liquid-custom-sections-handbook",
+      "type": "products-ebook",
       "errs": [
-        "reviewer rejected"
+        "Bad control character in string literal in JSON at position 2890 (line 16 column 1392)"
       ]
     }
   ]
