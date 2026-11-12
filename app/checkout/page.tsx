@@ -76,8 +76,8 @@ export default async function CheckoutPage() {
           <ul className="mt-4 space-y-1.5 text-xs text-subtle">
             {[
               "Payment handled by Razorpay - card details never touch this site",
-              "Access link arrives on WhatsApp after payment",
-              "30-day access via your paid email - no signup",
+              "Login credentials arrive by email after payment",
+              "Full access via your dashboard - no signup needed",
             ].map((t) => (
               <li key={t} className="flex items-center gap-2">
                 <Check aria-hidden className="size-3.5 text-mint" />
