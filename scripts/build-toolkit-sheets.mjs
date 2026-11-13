@@ -6,9 +6,7 @@ import ExcelJS from "exceljs";
 
 const NAVY = "FF1A1A2E";
 const ACCENT = "FF0E9F6E";
-const MINT = "FF34D399";
 const LIGHT = "FFF4F4F8";
-const BORDER = "FFD8D8E0";
 
 function styleHeader(ws, rowNum, cols) {
   const row = ws.getRow(rowNum);
