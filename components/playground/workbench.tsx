@@ -256,12 +256,12 @@ export function Workbench({ initialId, basePath = "/playground", freeTier = true
           </section>
         )
       ) : (
-        <div className="grid gap-10">
+        <div className="space-y-14">
           {freeTier && free.length > 0 && (
             <section>
-              <h2 className="mb-5 flex items-baseline gap-3 font-display text-2xl font-semibold text-accent">
+              <h2 className="mb-6 flex items-baseline gap-3 font-display text-3xl font-semibold text-accent">
                 Free samples - copy the code
-                <span className="text-sm font-normal text-subtle">{free.length}</span>
+                <span className="text-base font-normal text-subtle">{free.length}</span>
               </h2>
               <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                 {free.map((e) => (
@@ -275,10 +275,10 @@ export function Workbench({ initialId, basePath = "/playground", freeTier = true
           {categories.map((cat) => {
             const items = members.filter((e) => e.category === cat);
             return (
-              <section key={cat}>
-                <h2 className="mb-5 flex items-baseline gap-3 font-display text-2xl font-semibold text-accent">
+              <section key={cat} className="border-t border-line pt-10">
+                <h2 className="mb-6 flex items-baseline gap-3 font-display text-3xl font-semibold text-accent">
                   {cat}
-                  <span className="text-sm font-normal text-subtle">{items.length}</span>
+                  <span className="text-base font-normal text-subtle">{items.length}</span>
                 </h2>
                 <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {items.map((e) => (

@@ -47,7 +47,7 @@ export default async function SnippetsPage({
         crumbs={[{ label: "Library", href: "/library" }, { label: "Snippets" }]}
       />
       <Container className="py-10">
-        <Workbench initialId={example} basePath="/snippets" freeTier={false} />
+        <Workbench initialId={example} basePath="/snippets" />
 
         <section className="mt-16">
           <div className="flex items-end justify-between gap-4">
