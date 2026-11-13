@@ -1,0 +1,10 @@
+{
+  "_comment": "Structural ledger of every fast-cut film this composer has generated, most recent FIRST. plan.mjs reads this and steers each new film away from what was made recently, so variety is enforced by data rather than memory. verdict: approved | rejected | pending.",
+  "_thresholds": {
+    "noveltyThreshold": 0.5,
+    "note": "A new film's family set must be less than 50% similar (Jaccard) to any of the last 18 films (a full planning cycle is roughly 15, so a shorter window let an early film repeat as the eleventh), and must contain at least one family absent from the last 6. Two real approved films once measured 70% similar to each other, which is what this threshold exists to catch.",
+    "lookbackFilms": 18,
+    "freshnessLookback": 6
+  },
+  "films": []
+}

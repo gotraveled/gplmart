@@ -1,0 +1,13 @@
+{
+  "brand": "Aurora Skincare",
+  "productName": "Aurora Vitamin C Serum",
+  "productType": "liquid",
+  "edible": false,
+  "pack": "bottle",
+  "material": "a thin golden-amber liquid",
+  "inside": "runs slowly, catches and refracts light as it moves, faintly viscous, not watery",
+  "hookSmall": "Dermatologist-formulated",
+  "hookLarge": "10% VITAMIN C",
+  "durationSeconds": 20,
+  "finishing": "runner"
+}

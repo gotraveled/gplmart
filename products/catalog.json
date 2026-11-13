@@ -15,6 +15,68 @@
       "license": "GPL-3.0-or-later",
       "files": ["README.md", "book.md"],
       "added": "2026-11-12"
+    },
+    {
+      "slug": "ecom-product-video-skill",
+      "title": "Ecom Product Video Skill",
+      "description": "A complete AI-agent skill bundle that turns one product photo into a professional short product film - intake, shot design, prompt engineering, Higgsfield/fal.ai generation and a Remotion finishing pass. Includes setup guide, 11 reference docs and composer scripts.",
+      "category": "skill-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "SKILL.md",
+        "SETUP-GUIDE.md",
+        "PROMPT-STRUCTURE-GUIDE.md",
+        "ledger.txt",
+        "docs/example-prompt.md",
+        "composer/compose-prompt.mjs",
+        "composer/film-history.json",
+        "composer/plan.mjs",
+        "composer/spec.example.json",
+        "composer/validate-film.mjs",
+        "finish/.gitignore",
+        "finish/browser.mjs",
+        "finish/check.mjs",
+        "finish/finish.mjs",
+        "finish/Finish.tsx",
+        "finish/index.ts",
+        "finish/local-server.mjs",
+        "finish/package-lock.json",
+        "finish/package.json",
+        "finish/Root.tsx",
+        "references/clip-by-clip.md",
+        "references/fastcut-composer.md",
+        "references/finishing.md",
+        "references/generation.md",
+        "references/intake.md",
+        "references/ledger.md",
+        "references/prompt-template.md",
+        "references/providers.md",
+        "references/self-check.md",
+        "references/shot-grammar.md",
+        "references/why.md",
+        "scripts/ledger.mjs"
+      ],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "storefront-promo-video-skill",
+      "title": "Storefront Promo Video Skill",
+      "description": "An AI-agent skill for short brand promo videos - hero shots, product range, mood and a CTA end card, generated via Higgsfield/fal.ai with a Remotion finishing pass. The store-level sibling to the product-film skill.",
+      "category": "skill-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "SKILL.md",
+        "references/intake.md",
+        "references/shot-grammar.md",
+        "references/providers.md",
+        "references/finishing.md",
+        "references/self-check.md"
+      ],
+      "added": "2026-11-12"
     }
   ]
 }

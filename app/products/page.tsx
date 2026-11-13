@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   alternates: { canonical: "/products" },
 };
 
-const kindLabel: Record<string, string> = { "html-template": "HTML template", "php-script": "PHP script", ebook: "Ebook" };
+const kindLabel: Record<string, string> = { "html-template": "HTML template", "php-script": "PHP script", ebook: "Ebook", "skill-pack": "AI skill pack" };
 
 export default function ProductsPage() {
   const { items } = getCatalog();

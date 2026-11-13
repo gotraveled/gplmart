@@ -17,7 +17,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const p = getProduct(slug);
   if (!p) return { title: "Product" };
   return {
-    title: `${p.title} - ${p.category === "php-script" ? "PHP Script" : p.category === "ebook" ? "Ebook" : "HTML Template"} | GPLMart`,
+    title: `${p.title} - ${p.category === "php-script" ? "PHP Script" : p.category === "ebook" ? "Ebook" : p.category === "skill-pack" ? "AI Skill Pack" : "HTML Template"} | GPLMart`,
     description: p.description.slice(0, 155),
     alternates: { canonical: `/products/${p.slug}` },
   };
@@ -39,7 +39,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="min-w-0">
             <div className="flex flex-wrap gap-2">
-              <Badge>{p.category === "php-script" ? "PHP script" : p.category === "ebook" ? "Ebook" : "HTML template"}</Badge>
+              <Badge>{p.category === "php-script" ? "PHP script" : p.category === "ebook" ? "Ebook" : p.category === "skill-pack" ? "AI skill pack" : "HTML template"}</Badge>
               <Badge>v{p.version}</Badge>
               <Badge className="border-mint/40 bg-mint/10 text-mint">{p.license}</Badge>
             </div>

@@ -1,0 +1,1 @@
+date | brand | product | families | archetype | pacing | hook | value_angle

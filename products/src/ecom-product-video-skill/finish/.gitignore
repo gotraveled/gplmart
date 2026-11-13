@@ -1,0 +1,11 @@
+node_modules/
+# package-lock.json IS committed on purpose: it pins the Remotion versions the render was verified
+# against, and the remote finishing workflow needs it for `npm ci` and for its cache key.
+# staged render inputs, and any test output
+__clip-*
+__audio-*
+*.mp4
+# ...except the fixture check.mjs renders against. It is committed on purpose so a fresh clone can run
+# check.mjs stage 2 (ffprobe) without regenerating it first.
+!public/selftest-input.mp4
+log*.txt
