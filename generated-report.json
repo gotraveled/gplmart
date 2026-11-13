@@ -1,5 +1,5 @@
 {
-  "date": "2026-11-12",
+  "date": "2026-11-13",
   "snippets": 0,
   "guides": 0,
   "products": 0,
@@ -7,33 +7,42 @@
   "lessons": 0,
   "dropped": [
     {
-      "type": "snippets-batch",
+      "type": "snippet-item",
       "errs": [
-        "LLM 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+        "Bad control character in string literal in JSON at position 2289 (line 51 column 761)"
       ]
     },
     {
-      "type": "guides-batch",
+      "type": "guide",
+      "slug": "custom-sticky-add-to-cart-bar-dawn",
       "errs": [
-        "Bad control character in string literal in JSON at position 1209 (line 22 column 235)"
+        "reviewer rejected"
       ]
     },
     {
-      "type": "products-php",
+      "type": "product-php-item",
       "errs": [
-        "LLM 503: {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+        "Bad control character in string literal in JSON at position 12462 (line 12 column 11972)"
       ]
     },
     {
-      "type": "products-html",
+      "type": "product-php",
+      "slug": "micro-invoice-generator",
       "errs": [
-        "Unterminated string in JSON at position 41319 (line 16 column 12746)"
+        "reviewer rejected"
       ]
     },
     {
-      "type": "products-ebook",
+      "type": "product-html",
+      "slug": "solis-solar-energy-landing",
       "errs": [
-        "Bad control character in string literal in JSON at position 2890 (line 16 column 1392)"
+        "reviewer rejected"
+      ]
+    },
+    {
+      "type": "product-ebook-item",
+      "errs": [
+        "LLM 429: {\n  \"error\": {\n    \"code\": 429,\n    \"message\": \"You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \\n* Quota exceede"
       ]
     }
   ]
