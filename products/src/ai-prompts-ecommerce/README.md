@@ -1,6 +1,6 @@
-# AI Prompts for Ecommerce: 100+ Copy-Paste Prompts That Sell
+# AI Prompts for Ecommerce
 
-The complete prompt playbook for sellers - 16 chapters of prompting strategy plus 100+ ready-to-copy prompts for product research, listings, ads, emails, WhatsApp, social content, SEO, support and pricing. Works with ChatGPT, Claude and Gemini.
+The complete prompt playbook for sellers - 16 chapters of prompting strategy plus 70+ ready-to-copy prompts for product research, listings, ads, emails, WhatsApp, social content, SEO, support and pricing. Works with ChatGPT, Claude and Gemini.
 
 ## Contents
 - book.md - full ebook source
