@@ -19,11 +19,12 @@ const categoryLabel: Record<string, string> = {
   "spreadsheet-pack": "Spreadsheet system",
   "swipe-file": "Swipe file",
   "template-pack": "Template pack",
+  "planner-pack": "Printable planner",
   "html-template": "HTML template",
 };
 
 const label = (c: string) => categoryLabel[c] ?? c;
-const resellCategories = new Set(["ebook", "spreadsheet-pack", "swipe-file", "template-pack"]);
+const resellCategories = new Set(["ebook", "spreadsheet-pack", "swipe-file", "template-pack", "planner-pack"]);
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -73,6 +74,12 @@ const usageSteps: Record<string, string[]> = {
     "Open the PDF for the full guide, or the CSV to import hooks into your own sheets/Notion.",
     "Pick a swipe, swap the [BRACKETED] placeholders for your product and audience, deploy.",
     "Track what converts and build your own swipe vault over time.",
+  ],
+  "planner-pack": [
+    "Download the zip and open the PDF on any device.",
+    "Print at 100% / Actual Size for correct sizing - any paper works.",
+    "Start with the cover and how-to pages, then use the pages in order or jump to what you need.",
+    "Re-print pages anytime - the PDF is yours permanently.",
   ],
   "template-pack": [
     "Download the zip and unzip it - each template is a ready-to-fill Markdown file.",

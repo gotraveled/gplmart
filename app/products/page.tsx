@@ -22,6 +22,7 @@ const kindLabel: Record<string, string> = {
   "spreadsheet-pack": "Spreadsheet system",
   "swipe-file": "Swipe file",
   "template-pack": "Template pack",
+  "planner-pack": "Printable planner",
 };
 
 const categories = [

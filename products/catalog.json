@@ -601,6 +601,71 @@
         "resume-06-ecommerce-dropshipping-operator.md"
       ],
       "added": "2026-11-13"
+    },
+    {
+      "slug": "wedding-planner-spreadsheet",
+      "title": "Wedding Planner Spreadsheet System",
+      "description": "The spreadsheet that out-sold every printable wedding planner on Etsy: budget vs actual, guest list with RSVPs, timeline, seating plan with capacity checks, vendor tracker and master checklist - all live formulas.",
+      "category": "spreadsheet-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "Wedding-Planner-Spreadsheet-System.xlsx"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "freelance-business-planner",
+      "title": "Freelance Business Planner",
+      "description": "Run your freelance business like a business: income tracker, client CRM, automatic tax set-aside, sales pipeline with weighted revenue, rate calculator and monthly goals - all live formulas.",
+      "category": "spreadsheet-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "Freelance-Business-Planner.xlsx"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "etsy-seller-business-planner",
+      "title": "Etsy Seller Business Planner",
+      "description": "Treat your Etsy shop like a business: monthly dashboard with real margin, listing tracker with conversion rates, content calendar, review tracker, fee log and goals - all live formulas.",
+      "category": "spreadsheet-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "Etsy-Seller-Business-Planner.xlsx"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "planner-bundle-2026",
+      "title": "The Minimalist 2026 Planner Bundle",
+      "description": "20 printable PDF pages: real 2026 calendar months, annual goals, habit tracker, budget summary and quarterly reviews - minimalist design, print-and-use.",
+      "category": "planner-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "Planner-Bundle-2026.pdf"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "adhd-daily-planner",
+      "title": "The ADHD-Friendly Daily Planner",
+      "description": "14 undated daily pages built for ADHD brains: energy check, top-3 priorities, time blocks, body-double pomodoro timer, shutdown ritual, weekly reset and overwhelm page.",
+      "category": "planner-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "ADHD-Daily-Planner.pdf"
+      ],
+      "added": "2026-11-13"
     }
   ]
 }
