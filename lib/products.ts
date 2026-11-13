@@ -11,6 +11,8 @@ export interface ProductItem {
   version: string;
   license: string;
   files: string[];
+  /** Other catalog slugs whose files are included in this product's zip. */
+  includes?: string[];
   added: string;
 }
 

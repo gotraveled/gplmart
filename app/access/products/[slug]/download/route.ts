@@ -52,11 +52,16 @@ export async function GET(req: Request, { params }: { params: Promise<{ slug: st
     });
   }
 
+  // Collect files from this product plus any bundled products.
+  const slugs = [p.slug, ...(p.includes ?? []).filter((s) => getProduct(s))];
   const entries: Record<string, Uint8Array> = {};
-  for (const rel of p.files) {
-    const fp = productFilePath(p.slug, rel);
-    if (!fp) return new Response("Product file missing", { status: 500 });
-    entries[`${p.slug}/${rel}`] = fileBytes(fp);
+  for (const s of slugs) {
+    const item = getProduct(s)!;
+    for (const rel of item.files) {
+      const fp = productFilePath(s, rel);
+      if (!fp) return new Response("Product file missing", { status: 500 });
+      entries[`${s}/${rel}`] = fileBytes(fp);
+    }
   }
   const zipped = zipSync(entries, { level: 6 });
   return new Response(zipped, {

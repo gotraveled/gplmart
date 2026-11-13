@@ -23,6 +23,7 @@ const kindLabel: Record<string, string> = {
   "swipe-file": "Swipe file",
   "template-pack": "Template pack",
   "planner-pack": "Printable planner",
+  bundle: "Mega bundle",
 };
 
 const categories = [

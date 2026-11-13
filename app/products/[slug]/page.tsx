@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { Download, FileCode2, LockKeyhole } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
@@ -21,11 +22,12 @@ const categoryLabel: Record<string, string> = {
   "swipe-file": "Swipe file",
   "template-pack": "Template pack",
   "planner-pack": "Printable planner",
+  bundle: "Mega bundle",
   "html-template": "HTML template",
 };
 
 const label = (c: string) => categoryLabel[c] ?? c;
-const resellCategories = new Set(["ebook", "spreadsheet-pack", "swipe-file", "template-pack", "planner-pack"]);
+const resellCategories = new Set(["ebook", "spreadsheet-pack", "swipe-file", "template-pack", "planner-pack", "bundle"]);
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -76,6 +78,12 @@ const usageSteps: Record<string, string[]> = {
     "Pick a swipe, swap the [BRACKETED] placeholders for your product and audience, deploy.",
     "Track what converts and build your own swipe vault over time.",
   ],
+  bundle: [
+    "Download the zip - it contains every included product in its own folder.",
+    "Start with the bundle guide (book.pdf) for the recommended order and quick wins.",
+    "Each included product has its own README with setup steps.",
+    "Use the products together - the swipe files feed the spreadsheets, the planners keep the business on track.",
+  ],
   "planner-pack": [
     "Download the zip and open the PDF on any device.",
     "Print at 100% / Actual Size for correct sizing - any paper works.",
@@ -117,6 +125,21 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               <Badge className="border-mint/40 bg-mint/10 text-mint">{p.license}</Badge>
             </div>
             <h2 className="mt-8 font-display text-xl font-semibold">What&apos;s in the zip</h2>
+            {p.includes && p.includes.length > 0 && (
+              <p className="mt-3 rounded-lg border border-accent/30 bg-accent/[0.06] px-4 py-3 text-sm text-muted">
+                <span className="font-semibold text-fg">Mega bundle:</span> this zip also contains{" "}
+                {p.includes.map((s, i) => {
+                  const inc = getProduct(s);
+                  return inc ? (
+                    <span key={s}>
+                      {i > 0 && (i === p.includes!.length - 1 ? " and " : ", ")}
+                      <Link href={`/products/${s}`} className="text-accent underline">{inc.title}</Link>
+                    </span>
+                  ) : null;
+                })}
+                {" "}- every file from each product, organized in its own folder.
+              </p>
+            )}
             <ul className="mt-4 space-y-2">
               {p.files.map((f) => (
                 <li key={f} className="flex items-center gap-2 rounded-lg border border-line bg-ink-900/60 px-4 py-2.5 font-mono text-sm">

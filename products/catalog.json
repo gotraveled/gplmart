@@ -730,6 +730,28 @@
         "calendar.csv"
       ],
       "added": "2026-11-13"
+    },
+    {
+      "slug": "digital-product-empire-bundle",
+      "title": "Digital Product Empire Bundle",
+      "description": "Six ready-to-sell digital product systems in one zip: profit & pricing workbook, Etsy toolkit, ad copy swipe file, social media content kit, resume/proposal kit and Shopify store documents - plus a 30-day launch plan and reselling guide.",
+      "category": "bundle",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf"
+      ],
+      "includes": [
+        "ecom-profit-pricing-system",
+        "etsy-dropshipping-business-toolkit",
+        "ad-copy-swipe-file-vol1",
+        "social-media-content-kit-vol1",
+        "resume-freelance-proposal-kit",
+        "shopify-store-launch-doc-pack"
+      ],
+      "added": "2026-11-13"
     }
   ]
 }
