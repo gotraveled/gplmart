@@ -77,6 +77,46 @@
         "references/self-check.md"
       ],
       "added": "2026-11-12"
+    },
+    {
+      "slug": "shopify-launch-video-skill",
+      "title": "Shopify Launch Video Skill",
+      "description": "AI-agent skill for store launch announcement videos - tease, first look, the drop, why now, CTA close. Higgsfield/fal.ai generation with Remotion finishing. The launch sibling to the product and promo video skills.",
+      "category": "skill-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": ["README.md", "SKILL.md", "references/launch-structure.md", "references/intake.md", "references/providers.md", "references/self-check.md"],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "product-photoshoot-skill",
+      "title": "Product Photoshoot Skill",
+      "description": "Turn one phone photo into a full e-commerce shoot - hero, angles, macros, lifestyle and platform-ready crops via AI image generation. Includes fidelity rules so the product stays true, platform image rules and prompt patterns.",
+      "category": "skill-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": ["README.md", "SKILL.md", "references/shot-list.md", "references/fidelity.md", "references/platforms.md", "references/providers.md", "references/self-check.md"],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "ad-creative-skill",
+      "title": "Ad Creative Skill",
+      "description": "Generate complete Meta ad campaign kits - 3 copy angles, headlines, creative briefs and A/B test matrices. Produces the words and creative direction a media buyer can launch immediately.",
+      "category": "skill-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": ["README.md", "SKILL.md", "references/copy-frameworks.md", "references/angles.md", "references/creative-briefs.md", "references/test-matrix.md", "references/compliance.md", "references/self-check.md"],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "seo-audit-skill",
+      "title": "SEO Audit Skill",
+      "description": "Run a structured SEO audit on any store - technical checks, on-page analysis, content gaps, Shopify-specific issues and a prioritised 30/60/90 fix roadmap. Evidence-backed, no fluff.",
+      "category": "skill-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": ["README.md", "SKILL.md", "references/checklist.md", "references/shopify-seo.md", "references/report-template.md", "references/tools.md", "references/self-check.md"],
+      "added": "2026-11-12"
     }
   ]
 }
