@@ -148,11 +148,7 @@ The single biggest mistake beginners make: picking a niche they *think* will sel
 
 A niche is a specific group of people with a specific problem you solve. "Planners for everyone" is not a niche. "Planners for ADHD adults who struggle with executive function" is a niche. "Wall art for nurseries" is a niche. "Social media templates for real estate agents" is a niche.
 
-The narrower your niche, the easier it is to:
-- Stand out from generic competitors
-- Write listings that match buyer search terms
-- Charge premium prices (specialized > generic)
-- Build an email list of exactly your buyers
+The narrower your niche, the easier it is to stand out, match buyer search terms, charge premium prices, and build an email list of exactly your buyers.
 
 ### Validation Method 1: Etsy Search Research (30 minutes)
 
@@ -343,13 +339,7 @@ Choosing where to sell is a strategic decision that affects your fees, discovera
 
 ### The Multi-Platform Strategy
 
-Most successful sellers use multiple platforms:
-
-1. **Etsy** for discovery and volume (printables, planners)
-2. **Gumroad/Payhip** for premium products and direct sales
-3. **Own store** (eventually) for brand building and email list capture
-
-Example: A seller might list a $5 planner on Etsy (for discovery), a $29 "complete planner bundle" on Gumroad (for margin), and drive traffic to their own site for a $49 "planner masterclass" course.
+Most successful sellers use multiple platforms: **Etsy** for discovery and volume (printables, planners), **Gumroad/Payhip** for premium products and direct sales, and eventually an **own store** for brand building and email capture. Example: a $5 planner on Etsy for discovery, a $29 "complete planner bundle" on Gumroad for margin, and traffic to your own site for a $49 "planner masterclass" course.
 
 > **KEY INSIGHT**
 > Don't try to be everywhere on day one. Pick ONE platform, master it, get your first sales, then expand. Spreading yourself thin across 5 platforms with 2 products each is worse than dominating 1 platform with 20 products.
@@ -578,7 +568,7 @@ The model works because of **low acquisition cost** (buy for $10-50, sell for $2
 5. **Respect copyright** — even with PLR, you can't resell content infringing others' copyrights.
 6. **Disclose when required** — some platforms require stating it's a resell-rights product.
 
-**Red flags of illegal reselling:** products sold as "original" that are clearly PLR/MRR; no license documentation; prices too good to be true; sellers who can't answer license questions.
+**Red flags:** products sold as "original" that are clearly PLR/MRR; no license documentation; suspiciously low prices; sellers who can't answer license questions.
 
 ### Where to Find Resell Rights Products
 
@@ -619,7 +609,7 @@ Take a RR course or guide and add live support: weekly Q&A calls, community acce
 
 ### Strategy 4: The Hybrid Model (Recommended)
 
-Combine RR products with your own creations: use RR for quick wins and cash flow, create originals for differentiation, bundle RR + original products together, and use RR products as downsells/upsells.
+Combine RR products with your own creations: use RR for quick wins and cash flow, create originals for differentiation, bundle them together, and use RR products as downsells/upsells.
 
 **Example funnel:** free lead magnet (your sample pages) → $7 entry product (RR or mini-planner) → $29 core product (your comprehensive planner) → $79 premium bundle (planner + RR templates + your course) → $197 done-with-you (everything + weekly calls).
 
@@ -638,27 +628,21 @@ Let's get specific about what it takes to reach consistent monthly revenue.
 
 ### Phase 1: Foundation ($0–$1k/month) — Months 1-3
 
-**Goals:** launch 5-10 products; get first 10 reviews on each; build an initial email list (100-500 subscribers); learn what sells.
-
-**Actions:** create products consistently (2-3/week); optimize listings; promote on Pinterest and social; start the email list with a freebie; consider RR products for quick cash flow.
-
-**Revenue math:** 5-10 products × 5-10 sales/month × $10-15 avg + email sales ≈ **$250-1,100/month**.
+**Goals:** launch 5-10 products; earn first 10 reviews each; build a 100-500 subscriber email list; learn what sells.
+**Actions:** create 2-3 products/week; optimize listings; promote on Pinterest/social; start email with a freebie; consider RR products for quick cash flow.
+**Revenue math:** 5-10 products × 5-10 sales × $10-15 avg + email ≈ **$250-1,100/month**.
 
 ### Phase 2: Growth ($1k–$3k/month) — Months 4-8
 
-**Goals:** identify your top 2-3 "winner" products; create bundles and upsells; grow the list to 1,000-3,000; expand to a second platform; raise prices on proven products.
-
-**Actions:** double down on winners (variations, bundles); launch premium products ($29-49); implement email launches and evergreen sequences; systematize Pinterest (10-20 pins/day).
-
-**Revenue math:** 10 products × 15 sales × $15 + premium sales + email ≈ **$2,700/month**.
+**Goals:** identify top 2-3 "winners"; create bundles/upsells; grow list to 1,000-3,000; add a second platform; raise prices on proven products.
+**Actions:** double down on winners (variations, bundles); launch $29-49 premium products; implement email launches and evergreen sequences; systematize Pinterest (10-20 pins/day).
+**Revenue math:** 10 products × 15 sales × $15 + premium + email ≈ **$2,700/month**.
 
 ### Phase 3: Scale ($3k–$10k/month) — Months 9-18
 
-**Goals:** build a real brand; launch courses or high-ticket offers ($97-297); grow the list to 5,000-10,000+; consider your own store (Shopify); systematize creation and marketing.
-
-**Actions:** create a flagship product (course, comprehensive bundle, membership); build funnels (lead magnet → tripwire → core → premium); add paid ads; hire help (VA, designer).
-
-**Revenue math:** 20 products × 20 sales × $20 + course sales + memberships ≈ **$10,000/month**.
+**Goals:** build a real brand; launch courses/high-ticket offers ($97-297); grow list to 5,000-10,000+; consider your own store; systematize everything.
+**Actions:** create a flagship product (course, bundle, or membership); build funnels (lead magnet → tripwire → core → premium); add paid ads; hire help (VA, designer).
+**Revenue math:** 20 products × 20 sales × $20 + courses + memberships ≈ **$10,000/month**.
 
 ### The Scaling Levers
 
@@ -737,7 +721,7 @@ Start simple: your first product should take 6-10 hours, not 60.
 
 ### Step 4: Create Your First Product (Next 7 Days)
 
-Follow the Chapter 8 launch plan — niche finalization, creation, instructions + mockups, listing copy + platform setup, marketing prep, launch.
+Follow the Chapter 8 launch plan — finalize niche, create product, add instructions + mockups, write listing copy, set up platform, prep marketing, launch.
 
 ### Step 5: Set Up Business Infrastructure (Parallel)
 

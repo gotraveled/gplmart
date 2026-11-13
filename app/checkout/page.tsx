@@ -7,16 +7,18 @@ import { isLiveCheckoutEnabled, isRazorpayTestMode, razorpayCreds } from "@/lib/
 import { formatOfferPrice } from "@/lib/offer";
 import { GeoPrice } from "@/components/ui/geo-price";
 import { isContentReady } from "@/lib/settings";
-import { getProduct } from "@/lib/products";
+import { getProduct, getCatalog } from "@/lib/products";
 
 export const metadata: Metadata = { title: "Checkout", robots: { index: false } };
+
+const ebookCount = getCatalog().items.filter((p) => p.category === "ebook").length;
 
 const included = [
   "200+ Shopify Liquid snippets & sections",
   "6 curated snippet packs (zip downloads)",
   "6 full courses - Shopify, Liquid, dropshipping, ads",
   "17 AI skill packs for ecommerce agents",
-  "7 in-depth PDF ebooks with resell rights",
+  `${ebookCount} in-depth PDF ebooks with resell rights`,
   "Free AI prompts + Liquid checker tool",
   "New drops every week - membership keeps growing",
 ];

@@ -22,7 +22,7 @@ Three rules:
 
 ## Chapter 1: Why Prompting Is a Skill (Not a Trick)
 
-Every seller has had the same experience: you ask ChatGPT for product descriptions and get something that sounds like a generic Amazon listing — "high quality," "best in class." The problem isn't the AI. It's the prompt.
+Ask ChatGPT for product descriptions and you get generic Amazon-listing filler — "high quality," "best in class." The problem isn't the AI. It's the prompt.
 
 LLMs predict the most probable next words. A vague prompt produces the most *average* output — exactly what you don't want. You want specific, opinionated, on-brand copy. That requires the **5-part prompt formula**:
 
@@ -223,19 +223,6 @@ Analyze:
 5. Go / no-go recommendation with confidence level
 ```
 
-### Bundle & Complementary Product Finder
-
-**When to use:** Increasing AOV — what else should you sell with this?
-
-```
-I sell [product]. Find 10 complementary products my customers likely need, ranked by:
-- Logical pairing strength (1-10)
-- Margin potential (low/medium/high)
-- Likelihood they'd buy from me vs. elsewhere
-
-For the top 3, suggest how to bundle them (name, price strategy, "complete the set" angle).
-```
-
 > **KEY INSIGHT:** The sellers who win aren't the ones with the best products — they're the ones who understand their customer *better*. These prompts give you that understanding in 5 minutes instead of 5 weeks of guessing.
 
 ---
@@ -404,22 +391,6 @@ Cover:
 - 2 shipping/returns questions
 
 Answers: 2-3 sentences each, conversational tone, include the keyword naturally.
-```
-
-### Product Story / Origin Section
-
-**When to use:** D2C brands need a "why we exist" story — it justifies premium pricing.
-
-```
-Write a 200-word brand/product story for this product:
-
-Product: [name]
-Founder/origin: [who made it, why, what problem they saw]
-Values: [list 2-3]
-Target customer: [who they are]
-
-Tone: authentic, not inspirational-poster. No "we're passionate about" cliches.
-Structure: problem → discovery → creation → who it's for.
 ```
 
 ### Shopify Product Page (Full Template)
@@ -619,26 +590,6 @@ Deliver 3 variations:
 3. Incentive offer (discount, free shipping, bonus)
 
 Each: primary text + headline + CTA button text.
-```
-
-### Lookalike Audience Ad Variations
-
-**When to use:** Scaling winning ads — need variations without changing the core message.
-
-```
-I have a winning ad for [product]. Create 5 variations that test ONE element at a time:
-
-Original ad:
-[Paste winning ad copy]
-
-Create variations testing:
-1. Different hook (same body)
-2. Different CTA (same body)
-3. Different proof point (same body)
-4. Different audience angle (same body)
-5. Different format (video vs. image)
-
-Label each variation with what it's testing.
 ```
 
 > **KEY INSIGHT:** The best ad isn't the cleverest — it's the one that gets the right person to feel "this is for me" in under 2 seconds. Prompt for *relevance*, not *creativity*.
@@ -1109,23 +1060,6 @@ Deliver:
 4. Open Graph title + description
 ```
 
-### Schema Markup Suggestions
-
-**When to use:** Structured data helps Google understand your content — rich snippets get more clicks.
-
-```
-Suggest schema markup for this page:
-
-Page type: [product / article / FAQ / review]
-Content: [describe what's on the page]
-
-Provide:
-1. Recommended schema type(s)
-2. Key properties to include
-3. Example JSON-LD code
-4. Which rich snippets this could earn
-```
-
 > **KEY INSIGHT:** SEO content isn't about ranking — it's about *answering the question better than anyone else*. When you do that, rankings follow. Prompt for helpfulness first, keywords second.
 
 ---
@@ -1267,26 +1201,6 @@ Scenarios:
 Each: email/WhatsApp template with [VARIABLE] placeholders.
 ```
 
-### VIP Customer Response
-
-**When to use:** High-value customers — they deserve white-glove treatment.
-
-```
-Write a VIP customer response for:
-
-Customer: [name, purchase history, LTV]
-Situation: [e.g., "complaint about shipping" / "asking for early access" / "referral request"]
-Brand voice: [tone]
-
-Response should:
-- Acknowledge their status ("As one of our top customers...")
-- Resolve their issue with priority
-- Offer something extra (early access, exclusive discount, personal thank you)
-- Make them feel valued, not processed
-
-Length: under 100 words. Personal, not templated.
-```
-
 > **KEY INSIGHT:** Support isn't a cost center — it's a marketing channel. Every response is a brand moment. Prompt for responses that solve the problem AND build the relationship.
 
 ---
@@ -1425,46 +1339,6 @@ Calculate:
 6. Implementation recommendation
 ```
 
-### Price Anchoring Copy
-
-**When to use:** Making your price feel reasonable by showing a higher anchor first.
-
-```
-Write price anchoring copy for:
-
-Product: [name, price]
-Anchor product/comparison: [higher-priced alternative or "before" price]
-Value proposition: [why you're worth it]
-
-Create:
-1. "Compare at" messaging (if applicable)
-2. Value stack breakdown (what they'd pay for separately)
-3. "Worth $X, yours for $Y" framing
-4. Payment plan messaging ("just $X/month")
-5. Risk reversal (guarantee, returns, trial)
-```
-
-### Loyalty/Rewards Program Structure
-
-**When to use:** Retaining customers — loyalty programs increase repeat purchase rate.
-
-```
-Design a loyalty program for:
-
-Store: [name]
-Average customer LTV: [current]
-Repeat purchase rate: [current %]
-Products: [consumable / durable / mixed]
-
-Recommend:
-1. Program type (points / cashback / tiers / subscription)
-2. Earning structure (points per $1, etc.)
-3. Redemption options (discount / free product / exclusive access)
-4. Tier structure (if applicable)
-5. Launch email/announcement copy
-6. Program rules (expiration, exclusions)
-```
-
 > **KEY INSIGHT:** Pricing isn't about what's "fair" — it's about what the market will bear and what your positioning supports. Prompt for data-driven pricing, not gut-feel.
 
 ---
@@ -1542,27 +1416,6 @@ Identify:
 4. Recommended price positioning
 ```
 
-### Competitor Content Gap Analysis
-
-**When to use:** Finding content topics competitors aren't covering — your SEO opportunity.
-
-```
-Find content gaps vs. competitors:
-
-My site: [URL]
-Competitors: [list 2-3 URLs]
-Niche: [product category]
-
-Analyze:
-1. Topics competitors rank for that I don't
-2. Questions they answer that I don't
-3. Content formats they use that I don't
-4. Keywords they target that I miss
-5. Top 10 content opportunities (ranked by difficulty × traffic potential)
-
-Format as a prioritized action list.
-```
-
 ### Competitor Review Mining
 
 **When to use:** Stealing your competitors' customers — their complaints are your marketing.
@@ -1582,27 +1435,6 @@ Analyze 1-star and 5-star reviews to find:
 5. Feature requests customers mention (product roadmap ideas)
 
 Use exact customer phrases where possible — that's your copy gold.
-```
-
-### Competitor Social Media Analysis
-
-**When to use:** Understanding what content works in your niche.
-
-```
-Analyze competitor social media strategy:
-
-Competitors: [list 2-3]
-Platforms: [Instagram / TikTok / LinkedIn / etc.]
-
-For each competitor:
-1. Content types that get most engagement
-2. Posting frequency and timing
-3. Hashtag strategy
-4. UGC/creator usage
-5. Community engagement approach
-6. What you should copy, adapt, or avoid
-
-Focus on patterns, not individual posts.
 ```
 
 ### "Why Us" Differentiation Prompt
@@ -1709,26 +1541,6 @@ Create a detailed ICP with:
 - Messaging that resonates
 ```
 
-#### Competitor Feature Gap Analysis
-
-**When to use:** Finding features competitors have that you don't (or vice versa).
-
-```
-Compare feature sets:
-
-My product: [name, features list]
-Competitor A: [name, features list]
-Competitor B: [name, features list]
-
-Create a table showing:
-- Features I have that they don't (my advantages)
-- Features they have that I don't (my gaps)
-- Features we all have (table stakes)
-- Features neither has (opportunity)
-
-Recommend which gaps to fill vs. which to ignore.
-```
-
 ---
 
 ### Listing & Copywriting
@@ -1765,24 +1577,6 @@ Write 3 versions:
 3. Belonging-focused (community/identity)
 
 Each under 150 words. No feature lists — pure emotion.
-```
-
-#### Product Description — Feature Angle
-
-**When to use:** Copy for technical buyers who want specs.
-
-```
-Write a product description focused on features/specs:
-
-Product: [name]
-Key specs: [list]
-Target customer: [technical buyer]
-
-Write 2 versions:
-1. Spec-heavy (all details, organized)
-2. Spec-to-benefit (each spec translated to what it means)
-
-Include comparison to generic alternatives where relevant.
 ```
 
 #### Bullet Point Variations
@@ -1857,28 +1651,6 @@ Script:
 Include: voiceover, on-screen text, music notes, shot list.
 ```
 
-#### Product Comparison Page
-
-**When to use:** "Why choose us" page — comparison content converts.
-
-```
-Write a product comparison page:
-
-My product: [name, features, price]
-vs.
-Alternative 1: [generic/competitor]
-Alternative 2: [competitor]
-
-Structure:
-- Headline ("How we compare")
-- Comparison table (8-10 rows)
-- "Best for" sections
-- FAQ
-- CTA
-
-Be honest — include rows where competitor wins.
-```
-
 ---
 
 ### Advertising
@@ -1935,24 +1707,6 @@ Offer: [what they're getting]
 Headlines (3, under 30 chars each):
 Descriptions (2, under 90 chars each):
 Display URL path:
-```
-
-#### Google Search Ad — Broad Match
-
-**When to use:** Catching varied search queries.
-
-```
-Write a Google Search ad for broad match:
-
-Product category: [e.g., "yoga mats"]
-Target audience: [who]
-Key benefits: [list 3]
-Offer: [incentive]
-
-Create ads that work for multiple search intents:
-- Informational ("best yoga mat for beginners")
-- Commercial ("yoga mat deals")
-- Transactional ("buy yoga mat online")
 ```
 
 #### TikTok Ad Script — 15s
@@ -2025,45 +1779,6 @@ Script:
 - 5-15s: Value + CTA
 
 Include visual direction and voiceover.
-```
-
-#### Retargeting Ad — Cart Abandoner
-
-**When to use:** People who added to cart but didn't buy.
-
-```
-Write a retargeting ad for cart abandoners:
-
-Product: [name, price]
-Time since abandonment: [24h / 7d]
-Their cart: [what they were buying]
-
-Ad copy should:
-- Reference their specific interest
-- Address likely objection
-- Include incentive if applicable
-- Create urgency
-
-3 variations: gentle / objection-handler / incentive.
-```
-
-#### Lookalike Ad Variation
-
-**When to use:** Testing variations of winning ad.
-
-```
-Create 5 variations of this winning ad:
-
-Original: [paste ad]
-
-Test one element at a time:
-1. Hook
-2. CTA
-3. Proof point
-4. Offer
-5. Format
-
-Label what each tests.
 ```
 
 ---
@@ -2371,24 +2086,6 @@ Caption:
 - Hashtags
 ```
 
-#### Instagram Caption — Behind Scenes
-
-**When to use:** Humanizing your brand.
-
-```
-Write an Instagram caption:
-
-Behind-scenes moment: [describe]
-Brand voice: [tone]
-Goal: [connection / trust]
-
-Caption (under 200 words):
-- Hook
-- Story
-- CTA (engage)
-- Hashtags
-```
-
 #### Instagram Reel Script — 15s
 
 **When to use:** Quick reel content.
@@ -2428,26 +2125,6 @@ Full script:
 Include shot list, text overlays, voiceover, caption, hashtags.
 ```
 
-#### Instagram Reel Script — 60s
-
-**When to use:** Longer-form reel content.
-
-```
-Write a 60-second Instagram Reel script:
-
-Topic: [describe]
-Format: [tutorial/story/review]
-Structure: [hook → content → payoff → CTA]
-
-Complete script with:
-- Scene-by-scene
-- Dialogue/voiceover
-- B-roll suggestions
-- Text overlays
-- Music/mood
-- Caption + hashtags
-```
-
 #### Carousel Post — 5 Slides
 
 **When to use:** Educational carousel content.
@@ -2466,26 +2143,6 @@ Each slide:
 
 Slide 1: Hook
 Slide 5: CTA/summary
-```
-
-#### Carousel Post — 10 Slides
-
-**When to use:** Comprehensive guide carousel.
-
-```
-Write a 10-slide Instagram carousel:
-
-Topic: [detailed subject]
-Audience: [who]
-Goal: [saves / authority / traffic]
-
-Each slide:
-- Number
-- Headline
-- Body text
-- Visual direction
-
-Structure: Hook → Value → More value → Recap → CTA
 ```
 
 #### Story Sequence — 5 Frames
@@ -2527,24 +2184,6 @@ Structure:
 No hashtags or max 3.
 ```
 
-#### LinkedIn Post — Product Update
-
-**When to use:** Sharing product news on LinkedIn.
-
-```
-Write a LinkedIn post announcing:
-
-Update: [what changed/launched]
-Why it matters: [customer benefit]
-Brand voice: [tone]
-
-Post:
-- Hook (what's new)
-- Details (what changed)
-- Benefit (why customers care)
-- CTA (try it/learn more)
-```
-
 #### Pinterest Pin — Standard
 
 **When to use:** Pinterest content for traffic.
@@ -2557,24 +2196,6 @@ Target keyword: [SEO keyword]
 Pin title: [under 100 chars]
 Description: [under 500 chars]
 Board: [suggested board name]
-```
-
-#### Pinterest Pin — Idea Pin
-
-**When to use:** Multi-page Pinterest content.
-
-```
-Write a Pinterest Idea Pin (multi-page):
-
-Topic: [e.g., "5 ways to style [product]"]
-Pages: [number of pages]
-For each page:
-- Page number
-- Visual direction
-- Text overlay
-- Page title
-
-Include pin title, description, and hashtags.
 ```
 
 #### Twitter/X Thread
@@ -2615,29 +2236,6 @@ Script:
 Include title, description, hashtags.
 ```
 
-#### YouTube Long-Form Outline
-
-**When to use:** YouTube video planning.
-
-```
-Write a YouTube video outline:
-
-Topic: [describe]
-Length: [8-15 min]
-Format: [tutorial/review/vlog]
-Target audience: [who]
-Goal: [subs/traffic/sales]
-
-Outline:
-- Intro (0-1 min): Hook + what they'll learn
-- Chapter 1 (1-4 min): [topic]
-- Chapter 2 (4-7 min): [topic]
-- Chapter 3 (7-10 min): [topic]
-- Conclusion (10-12 min): Recap + CTA
-
-Include title ideas, description, tags.
-```
-
 #### TikTok Script — Trend Jack
 
 **When to use:** Riding trending sounds/formats.
@@ -2656,24 +2254,6 @@ Script:
 - Caption + hashtags
 ```
 
-#### Instagram Story — Poll/Question
-
-**When to use:** Engagement-focused stories.
-
-```
-Write an Instagram Story engagement post:
-
-Type: [poll / question box / quiz / slider]
-Topic: [what to ask]
-Product tie-in: [optional]
-
-Provide:
-- Story visual direction
-- Question/poll options
-- Follow-up response strategy
-- Caption for story
-```
-
 #### Facebook Group Post
 
 **When to use:** Community engagement.
@@ -2690,24 +2270,6 @@ Post:
 - Value/question
 - CTA (comment/share)
 - Follow-up questions to spark discussion
-```
-
-#### Reddit Post — Value First
-
-**When to use:** Reddit marketing — provide value, not spam.
-
-```
-Write a Reddit post for r/[subreddit]:
-
-Topic: [helpful advice related to your niche]
-Product mention: [subtle, if allowed]
-Goal: [help/authority]
-
-Post:
-- Title (under 300 chars)
-- Body (value-first, not promotional)
-- When/if to mention product
-- Response strategy for comments
 ```
 
 ---
@@ -2753,26 +2315,6 @@ Response:
 - Alternative (exchange if applicable)
 
 Under 120 words. Helpful, not bureaucratic.
-```
-
-#### Customer Support — Product Question
-
-**When to use:** Pre-sale or post-sale product questions.
-
-```
-Write a product question response:
-
-Customer: [name]
-Question: [e.g., "Is this compatible with X?" / "How do I use Y?"]
-Product: [name]
-
-Response:
-- Direct answer first
-- Supporting details
-- Related info
-- CTA (buy/learn more)
-
-Under 100 words. Clear, not salesy.
 ```
 
 #### Negative Review Response
@@ -2848,24 +2390,6 @@ Greeting:
 - Welcome message
 - Ask how you can help
 - Quick reply options (buttons)
-```
-
-#### Live Chat Script — Handoff
-
-**When to use:** Escalating to human agent.
-
-```
-Write a chat handoff message:
-
-Customer issue: [describe]
-Why escalating: [needs human judgment]
-Wait time: [estimate]
-
-Message:
-- Acknowledge complexity
-- Set expectations
-- Offer alternative (callback/email)
-- Thank for patience
 ```
 
 #### Return/Refund Policy Page
@@ -2989,25 +2513,6 @@ Calculate:
 - Threshold for 15-25% AOV increase
 - Margin impact
 - Messaging recommendations
-```
-
-#### Loyalty Program Structure
-
-**When to use:** Building customer loyalty.
-
-```
-Design a loyalty program:
-
-Store: [name]
-Customer LTV: [$X]
-Repeat rate: [%]
-
-Recommend:
-- Program type (points/cashback/tiers)
-- Earning structure
-- Redemption options
-- Launch copy
-- Program rules
 ```
 
 ---
@@ -3250,23 +2755,6 @@ Deliver:
 - Open Graph tags
 ```
 
-#### Schema Markup Suggestion
-
-**When to use:** Structured data recommendations.
-
-```
-Suggest schema markup:
-
-Page type: [product/article/FAQ]
-Content: [describe]
-
-Provide:
-- Schema type
-- Key properties
-- JSON-LD example
-- Rich snippet potential
-```
-
 ---
 
 ## Chapter 13: Prompt Debugging — When the Output Is Bad
@@ -3328,12 +2816,6 @@ Bad: "Write about our award-winning product" (if you don't have awards)
 
 Fix: Only include real claims. "If you're unsure about a fact, write [NEEDS VERIFICATION] instead of guessing."
 
-**Mistake 5: Not specifying format**
-
-Bad: "Write ad copy"
-
-Fix: "Write Facebook ad with: primary text (under 125 words), headline (under 40 chars), description (under 30 chars), CTA button text"
-
 ### The "Show, Don't Tell" Technique
 
 When AI can't match your style, show it:
@@ -3347,23 +2829,6 @@ Now write something similar for [my product] but with these differences: [what's
 ```
 
 The AI will match the *style* of your example while adapting to your product.
-
-### When to Start Over vs. Iterate
-
-**Iterate when:**
-- Output is 60-80% good — just needs tweaks
-- You understand what's wrong and can describe the fix
-- You're refining, not rebuilding
-
-**Start over when:**
-- Output is fundamentally wrong (wrong product, wrong audience)
-- You've iterated 3+ times with no improvement
-- The AI misunderstood the core task
-
-**Start over with:**
-- Clearer context (add missing details)
-- Simpler structure (break into steps)
-- Different approach ("write it as X" instead of "write it as Y")
 
 > **KEY INSIGHT:** Bad output isn't the AI's fault — it's a prompt that didn't give it enough to work with. The fix is almost always *more context*, not a different AI.
 
@@ -3397,66 +2862,6 @@ Write [SPECIFIC OUTPUT] with:
 - Include: [REQUIRED ELEMENTS]
 ```
 
-### Template Examples by Use-Case
-
-**Product Description Template:**
-
-```
-You are a conversion copywriter for [BRAND] selling [PRODUCT] to [CUSTOMER].
-
-Product: [NAME, PRICE, FEATURES]
-Customer pain: [PROBLEM IT SOLVES]
-Brand voice: [TONE]
-
-Write a product description with:
-1. Hook (1-2 sentences)
-2. Problem agitation (2 sentences)
-3. Solution (benefits, not features)
-4. Social proof placeholder [SOCIAL PROOF]
-5. Risk reversal
-6. CTA
-
-Length: 250-350 words. No word "premium." No exclamation marks.
-```
-
-**Ad Copy Template:**
-
-```
-You are a direct-response copywriter creating [PLATFORM] ads.
-
-Product: [NAME, BENEFIT]
-Audience: [WHO]
-Offer: [INCENTIVE]
-
-Write [NUMBER] ad variations with:
-- Hook (first 3 words must grab attention)
-- Primary text (under [X] words)
-- Headline (under [X] chars)
-- CTA
-
-Test different angles: [LIST 3-5 ANGLES].
-```
-
-**Email Template:**
-
-```
-You are an email copywriter for [BRAND].
-
-Email type: [WELCOME/CART/POST-PURCHASE/etc.]
-Audience: [WHO]
-Goal: [WHAT YOU WANT THEM TO DO]
-Product: [NAME, OFFER]
-Brand voice: [TONE]
-
-Write email with:
-- Subject line (2 options)
-- Preview text
-- Body (under [X] words)
-- CTA
-
-Focus on [KEY MESSAGE]. No jargon.
-```
-
 ### Organizing Your Prompt Library
 
 **Option 1: Folder Structure**
@@ -3479,33 +2884,11 @@ Tag each prompt with: use-case, platform, audience (cold/warm/customer), goal (a
 
 Columns: Prompt Name | Use-Case | Platform | Last Updated | Performance Notes
 
-### Updating Your Prompts
+### Updating & Sharing
 
-**When to update:**
-- AI model changes (new version may respond differently)
-- Your brand voice evolves
-- You discover better phrasing
-- Performance data shows what works
-
-**How to update:**
-- Keep version history (v1, v2, v3)
-- Note what changed and why
-- A/B test new vs. old
-- Document results
-
-### Sharing Prompts with Your Team
-
-**Create a prompt playbook:**
-- Document each prompt with context
-- Include examples of good/bad output
-- Note which prompts need human review
-- Add "fill-in-the-blank" variables clearly
-
-**Train on prompts:**
-- Show team how to use templates
-- Practice with real products
-- Review outputs together
-- Iterate based on feedback
+- Keep version history (v1, v2, v3) and note what changed and why.
+- A/B test new vs. old prompts; document results.
+- For teams: document each prompt with context, include good/bad output examples, mark prompts needing human review, and train on real products.
 
 > **KEY INSIGHT:** The sellers who win with AI aren't the ones with the best prompts — they're the ones who *systematize* their prompting. Build your library, document what works, and iterate.
 
@@ -3517,72 +2900,25 @@ AI is a powerful tool — but it comes with responsibility.
 
 ### The Accuracy Rules
 
-**Rule 1: Never fabricate facts**
+**Rule 1: Never fabricate facts.** Verify all product claims, statistics, competitor comparisons, and testimonials before publishing.
 
-AI will confidently make things up. Before publishing:
-- Verify all product claims (materials, dimensions, certifications)
-- Check all statistics and data points
-- Confirm all competitor comparisons are accurate
-- Ensure all testimonials/reviews are real
+**Rule 2: Disclose AI use where required.** Some platforms and jurisdictions require transparency about AI-generated content.
 
-**Rule 2: Disclose AI use where required**
-
-Some platforms and jurisdictions require disclosure:
-- Amazon: AI-generated content must be disclosed in some categories
-- EU: AI Act may require transparency for certain uses
-- Your own ethics: Consider your audience's expectations
-
-**Rule 3: Don't use AI to deceive**
-
-Never use AI to:
-- Create fake reviews or testimonials
-- Misrepresent product capabilities
-- Generate misleading before/after images
-- Impersonate real people without consent
+**Rule 3: Don't use AI to deceive.** Never create fake reviews, misrepresent capabilities, generate misleading images, or impersonate real people.
 
 ### The Quality Rules
 
-**Rule 4: Always human-edit**
+**Rule 4: Always human-edit.** Review for accuracy, edit for brand voice, check for deception, personalize where possible.
 
-AI is a starting point, not a final product. Every piece of AI copy should be:
-- Reviewed for accuracy
-- Edited for brand voice
-- Checked for tone/deception
-- Personalized where possible
+**Rule 5: Maintain brand voice.** Inject personality, use real customer language, remove AI-sounding phrases ("delve," "leverage," "game-changer").
 
-**Rule 5: Maintain brand voice**
-
-AI tends toward generic. Your brand voice is what makes you *you*:
-- Inject personality into AI output
-- Use your real customer language
-- Add your unique perspective
-- Remove AI-sounding phrases ("delve," "leverage," "game-changer")
-
-**Rule 6: Respect intellectual property**
-
-Don't ask AI to:
-- Copy competitors' exact copy
-- Reproduce copyrighted material
-- Generate content that infringes trademarks
-- Plagiarize existing content
+**Rule 6: Respect intellectual property.** Don't copy competitors' exact copy, reproduce copyrighted material, or plagiarize.
 
 ### The Platform Rules
 
-**Rule 7: Follow platform guidelines**
+**Rule 7: Follow platform guidelines.** Amazon requires accuracy and bans review manipulation; Meta/Google Ads must be truthful; disclose AI content where platforms require it.
 
-Each platform has rules about AI content:
-- **Amazon:** Must be accurate, can't use AI to manipulate reviews
-- **Shopify:** No specific AI restrictions, but quality matters
-- **Meta/Google Ads:** Must be truthful, no misleading claims
-- **Social media:** Must disclose AI-generated content if required by platform
-
-**Rule 8: Protect customer data**
-
-Never input into AI:
-- Customer personal information (names, emails, addresses)
-- Payment information
-- Confidential business data
-- Trade secrets
+**Rule 8: Protect customer data.** Never input customer personal information, payment data, confidential business data, or trade secrets.
 
 ### The Ethical Checklist
 
@@ -3597,66 +2933,25 @@ Before publishing any AI-generated content, ask:
 - [ ] Does it add value to the customer?
 - [ ] Would I be comfortable if a customer knew AI helped write it?
 
-### When AI Goes Wrong
-
-**If AI generates false claims:**
-- Remove immediately
-- Issue correction if already published
-- Review your prompt to prevent recurrence
-- Add verification step to workflow
-
-**If AI plagiarizes:**
-- Check for unintentional copying
-- Rewrite in your own words
-- Use plagiarism checker
-- Adjust prompt to be more original
-
-**If AI generates offensive content:**
-- Don't publish
-- Report to AI provider if severe
-- Review prompt for bias triggers
-- Add content guidelines to prompt
-
-### Building Ethical AI Practices
-
-**Create an AI usage policy:**
-- What you will use AI for
-- What you won't use AI for
-- Review process for AI content
-- Disclosure requirements
-- Quality standards
-
-**Train your team:**
-- AI ethics and accuracy
-- Platform-specific rules
-- Quality control process
-- When to escalate concerns
-
-**Monitor and audit:**
-- Regularly review AI-generated content
-- Track customer feedback
-- Check for accuracy issues
-- Update prompts based on learnings
-
 > **KEY INSIGHT:** AI is a tool, not a replacement for judgment. The sellers who use it ethically and accurately will build trust and loyalty. Those who cut corners will face backlash.
 
 ---
 
 ## Chapter 16: Master Checklist & Next Steps
 
-You're at the end of the book — but the beginning of your AI-powered ecommerce journey. Here's your action checklist.
+You're at the end of the book — but the beginning of your AI-powered ecommerce journey.
 
 ### The 30-Day AI Implementation Plan
 
 **Week 1: Foundation**
 - [ ] Set up your AI tool accounts (ChatGPT Plus, Claude, or Gemini)
-- [ ] Create your brand voice guide (tone, words to use/avoid, examples)
+- [ ] Create your brand voice guide
 - [ ] Build your customer avatar document
 - [ ] Save 10 prompts from this book that you'll use most
 - [ ] Test each prompt with your actual products
 
 **Week 2: Product Copy**
-- [ ] Rewrite your top 5 product descriptions using Chapter 4 prompts
+- [ ] Rewrite your top 5 product descriptions
 - [ ] Create bullet points for all products
 - [ ] Write FAQ sections for top products
 - [ ] Generate meta titles and descriptions for SEO
@@ -3676,82 +2971,27 @@ You're at the end of the book — but the beginning of your AI-powered ecommerce
 - [ ] Set up quality control process for AI content
 - [ ] Track results (conversion rates, engagement, sales)
 
-### Your AI Ecommerce Stack
-
-**Essential tools:**
-- **AI writing:** ChatGPT Plus, Claude Pro, or Gemini Advanced
-- **Image generation:** Midjourney, DALL-E, or Stable Diffusion
-- **Video:** Runway, Pika, or InVideo for AI video
-- **Analytics:** Track what AI-generated content performs best
-
-**Optional tools:**
-- **Prompt management:** Notion, Airtable, or Google Sheets
-- **Content scheduling:** Later, Buffer, or Hootsuite
-- **Design:** Canva (with AI features) or Figma
-- **Translation:** DeepL or Google Translate for international markets
-
 ### Measuring AI ROI
 
 Track these metrics to see if AI is actually helping:
 
-**Copy quality:**
-- Conversion rate changes after implementing AI copy
-- Time saved on content creation
-- Customer feedback on new copy
-
-**Marketing efficiency:**
-- Ad performance (CTR, conversion rate, ROAS)
-- Email open rates and click-through rates
-- Social media engagement rates
-
-**Operational efficiency:**
-- Support ticket reduction (from better FAQ/knowledge base)
-- Response time improvements
-- Content output volume (posts per week/month)
-
-**Cost savings:**
-- Copywriting costs avoided
-- Design costs avoided
-- Translation costs avoided
+- **Copy quality:** conversion rate changes, time saved, customer feedback
+- **Marketing efficiency:** ad CTR/conversion/ROAS, email open and click rates, social engagement
+- **Operational efficiency:** support ticket reduction, response times, content output volume
+- **Cost savings:** copywriting, design, and translation costs avoided
 
 ### Common Pitfalls to Avoid
 
-**Pitfall 1: Using AI as a crutch**
-- Don't let AI replace your brand voice
-- Don't publish without human review
-- Don't assume AI output is always accurate
-
-**Pitfall 2: Over-automating**
-- Don't auto-publish AI content without review
-- Don't use AI for customer-facing decisions
-- Don't ignore platform AI policies
-
-**Pitfall 3: Ignoring quality**
-- Don't sacrifice quality for speed
-- Don't use generic AI output without customization
-- Don't forget that customers can tell
-
-**Pitfall 4: Not iterating**
-- Don't use the same prompts forever
-- Don't ignore performance data
-- Don't stop improving your system
+1. **Using AI as a crutch** — don't let it replace brand voice, human review, or accuracy checks.
+2. **Over-automating** — don't auto-publish without review or ignore platform AI policies.
+3. **Ignoring quality** — don't sacrifice quality for speed or use generic output uncustomized.
+4. **Not iterating** — don't use the same prompts forever or ignore performance data.
 
 ### Your Next Steps
 
-**Today:**
-1. Pick one product and rewrite its description using Chapter 4 prompts
-2. Write 3 ad variations for that product
-3. Create a welcome email sequence
-
-**This week:**
-4. Build your brand voice guide
-5. Create your customer avatar
-6. Set up your prompt library
-
-**This month:**
-7. Implement AI across all marketing channels
-8. Track results and iterate
-9. Train your team on your system
+**Today:** rewrite one product description, write 3 ad variations, create a welcome email sequence.
+**This week:** build your brand voice guide, customer avatar, and prompt library.
+**This month:** implement AI across all channels, track results, train your team.
 
 ### Free Resources
 
