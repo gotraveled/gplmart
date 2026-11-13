@@ -3,6 +3,17 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  // sharp/@img are optional Next image-optimization natives; Vercel's image
+  // optimizer handles /_next/image, so don't bundle ~10MB into every function.
+  outputFileTracingExcludes: {
+    "*": [
+      "node_modules/@img/**",
+      "node_modules/sharp/**",
+      "node_modules/@emnapi/**",
+      "node_modules/detect-libc/**",
+      "node_modules/semver/**",
+    ],
+  },
   async redirects() {
     return [
       { source: "/shop", destination: "/", permanent: true },
