@@ -18,6 +18,7 @@ const staticRoutes: { path: string; priority: number }[] = [
   { path: "/playground", priority: 0.9 },
   { path: "/products", priority: 0.8 },
   { path: "/skills", priority: 0.8 },
+  { path: "/snippets", priority: 0.8 },
   { path: "/ebooks", priority: 0.8 },
   { path: "/packs", priority: 0.8 },
   { path: "/library", priority: 0.8 },
