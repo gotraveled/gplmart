@@ -25,6 +25,11 @@ const COVERS = {
   "freelance-income-playbook": { accent: "#fbbf24", deep: "#241a03", kicker: "FREELANCE BUSINESS" },
   "digital-products-empire": { accent: "#2dd4bf", deep: "#03211d", kicker: "DIGITAL PRODUCTS" },
   "money-basics-playbook": { accent: "#4ade80", deep: "#0a2413", kicker: "PERSONAL FINANCE" },
+  "ecom-profit-pricing-system": { accent: "#38bdf8", deep: "#082f49", kicker: "SPREADSHEET SYSTEM" },
+  "etsy-dropshipping-business-toolkit": { accent: "#fb923c", deep: "#2b1204", kicker: "BUSINESS TOOLKIT" },
+  "ad-copy-swipe-file-vol1": { accent: "#f472b6", deep: "#26091a", kicker: "COPY SWIPE FILE" },
+  "shopify-store-launch-doc-pack": { accent: "#a78bfa", deep: "#171233", kicker: "STORE DOC KIT" },
+  "resume-freelance-proposal-kit": { accent: "#fbbf24", deep: "#241a03", kicker: "CAREER KIT" },
 };
 
 function hexToRgb(hex) {

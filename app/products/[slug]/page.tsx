@@ -12,12 +12,25 @@ export function generateStaticParams() {
   return getCatalog().items.map((p) => ({ slug: p.slug }));
 }
 
+const categoryLabel: Record<string, string> = {
+  "php-script": "PHP script",
+  ebook: "Ebook",
+  "skill-pack": "AI skill pack",
+  "spreadsheet-pack": "Spreadsheet system",
+  "swipe-file": "Swipe file",
+  "template-pack": "Template pack",
+  "html-template": "HTML template",
+};
+
+const label = (c: string) => categoryLabel[c] ?? c;
+const resellCategories = new Set(["ebook", "spreadsheet-pack", "swipe-file", "template-pack"]);
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const p = getProduct(slug);
   if (!p) return { title: "Product" };
   return {
-    title: `${p.title} - ${p.category === "php-script" ? "PHP Script" : p.category === "ebook" ? "Ebook" : p.category === "skill-pack" ? "AI Skill Pack" : "HTML Template"} | GPLMart`,
+    title: `${p.title} - ${label(p.category)} | GPLMart`,
     description: p.description.slice(0, 155),
     alternates: { canonical: `/products/${p.slug}` },
   };
@@ -49,13 +62,31 @@ const usageSteps: Record<string, string[]> = {
     "Configure the settings at the top of the file (API keys, prices, store URL) as described in the README inside the zip.",
     "Test it on a staging page before pointing real traffic at it.",
   ],
+  "spreadsheet-pack": [
+    "Download the zip and open the .xlsx in Excel, Google Sheets (File > Import) or Numbers.",
+    "Yellow cells are inputs - type your numbers, formulas and dashboards update automatically.",
+    "Start with the calculator tab to price your first product, then log activity in the tracker tabs weekly.",
+    "Make a copy for each store or client - never edit the original.",
+  ],
+  "swipe-file": [
+    "Download the zip - you'll get the swipe file (PDF + CSV + Markdown).",
+    "Open the PDF for the full guide, or the CSV to import hooks into your own sheets/Notion.",
+    "Pick a swipe, swap the [BRACKETED] placeholders for your product and audience, deploy.",
+    "Track what converts and build your own swipe vault over time.",
+  ],
+  "template-pack": [
+    "Download the zip and unzip it - each template is a ready-to-fill Markdown file.",
+    "Copy a template into Google Docs, Word or Notion and replace every [BRACKETED] placeholder.",
+    "For store pages: paste the final text into Shopify admin (Settings > Policies or Online Store > Pages).",
+    "Export or publish - most templates work as-is once placeholders are filled.",
+  ],
 };
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const p = getProduct(slug);
   if (!p) notFound();
-  const steps = usageSteps[p.category] ?? usageSteps["html-template"]!;
+  const steps = usageSteps[p.category] ?? usageSteps["template-pack"]!;
 
   return (
     <>
@@ -68,8 +99,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="min-w-0">
             <div className="flex flex-wrap gap-2">
-              <Badge>{p.category === "php-script" ? "PHP script" : p.category === "ebook" ? "Ebook" : p.category === "skill-pack" ? "AI skill pack" : "HTML template"}</Badge>
-              {p.category === "ebook" && <Badge className="border-mint/40 bg-mint/10 text-mint">Resell rights</Badge>}
+              <Badge>{label(p.category)}</Badge>
+              {resellCategories.has(p.category) && <Badge className="border-mint/40 bg-mint/10 text-mint">Resell rights</Badge>}
               <Badge>v{p.version}</Badge>
               <Badge className="border-mint/40 bg-mint/10 text-mint">{p.license}</Badge>
             </div>

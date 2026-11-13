@@ -8,18 +8,26 @@ import { getCatalog, type ProductItem } from "@/lib/products";
 import { formatOfferPrice } from "@/lib/offer";
 
 export const metadata: Metadata = {
-  title: "Digital products - skills, ebooks, templates & scripts",
+  title: "Digital products - skills, ebooks, templates & tools",
   description:
-    "GPLMart digital products: AI skill packs for ecommerce agents, original ebooks, HTML templates and PHP scripts. Every download is a zip, included in all-access.",
+    "GPLMart digital products: AI skill packs for ecommerce agents, PDF ebooks with resell rights, spreadsheet systems, swipe files and business template kits. Every download is included in all-access.",
   alternates: { canonical: "/products" },
 };
 
-const kindLabel: Record<string, string> = { "html-template": "HTML template", "php-script": "PHP script", ebook: "Ebook", "skill-pack": "AI skill pack" };
+const kindLabel: Record<string, string> = {
+  "html-template": "HTML template",
+  "php-script": "PHP script",
+  ebook: "Ebook",
+  "skill-pack": "AI skill pack",
+  "spreadsheet-pack": "Spreadsheet system",
+  "swipe-file": "Swipe file",
+  "template-pack": "Template pack",
+};
 
 const categories = [
   { key: "skill-pack", title: "AI Skills", icon: Clapperboard, href: "/skills", blurb: "Ready-to-use agent skills - video, copy, ads, SEO, pricing, reviews and more." },
-  { key: "ebook", title: "Ebooks & Guides", icon: BookOpen, href: "#ebooks", blurb: "Deep-dive guides on ecommerce, marketing and creator workflows." },
-  { key: "code", title: "Code & Templates", icon: Code2, href: "#code", blurb: "Original HTML templates and PHP scripts - GPL-licensed, ready to ship." },
+  { key: "ebook", title: "Ebooks & Guides", icon: BookOpen, href: "#ebooks", blurb: "Deep-dive guides on ecommerce, marketing and creator workflows - resell rights included." },
+  { key: "code", title: "Templates & Tools", icon: Code2, href: "#code", blurb: "Spreadsheets, swipe files, document kits and templates - ready to use, resell rights included." },
 ] as const;
 
 function ProductCard({ p }: { p: ProductItem }) {
@@ -52,7 +60,7 @@ export default function ProductsPage() {
     <>
       <PageHeader
         title="Digital products"
-        description="AI skill packs, ebooks, templates and scripts - every download is a zip, included in all-access membership."
+        description="AI skill packs, ebooks, spreadsheet systems, swipe files and template kits - every download is included in all-access membership."
         crumbs={[{ label: "Home", href: "/" }, { label: "Products" }]}
       />
       <Container className="py-10">
@@ -124,7 +132,7 @@ export default function ProductsPage() {
 
             {code.length > 0 && (
               <section id="code" className="mt-12 scroll-mt-24">
-                <h2 className="mb-5 font-display text-2xl font-semibold">Code & Templates</h2>
+                <h2 className="mb-5 font-display text-2xl font-semibold">Templates, Tools & Packs</h2>
                 <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {code.map((p) => <ProductCard key={p.slug} p={p} />)}
                 </div>

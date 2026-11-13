@@ -518,6 +518,89 @@
         "book.pdf"
       ],
       "added": "2026-11-13"
+    },
+    {
+      "slug": "ecom-profit-pricing-system",
+      "title": "Ecommerce Profit & Pricing System",
+      "description": "A 3-tab Excel/Google Sheets workbook that shows your real margins: product cost sheet, pricing calculator (break-even, target-margin and ads-covered price) and a 12-month P&L dashboard - all live formulas, no spreadsheet skills needed.",
+      "category": "spreadsheet-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "Ecommerce-Profit-Pricing-System.xlsx"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "etsy-dropshipping-business-toolkit",
+      "title": "Etsy & Dropshipping Business Toolkit",
+      "description": "Every number your shop runs on in one workbook: real Etsy fee calculator (transaction, payment, offsite ads), profit tracker, order log with status dropdown and listing performance tracker with conversion rates - live formulas throughout.",
+      "category": "spreadsheet-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "Etsy-Dropshipping-Business-Toolkit.xlsx"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "ad-copy-swipe-file-vol1",
+      "title": "Ad Copy Swipe File Vol. 1",
+      "description": "200+ proven ad copy swipes for Meta, Google and TikTok - hooks by angle, headline and description banks, 70+ CTAs, power words and an A/B testing quick-start. PDF guide + CSV + Markdown.",
+      "category": "swipe-file",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf",
+        "hooks.csv"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "shopify-store-launch-doc-pack",
+      "title": "Shopify Store Launch Document Pack",
+      "description": "Every document a new Shopify store needs on day one: privacy policy, refund policy, shipping policy, terms of service, 40-FAQ template and 9 ready email templates - written for Shopify/D2C sellers with bracketed placeholders.",
+      "category": "template-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf",
+        "privacy-policy.md",
+        "refund-policy.md",
+        "shipping-policy.md",
+        "terms-of-service.md",
+        "faq-template.md",
+        "email-templates.md"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "resume-freelance-proposal-kit",
+      "title": "Resume & Freelance Proposal Kit",
+      "description": "6 tailored resume templates (dev, Shopify, ads, design, writing, ecommerce), 8 freelance proposal templates with follow-up bumps, 5 cover letters and a guide on winning replies - copy-paste ready.",
+      "category": "template-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf",
+        "proposals.md",
+        "cover-letters.md",
+        "resume-01-tech-general.md",
+        "resume-02-ecommerce-shopify.md",
+        "resume-03-digital-marketer-meta-ads.md",
+        "resume-04-graphic-designer-brand.md",
+        "resume-05-content-writer-copywriter.md",
+        "resume-06-ecommerce-dropshipping-operator.md"
+      ],
+      "added": "2026-11-13"
     }
   ]
 }
