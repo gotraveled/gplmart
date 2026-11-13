@@ -1,27 +1,58 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ArrowRight, BookOpen, Clapperboard, Code2 } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
-import { getCatalog } from "@/lib/products";
+import { getCatalog, type ProductItem } from "@/lib/products";
 import { formatOfferPrice } from "@/lib/offer";
 
 export const metadata: Metadata = {
-  title: "Digital products - HTML templates & PHP scripts",
+  title: "Digital products - skills, ebooks, templates & scripts",
   description:
-    "GPLMart-original HTML landing page templates and self-contained PHP scripts. Every product is GPL-licensed original code, downloadable instantly with all-access.",
+    "GPLMart digital products: AI skill packs for ecommerce agents, original ebooks, HTML templates and PHP scripts. Every download is a zip, included in all-access.",
   alternates: { canonical: "/products" },
 };
 
 const kindLabel: Record<string, string> = { "html-template": "HTML template", "php-script": "PHP script", ebook: "Ebook", "skill-pack": "AI skill pack" };
 
+const categories = [
+  { key: "skill-pack", title: "AI Skills", icon: Clapperboard, href: "/skills", blurb: "Ready-to-use agent skills - video, copy, ads, SEO, pricing, reviews and more." },
+  { key: "ebook", title: "Ebooks & Guides", icon: BookOpen, href: "#ebooks", blurb: "Deep-dive guides on ecommerce, marketing and creator workflows." },
+  { key: "code", title: "Code & Templates", icon: Code2, href: "#code", blurb: "Original HTML templates and PHP scripts - GPL-licensed, ready to ship." },
+] as const;
+
+function ProductCard({ p }: { p: ProductItem }) {
+  return (
+    <Link
+      href={`/products/${p.slug}`}
+      className="group rounded-2xl border border-line bg-ink-900/60 p-5 transition hover:border-accent/50"
+    >
+      <div className="flex items-center justify-between gap-2">
+        <Badge>{kindLabel[p.category] ?? p.category}</Badge>
+        <span className="font-mono text-xs text-subtle">v{p.version}</span>
+      </div>
+      <h3 className="mt-3 font-display text-base font-semibold group-hover:text-accent">{p.title}</h3>
+      <p className="mt-2 line-clamp-3 text-sm text-muted">{p.description}</p>
+      <p className="mt-3 text-xs text-subtle">
+        {p.files.length} file{p.files.length === 1 ? "" : "s"} - GPL - members download
+      </p>
+    </Link>
+  );
+}
+
 export default function ProductsPage() {
   const { items } = getCatalog();
+  const skills = items.filter((p) => p.category === "skill-pack");
+  const ebooks = items.filter((p) => p.category === "ebook");
+  const code = items.filter((p) => p.category !== "skill-pack" && p.category !== "ebook");
+  const countFor = (key: string) => (key === "code" ? code.length : items.filter((p) => p.category === key).length);
+
   return (
     <>
       <PageHeader
         title="Digital products"
-        description="Original HTML templates and PHP micro-scripts - GPL-licensed code you can use, modify and ship in client work. Every download is a zip, ready to deploy."
+        description="AI skill packs, ebooks, templates and scripts - every download is a zip, included in all-access membership."
         crumbs={[{ label: "Home", href: "/" }, { label: "Products" }]}
       />
       <Container className="py-10">
@@ -32,33 +63,73 @@ export default function ProductsPage() {
           </p>
         ) : (
           <>
-          {items.some((p) => p.category === "skill-pack") && (
-            <div className="mb-6 rounded-2xl border border-accent/30 bg-accent/5 px-5 py-4 text-sm">
-              <span className="font-semibold text-fg">AI skill packs:</span>{" "}
-              <span className="text-muted">
-                These are instructions for AI agents (Claude Code, Devin, etc.) - download the zip, unzip it, and upload the skill folder to your agent. Each zip includes a <code className="rounded bg-ink-800 px-1.5 py-0.5 text-xs">USAGE.md</code> step-by-step guide. Video/image skills need a Higgsfield or fal.ai account; text skills need nothing extra.
-              </span>
+            <div className="grid gap-4 sm:grid-cols-3">
+              {categories.map((c) => {
+                const Icon = c.icon;
+                const count = countFor(c.key);
+                if (count === 0) return null;
+                return (
+                  <Link
+                    key={c.key}
+                    href={c.href}
+                    className="group rounded-2xl border border-line bg-ink-900/60 p-6 transition hover:border-accent/50"
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="flex size-11 items-center justify-center rounded-xl border border-line bg-ink-950">
+                        <Icon aria-hidden className="size-5 text-accent" />
+                      </span>
+                      <span className="font-mono text-sm text-subtle">{count} item{count === 1 ? "" : "s"}</span>
+                    </div>
+                    <h2 className="mt-4 font-display text-lg font-semibold group-hover:text-accent">{c.title}</h2>
+                    <p className="mt-1.5 text-sm text-muted">{c.blurb}</p>
+                    <p className="mt-3 flex items-center gap-1 text-sm text-accent">
+                      Browse <ArrowRight aria-hidden className="size-4" />
+                    </p>
+                  </Link>
+                );
+              })}
             </div>
-          )}
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {items.map((p) => (
-              <Link
-                key={p.slug}
-                href={`/products/${p.slug}`}
-                className="group rounded-2xl border border-line bg-ink-900/60 p-5 transition hover:border-accent/50"
-              >
-                <div className="flex items-center justify-between gap-2">
-                  <Badge>{kindLabel[p.category] ?? p.category}</Badge>
-                  <span className="font-mono text-xs text-subtle">v{p.version}</span>
+
+            {skills.length > 0 && (
+              <section className="mt-12">
+                <div className="mb-5 flex items-end justify-between gap-4">
+                  <div>
+                    <h2 className="font-display text-2xl font-semibold">AI Skills</h2>
+                    <p className="mt-1 text-sm text-muted">
+                      Instructions for AI agents (Claude Code, Devin, etc.) - download, unzip, upload the skill folder. Each pack includes a <code className="rounded bg-ink-800 px-1.5 py-0.5 text-xs">USAGE.md</code> guide.
+                    </p>
+                  </div>
+                  <Link href="/skills" className="shrink-0 text-sm text-accent underline">View all categorized →</Link>
                 </div>
-                <h2 className="mt-3 font-display text-base font-semibold group-hover:text-accent">{p.title}</h2>
-                <p className="mt-2 line-clamp-3 text-sm text-muted">{p.description}</p>
-                <p className="mt-3 text-xs text-subtle">
-                  {p.files.length} file{p.files.length === 1 ? "" : "s"} - GPL - members download
-                </p>
-              </Link>
-            ))}
-          </div>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {skills.slice(0, 6).map((p) => <ProductCard key={p.slug} p={p} />)}
+                </div>
+                {skills.length > 6 && (
+                  <p className="mt-4 text-sm text-muted">
+                    +{skills.length - 6} more skill packs -{" "}
+                    <Link href="/skills" className="text-accent underline">see the full categorized collection</Link>.
+                  </p>
+                )}
+              </section>
+            )}
+
+            {ebooks.length > 0 && (
+              <section id="ebooks" className="mt-12 scroll-mt-24">
+                <h2 className="mb-5 font-display text-2xl font-semibold">Ebooks & Guides</h2>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {ebooks.map((p) => <ProductCard key={p.slug} p={p} />)}
+                </div>
+              </section>
+            )}
+
+            {code.length > 0 && (
+              <section id="code" className="mt-12 scroll-mt-24">
+                <h2 className="mb-5 font-display text-2xl font-semibold">Code & Templates</h2>
+                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                  {code.map((p) => <ProductCard key={p.slug} p={p} />)}
+                </div>
+              </section>
+            )}
           </>
         )}
         <p className="mt-8 text-sm text-muted">
