@@ -799,6 +799,97 @@
         "Teacher-Activity-Pack.pdf"
       ],
       "added": "2026-11-13"
+    },
+    {
+      "slug": "coloring-book-mandalas",
+      "title": "The Mandala Coloring Book",
+      "description": "15 hand-drawn-style coloring pages: mandalas, flowers, geometric patterns, sun faces and butterflies - pure line art for stress relief and creativity.",
+      "category": "planner-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "Coloring-Book-Mandalas.pdf"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "affirmation-card-deck",
+      "title": "The Affirmation Card Deck",
+      "description": "30 printable affirmation cards for daily confidence and calm - cut, place, repeat. A mindfulness ritual in your pocket.",
+      "category": "planner-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "Affirmation-Card-Deck.pdf"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "wedding-signage-suite",
+      "title": "The Wedding Signage Suite",
+      "description": "18 printable wedding signs: welcome, table numbers, menu, hashtag, directions and thank-you cards - elegant minimal design.",
+      "category": "planner-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "Wedding-Signage-Suite.pdf"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "meal-planner-grocery-bundle",
+      "title": "The Meal Planner & Grocery Bundle",
+      "description": "4 weekly meal plan templates, store-section grocery list and budget tracker - feed your family well without the mental load.",
+      "category": "planner-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "Meal-Planner-Grocery-Bundle.pdf"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "faith-devotional-journal",
+      "title": "The 30-Day Faith Journal",
+      "description": "A guided 30-day devotional journal: daily scripture, reflections and 90 writing prompts across gratitude, prayer, scripture memory and rest - KJV verses, print-friendly.",
+      "category": "planner-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf",
+        "verses.csv",
+        "prompts.csv"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "life-os-kit",
+      "title": "The Life OS Kit",
+      "description": "A complete life operating system in Markdown: dashboard, goals, weekly review, habits, budget, projects, reading library, journal and personal CRM - paste into Notion, Obsidian or Google Docs in under an hour.",
+      "category": "template-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf",
+        "dashboard.md",
+        "goals.md",
+        "weekly-review.md",
+        "habits.md",
+        "finance.md",
+        "projects.md",
+        "reading-library.md",
+        "journal.md",
+        "contacts-crm.md"
+      ],
+      "added": "2026-11-13"
     }
   ]
 }

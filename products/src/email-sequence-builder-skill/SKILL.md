@@ -124,3 +124,8 @@ FOOTER: unsubscribe link, sender info
 - `references/segmentation.md` - how to split audiences for each sequence
 - `references/platform-setup.md` - Klaviyo/Mailchimp/Shopify Email configuration
 - `references/self-check.md` - sequence audit checklist
+
+---
+
+*Part of GPLMart All-Access - GPL-3.0-or-later - © GPLMart - gplmart.com*
+

@@ -99,3 +99,8 @@ that keep you out of spam folders and WhatsApp bans.
 - `references/timing.md` - send windows, frequency caps, timezone logic
 - `references/compliance.md` - CAN-SPAM, GDPR, WhatsApp Business API rules
 - `references/self-check.md` - pre-send checklist
+
+---
+
+*Part of GPLMart All-Access - GPL-3.0-or-later - © GPLMart - gplmart.com*
+

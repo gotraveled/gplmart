@@ -80,3 +80,8 @@ Every promo follows the same arc - adapt timing to the requested duration:
 - `references/providers.md` - Higgsfield/fal.ai calling mechanics and costs
 - `references/finishing.md` - Remotion pass details
 - `references/self-check.md` - pre-delivery checklist
+
+---
+
+*Part of GPLMart All-Access - GPL-3.0-or-later - © GPLMart - gplmart.com*
+

@@ -87,3 +87,8 @@ TEST MATRIX:
 - `references/test-matrix.md` - campaign structure, naming conventions, budget splits
 - `references/compliance.md` - claims rules per category (health, finance, kids, supplements)
 - `references/self-check.md` - pre-launch checklist
+
+---
+
+*Part of GPLMart All-Access - GPL-3.0-or-later - © GPLMart - gplmart.com*
+

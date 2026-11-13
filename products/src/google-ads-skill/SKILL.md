@@ -121,3 +121,8 @@ Never change bidding strategy mid-learning - Google needs 1-2 weeks stable.
 - `references/negative-keywords.md` - the list that saves money
 - `references/optimization.md` - weekly/monthly optimization checklist
 - `references/self-check.md` - launch readiness checklist
+
+---
+
+*Part of GPLMart All-Access - GPL-3.0-or-later - © GPLMart - gplmart.com*
+

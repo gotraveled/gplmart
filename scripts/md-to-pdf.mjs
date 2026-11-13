@@ -34,6 +34,8 @@ const COVERS = {
   "social-media-content-kit-vol1": { accent: "#f472b6", deep: "#26091a", kicker: "CONTENT KIT" },
   "digital-product-empire-bundle": { accent: "#fbbf24", deep: "#241a03", kicker: "MEGA BUNDLE" },
   "shopify-store-in-a-box": { accent: "#34d399", deep: "#052e22", kicker: "STORE LAUNCH" },
+  "faith-devotional-journal": { accent: "#d97706", deep: "#451a03", kicker: "FAITH JOURNAL" },
+  "life-os-kit": { accent: "#8b5cf6", deep: "#1e1038", kicker: "LIFE OS" },
 };
 
 function hexToRgb(hex) {

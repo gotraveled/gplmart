@@ -171,3 +171,8 @@ Total cost = creator fees + product costs + your time managing.
 - `references/campaign-briefs.md` - full brief templates per campaign type
 - `references/roi-tracking.md` - attribution methods + measurement
 - `references/self-check.md` - campaign readiness checklist
+
+---
+
+*Part of GPLMart All-Access - GPL-3.0-or-later - © GPLMart - gplmart.com*
+

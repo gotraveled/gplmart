@@ -144,3 +144,8 @@ Either way, thanks for being a customer!
 - `references/platform-setup.md` - Shopify apps, Amazon Vine, marketplace tools
 - `references/review-management.md` - responding to reviews, handling negatives
 - `references/self-check.md` - review system audit checklist
+
+---
+
+*Part of GPLMart All-Access - GPL-3.0-or-later - © GPLMart - gplmart.com*
+

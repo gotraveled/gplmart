@@ -100,3 +100,8 @@ For each competitor, answer:
 - `references/pricing-analysis.md` - pricing psychology, discount patterns, anchoring
 - `references/differentiation.md` - finding gaps nobody owns
 - `references/self-check.md` - analysis quality checklist
+
+---
+
+*Part of GPLMart All-Access - GPL-3.0-or-later - © GPLMart - gplmart.com*
+

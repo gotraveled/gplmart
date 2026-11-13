@@ -115,3 +115,8 @@ For EACH page type (home, product, collection, blog, about):
 - `references/report-template.md` - detailed report structure
 - `references/tools.md` - free tools for each audit layer
 - `references/self-check.md` - audit quality checklist
+
+---
+
+*Part of GPLMart All-Access - GPL-3.0-or-later - © GPLMart - gplmart.com*
+

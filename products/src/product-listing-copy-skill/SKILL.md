@@ -91,3 +91,8 @@ Structure:
 - `references/keywords.md` - keyword research method + backend fields
 - `references/platforms.md` - per-marketplace copy rules
 - `references/self-check.md` - pre-publish checklist
+
+---
+
+*Part of GPLMart All-Access - GPL-3.0-or-later - © GPLMart - gplmart.com*
+

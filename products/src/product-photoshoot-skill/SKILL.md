@@ -69,3 +69,8 @@ Ask which shots the user needs - don't generate all by default:
 - `references/platforms.md` - Amazon/Flipkart/Meesho/Instagram image rules
 - `references/providers.md` - fal.ai/Higgsfield image model mechanics + costs
 - `references/self-check.md` - pre-delivery checklist
+
+---
+
+*Part of GPLMart All-Access - GPL-3.0-or-later - © GPLMart - gplmart.com*
+

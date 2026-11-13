@@ -188,3 +188,8 @@ Every order = someone's smile 😊
 - `references/batch-workflow.md` - weekly/monthly production system
 - `references/hashtag-guide.md` - hashtag research + strategy
 - `references/self-check.md` - content quality checklist
+
+---
+
+*Part of GPLMart All-Access - GPL-3.0-or-later - © GPLMart - gplmart.com*
+

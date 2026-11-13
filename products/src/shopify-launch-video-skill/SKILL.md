@@ -53,3 +53,8 @@ fade, optional audio) → review checklist.
 - `references/intake.md` - question bank + launch-spec.json schema
 - `references/providers.md` - generation provider mechanics (shared with sibling skills)
 - `references/self-check.md` - launch-specific pre-delivery checklist
+
+---
+
+*Part of GPLMart All-Access - GPL-3.0-or-later - © GPLMart - gplmart.com*
+

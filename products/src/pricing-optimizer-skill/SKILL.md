@@ -120,3 +120,8 @@ Adjust prices based on:
 - `references/dynamic-pricing.md` - triggers, rules, automation
 - `references/price-testing.md` - A/B testing methods that actually work
 - `references/self-check.md` - pricing audit checklist
+
+---
+
+*Part of GPLMart All-Access - GPL-3.0-or-later - © GPLMart - gplmart.com*
+

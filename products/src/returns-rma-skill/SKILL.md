@@ -123,3 +123,8 @@ Monthly review: which reasons are growing? Which fixes worked? Feed back into pr
 - `references/recovery-flows.md` - win-back sequences after returns
 - `references/reason-analysis.md` - tracking and fixing return reasons
 - `references/self-check.md` - system audit checklist
+
+---
+
+*Part of GPLMart All-Access - GPL-3.0-or-later - © GPLMart - gplmart.com*
+

@@ -486,3 +486,8 @@ Say these plainly if they come up. Do not let them be discovered in a review.
 - **Nothing is remembered between videos** beyond the ledger row — and only if it was actually written.
 - **Claims cannot be invented.** If they want a claim that is not in their own source material, that is a
   decision for the brand, not a prompt change.
+
+---
+
+*Part of GPLMart All-Access - GPL-3.0-or-later - © GPLMart - gplmart.com*
+

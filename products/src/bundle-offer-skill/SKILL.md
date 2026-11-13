@@ -188,3 +188,8 @@ If bundle discount drops margin below target → reduce discount or raise bundle
 - `references/promotion-tactics.md` - on-site, email, ads promotion
 - `references/performance-tracking.md` - metrics, analysis, optimization
 - `references/self-check.md` - bundle audit checklist
+
+---
+
+*Part of GPLMart All-Access - GPL-3.0-or-later - © GPLMart - gplmart.com*
+
