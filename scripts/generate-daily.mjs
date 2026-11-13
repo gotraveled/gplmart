@@ -28,6 +28,7 @@ const API_KEYS = (process.env.GEMINI_API_KEYS || process.env.GEMINI_API_KEY || "
 let keyCursor = 0;
 const nextKey = () => API_KEYS[keyCursor++ % API_KEYS.length];
 const MODEL = process.env.GEMINI_MODEL || "gemini-3.5-flash";
+const FALLBACK_MODEL = process.env.GEMINI_FALLBACK_MODEL || "gemini-3.1-flash-lite";
 const DAILY = {
   snippets: Number(process.env.DAILY_SNIPPETS ?? 3),
   guides: Number(process.env.DAILY_GUIDES ?? 1),
@@ -95,9 +96,9 @@ const existingCategories = [...new Set(
 )];
 
 // ---------- LLM ----------
-async function llmOnce(prompt, key, { json = true, maxTokens = 16000 } = {}) {
+async function llmOnce(prompt, key, { json = true, maxTokens = 16000, model = MODEL } = {}) {
   const res = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${key}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -130,13 +131,48 @@ async function llm(prompt, opts = {}) {
       await new Promise((r) => setTimeout(r, 2000 * (attempt + 1)));
     }
   }
+  // Primary model saturated - fall back to the lite model before giving up.
+  if (lastErr.status === 503 || lastErr.status === 429) {
+    return await llmOnce(prompt, nextKey(), { ...opts, model: FALLBACK_MODEL });
+  }
   throw lastErr;
+}
+
+// Gemini occasionally emits raw control characters inside JSON string
+// literals even with responseMimeType - escape them before parsing.
+function repairJsonStrings(text) {
+  let out = "", inStr = false, esc = false;
+  for (const ch of text) {
+    if (!inStr) {
+      out += ch;
+      if (ch === '"') inStr = true;
+      continue;
+    }
+    if (esc) { out += ch; esc = false; continue; }
+    if (ch === "\\") { out += ch; esc = true; continue; }
+    if (ch === '"') { out += ch; inStr = false; continue; }
+    const code = ch.codePointAt(0);
+    if (code < 0x20) {
+      if (ch === "\n") out += "\\n";
+      else if (ch === "\r") out += "\\r";
+      else if (ch === "\t") out += "\\t";
+      else out += "\\u" + code.toString(16).padStart(4, "0");
+    } else {
+      out += ch;
+    }
+  }
+  return out;
 }
 
 function parseJson(text) {
   const cleaned = text.replace(/```(?:json)?/g, "").trim();
   const start = cleaned.search(/[[{]/);
-  return JSON.parse(cleaned.slice(start));
+  const slice = cleaned.slice(start);
+  try {
+    return JSON.parse(slice);
+  } catch {
+    return JSON.parse(repairJsonStrings(slice));
+  }
 }
 
 // ---------- prompts ----------
