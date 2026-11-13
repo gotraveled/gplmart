@@ -31,6 +31,15 @@ export default function ProductsPage() {
             <Link href="/library" className="text-accent underline">Liquid library</Link> meanwhile.
           </p>
         ) : (
+          <>
+          {items.some((p) => p.category === "skill-pack") && (
+            <div className="mb-6 rounded-2xl border border-accent/30 bg-accent/5 px-5 py-4 text-sm">
+              <span className="font-semibold text-fg">AI skill packs:</span>{" "}
+              <span className="text-muted">
+                These are instructions for AI agents (Claude Code, Devin, etc.) - download the zip, unzip it, and upload the skill folder to your agent. Each zip includes a <code className="rounded bg-ink-800 px-1.5 py-0.5 text-xs">USAGE.md</code> step-by-step guide. Video/image skills need a Higgsfield or fal.ai account; text skills need nothing extra.
+              </span>
+            </div>
+          )}
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {items.map((p) => (
               <Link
@@ -50,6 +59,7 @@ export default function ProductsPage() {
               </Link>
             ))}
           </div>
+          </>
         )}
         <p className="mt-8 text-sm text-muted">
           All products are included in the{" "}

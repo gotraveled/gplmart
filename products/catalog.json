@@ -13,7 +13,10 @@
       "category": "ebook",
       "version": "1.0.0",
       "license": "GPL-3.0-or-later",
-      "files": ["README.md", "book.md"],
+      "files": [
+        "README.md",
+        "book.md"
+      ],
       "added": "2026-11-12"
     },
     {
@@ -24,6 +27,7 @@
       "version": "1.0.0",
       "license": "GPL-3.0-or-later",
       "files": [
+        "USAGE.md",
         "README.md",
         "SKILL.md",
         "SETUP-GUIDE.md",
@@ -68,6 +72,7 @@
       "version": "1.0.0",
       "license": "GPL-3.0-or-later",
       "files": [
+        "USAGE.md",
         "README.md",
         "SKILL.md",
         "references/intake.md",
@@ -85,7 +90,15 @@
       "category": "skill-pack",
       "version": "1.0.0",
       "license": "GPL-3.0-or-later",
-      "files": ["README.md", "SKILL.md", "references/launch-structure.md", "references/intake.md", "references/providers.md", "references/self-check.md"],
+      "files": [
+        "USAGE.md",
+        "README.md",
+        "SKILL.md",
+        "references/launch-structure.md",
+        "references/intake.md",
+        "references/providers.md",
+        "references/self-check.md"
+      ],
       "added": "2026-11-12"
     },
     {
@@ -95,7 +108,16 @@
       "category": "skill-pack",
       "version": "1.0.0",
       "license": "GPL-3.0-or-later",
-      "files": ["README.md", "SKILL.md", "references/shot-list.md", "references/fidelity.md", "references/platforms.md", "references/providers.md", "references/self-check.md"],
+      "files": [
+        "USAGE.md",
+        "README.md",
+        "SKILL.md",
+        "references/shot-list.md",
+        "references/fidelity.md",
+        "references/platforms.md",
+        "references/providers.md",
+        "references/self-check.md"
+      ],
       "added": "2026-11-12"
     },
     {
@@ -105,7 +127,17 @@
       "category": "skill-pack",
       "version": "1.0.0",
       "license": "GPL-3.0-or-later",
-      "files": ["README.md", "SKILL.md", "references/copy-frameworks.md", "references/angles.md", "references/creative-briefs.md", "references/test-matrix.md", "references/compliance.md", "references/self-check.md"],
+      "files": [
+        "USAGE.md",
+        "README.md",
+        "SKILL.md",
+        "references/copy-frameworks.md",
+        "references/angles.md",
+        "references/creative-briefs.md",
+        "references/test-matrix.md",
+        "references/compliance.md",
+        "references/self-check.md"
+      ],
       "added": "2026-11-12"
     },
     {
@@ -115,7 +147,16 @@
       "category": "skill-pack",
       "version": "1.0.0",
       "license": "GPL-3.0-or-later",
-      "files": ["README.md", "SKILL.md", "references/checklist.md", "references/shopify-seo.md", "references/report-template.md", "references/tools.md", "references/self-check.md"],
+      "files": [
+        "USAGE.md",
+        "README.md",
+        "SKILL.md",
+        "references/checklist.md",
+        "references/shopify-seo.md",
+        "references/report-template.md",
+        "references/tools.md",
+        "references/self-check.md"
+      ],
       "added": "2026-11-12"
     },
     {
@@ -125,7 +166,17 @@
       "category": "skill-pack",
       "version": "1.0.0",
       "license": "GPL-3.0-or-later",
-      "files": ["README.md", "SKILL.md", "references/title-formulas.md", "references/bullet-patterns.md", "references/description-structure.md", "references/keywords.md", "references/platforms.md", "references/self-check.md"],
+      "files": [
+        "USAGE.md",
+        "README.md",
+        "SKILL.md",
+        "references/title-formulas.md",
+        "references/bullet-patterns.md",
+        "references/description-structure.md",
+        "references/keywords.md",
+        "references/platforms.md",
+        "references/self-check.md"
+      ],
       "added": "2026-11-12"
     },
     {
@@ -135,7 +186,17 @@
       "category": "skill-pack",
       "version": "1.0.0",
       "license": "GPL-3.0-or-later",
-      "files": ["README.md", "SKILL.md", "references/subject-lines.md", "references/sequence-templates.md", "references/whatsapp-messages.md", "references/timing.md", "references/compliance.md", "references/self-check.md"],
+      "files": [
+        "USAGE.md",
+        "README.md",
+        "SKILL.md",
+        "references/subject-lines.md",
+        "references/sequence-templates.md",
+        "references/whatsapp-messages.md",
+        "references/timing.md",
+        "references/compliance.md",
+        "references/self-check.md"
+      ],
       "added": "2026-11-12"
     },
     {
@@ -145,7 +206,10 @@
       "category": "ebook",
       "version": "1.0.0",
       "license": "GPL-3.0-or-later",
-      "files": ["README.md", "book.md"],
+      "files": [
+        "README.md",
+        "book.md"
+      ],
       "added": "2026-11-12"
     },
     {
@@ -155,7 +219,89 @@
       "category": "ebook",
       "version": "1.0.0",
       "license": "GPL-3.0-or-later",
-      "files": ["README.md", "book.md"],
+      "files": [
+        "README.md",
+        "book.md"
+      ],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "competitor-analysis-skill",
+      "title": "Competitor Analysis Skill",
+      "description": "AI-agent skill for structured competitor teardowns - product, positioning, pricing, marketing, UX analysis with a 'what to copy / what to beat' roadmap. Works on any public store URL.",
+      "category": "skill-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "USAGE.md",
+        "README.md",
+        "SKILL.md",
+        "references/teardown-template.md",
+        "references/what-to-look-for.md",
+        "references/pricing-analysis.md",
+        "references/differentiation.md",
+        "references/self-check.md"
+      ],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "returns-rma-skill",
+      "title": "Returns & RMA Skill",
+      "description": "AI-agent skill for building returns/exchange systems - policy writing, workflow automation, fraud prevention, recovery flows and return-reason analysis that turns returns into repeat customers.",
+      "category": "skill-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "USAGE.md",
+        "README.md",
+        "SKILL.md",
+        "references/policy-template.md",
+        "references/workflow.md",
+        "references/fraud-signals.md",
+        "references/recovery-flows.md",
+        "references/reason-analysis.md",
+        "references/self-check.md"
+      ],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "google-ads-skill",
+      "title": "Google Ads Skill",
+      "description": "AI-agent skill for Google Ads campaigns - Shopping, Search, Performance Max and YouTube. Keyword strategy, ad copy, bidding, negative keywords and optimization rhythm.",
+      "category": "skill-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "USAGE.md",
+        "README.md",
+        "SKILL.md",
+        "references/campaign-setup.md",
+        "references/ad-copy.md",
+        "references/bidding-strategy.md",
+        "references/negative-keywords.md",
+        "references/optimization.md",
+        "references/self-check.md"
+      ],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "influencer-outreach-skill",
+      "title": "Influencer Outreach Skill",
+      "description": "AI-agent skill for influencer marketing - creator discovery, vetting scorecards, outreach templates, negotiation scripts, campaign briefs and ROI tracking for Instagram, TikTok and YouTube.",
+      "category": "skill-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "USAGE.md",
+        "README.md",
+        "SKILL.md",
+        "references/vetting-checklist.md",
+        "references/outreach-templates.md",
+        "references/pricing-guide.md",
+        "references/campaign-briefs.md",
+        "references/roi-tracking.md",
+        "references/self-check.md"
+      ],
       "added": "2026-11-12"
     }
   ]
