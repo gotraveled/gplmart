@@ -12,6 +12,103 @@ const INK = "#1a1a2e";
 const MUTED = "#555570";
 const LINE = "#d8d8e0";
 
+// Per-book cover styling: accent color + category kicker.
+const COVERS = {
+  "shopify-store-launch-bible": { accent: "#8b5cf6", deep: "#1e1040", kicker: "ECOMMERCE PLAYBOOK" },
+  "meta-ads-mastery-ecommerce": { accent: "#f59e0b", deep: "#291a04", kicker: "PAID ADS MASTERCLASS" },
+  "winning-product-research-bible": { accent: "#06b6d4", deep: "#04222b", kicker: "PRODUCT RESEARCH" },
+  "ai-powered-ecommerce-playbook": { accent: "#a78bfa", deep: "#171233", kicker: "AI FOR SELLERS" },
+  "shopify-liquid-mastery": { accent: "#34d399", deep: "#052018", kicker: "SHOPIFY LIQUID" },
+  "ecommerce-india-playbook": { accent: "#fb7185", deep: "#2b0713", kicker: "INDIA MARKET GUIDE" },
+  "ai-prompts-ecommerce": { accent: "#f472b6", deep: "#26091a", kicker: "PROMPT LIBRARY" },
+  "ai-tools-beginners": { accent: "#60a5fa", deep: "#081830", kicker: "BEGINNER AI GUIDE" },
+  "freelance-income-playbook": { accent: "#fbbf24", deep: "#241a03", kicker: "FREELANCE BUSINESS" },
+  "digital-products-empire": { accent: "#2dd4bf", deep: "#03211d", kicker: "DIGITAL PRODUCTS" },
+  "money-basics-playbook": { accent: "#4ade80", deep: "#0a2413", kicker: "PERSONAL FINANCE" },
+};
+
+function hexToRgb(hex) {
+  const n = parseInt(hex.slice(1), 16);
+  return [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+}
+
+function rgbToHex(r, g, b) {
+  return "#" + [r, g, b].map((v) => Math.max(0, Math.min(255, Math.round(v))).toString(16).padStart(2, "0")).join("");
+}
+
+function tint(hex, f) {
+  const [r, g, b] = hexToRgb(hex);
+  return rgbToHex(r * f, g * f, b * f);
+}
+
+function alpha(hex, a) {
+  const [r, g, b] = hexToRgb(hex);
+  return `#${r},${g},${b},${a})`;
+}
+
+function coverSubtitle(md) {
+  const line = md.split(/\r?\n/).map((l) => l.trim()).find((l) => l.startsWith(">") && l.replace(/[>*\s]/g, "").length > 10);
+  if (!line) return "";
+  const text = line.replace(/^>\s?/, "").replace(/\*\*/g, "").replace(/\*/g, "").replace(/`/g, "").trim();
+  return text.length > 150 ? text.slice(0, 147).replace(/\s+\S*$/, "") + "..." : text;
+}
+
+function coverMonogram(title) {
+  const words = title.replace(/^(The|A)\s+/i, "").split(/\s+/).filter(Boolean);
+  return (words[0]?.[0] ?? "G") + (words[1]?.[0] ?? words[0]?.slice(-1) ?? "M");
+}
+
+function drawCover(doc, item, md) {
+  const W = doc.page.width, H = doc.page.height;
+  const c = COVERS[item?.slug] ?? { accent: ACCENT, deep: "#101024", kicker: "GPLMART GUIDE" };
+  // background gradient
+  const grad = doc.linearGradient(0, 0, 0, H);
+  grad.stop(0, c.deep).stop(1, tint(c.deep, 0.4));
+  doc.save().rect(0, 0, W, H).fill(grad).restore();
+
+  // decorative shapes
+  doc.save().opacity(0.35).circle(W - 60, 120, 190).lineWidth(1.5).strokeColor(c.accent).stroke().restore();
+  doc.save().opacity(0.18).circle(W - 60, 120, 120).lineWidth(1).strokeColor(c.accent).stroke().restore();
+  doc.save().opacity(0.10).circle(50, H - 90, 140).fill(c.accent).restore();
+  doc.save().opacity(0.07).moveTo(0, H * 0.62).lineTo(W, H * 0.5).lineTo(W, H).lineTo(0, H).closePath().fill(c.accent).restore();
+
+  // wordmark
+  doc.font("Helvetica-Bold").fontSize(13).fillColor("#ffffff")
+    .text("G P L M A R T", 60, 58, { characterSpacing: 4 });
+  doc.font("Helvetica").fontSize(8.5).fillColor(`#ffffff`)
+    .text("PREMIUM DIGITAL RESOURCE LIBRARY", 60, 76, { characterSpacing: 2.5 });
+
+  // monogram emblem
+  const ex = 60, ey = H * 0.30, es = 92;
+  const eg = doc.linearGradient(ex, ey, ex + es, ey + es);
+  eg.stop(0, c.accent).stop(1, tint(c.accent, 0.6));
+  doc.save().roundedRect(ex, ey, es, es, 22).fill(eg).restore();
+  doc.save().roundedRect(ex + 5, ey + 5, es - 10, es - 10, 18).opacity(0.35).lineWidth(1).strokeColor("#ffffff").stroke().restore();
+  doc.font("Helvetica-Bold").fontSize(34).fillColor("#ffffff")
+    .text(coverMonogram(item?.title ?? item?.slug ?? "G"), ex, ey + es / 2 - 22, { width: es, align: "center" });
+
+  // kicker + title + subtitle
+  const tx = ex + es + 28;
+  doc.font("Helvetica-Bold").fontSize(10).fillColor(c.accent)
+    .text(c.kicker, tx, ey + 8, { characterSpacing: 3 });
+  doc.font("Helvetica-Bold").fontSize(27).fillColor("#ffffff")
+    .text(item?.title ?? item?.slug ?? "", tx, ey + 30, { width: W - tx - 60, lineGap: 3 });
+  const subtitle = coverSubtitle(md);
+  if (subtitle) {
+    doc.font("Helvetica").fontSize(11).fillColor("#e8e8f0")
+      .text(subtitle, tx, ey + es - 26, { width: W - tx - 60, lineGap: 2 });
+  }
+
+  // bottom block
+  const by = H - 120;
+  doc.save().opacity(0.5).moveTo(60, by).lineTo(W - 60, by).lineWidth(1).strokeColor(c.accent).stroke().restore();
+  doc.font("Helvetica-Bold").fontSize(12).fillColor("#ffffff").text("gplmart.com", 60, by + 16);
+  doc.font("Helvetica").fontSize(9).fillColor("#c8c8d8")
+    .text("One membership - instant PDF download - resell rights included", 60, by + 34);
+  doc.font("Helvetica").fontSize(8).fillColor("#9a9ab0")
+    .text(`v${item?.version ?? "1.0"} - GPL-3.0-or-later - ${new Date().getFullYear()}`, 60, by + 50);
+}
+
 function inlineRuns(text) {
   // returns array of {text, bold, italic, code}
   const runs = [];
@@ -147,22 +244,15 @@ async function build(slug) {
   const stream = fs.createWriteStream(pdfPath);
   doc.pipe(stream);
 
-  // cover-ish header
-  doc.font("Helvetica-Bold").fontSize(26).fillColor(ACCENT).text(title, { width: doc.page.width - doc.page.margins.left - doc.page.margins.right });
-  doc.moveDown(0.3);
-  doc.font("Helvetica").fontSize(11).fillColor(MUTED).text("GPLMart - practical digital resources for ecommerce sellers, developers and creators.", { width: doc.page.width - doc.page.margins.left - doc.page.margins.right });
-  doc.moveDown(0.2);
-  doc.font("Helvetica").fontSize(9).fillColor(MUTED).text(`v${item?.version ?? "1.0"} - GPL-3.0-or-later - gplmart.com`, { width: doc.page.width - doc.page.margins.left - doc.page.margins.right });
-  doc.moveDown(1.4);
-  doc.moveTo(doc.page.margins.left, doc.y).lineTo(doc.page.width - doc.page.margins.right, doc.y).lineWidth(2).strokeColor(ACCENT).stroke();
-  doc.moveDown(1);
-  doc.x = doc.page.margins.left;
+  // designed cover page
+  drawCover(doc, item, md);
+  doc.addPage();
 
   renderMd(doc, md);
 
   // footer page numbers
   const range = doc.bufferedPageRange();
-  for (let i = range.start; i < range.start + range.count; i++) {
+  for (let i = range.start + 1; i < range.start + range.count; i++) {
     doc.switchToPage(i);
     doc.font("Helvetica").fontSize(8).fillColor(MUTED)
       .text(`${title} - GPLMart`, doc.page.margins.left, doc.page.height - 40, { width: doc.page.width - doc.page.margins.left - doc.page.margins.right, align: "center" })
