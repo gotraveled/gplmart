@@ -15,9 +15,16 @@ export const SEO_KEYWORDS = [
   "copy paste shopify sections",
   "shopify liquid tutorial",
   "shopify theme customization code",
-  "html landing page templates",
-  "php scripts collection",
-  "digital products for developers",
+  "etsy spreadsheet templates",
+  "google sheets budget template",
+  "printable planner pdf",
+  "digital planner printable",
+  "ad copy swipe file",
+  "social media content templates",
+  "freelance proposal templates",
+  "resume templates",
+  "wedding planner spreadsheet",
+  "shopify store policy templates",
 ] as const;
 
 const orgBase = {
@@ -69,8 +76,40 @@ export function productJsonLd() {
     "@type": "Product",
     name: "GPLMart All-Access Membership",
     description:
-      "One-time membership for 12 months: 212 Shopify Liquid snippets and sections, 6 snippet packs, 6 courses, 17 AI skill packs, 11 resell-rights ebooks and AI prompt packs.",
+      "One-time membership for 12 months: 200+ Shopify Liquid snippets and sections, snippet packs, 6 ecommerce courses, 17 AI skill packs, 11 resell-rights ebooks, spreadsheet systems, printable planners, swipe files, template kits and AI prompt packs.",
     brand: { "@type": "Brand", name: "GPLMart" },
+    offers: [
+      {
+        "@type": "Offer",
+        price: "499",
+        priceCurrency: "INR",
+        availability: "https://schema.org/InStock",
+        url: absoluteUrl("/checkout"),
+        eligibleRegion: "IN",
+      },
+      {
+        "@type": "Offer",
+        price: "4.99",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+        url: absoluteUrl("/checkout"),
+      },
+    ],
+  };
+}
+
+/** Product schema for an individual catalog item page (/products/[slug]). */
+export function catalogProductJsonLd(input: {
+  slug: string;
+  title: string;
+  description: string;
+}) {
+  return {
+    "@type": "Product",
+    name: input.title,
+    description: input.description,
+    brand: { "@type": "Brand", name: "GPLMart" },
+    url: absoluteUrl(`/products/${input.slug}`),
     offers: [
       {
         "@type": "Offer",

@@ -30,13 +30,19 @@ import { HomeSandbox } from "@/components/home/sandbox";
 import { faqs } from "@/lib/faq";
 import { examples, freeExampleIds, getExample } from "@/lib/playground/examples";
 import { faqJsonLd, jsonLdPayload, productJsonLd } from "@/lib/seo";
+import { getCatalog } from "@/lib/products";
 import { formatOfferPrice } from "@/lib/offer";
 import { GeoPrice } from "@/components/ui/geo-price";
+
+const catalogItems = getCatalog().items;
+const ebookCount = catalogItems.filter((p) => p.category === "ebook").length;
+const skillPackCount = catalogItems.filter((p) => p.category === "skill-pack").length;
+const toolPackCount = catalogItems.length - ebookCount - skillPackCount;
 
 export const metadata: Metadata = {
   title: { absolute: "GPLMart - Shopify Liquid Code, AI Skills, Ebooks & Courses" },
   description:
-    "212 Shopify Liquid snippets & sections, 17 AI skill packs, 11 PDF ebooks with resell rights, 6 courses and AI prompts - one payment, 12 months access.",
+    "Shopify Liquid snippets & sections, AI skill packs, PDF ebooks with resell rights, spreadsheet systems, printable planners, swipe files, template kits, 6 courses and AI prompts - one payment, 12 months access.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -52,7 +58,8 @@ export const metadata: Metadata = {
 const numbers = [
   { k: String(examples.length), v: "Liquid components in the sandbox" },
   { k: String(freeExampleIds.size), v: "Free examples live in the sandbox" },
-  { k: "17", v: "AI skill packs for agents" },
+  { k: String(skillPackCount), v: "AI skill packs for agents" },
+  { k: `${catalogItems.length}`, v: "Digital products & template kits" },
   { k: "12 mo", v: "Full access per one-time payment" },
 ];
 
@@ -80,7 +87,7 @@ const resources = [
     icon: Puzzle,
     tag: "Agent skills",
     title: "AI skill packs",
-    text: "17 installable skill packs that teach AI agents ecommerce workflows - product videos, photoshoots, ads, SEO, listings, email & more.",
+    text: `${skillPackCount} installable skill packs that teach AI agents ecommerce workflows - product videos, photoshoots, ads, SEO, listings, email & more.`,
   },
   {
     icon: FileCode2,
@@ -92,7 +99,7 @@ const resources = [
     icon: ShoppingBag,
     tag: "PDF downloads",
     title: "Ebooks & guides",
-    text: "11 in-depth PDF ebooks across ecommerce, AI, freelancing, digital products and money - every ebook includes resell rights.",
+    text: `${ebookCount} in-depth PDF ebooks across ecommerce, AI, freelancing, digital products and money - every ebook includes resell rights.`,
   },
   {
     icon: GraduationCap,
@@ -105,6 +112,12 @@ const resources = [
     tag: "Curated bundles",
     title: "Snippet packs",
     text: "6 themed zip packs - product page, cart upsell, trust, marketing, navigation and collections - download and paste in minutes.",
+  },
+  {
+    icon: ShoppingBag,
+    tag: "Tools & printables",
+    title: "Spreadsheets, planners & kits",
+    text: `${toolPackCount} ready-to-use systems: profit & pricing workbooks, Etsy & wedding planners, printable planner PDFs, swipe files, resume kits, store doc packs and more - all with resell rights.`,
   },
 ];
 
@@ -250,9 +263,10 @@ export default function HomePage() {
             </h1>
             <p className="mt-6 max-w-xl font-display text-lg text-pretty text-muted">
               One payment unlocks the whole library: {examples.length} conversion-focused Liquid snippets &amp;
-              sections, 6 curated snippet packs, 6 courses with 32 lessons, 17 AI skill packs for ecommerce
-              agents, 11 PDF ebooks with resell rights and AI prompt packs - everything a Shopify seller,
-              freelancer or agency needs, for 12 months.
+              sections, 6 curated snippet packs, 6 courses with 32 lessons, {skillPackCount} AI skill packs for
+              ecommerce agents, {ebookCount} PDF ebooks with resell rights, {toolPackCount} spreadsheet systems,
+              printable planners, swipe files &amp; template kits - everything a Shopify seller, freelancer or
+              agency needs, for 12 months.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-3">
               <ButtonLink href="/checkout" size="lg">
@@ -288,7 +302,7 @@ export default function HomePage() {
             <div aria-hidden className="absolute -bottom-5 left-2 z-20 flex items-center gap-2 rounded-xl border border-line-strong bg-ink-900 px-3.5 py-2.5 shadow-card">
               <FileCode2 className="size-4 text-accent" />
               <div>
-                <p className="text-xs font-semibold leading-none">200 components</p>
+                <p className="text-xs font-semibold leading-none">{examples.length} components</p>
                 <p className="mt-1 text-[0.6rem] leading-none text-subtle">Sections &amp; snippets</p>
               </div>
             </div>
@@ -573,7 +587,7 @@ export default function HomePage() {
           <SectionHeading
             eyebrow="One payment - 12 months of everything"
             title="GPLMart All-Access"
-            description="Liquid code, AI skills, ebooks, courses and prompts - one payment unlocks all of it for a full year."
+            description="Liquid code, AI skills, ebooks, courses, spreadsheets and printable planners - one payment unlocks all of it for a full year."
           />
           <div className="mx-auto max-w-xl rounded-3xl border border-accent/35 bg-gradient-to-b from-ink-800 to-ink-900 p-8 text-center shadow-card sm:p-10">
             <p className="text-sm font-medium text-mint">All-access membership</p>
@@ -583,8 +597,9 @@ export default function HomePage() {
               {[
                 `${examples.length} Liquid snippets & sections + 6 curated snippet packs`,
                 "6 full courses with 32 lessons - Shopify, Liquid, dropshipping, ads",
-                "17 AI skill packs for ecommerce agents + AI prompt packs",
-                "11 PDF ebooks with resell rights - ecommerce to personal finance",
+                `${skillPackCount} AI skill packs for ecommerce agents + AI prompt packs`,
+                `${ebookCount} PDF ebooks with resell rights - ecommerce to personal finance`,
+                `${toolPackCount} spreadsheets, printable planners, swipe files & template kits`,
                 "Live sandbox, member dashboard & instant zip downloads",
                 "New drops every week - all included during your 12 months",
               ].map((t) => (

@@ -72,7 +72,7 @@ export default function PromptsPage() {
             <h2 className="font-display text-lg font-semibold">Want the code to go with the prompts?</h2>
             <p className="mt-1.5 text-sm text-muted">
               These prompts write your marketing. The GPLMart library gives your store the conversion components to
-              back it up - countdowns, trust badges, delivery ETAs and 37 more, plus the plugin/theme bundles.
+              back it up - countdowns, trust badges, delivery ETAs, cart upsells and 200+ more snippets &amp; sections.
             </p>
             <div className="mt-4 flex flex-wrap gap-3">
               <ButtonLink href="/checkout">

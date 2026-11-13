@@ -7,7 +7,6 @@ import PDFDocument from "pdfkit";
 const INK = "#1a1a2e";
 const MUTED = "#6b6b80";
 const ACCENT = "#7c3aed";
-const ACCENT2 = "#0e6e56";
 const SOFT = "#f3efff";
 const LINE = "#d8d8e0";
 const W = 595, H = 842, M = 50;
@@ -277,7 +276,7 @@ async function partyGames() {
     ["THANK YOU", "for celebrating with us", "#0e6e56"],
     ["LET'S PARTY", "games • laughs • cake", "#7c3aed"],
   ];
-  signs.forEach(([big, small, color], i) => {
+  signs.forEach(([big, small, color]) => {
     doc.addPage();
     doc.save().roundedRect(M + 40, M + 80, W - M * 2 - 80, H - M * 2 - 160, 16).strokeColor(color).lineWidth(3).stroke().restore();
     doc.save().roundedRect(M + 56, M + 96, W - M * 2 - 112, H - M * 2 - 192, 12).lineWidth(1).strokeColor(LINE).stroke().restore();

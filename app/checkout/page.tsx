@@ -11,14 +11,18 @@ import { getProduct, getCatalog } from "@/lib/products";
 
 export const metadata: Metadata = { title: "Checkout", robots: { index: false } };
 
-const ebookCount = getCatalog().items.filter((p) => p.category === "ebook").length;
+const catalogItems = getCatalog().items;
+const ebookCount = catalogItems.filter((p) => p.category === "ebook").length;
+const skillPackCount = catalogItems.filter((p) => p.category === "skill-pack").length;
+const toolPackCount = catalogItems.length - ebookCount - skillPackCount;
 
 const included = [
   "200+ Shopify Liquid snippets & sections",
   "6 curated snippet packs (zip downloads)",
   "6 full courses - Shopify, Liquid, dropshipping, ads",
-  "17 AI skill packs for ecommerce agents",
+  `${skillPackCount} AI skill packs for ecommerce agents`,
   `${ebookCount} in-depth PDF ebooks with resell rights`,
+  `${toolPackCount} spreadsheets, printable planners, swipe files & template kits`,
   "Free AI prompts + Liquid checker tool",
   "New drops every week - membership keeps growing",
 ];

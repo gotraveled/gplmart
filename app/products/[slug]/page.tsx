@@ -6,6 +6,7 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { getCatalog, getProduct } from "@/lib/products";
+import { catalogProductJsonLd, jsonLdPayload } from "@/lib/seo";
 import { formatOfferPrice } from "@/lib/offer";
 
 export function generateStaticParams() {
@@ -103,6 +104,10 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
         crumbs={[{ label: "Products", href: "/products" }, { label: p.title }]}
       />
       <Container className="py-10">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdPayload(catalogProductJsonLd(p)) }}
+        />
         <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
           <div className="min-w-0">
             <div className="flex flex-wrap gap-2">
