@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, BookOpen, Code2, Download, Layers, LogOut, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, Code2, Download, Layers, LogOut, Sparkles, Wand2 } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -14,7 +14,8 @@ export const metadata: Metadata = { title: "Dashboard", robots: { index: false }
 const areas = [
   { href: "/access/liquid-library", icon: Code2, title: "Liquid library", text: "Search, preview, copy and download every snippet." },
   { href: "/access/packs", icon: Layers, title: "Snippet packs", text: "Curated bundles by use-case - download each pack as a zip." },
-  { href: "/access/products", icon: Download, title: "Digital products", text: "HTML templates, PHP scripts and ebooks - instant downloads." },
+  { href: "/access/products", icon: Download, title: "Digital products & ebooks", text: "Skill packs, templates, scripts and PDF ebooks - instant downloads." },
+  { href: "/skills", icon: Wand2, title: "AI skill packs", text: "17 agent skills for video, copy, ads, SEO, pricing and reviews - download zips via Digital products." },
   { href: "/courses", icon: BookOpen, title: "Courses", text: "Full lesson content across every course - Shopify, Liquid, dropshipping, ads." },
   { href: "/playground", icon: Sparkles, title: "Playground", text: "Preview and customise snippets live before installing." },
   { href: "/updates", icon: ArrowRight, title: "What's new", text: "Weekly drops - new snippets, products, guides and lessons." },

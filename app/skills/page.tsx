@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Clapperboard, Copy, Image as ImageIcon, Megaphone, ShoppingBag } from "lucide-react";
+import { ArrowRight, Clapperboard, Copy, Megaphone, ShoppingBag } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -48,7 +48,6 @@ const groups = [
 
 export default function SkillsPage() {
   const skills = getCatalog().items.filter((p) => p.category === "skill-pack");
-  const ebooks = getCatalog().items.filter((p) => p.category === "ebook");
 
   return (
     <>
@@ -105,38 +104,8 @@ export default function SkillsPage() {
           })}
         </div>
 
-        {ebooks.length > 0 && (
-          <section className="mt-14">
-            <div className="flex items-center gap-3">
-              <span className="flex size-10 items-center justify-center rounded-xl border border-line bg-ink-900">
-                <ImageIcon aria-hidden className="size-5 text-accent" />
-              </span>
-              <div>
-                <h2 className="font-display text-xl font-semibold">Ebooks</h2>
-                <p className="text-sm text-muted">Deep-dive guides that pair with the skills - download as Markdown.</p>
-              </div>
-            </div>
-            <div className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {ebooks.map((e) => (
-                <Link
-                  key={e.slug}
-                  href={`/products/${e.slug}`}
-                  className="group rounded-2xl border border-line bg-ink-900/60 p-5 transition hover:border-accent/50"
-                >
-                  <Badge>Ebook</Badge>
-                  <h3 className="mt-3 font-display text-base font-semibold group-hover:text-accent">{e.title}</h3>
-                  <p className="mt-2 line-clamp-2 text-sm text-muted">{e.description}</p>
-                  <p className="mt-3 flex items-center gap-1 text-xs text-accent">
-                    View ebook <ArrowRight aria-hidden className="size-3" />
-                  </p>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-
         <div className="mt-12 rounded-2xl border border-line-strong bg-ink-900 p-6 text-center">
-          <h2 className="font-display text-lg font-semibold">All skills + ebooks + code library + courses</h2>
+          <h2 className="font-display text-lg font-semibold">All skills + code library + courses + ebooks</h2>
           <p className="mt-2 text-sm text-muted">One membership unlocks everything - no per-item fees.</p>
           <ButtonLink href="/checkout" className="mt-4">
             Get all-access - {formatOfferPrice()}

@@ -7,10 +7,27 @@ import { isLiveCheckoutEnabled, isRazorpayTestMode, razorpayCreds } from "@/lib/
 import { formatOfferPrice } from "@/lib/offer";
 import { GeoPrice } from "@/components/ui/geo-price";
 import { isContentReady } from "@/lib/settings";
+import { getProduct } from "@/lib/products";
 
 export const metadata: Metadata = { title: "Checkout", robots: { index: false } };
 
-export default async function CheckoutPage() {
+const included = [
+  "200+ Shopify Liquid snippets & sections",
+  "6 curated snippet packs (zip downloads)",
+  "6 full courses - Shopify, Liquid, dropshipping, ads",
+  "17 AI skill packs for ecommerce agents",
+  "4 in-depth PDF ebooks",
+  "Free AI prompts + Liquid checker tool",
+  "New drops every week - membership keeps growing",
+];
+
+export default async function CheckoutPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ product?: string }>;
+}) {
+  const sp = await searchParams;
+  const product = typeof sp.product === "string" ? getProduct(sp.product.slice(0, 80)) : undefined;
   const ready = await isContentReady();
   const price = formatOfferPrice();
   const testMode = isRazorpayTestMode();
@@ -20,9 +37,23 @@ export default async function CheckoutPage() {
     <Container className="grid min-h-[70vh] place-items-center py-16">
       <div className="w-full max-w-lg rounded-2xl border border-line-strong bg-ink-900/70 p-8 shadow-card">
         <h1 className="font-display text-3xl font-semibold">GPLMart All-Access</h1>
-        <p className="mt-2 text-muted">One-time payment. Includes the Liquid code library, digital products and ebooks.</p>
+        <p className="mt-2 text-muted">One-time payment. Everything below is included - no per-item fees.</p>
+        {product && (
+          <p className="mt-3 rounded-lg border border-accent/30 bg-accent/10 px-3 py-2 text-sm text-accent">
+            You&apos;re getting <strong>{product.title}</strong> plus the full library.
+          </p>
+        )}
         <p className="mt-6 font-display text-5xl font-semibold"><GeoPrice fallback={price} /></p>
         <p className="mt-1 text-sm text-subtle">One-time, in your local currency. No account needed.</p>
+
+        <ul className="mt-6 space-y-2">
+          {included.map((t) => (
+            <li key={t} className="flex items-start gap-2.5 text-sm text-muted">
+              <Check aria-hidden className="mt-0.5 size-4 shrink-0 text-mint" />
+              {t}
+            </li>
+          ))}
+        </ul>
 
         <p className="mt-4 rounded-lg border border-line bg-ink-950/60 p-3 text-xs text-muted">
           The average conversion app costs <strong className="text-fg">$20-40 per year</strong>. GPLMart is{" "}

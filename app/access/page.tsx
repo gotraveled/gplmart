@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, BookOpen, Code2, Download, Layers, Lightbulb, MessageCircle, Sparkles, Users } from "lucide-react";
+import { ArrowRight, BookOpen, Code2, Download, Layers, Lightbulb, MessageCircle, Sparkles, Users, Wand2 } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 
@@ -13,9 +13,10 @@ const wa = (msg: string) =>
 const areas = [
   { href: "/access/liquid-library", icon: Code2, title: "Shopify Liquid library", text: "Search, preview, copy and download Liquid snippets." },
   { href: "/access/packs", icon: Layers, title: "Snippet packs", text: "Curated bundles by use-case - download each pack as a zip." },
-  { href: "/access/products", icon: Download, title: "Digital products", text: "HTML templates, PHP scripts and ebooks - instant zip downloads." },
+  { href: "/skills", icon: Wand2, title: "AI skill packs", text: "17 ready-to-use agent skills - video, copy, ads, SEO, pricing, reviews. Download zips from Digital products." },
+  { href: "/access/products", icon: Download, title: "Digital products & ebooks", text: "Skill packs, HTML templates, PHP scripts and PDF ebooks - instant downloads." },
   { href: "/courses", icon: BookOpen, title: "Courses", text: "Full lesson content across every course - Shopify, Liquid, dropshipping, ads." },
-  { href: "/prompts", icon: Sparkles, title: "AI prompt pack", text: "50 free AI prompts for product copy, ads, emails and more - plus the prompt builder." },
+  { href: "/prompts", icon: Sparkles, title: "AI prompt pack", text: "Free AI prompts for product copy, ads, emails and more - plus the prompt builder." },
 ];
 
 export default async function AccessHub() {

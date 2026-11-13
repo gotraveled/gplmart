@@ -36,7 +36,7 @@ import { GeoPrice } from "@/components/ui/geo-price";
 export const metadata: Metadata = {
   title: { absolute: "GPLMart - Shopify Liquid Code, Snippets & Sections" },
   description:
-    "200+ Shopify Liquid snippets and sections to preview live, plus original HTML templates, PHP scripts and ebooks. One payment, no subscription.",
+    "200+ Shopify Liquid snippets and sections to preview live, plus AI skill packs, courses, digital products and ebooks. One payment, no subscription.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
@@ -79,8 +79,8 @@ const resources = [
   {
     icon: ShoppingBag,
     tag: "Member downloads",
-    title: "Digital products",
-    text: "Original HTML landing-page templates and self-contained PHP scripts - GPL-licensed code, zipped and ready to deploy.",
+    title: "Digital products & AI skills",
+    text: "17 AI skill packs for ecommerce agents plus original HTML templates, PHP scripts and PDF ebooks - zipped and ready to use.",
   },
   {
     icon: GraduationCap,
@@ -245,8 +245,8 @@ export default function HomePage() {
             <p className="mt-6 max-w-xl font-display text-lg text-pretty text-muted">
               Not getting the conversions your store deserves? GPLMart gives you conversion-focused Liquid sections
               &amp; snippets - countdowns, trust badges, delivery ETA, buy bars and more - without stacking
-              high-cost apps. Plus step-by-step courses from store setup to dropshipping, original HTML templates,
-              PHP scripts and practical ebooks - all in one payment.
+              high-cost apps. Plus step-by-step courses from store setup to dropshipping, 17 AI skill packs for
+              ecommerce agents, original templates, scripts and practical ebooks - all in one payment.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-3">
               <ButtonLink href="/checkout" size="lg">
@@ -346,7 +346,7 @@ export default function HomePage() {
             <ul className="mt-5 space-y-3.5 text-sm text-muted">
               {[
                 `One payment - full access, zero recurring charges`,
-                "Liquid code library plus original digital products & ebooks",
+                "Liquid code library plus AI skills, products, courses & ebooks",
                 "Native components - they run on Shopify's own servers",
                 "Readable source you customise in the theme editor",
                 "A live sandbox to preview before you paste anything",
@@ -389,7 +389,7 @@ export default function HomePage() {
         <SectionHeading
           eyebrow="More than just Liquid"
           title="One library, the whole storefront stack"
-          description="Liquid is the core. Original digital products, ebooks and guides ship alongside it - every item labelled by exactly what you get."
+          description="Liquid is the core. AI skill packs, digital products, ebooks and guides ship alongside it - every item labelled by exactly what you get."
         />
         <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {resources.map(({ icon: Icon, tag, title, text, accent }) => (
@@ -506,7 +506,7 @@ export default function HomePage() {
             {
               icon: FolderDown,
               title: "Products alongside the code",
-              text: "HTML templates, PHP scripts and ebooks ship in the same membership - one payment, one library, instant zip downloads.",
+              text: "AI skill packs, HTML templates, PHP scripts and PDF ebooks ship in the same membership - one payment, one library, instant downloads.",
             },
             {
               icon: Zap,

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Download } from "lucide-react";
+import { Download, FileText } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
@@ -7,15 +7,15 @@ import { getCatalog } from "@/lib/products";
 
 export const metadata: Metadata = { title: "Digital products", robots: { index: false } };
 
-const kindLabel: Record<string, string> = { "html-template": "HTML template", "php-script": "PHP script", ebook: "Ebook" };
+const kindLabel: Record<string, string> = { "html-template": "HTML template", "php-script": "PHP script", ebook: "Ebook", "skill-pack": "AI skill pack" };
 
 export default function MemberProductsPage() {
   const { items } = getCatalog();
   return (
     <>
       <PageHeader
-        title="Digital products"
-        description="HTML templates, PHP scripts and ebooks - included in your all-access membership. Downloads are instant zips."
+        title="Digital products & ebooks"
+        description="AI skill packs, templates, scripts and PDF ebooks - included in your all-access membership. Downloads are instant."
         crumbs={[{ label: "Resource hub", href: "/access" }, { label: "Products" }]}
       />
       <Container className="py-10">
@@ -36,12 +36,31 @@ export default function MemberProductsPage() {
                 <p className="mt-3 text-xs text-subtle">
                   {p.files.length} file{p.files.length === 1 ? "" : "s"} - {p.license}
                 </p>
-                <a
-                  href={`/access/products/${p.slug}/download`}
-                  className="mt-4 inline-flex items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-ink-950 transition hover:brightness-110"
-                >
-                  <Download aria-hidden className="size-4" /> Download zip
-                </a>
+                <div className="mt-4 flex gap-2">
+                  {p.category === "ebook" && p.files.includes("book.pdf") ? (
+                    <>
+                      <a
+                        href={`/access/products/${p.slug}/download?file=book.pdf`}
+                        className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-ink-950 transition hover:brightness-110"
+                      >
+                        <FileText aria-hidden className="size-4" /> Download PDF
+                      </a>
+                      <a
+                        href={`/access/products/${p.slug}/download`}
+                        className="inline-flex items-center justify-center gap-2 rounded-lg border border-line-strong px-4 py-2.5 text-sm font-medium text-muted transition hover:border-accent/50 hover:text-accent"
+                      >
+                        <Download aria-hidden className="size-4" /> Zip
+                      </a>
+                    </>
+                  ) : (
+                    <a
+                      href={`/access/products/${p.slug}/download`}
+                      className="inline-flex flex-1 items-center justify-center gap-2 rounded-lg bg-accent px-4 py-2.5 text-sm font-semibold text-ink-950 transition hover:brightness-110"
+                    >
+                      <Download aria-hidden className="size-4" /> Download zip
+                    </a>
+                  )}
+                </div>
               </li>
             ))}
           </ul>
