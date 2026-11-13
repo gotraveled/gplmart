@@ -30,6 +30,8 @@ const COVERS = {
   "ad-copy-swipe-file-vol1": { accent: "#f472b6", deep: "#26091a", kicker: "COPY SWIPE FILE" },
   "shopify-store-launch-doc-pack": { accent: "#a78bfa", deep: "#171233", kicker: "STORE DOC KIT" },
   "resume-freelance-proposal-kit": { accent: "#fbbf24", deep: "#241a03", kicker: "CAREER KIT" },
+  "real-estate-agent-toolkit": { accent: "#38bdf8", deep: "#082f49", kicker: "AGENT TOOLKIT" },
+  "social-media-content-kit-vol1": { accent: "#f472b6", deep: "#26091a", kicker: "CONTENT KIT" },
 };
 
 function hexToRgb(hex) {

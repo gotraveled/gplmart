@@ -666,6 +666,70 @@
         "ADHD-Daily-Planner.pdf"
       ],
       "added": "2026-11-13"
+    },
+    {
+      "slug": "real-estate-agent-toolkit",
+      "title": "Real Estate Agent Business Toolkit",
+      "description": "The agent operating system: CMA pricing calculator, commission/net calculator, lead tracker, open house log, listing presentation framework, client onboarding packet and lead follow-up scripts - xlsx + document pack.",
+      "category": "spreadsheet-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf",
+        "Real-Estate-Agent-Toolkit.xlsx",
+        "open-house-signin.md",
+        "listing-presentation.md",
+        "client-onboarding.md",
+        "lead-followup.md",
+        "cma-guide.md"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "party-game-bundle",
+      "title": "The Party Game Bundle",
+      "description": "45-page printable party pack: 30 unique bingo cards with caller sheets, Would You Rather cards, 40 trivia questions, 3 scavenger hunts, baby shower games and 6 party signs.",
+      "category": "planner-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "Party-Game-Bundle.pdf"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "airbnb-host-welcome-kit",
+      "title": "The Airbnb Host Welcome Kit",
+      "description": "The printed touches that earn 5-star reviews: welcome note, guest book, complete house manual template, local guide, review request card and emergency card.",
+      "category": "planner-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "Airbnb-Host-Welcome-Kit.pdf"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "social-media-content-kit-vol1",
+      "title": "Social Media Content Kit Vol. 1 - Ecommerce Edition",
+      "description": "A complete 30-day content system for Shopify/DTC brands: caption formulas, 350+ hooks, hashtag banks, content calendar, DM replies and a rollout plan. PDF guide + CSVs + Markdown.",
+      "category": "swipe-file",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf",
+        "captions.csv",
+        "hooks.csv",
+        "hashtags.csv",
+        "calendar.csv"
+      ],
+      "added": "2026-11-13"
     }
   ]
 }
