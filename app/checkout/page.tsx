@@ -16,7 +16,7 @@ const included = [
   "6 curated snippet packs (zip downloads)",
   "6 full courses - Shopify, Liquid, dropshipping, ads",
   "17 AI skill packs for ecommerce agents",
-  "4 in-depth PDF ebooks",
+  "7 in-depth PDF ebooks with resell rights",
   "Free AI prompts + Liquid checker tool",
   "New drops every week - membership keeps growing",
 ];

@@ -69,6 +69,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           <div className="min-w-0">
             <div className="flex flex-wrap gap-2">
               <Badge>{p.category === "php-script" ? "PHP script" : p.category === "ebook" ? "Ebook" : p.category === "skill-pack" ? "AI skill pack" : "HTML template"}</Badge>
+              {p.category === "ebook" && <Badge className="border-mint/40 bg-mint/10 text-mint">Resell rights</Badge>}
               <Badge>v{p.version}</Badge>
               <Badge className="border-mint/40 bg-mint/10 text-mint">{p.license}</Badge>
             </div>

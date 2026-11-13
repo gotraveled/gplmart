@@ -21,7 +21,7 @@ export default function EbooksPage() {
     <>
       <PageHeader
         title="Ebooks"
-        description="In-depth playbooks on the topics sellers actually search for - launching stores, running ads, finding products and selling with AI. Downloadable PDFs, included in all-access."
+        description="In-depth playbooks across ecommerce, AI, freelancing, money and digital products - downloadable PDFs, members only. Every ebook includes resell rights: sell them as your own."
         crumbs={[{ label: "Library", href: "/library" }, { label: "Ebooks" }]}
       />
       <Container className="py-10">
@@ -53,7 +53,7 @@ export default function EbooksPage() {
                   <span className="flex size-11 items-center justify-center rounded-xl border border-accent/30 bg-accent/10 text-accent">
                     <BookOpen aria-hidden className="size-5" />
                   </span>
-                  <Badge className="border-mint/40 bg-mint/10 text-mint">PDF download</Badge>
+                  <Badge className="border-mint/40 bg-mint/10 text-mint">PDF + resell rights</Badge>
                 </div>
                 <h2 className="mt-4 font-display text-lg font-semibold">
                   <Link href={`/products/${e.slug}`} className="hover:text-accent">{e.title}</Link>
@@ -74,7 +74,10 @@ export default function EbooksPage() {
             ))}
           </div>
         )}
-        <p className="mt-8 text-sm text-muted">
+        <p className="mt-8 rounded-2xl border border-accent/30 bg-accent/5 p-5 text-sm text-muted">
+          <span className="font-semibold text-fg">Resell rights included:</span> every GPLMart ebook can be resold as your own digital product - list it on Etsy, Gumroad or your store and keep 100% of the profit. See the <Link href="/products/digital-products-empire" className="text-accent underline">Digital Products Empire</Link> ebook for the full reselling playbook.
+        </p>
+        <p className="mt-4 text-sm text-muted">
           All ebooks are included in the{" "}
           <Link href="/checkout" className="text-accent underline">all-access membership ({formatOfferPrice()} once)</Link>{" "}
           - sign in with your member account to download.

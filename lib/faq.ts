@@ -51,6 +51,11 @@ export const faqs: FAQ[] = [
       "All-access runs for 12 months from purchase - including every new snippet, product, ebook, course and skill pack published in that period. Downloaded files remain usable under the licence after access ends.",
   },
   {
+    question: "Can I resell the ebooks?",
+    answer:
+      "Yes - every GPLMart ebook includes resell rights. You can sell them as your own digital product on Etsy, Gumroad, your own store or anywhere else, and keep the profit. The Digital Products Empire ebook covers the full reselling playbook.",
+  },
+  {
     question: "What if the snippets don't work for me?",
     answer:
       "Every purchase is covered by a 30-day money-back guarantee - message us on WhatsApp and we refund the payment. Details are on the refund policy page.",

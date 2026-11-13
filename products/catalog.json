@@ -462,6 +462,62 @@
         "book.pdf"
       ],
       "added": "2026-11-12"
+    },
+    {
+      "slug": "ai-tools-beginners",
+      "title": "AI Tools Mastery",
+      "description": "The beginner complete guide to ChatGPT, Claude, Gemini, Copilot and more - plain-English AI, prompt formula, 30 everyday use-cases, 40+ ready prompts, work/creator/student chapters and a 30-day practice plan. 18 chapters. Resell rights included.",
+      "category": "ebook",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "freelance-income-playbook",
+      "title": "The Freelance Income Playbook",
+      "description": "Land your first clients and price your work right - niche picking, zero-client portfolios, hourly vs project vs retainer pricing in INR and USD, proposals, contracts, taxes and a 30-day client-landing plan. 16 chapters. Resell rights included.",
+      "category": "ebook",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "digital-products-empire",
+      "title": "Digital Products Empire",
+      "description": "Create, sell and resell printables, templates, planners and ebooks - niche validation, Canva creation, Etsy/Gumroad/Payhip platform fees, Etsy SEO, launch plans, the resell rights model and scaling to /month. 18 chapters. Resell rights included.",
+      "category": "ebook",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "money-basics-playbook",
+      "title": "The Money Basics Playbook",
+      "description": "Budget, save, invest and build wealth for beginners - 50/30/20 budgeting with INR and USD examples, emergency funds, debt strategy, mutual funds/ETFs/401k explained simply, insurance, taxes and a 12-month money plan. 19 chapters. Resell rights included.",
+      "category": "ebook",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf"
+      ],
+      "added": "2026-11-13"
     }
   ]
 }
