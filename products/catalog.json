@@ -5,5 +5,16 @@
     "HTML templates are static files; PHP scripts are self-contained with no external dependencies unless documented.",
     "Downloads are member-gated: /access/products/[slug]/download checks the all-access entitlement and serves a zip."
   ],
-  "items": []
+  "items": [
+    {
+      "slug": "google-antigravity-video-pipeline",
+      "title": "Google Antigravity Viral Video Pipeline",
+      "description": "A complete prompt-led system for building a repeatable faceless-video production pipeline - workspace setup, engine tools, style decoding, storyboard review and 1080x1920 rendering with Google Antigravity.",
+      "category": "ebook",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": ["README.md", "book.md"],
+      "added": "2026-11-12"
+    }
+  ]
 }
