@@ -23,10 +23,39 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   };
 }
 
+const usageSteps: Record<string, string[]> = {
+  "skill-pack": [
+    "Download the zip from the members download box (right side).",
+    "Unzip it - inside you'll find a skill folder with SKILL.md and USAGE.md.",
+    "Upload the skill folder to your AI agent - Claude Code Desktop/CLI, Devin, Cursor or any skill-compatible agent.",
+    "Open USAGE.md inside the skill - it walks you through every step for your first run.",
+    "Text skills need nothing extra. Video and image skills need a free Higgsfield or fal.ai account for generation.",
+  ],
+  ebook: [
+    "Click Download PDF above - the file is generated fresh, always the latest version.",
+    "Open it in any PDF reader (Adobe, browser, phone) - works fully offline.",
+    "Work through the chapters in order; each ends with checklists and templates you can copy.",
+    "Re-download anytime from your dashboard - updates are free.",
+  ],
+  "html-template": [
+    "Download the zip and unzip it on your computer.",
+    "Upload the folder to your store host or web server (cPanel, Netlify, GitHub Pages - any static host works).",
+    "Open the page in a browser to preview, then customise the HTML/CSS inside the files.",
+    "Link it from your store navigation, ads or email campaigns.",
+  ],
+  "php-script": [
+    "Download the zip and unzip it.",
+    "Upload the .php file to your web server (public_html or your app's scripts folder).",
+    "Configure the settings at the top of the file (API keys, prices, store URL) as described in the README inside the zip.",
+    "Test it on a staging page before pointing real traffic at it.",
+  ],
+};
+
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const p = getProduct(slug);
   if (!p) notFound();
+  const steps = usageSteps[p.category] ?? usageSteps["html-template"]!;
 
   return (
     <>
@@ -56,6 +85,17 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
               Original GPLMart code - use it, modify it, ship it in client work. No license keys, no
               subscriptions, no phone-home. Added {p.added}.
             </p>
+            <h2 className="mt-10 font-display text-xl font-semibold">How to use it</h2>
+            <ol className="mt-4 space-y-3">
+              {steps.map((s, i) => (
+                <li key={i} className="flex gap-3 text-sm text-muted">
+                  <span className="grid size-6 shrink-0 place-items-center rounded-full bg-accent/15 font-display text-xs font-semibold text-accent">
+                    {i + 1}
+                  </span>
+                  <span className="pt-0.5">{s}</span>
+                </li>
+              ))}
+            </ol>
           </div>
           <aside className="h-fit rounded-2xl border border-line-strong bg-ink-900 p-6 lg:sticky lg:top-24">
             <LockKeyhole aria-hidden className="size-6 text-accent" />

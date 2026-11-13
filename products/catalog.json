@@ -420,6 +420,48 @@
         "book.pdf"
       ],
       "added": "2026-11-12"
+    },
+    {
+      "slug": "shopify-liquid-mastery",
+      "title": "Shopify Liquid Mastery: Customize Any Theme Like a Pro",
+      "description": "Theme customization from the inside out - how Liquid works, OS 2.0 JSON templates, objects and filters, sections and blocks schema, CSS/JS assets, six production recipes, debugging, performance, dev-store workflow and a capstone product-page build. 19 chapters.",
+      "category": "ebook",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "ecommerce-india-playbook",
+      "title": "The Ecommerce India Playbook",
+      "description": "Amazon, Flipkart, Meesho, ONDC & Shopify for Indian sellers - COD, UPI, GST, INR pricing, WhatsApp commerce, logistics and a 90-day launch roadmap. 18 chapters.",
+      "category": "ebook",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf"
+      ],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "ai-prompts-ecommerce",
+      "title": "AI Prompts for Ecommerce",
+      "description": "100+ copy-paste prompts plus prompting strategy for listings, ads, emails, WhatsApp, social, SEO and support - works with ChatGPT, Claude and Gemini. 16 chapters.",
+      "category": "ebook",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf"
+      ],
+      "added": "2026-11-12"
     }
   ]
 }

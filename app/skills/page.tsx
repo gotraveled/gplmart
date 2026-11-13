@@ -57,11 +57,27 @@ export default function SkillsPage() {
         crumbs={[{ label: "Home", href: "/" }, { label: "Skills" }]}
       />
       <Container className="py-10">
-        <div className="mb-8 rounded-2xl border border-accent/30 bg-accent/5 px-5 py-4 text-sm">
-          <span className="font-semibold text-fg">How skills work:</span>{" "}
-          <span className="text-muted">
-            Download the zip, unzip it, and upload the skill folder to your AI agent (Claude Code Desktop, CLI, or any skill-compatible agent). Each pack includes a <code className="rounded bg-ink-800 px-1.5 py-0.5 text-xs">USAGE.md</code> step-by-step guide. Video/image skills need a Higgsfield or fal.ai account; text skills need nothing extra.
-          </span>
+        <div className="mb-8 rounded-2xl border border-accent/30 bg-accent/5 p-6">
+          <h2 className="font-display text-lg font-semibold">How to use AI skills - step by step</h2>
+          <ol className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { n: "1", t: "Download the zip", d: "Open any skill page and click Download zip - it's included in all-access." },
+              { n: "2", t: "Unzip the folder", d: "Inside is a skill folder containing SKILL.md (instructions) and USAGE.md (guide)." },
+              { n: "3", t: "Upload to your agent", d: "Drop the folder into Claude Code, Devin, Cursor or any skill-compatible agent." },
+              { n: "4", t: "Follow USAGE.md", d: "Each skill walks you through prompts, inputs and expected outputs." },
+            ].map((s) => (
+              <li key={s.n} className="flex gap-3">
+                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-accent/15 font-display text-sm font-semibold text-accent">{s.n}</span>
+                <div>
+                  <p className="text-sm font-semibold">{s.t}</p>
+                  <p className="mt-0.5 text-xs text-muted">{s.d}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+          <p className="mt-4 rounded-lg border border-line bg-ink-950/60 px-4 py-3 text-xs text-muted">
+            <span className="font-semibold text-fg">Requirements:</span> text skills (copy, SEO, pricing, reviews) need only your AI agent. Video &amp; image skills additionally need a free <a href="https://higgsfield.ai" target="_blank" rel="noopener noreferrer" className="text-accent underline">Higgsfield</a> or <a href="https://fal.ai" target="_blank" rel="noopener noreferrer" className="text-accent underline">fal.ai</a> account for generation.
+          </p>
         </div>
 
         <div className="space-y-12">

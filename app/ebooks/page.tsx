@@ -25,6 +25,22 @@ export default function EbooksPage() {
         crumbs={[{ label: "Library", href: "/library" }, { label: "Ebooks" }]}
       />
       <Container className="py-10">
+        <div className="mb-10 grid gap-4 rounded-2xl border border-line bg-ink-900/60 p-6 sm:grid-cols-4">
+          {[
+            { n: "1", t: "Get all-access", d: "One payment unlocks every ebook - no per-book fees." },
+            { n: "2", t: "Sign in", d: "Your member account is created automatically after payment." },
+            { n: "3", t: "Download the PDF", d: "Instant download from this page or your dashboard." },
+            { n: "4", t: "Read anywhere", d: "Works offline in any PDF reader - phone, tablet, desktop." },
+          ].map((s) => (
+            <div key={s.n} className="flex gap-3">
+              <span className="grid size-8 shrink-0 place-items-center rounded-full bg-accent/15 font-display text-sm font-semibold text-accent">{s.n}</span>
+              <div>
+                <p className="text-sm font-semibold">{s.t}</p>
+                <p className="mt-0.5 text-xs text-muted">{s.d}</p>
+              </div>
+            </div>
+          ))}
+        </div>
         {ebooks.length === 0 ? (
           <p className="rounded-2xl border border-dashed border-line-strong px-6 py-14 text-center text-sm text-muted">
             New ebooks are added regularly - check back soon.
