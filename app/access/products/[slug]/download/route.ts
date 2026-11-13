@@ -26,10 +26,13 @@ function fileBytes(fp: string): Uint8Array {
 }
 
 export async function GET(req: Request, { params }: { params: Promise<{ slug: string }> }) {
-  if (!(await hasAccess())) return new Response("Forbidden", { status: 403, headers: { "Cache-Control": "no-store" } });
+  const slug = (await params).slug;
+  if (!(await hasAccess())) {
+    return Response.redirect(new URL(`/checkout?product=${encodeURIComponent(slug)}`, req.url), 303);
+  }
   if (!rateLimit(`pdl:${clientIp(req.headers)}`, 30, 10 * 60_000)) return new Response("Too many requests", { status: 429 });
 
-  const p = getProduct((await params).slug);
+  const p = getProduct(slug);
   if (!p) return new Response("Not found", { status: 404 });
 
   const url = new URL(req.url);
