@@ -34,26 +34,26 @@ import { formatOfferPrice } from "@/lib/offer";
 import { GeoPrice } from "@/components/ui/geo-price";
 
 export const metadata: Metadata = {
-  title: { absolute: "GPLMart - Shopify Liquid Code, Snippets & Sections" },
+  title: { absolute: "GPLMart - Shopify Liquid Code, AI Skills, Ebooks & Courses" },
   description:
-    "200+ Shopify Liquid snippets and sections to preview live, plus AI skill packs, courses, digital products and ebooks. One payment, no subscription.",
+    "212 Shopify Liquid snippets & sections, 17 AI skill packs, 11 PDF ebooks with resell rights, 6 courses and AI prompts - one payment, 12 months access.",
   alternates: { canonical: "/" },
   openGraph: {
     type: "website",
     siteName: "GPLMart",
-    title: "GPLMart - Shopify Liquid Code, Snippets & Sections",
+    title: "GPLMart - Shopify Liquid Code, AI Skills, Ebooks & Courses",
     description:
-      "200+ reusable Shopify Liquid snippets and theme sections - live preview, install guides, copy-paste code. One payment, no subscription.",
+      "The all-access library for Shopify sellers: Liquid snippets with live preview, AI skill packs, PDF ebooks with resell rights, courses and prompt packs. One payment, 12 months access.",
     url: "/",
     images: [{ url: "/opengraph-image", width: 1200, height: 630, alt: "GPLMart - Shopify Liquid code library" }],
   },
 };
 
 const numbers = [
-  { k: String(examples.length), v: "Components in the sandbox" },
+  { k: String(examples.length), v: "Liquid components in the sandbox" },
   { k: String(freeExampleIds.size), v: "Free examples live in the sandbox" },
-  { k: "5", v: "Resource areas under one access" },
-  { k: "₹0/mo", v: "No monthly fee - ever" },
+  { k: "17", v: "AI skill packs for agents" },
+  { k: "12 mo", v: "Full access per one-time payment" },
 ];
 
 const themes = ["Dawn", "Sense", "Craft", "Refresh", "Spotlight", "Studio", "Crave", "Origin"];
@@ -73,32 +73,38 @@ const resources = [
     icon: Code2,
     tag: "Member library",
     title: "Shopify Liquid code",
-    text: "Sections and snippets for the product page, cart, collections and promotions - full source, previews, copy and downloads for members.",
+    text: `${examples.length} snippets & sections for the product page, cart, collections and promotions - full source, live previews, copy and downloads.`,
     accent: true,
   },
   {
+    icon: Puzzle,
+    tag: "Agent skills",
+    title: "AI skill packs",
+    text: "17 installable skill packs that teach AI agents ecommerce workflows - product videos, photoshoots, ads, SEO, listings, email & more.",
+  },
+  {
+    icon: FileCode2,
+    tag: "Prompt library",
+    title: "AI prompts",
+    text: "Copy-paste prompt packs for listings, ads, emails, WhatsApp, SEO and support - plus a free prompt generator on the site.",
+  },
+  {
     icon: ShoppingBag,
-    tag: "Member downloads",
-    title: "Digital products & AI skills",
-    text: "17 AI skill packs for ecommerce agents plus original HTML templates, PHP scripts and PDF ebooks - zipped and ready to use.",
+    tag: "PDF downloads",
+    title: "Ebooks & guides",
+    text: "11 in-depth PDF ebooks across ecommerce, AI, freelancing, digital products and money - every ebook includes resell rights.",
   },
   {
     icon: GraduationCap,
     tag: "Structured courses",
     title: "Courses",
-    text: "Shopify Basic to Advanced, Liquid Snippets, India & international dropshipping, Facebook ads - step-by-step lessons with visuals.",
+    text: "6 step-by-step courses with 32 lessons - Shopify Basic to Advanced, Liquid Snippets, India & international dropshipping, Facebook ads.",
   },
   {
-    icon: FileCode2,
-    tag: "Weekly releases",
-    title: "Ebooks & guides",
-    text: "Practical ebooks and step-by-step guides on Liquid, conversion and digital products - new titles every week.",
-  },
-  {
-    icon: Puzzle,
-    tag: "Always growing",
-    title: "New every week",
-    text: "Fresh snippets, products and guides ship weekly - your membership keeps growing after you join.",
+    icon: Layers,
+    tag: "Curated bundles",
+    title: "Snippet packs",
+    text: "6 themed zip packs - product page, cart upsell, trust, marketing, navigation and collections - download and paste in minutes.",
   },
 ];
 
@@ -243,10 +249,10 @@ export default function HomePage() {
               Courses &amp; Ebooks in One Payment
             </h1>
             <p className="mt-6 max-w-xl font-display text-lg text-pretty text-muted">
-              Not getting the conversions your store deserves? GPLMart gives you conversion-focused Liquid sections
-              &amp; snippets - countdowns, trust badges, delivery ETA, buy bars and more - without stacking
-              high-cost apps. Plus step-by-step courses from store setup to dropshipping, 17 AI skill packs for
-              ecommerce agents, original templates, scripts and practical ebooks - all in one payment.
+              One payment unlocks the whole library: {examples.length} conversion-focused Liquid snippets &amp;
+              sections, 6 curated snippet packs, 6 courses with 32 lessons, 17 AI skill packs for ecommerce
+              agents, 11 PDF ebooks with resell rights and AI prompt packs - everything a Shopify seller,
+              freelancer or agency needs, for 12 months.
             </p>
             <div className="mt-9 flex flex-wrap items-center gap-3">
               <ButtonLink href="/checkout" size="lg">
@@ -259,13 +265,13 @@ export default function HomePage() {
             <div className="mt-8 flex flex-wrap items-center gap-x-5 gap-y-2 text-sm text-subtle">
               <span className="inline-flex items-center gap-1.5">
                 <Star aria-hidden className="size-4 fill-amber-400 text-amber-400" />
-                200+ components in the sandbox
+                {examples.length} components in the sandbox
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <span aria-hidden className="size-1.5 rounded-full bg-accent" /> One-time payment
+                <span aria-hidden className="size-1.5 rounded-full bg-accent" /> One payment, 12 months access
               </span>
               <span className="inline-flex items-center gap-1.5">
-                <span aria-hidden className="size-1.5 rounded-full bg-mint" /> Adapts to any OS 2.0 theme
+                <span aria-hidden className="size-1.5 rounded-full bg-mint" /> Ebooks include resell rights
               </span>
             </div>
           </div>
@@ -391,7 +397,7 @@ export default function HomePage() {
           title="One library, the whole storefront stack"
           description="Liquid is the core. AI skill packs, digital products, ebooks and guides ship alongside it - every item labelled by exactly what you get."
         />
-        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
+        <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {resources.map(({ icon: Icon, tag, title, text, accent }) => (
             <li
               key={title}
@@ -505,8 +511,8 @@ export default function HomePage() {
             },
             {
               icon: FolderDown,
-              title: "Products alongside the code",
-              text: "AI skill packs, HTML templates, PHP scripts and PDF ebooks ship in the same membership - one payment, one library, instant downloads.",
+              title: "The whole library in one place",
+              text: "AI skill packs, PDF ebooks with resell rights, courses and prompt packs ship in the same membership - one payment, one dashboard, instant downloads.",
             },
             {
               icon: Zap,
@@ -565,21 +571,22 @@ export default function HomePage() {
       <section id="membership" className="border-y border-line bg-ink-900/40">
         <Section>
           <SectionHeading
-            eyebrow="One-time payment - full access"
+            eyebrow="One payment - 12 months of everything"
             title="GPLMart All-Access"
-            description="The Liquid library, digital products, ebooks and the sandbox - one payment, no renewal."
+            description="Liquid code, AI skills, ebooks, courses and prompts - one payment unlocks all of it for a full year."
           />
           <div className="mx-auto max-w-xl rounded-3xl border border-accent/35 bg-gradient-to-b from-ink-800 to-ink-900 p-8 text-center shadow-card sm:p-10">
             <p className="text-sm font-medium text-mint">All-access membership</p>
             <p className="mt-3 font-display text-7xl font-semibold"><GeoPrice fallback={price} /></p>
-            <p className="mt-2 text-sm text-muted">One-time payment in INR. Not a subscription.</p>
+            <p className="mt-2 text-sm text-muted">One-time payment. 12 months of access. Not a subscription.</p>
             <ul className="mx-auto mt-7 max-w-sm space-y-3 text-left text-sm text-muted">
               {[
-                "Conversion-focused components for every storefront touchpoint",
-                "Members-only Liquid code library: source, previews, copy & downloads",
-                "Digital products & ebooks - new items every week",
-                "Live sandbox to test components before installing",
-                "Instant access after payment - no account or signup needed",
+                `${examples.length} Liquid snippets & sections + 6 curated snippet packs`,
+                "6 full courses with 32 lessons - Shopify, Liquid, dropshipping, ads",
+                "17 AI skill packs for ecommerce agents + AI prompt packs",
+                "11 PDF ebooks with resell rights - ecommerce to personal finance",
+                "Live sandbox, member dashboard & instant zip downloads",
+                "New drops every week - all included during your 12 months",
               ].map((t) => (
                 <li key={t} className="flex gap-3">
                   <Check aria-hidden className="mt-0.5 size-4 shrink-0 text-accent" />

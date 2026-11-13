@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Code2, Download, FileText, Globe2, Handshake, MapPin } from "lucide-react";
+import { Code2, Download, FileText, Globe2, GraduationCap, Handshake, MapPin } from "lucide-react";
 import { InfoPage, infoMetadata } from "@/components/ui/info-page";
 import { Badge } from "@/components/ui/badge";
 
@@ -14,19 +14,25 @@ const pillars = [
     icon: Code2,
     tag: "Core product",
     title: "Shopify Liquid snippets & sections",
-    text: "200+ original, conversion-focused components for the product page, cart, checkout, collections, trust and navigation. Every item ships with readable source, a live playground preview and an install guide - no apps, no monthly fees.",
+    text: "212 original, conversion-focused components for the product page, cart, checkout, collections, trust and navigation. Every item ships with readable source, a live playground preview and an install guide - no apps, no monthly fees.",
   },
   {
     icon: Download,
-    tag: "Member downloads",
-    title: "Digital products",
-    text: "Original HTML landing-page templates and self-contained PHP scripts - GPL-licensed code you can use, modify and ship in client work. Downloaded as instant zips from the members area.",
+    tag: "Agent skills",
+    title: "AI skill packs",
+    text: "17 installable skill packs that teach AI agents real ecommerce workflows - product videos, photoshoots, ad creative, SEO audits, listing copy, email and WhatsApp sequences. SKILL.md bundles with references and scripts, zipped for download.",
   },
   {
     icon: FileText,
-    tag: "Weekly releases",
+    tag: "PDF downloads",
     title: "Ebooks & guides",
-    text: "Practical ebooks and step-by-step guides on Liquid, ecommerce conversion and digital products - written to be used, not browsed. New titles ship weekly.",
+    text: "11 in-depth PDF ebooks spanning ecommerce, AI tools, freelancing, digital products and personal finance - every title includes resell rights so members can resell or bundle them. New titles ship weekly.",
+  },
+  {
+    icon: GraduationCap,
+    tag: "Structured courses",
+    title: "Courses & prompts",
+    text: "6 step-by-step courses with 32 lessons - Shopify Basic to Advanced, Liquid Snippets, India and international dropshipping, Facebook ads - plus copy-paste AI prompt packs for listings, ads, email and support.",
   },
   {
     icon: Globe2,
@@ -43,7 +49,7 @@ const principles = [
   },
   {
     title: "Original code, always",
-    text: "Everything on GPLMart is code we wrote - the Liquid library, the HTML templates, the PHP scripts, the ebooks. There is no third-party bundle, no nulled software, no scraped content. What you download is exactly what the page says it is.",
+    text: "Everything on GPLMart is content we wrote - the Liquid library, the skill packs, the ebooks, the courses. There is no third-party bundle, no nulled software, no scraped content. What you download is exactly what the page says it is.",
   },
   {
     title: "Original code where it matters",
@@ -63,9 +69,10 @@ export default function AboutPage() {
     >
       <h2>What GPLMart is</h2>
       <p>
-        GPLMart sells a single, simple offer: a one-time all-access membership. It is not a subscription and it
-        does not renew. Members get a protected library of Shopify Liquid code - 200+ sections and snippets -
-        plus original digital products (HTML templates, PHP scripts) and ebooks, all downloadable instantly.
+        GPLMart sells a single, simple offer: a one-time all-access membership with 12 months of access. It is
+        not a subscription and it does not renew. Members get a protected library of Shopify Liquid code - 212
+        sections and snippets plus 6 curated packs - alongside 17 AI skill packs, 11 resell-rights PDF ebooks,
+        6 courses and AI prompt packs, all downloadable instantly.
       </p>
       <p>
         The platform exists because of a gap we kept running into: the components that actually move conversion
@@ -75,7 +82,7 @@ export default function AboutPage() {
         code, honestly licensed and priced once.
       </p>
 
-      <h2>Four product lines, one payment</h2>
+      <h2>Five product lines, one payment</h2>
       <div className="not-prose mt-5 grid gap-4 sm:grid-cols-2">
         {pillars.map(({ icon: Icon, tag, title, text }) => (
           <div key={title} className="rounded-2xl border border-line bg-ink-900/60 p-5">

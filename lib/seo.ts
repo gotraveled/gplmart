@@ -69,7 +69,7 @@ export function productJsonLd() {
     "@type": "Product",
     name: "GPLMart All-Access Membership",
     description:
-      "One-time membership: 200+ Shopify Liquid snippets and sections, six ecommerce courses, original HTML templates, PHP scripts and ebooks.",
+      "One-time membership for 12 months: 212 Shopify Liquid snippets and sections, 6 snippet packs, 6 courses, 17 AI skill packs, 11 resell-rights ebooks and AI prompt packs.",
     brand: { "@type": "Brand", name: "GPLMart" },
     offers: [
       {

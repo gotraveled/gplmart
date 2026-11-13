@@ -41,11 +41,6 @@ function tint(hex, f) {
   return rgbToHex(r * f, g * f, b * f);
 }
 
-function alpha(hex, a) {
-  const [r, g, b] = hexToRgb(hex);
-  return `#${r},${g},${b},${a})`;
-}
-
 function coverSubtitle(md) {
   const line = md.split(/\r?\n/).map((l) => l.trim()).find((l) => l.startsWith(">") && l.replace(/[>*\s]/g, "").length > 10);
   if (!line) return "";

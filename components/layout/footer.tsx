@@ -22,8 +22,8 @@ export function Footer() {
         <div>
           <Logo />
           <p className="mt-4 max-w-sm text-sm leading-relaxed text-muted">
-            GPLMart is an independent library of original Shopify Liquid snippets, sections, digital products
-            and ebooks for merchants, developers and agencies. One payment, everything included - no
+            GPLMart is an independent all-access library for Shopify sellers - Liquid snippets, AI skill
+            packs, resell-rights ebooks, courses and prompt packs. One payment, 12 months of access - no
             subscriptions, no per-item fees, no vendor lock-in.
           </p>
           <div className="mt-6 grid gap-5 sm:grid-cols-2">
