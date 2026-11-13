@@ -31,7 +31,7 @@ export async function POST(req: Request) {
   try {
     // Any amount/currency in the request body is deliberately ignored.
     return json(
-      await createOrderForCustomer(customer, { extended: body?.extended === true, country: countryFromHeaders(req.headers) }),
+      await createOrderForCustomer(customer, { country: countryFromHeaders(req.headers) }),
     );
   } catch (e) {
     console.error("order creation failed", e instanceof Error ? e.message : e);

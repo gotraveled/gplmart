@@ -42,15 +42,21 @@ export async function requireAdmin(): Promise<SessionUser> {
   return user;
 }
 
+const MEMBERSHIP_DAYS = 365;
+
 export async function hasActiveEntitlement(userId: string): Promise<boolean> {
   const { data } = await createServiceClient()
     .from("entitlements")
-    .select("id")
+    .select("id,source,granted_at")
     .eq("user_id", userId)
     .eq("plan", "all_access")
     .eq("status", "active")
     .maybeSingle();
-  return Boolean(data);
+  if (!data) return false;
+  // Admin-granted access never expires; paid access runs 12 months from grant.
+  if (data.source === "admin") return true;
+  const granted = data.granted_at ? new Date(data.granted_at as string).getTime() : 0;
+  return Date.now() - granted < MEMBERSHIP_DAYS * 24 * 60 * 60 * 1000;
 }
 
 export async function getAccessState(user: SessionUser): Promise<AccessState> {

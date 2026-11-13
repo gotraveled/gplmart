@@ -9,9 +9,6 @@ export const OFFER = {
   name: "GPLMart All-Access",
   currency: "INR",
   pricePaise: parsePaise(process.env.ALL_ACCESS_PRICE_PAISE),
-  /** Optional paid add-on: extend members-area access from 30 days to 12 months. */
-  extendedAddon: "extended_access_12m",
-  extendedAddonPaise: 49900,
 } as const;
 
 function parsePaise(raw: string | undefined): number {

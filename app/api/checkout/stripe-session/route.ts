@@ -33,8 +33,7 @@ export async function POST(req: Request) {
   }
 
   const tier = geoPrice(countryFromHeaders(req.headers));
-  const extended = body?.extended === true;
-  const units = tier.units + (extended ? tier.addonUnits : 0);
+  const units = tier.units;
 
   try {
     const session = await stripe().checkout.sessions.create({
@@ -47,7 +46,7 @@ export async function POST(req: Request) {
             currency: tier.currency.toLowerCase(),
             unit_amount: units,
             product_data: {
-              name: extended ? "GPLMart All-Access + 12-month extension" : OFFER.name,
+              name: OFFER.name,
               description: "One-time payment - Liquid code library plus theme and plugin bundles",
             },
           },
@@ -57,7 +56,6 @@ export async function POST(req: Request) {
         plan: OFFER.plan,
         customer_name: customer.name,
         customer_phone: customer.phone,
-        ...(extended ? { addon: OFFER.extendedAddon } : {}),
       },
       success_url: `${siteConfig.url}/payment/success?order=stripe_{CHECKOUT_SESSION_ID}`,
       cancel_url: `${siteConfig.url}/checkout`,
@@ -72,7 +70,6 @@ export async function POST(req: Request) {
       customer_name: customer.name,
       customer_email: customer.email,
       customer_phone: customer.phone,
-      addon: extended ? OFFER.extendedAddon : null,
     });
     if (error) throw new Error("could not record order");
 

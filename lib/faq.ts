@@ -48,7 +48,7 @@ export const faqs: FAQ[] = [
   {
     question: "How long does access last?",
     answer:
-      "Standard all-access is 30 days. The optional order bump at checkout extends it to a full 12 months - including every new snippet, product, ebook and guide published in that period. Downloaded files remain usable under the licence after access ends.",
+      "All-access runs for 12 months from purchase - including every new snippet, product, ebook, course and skill pack published in that period. Downloaded files remain usable under the licence after access ends.",
   },
   {
     question: "What if the snippets don't work for me?",

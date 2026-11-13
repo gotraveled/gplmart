@@ -44,7 +44,7 @@ export default async function CheckoutPage({
           </p>
         )}
         <p className="mt-6 font-display text-5xl font-semibold"><GeoPrice fallback={price} /></p>
-        <p className="mt-1 text-sm text-subtle">One-time, in your local currency. No account needed.</p>
+        <p className="mt-1 text-sm text-subtle">One-time, in your local currency. 12 months of access. No account needed.</p>
 
         <ul className="mt-6 space-y-2">
           {included.map((t) => (

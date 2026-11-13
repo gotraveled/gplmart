@@ -4,7 +4,6 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Lock } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { GeoAddonPrice } from "@/components/ui/geo-price";
 
 interface RazorpayInstance {
   open(): void;
@@ -50,7 +49,6 @@ export function CheckoutForm({ label }: { label: string }) {
   const router = useRouter();
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [extended, setExtended] = useState(false);
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
 
   const stripeOn = process.env.NEXT_PUBLIC_STRIPE_ENABLED === "true";
@@ -62,7 +60,7 @@ export function CheckoutForm({ label }: { label: string }) {
       const res = await fetch("/api/checkout/stripe-session", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, extended }),
+        body: JSON.stringify(form),
       });
       const data = (await res.json()) as { url?: string; error?: string };
       if (!res.ok || !data.url) throw new Error(messages[data.error ?? ""] ?? "Could not start Stripe checkout.");
@@ -82,7 +80,7 @@ export function CheckoutForm({ label }: { label: string }) {
       const res = await fetch("/api/checkout/order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, extended }),
+        body: JSON.stringify(form),
       });
       const order = (await res.json()) as OrderResponse;
       if (!res.ok) throw new Error(messages[order.error ?? ""] ?? "Could not start the payment. Please try again.");
@@ -130,21 +128,9 @@ export function CheckoutForm({ label }: { label: string }) {
         <span className="mb-1 block text-xs font-medium text-muted">Email</span>
         <input required type="email" className={fieldCls} value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} maxLength={120} autoComplete="email" placeholder="you@example.com" />
       </label>
-      <label className="flex cursor-pointer items-start gap-3 rounded-xl border border-line-strong bg-ink-950/60 p-3.5 text-sm">
-        <input
-          type="checkbox"
-          checked={extended}
-          onChange={(e) => setExtended(e.target.checked)}
-          className="mt-0.5 size-4 accent-[#c8f542]"
-        />
-        <span>
-          <span className="font-semibold">Extend to 12 months — <GeoAddonPrice /></span>
-          <span className="mt-0.5 block text-xs text-muted">
-            Standard access is 30 days. This extends your members-area access to a full year - including every new
-            snippet and bundle added in that time.
-          </span>
-        </span>
-      </label>
+      <p className="rounded-xl border border-line-strong bg-ink-950/60 px-4 py-3 text-center text-xs text-muted">
+        1 year of full access - every snippet, pack, course, skill pack, ebook and future drop included.
+      </p>
       <Button size="lg" className="mt-1 w-full" type="submit" disabled={busy}>
         <Lock aria-hidden className="size-4" /> {busy ? "Opening secure checkout…" : label}
       </Button>

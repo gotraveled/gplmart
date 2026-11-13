@@ -16,7 +16,7 @@ export function GET() {
     ``,
     `## Pricing`,
     `- INR 499 (India) / USD 4.99 (everywhere else) - one payment, no subscription.`,
-    `- 30-day money-back guarantee. 30 days access, optional 12-month extension.`,
+    `- 30-day money-back guarantee. 12 months of access per purchase.`,
     ``,
     `## Key pages`,
     `- Home: ${siteConfig.url}`,

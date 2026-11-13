@@ -22,7 +22,6 @@ export default function RefundPolicyPage() {
       <h2>2. What is refundable</h2>
       <ul>
         <li>The all-access membership fee, in full, within 30 days of purchase</li>
-        <li>The 12-month access extension order bump, in full, within the same window</li>
       </ul>
       <p>
         Refunds are returned to the original payment method (card, UPI, wallet or net-banking) through our

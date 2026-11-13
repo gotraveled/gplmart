@@ -3,8 +3,8 @@
  * Resolved from the visitor's country - never trusted from the client.
  */
 export const GEO_PRICE = {
-  in: { currency: "INR", units: 49900, addonUnits: 49900, display: "₹499", addonDisplay: "₹499" },
-  intl: { currency: "USD", units: 499, addonUnits: 499, display: "$4.99", addonDisplay: "$4.99" },
+  in: { currency: "INR", units: 49900, display: "₹499" },
+  intl: { currency: "USD", units: 499, display: "$4.99" },
 } as const;
 
 export type GeoTier = keyof typeof GEO_PRICE;

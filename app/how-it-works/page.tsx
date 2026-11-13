@@ -42,7 +42,7 @@ const steps = [
   {
     icon: KeyRound,
     title: "Unlock the members area",
-    text: "Open the access page, enter the email you paid with, and a one-time code lands in your inbox. Verify it once and you get 30 days of access - no password to remember, no account to manage.",
+    text: "Open the access page, enter the email you paid with, and a one-time code lands in your inbox. Verify it once and you get 12 months of access - no password to remember, no account to manage.",
   },
 ];
 
@@ -154,7 +154,7 @@ export default function HowItWorksPage() {
         </li>
         <li>
           <strong>Access after payment</strong> - the members area opens through your paid email with a one-time
-          code, valid for 30 days.
+          code, valid for 12 months.
         </li>
         <li>
           <strong>Not a subscription</strong> - <GeoPrice fallback="₹499" /> once, in your local currency. No renewal, no monthly charge.

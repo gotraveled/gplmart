@@ -62,8 +62,7 @@ export default function TermsPage() {
         access details on WhatsApp and by email, and the checkout flow links directly to the members area.
       </p>
       <ul>
-        <li>Standard all-access provides 30 days of members-area access.</li>
-        <li>The optional order bump extends access to 12 months from purchase.</li>
+        <li>All-access provides 12 months of members-area access from the purchase date.</li>
         <li>Content you have legitimately downloaded remains yours to use under the licence in section 6.</li>
       </ul>
       <p>
