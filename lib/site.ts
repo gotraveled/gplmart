@@ -18,13 +18,6 @@ export const mainNav = [
 
 export const footerLinks = {
   GPLMart: [
-    { href: "/playground", label: "Shopify Liquid codes" },
-    { href: "/library", label: "Library" },
-    { href: "/products", label: "Products" },
-    { href: "/skills", label: "AI Skills" },
-    { href: "/ebooks", label: "Ebooks" },
-    { href: "/packs", label: "Snippet packs" },
-    { href: "/courses", label: "Courses" },
     { href: "/tools/liquid-check", label: "Free Liquid checker" },
     { href: "/prompts", label: "Free prompts" },
     { href: "/install", label: "Install guide" },
