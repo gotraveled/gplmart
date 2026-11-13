@@ -7,19 +7,6 @@
   ],
   "items": [
     {
-      "slug": "google-antigravity-video-pipeline",
-      "title": "Google Antigravity Viral Video Pipeline",
-      "description": "A complete prompt-led system for building a repeatable faceless-video production pipeline - workspace setup, engine tools, style decoding, storyboard review and 1080x1920 rendering with Google Antigravity.",
-      "category": "ebook",
-      "version": "1.0.0",
-      "license": "GPL-3.0-or-later",
-      "files": [
-        "README.md",
-        "book.md"
-      ],
-      "added": "2026-11-12"
-    },
-    {
       "slug": "ecom-product-video-skill",
       "title": "Ecom Product Video Skill",
       "description": "A complete AI-agent skill bundle that turns one product photo into a professional short product film - intake, shot design, prompt engineering, Higgsfield/fal.ai generation and a Remotion finishing pass. Includes setup guide, 11 reference docs and composer scripts.",
@@ -200,32 +187,6 @@
       "added": "2026-11-12"
     },
     {
-      "slug": "product-listing-copy-ebook",
-      "title": "Product Listing Copy Bible",
-      "description": "The complete guide to writing product listings that convert - titles, bullets, descriptions and keywords for Shopify, Amazon, Flipkart and Meesho. 8 chapters of frameworks and checklists.",
-      "category": "ebook",
-      "version": "1.0.0",
-      "license": "GPL-3.0-or-later",
-      "files": [
-        "README.md",
-        "book.md"
-      ],
-      "added": "2026-11-12"
-    },
-    {
-      "slug": "whatsapp-marketing-playbook-ebook",
-      "title": "WhatsApp Marketing Playbook for Indian Ecommerce",
-      "description": "Turn WhatsApp into your highest-ROI sales channel - opt-in strategy, broadcasts that convert, automated flows, catalogue selling and retention for Indian stores. 8 chapters.",
-      "category": "ebook",
-      "version": "1.0.0",
-      "license": "GPL-3.0-or-later",
-      "files": [
-        "README.md",
-        "book.md"
-      ],
-      "added": "2026-11-12"
-    },
-    {
       "slug": "competitor-analysis-skill",
       "title": "Competitor Analysis Skill",
       "description": "AI-agent skill for structured competitor teardowns - product, positioning, pricing, marketing, UX analysis with a 'what to copy / what to beat' roadmap. Works on any public store URL.",
@@ -401,6 +362,62 @@
         "references/promotion-tactics.md",
         "references/performance-tracking.md",
         "references/self-check.md"
+      ],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "shopify-store-launch-bible",
+      "title": "The Shopify Store Launch Bible",
+      "description": "From zero to first sale in 30 days - pre-launch decisions, store setup, listings, traffic plan, fulfilment and the first 90 days. India + international. 10 chapters.",
+      "category": "ebook",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf"
+      ],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "meta-ads-mastery-ecommerce",
+      "title": "Meta Ads Mastery for Ecommerce",
+      "description": "Facebook & Instagram ads that convert - campaign structure, creative testing, targeting, budgets, bidding and scaling for Indian and international stores. 10 chapters.",
+      "category": "ebook",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf"
+      ],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "winning-product-research-bible",
+      "title": "The Winning Product Research Bible",
+      "description": "Find products that actually sell - demand validation, competition analysis, margin math, sourcing for India + international, and the 10-point scorecard. 12 chapters.",
+      "category": "ebook",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf"
+      ],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "ai-powered-ecommerce-playbook",
+      "title": "The AI-Powered Ecommerce Playbook",
+      "description": "Run your store with AI - listings, ads, support, content, research, analytics. Tool stack, workflows and a ready prompt library. 14 chapters.",
+      "category": "ebook",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf"
       ],
       "added": "2026-11-12"
     }

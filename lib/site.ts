@@ -11,7 +11,7 @@ export const mainNav = [
   { href: "/playground", label: "Shopify Liquid Codes" },
   { href: "/courses", label: "Courses" },
   { href: "/library", label: "Library" },
-  { href: "/products", label: "Products" },
+  { href: "/skills", label: "AI Skills" },
   { href: "/install", label: "Install guide" },
   { href: "/faq", label: "FAQ" },
 ] as const;
@@ -22,6 +22,7 @@ export const footerLinks = {
     { href: "/library", label: "Library" },
     { href: "/products", label: "Products" },
     { href: "/skills", label: "AI Skills" },
+    { href: "/ebooks", label: "Ebooks" },
     { href: "/packs", label: "Snippet packs" },
     { href: "/courses", label: "Courses" },
     { href: "/tools/liquid-check", label: "Free Liquid checker" },

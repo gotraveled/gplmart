@@ -63,9 +63,15 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <p className="mt-2 text-sm text-muted">
               Included in all-access - one payment unlocks every product, snippet and guide.
             </p>
-            <ButtonLink href={`/access/products/${p.slug}/download`} className="mt-5 w-full">
-              <Download aria-hidden className="size-4" /> Download zip
-            </ButtonLink>
+            {p.category === "ebook" && p.files.includes("book.pdf") ? (
+              <ButtonLink href={`/access/products/${p.slug}/download?file=book.pdf`} className="mt-5 w-full">
+                <Download aria-hidden className="size-4" /> Download PDF
+              </ButtonLink>
+            ) : (
+              <ButtonLink href={`/access/products/${p.slug}/download`} className="mt-5 w-full">
+                <Download aria-hidden className="size-4" /> Download zip
+              </ButtonLink>
+            )}
             <ButtonLink href="/checkout" variant="secondary" className="mt-2.5 w-full">
               Get all-access - {formatOfferPrice()}
             </ButtonLink>

@@ -1,13 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Code2, Download, FileCode2, GraduationCap, Layers, Package, Sparkles } from "lucide-react";
+import { ArrowRight, BookOpen, Code2, Download, FileCode2, GraduationCap, Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { PageHeader } from "@/components/ui/page-header";
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { examples } from "@/lib/playground/examples";
 import { getCatalog } from "@/lib/products";
-import { guides } from "@/lib/guides";
 
 export const metadata: Metadata = {
   title: "Resource library",
@@ -18,39 +17,18 @@ export const metadata: Metadata = {
 
 const productCount = getCatalog().items.length;
 
+const ebookCount = getCatalog().items.filter((p) => p.category === "ebook").length;
+const packCount = 6;
+
 const sections = [
   {
     icon: Code2,
-    title: "Shopify Liquid code & snippets",
-    tag: `${examples.length} components`,
-    text: "Original sections and snippets - product pages, cart, checkout, trust, marketing and navigation. Preview live in the playground, copy clean Liquid with install guides, paste into any OS 2.0 theme.",
+    title: "Shopify Liquid codes & snippets",
+    tag: `${examples.length} components + ${packCount} packs`,
+    text: "Original sections, snippets and curated snippet packs - product pages, cart, checkout, trust, marketing and navigation. Preview live, copy clean Liquid, download packs as zips.",
     href: "/playground",
     cta: "Open the playground",
     accent: true,
-  },
-  {
-    icon: Download,
-    title: "Digital products",
-    tag: `${productCount} products`,
-    text: "Original HTML landing-page templates and self-contained PHP scripts - GPL-licensed code, zipped and ready to deploy.",
-    href: "/products",
-    cta: "Browse products",
-  },
-  {
-    icon: Layers,
-    title: "Ebooks & guides",
-    tag: `${guides.length}+ guides`,
-    text: "Practical step-by-step guides and downloadable ebooks on Liquid, conversion and digital products - new titles every week.",
-    href: "/guides",
-    cta: "Read the guides",
-  },
-  {
-    icon: Package,
-    title: "Snippet packs",
-    tag: "6 packs",
-    text: "The library curated by job-to-be-done - product page, cart upsells, trust, marketing, navigation and content. Download each pack as a zip.",
-    href: "/packs",
-    cta: "Browse packs",
   },
   {
     icon: GraduationCap,
@@ -59,6 +37,23 @@ const sections = [
     text: "Six structured courses - Shopify Basic to Advanced, Liquid snippets, India & international dropshipping and Facebook ads. Full lessons included in all-access.",
     href: "/courses",
     cta: "Browse courses",
+    accent: true,
+  },
+  {
+    icon: Download,
+    title: "Digital products",
+    tag: `${productCount} products`,
+    text: "AI skill packs for ecommerce agents, original ebooks, HTML templates and PHP scripts - zipped downloads, all included in all-access.",
+    href: "/products",
+    cta: "Browse products",
+  },
+  {
+    icon: BookOpen,
+    title: "Ebooks",
+    tag: `${ebookCount} titles`,
+    text: "In-depth ebooks on high-demand ecommerce topics - Shopify launches, Meta ads, product research and AI-powered selling. Downloadable PDFs, members only.",
+    href: "/ebooks",
+    cta: "Browse ebooks",
     accent: true,
   },
   {
