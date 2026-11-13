@@ -233,7 +233,7 @@ export default function HomePage() {
           <div className="animate-rise max-w-3xl">
             <p className="inline-flex items-center gap-2 rounded-full border border-accent/40 bg-accent/10 px-4 py-1.5 text-xs font-semibold text-accent">
               <Zap aria-hidden className="size-3.5" />
-              Shopify Liquid code + digital products
+              Liquid code, courses + digital products
             </p>
             <h1 className="mt-6 font-display text-4xl font-semibold leading-[1.02] tracking-tight text-balance sm:text-5xl lg:text-6xl">
               Shopify Liquid Codes,

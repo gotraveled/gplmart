@@ -27,7 +27,7 @@ const orgBase = {
   url: absoluteUrl("/"),
   logo: absoluteUrl("/logo-gpl.png"),
   description:
-    "Independent library of Shopify Liquid snippets and sections plus original digital products and ebooks for merchants, developers and agencies.",
+    "Independent library of Shopify Liquid snippets and sections, step-by-step ecommerce courses, plus original digital products and ebooks for merchants, developers and agencies.",
   email: "info@gplmart.com",
   address: [
     {
@@ -69,7 +69,7 @@ export function productJsonLd() {
     "@type": "Product",
     name: "GPLMart All-Access Membership",
     description:
-      "One-time membership: 200+ Shopify Liquid snippets and sections, original HTML templates, PHP scripts and ebooks.",
+      "One-time membership: 200+ Shopify Liquid snippets and sections, six ecommerce courses, original HTML templates, PHP scripts and ebooks.",
     brand: { "@type": "Brand", name: "GPLMart" },
     offers: [
       {

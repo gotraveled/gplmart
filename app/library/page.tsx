@@ -54,11 +54,11 @@ const sections = [
   },
   {
     icon: GraduationCap,
-    title: "Liquid course",
-    tag: "Free",
-    text: "Shopify Liquid Mastery - a structured course from Liquid basics to shipping client work. Lessons publish weekly.",
-    href: "/course",
-    cta: "Start the course",
+    title: "Courses",
+    tag: "Members",
+    text: "Six structured courses - Shopify Basic to Advanced, Liquid snippets, India & international dropshipping and Facebook ads. Full lessons included in all-access.",
+    href: "/courses",
+    cta: "Browse courses",
     accent: true,
   },
   {

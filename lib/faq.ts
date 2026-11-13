@@ -9,7 +9,7 @@ export const faqs: FAQ[] = [
   {
     question: "What exactly do members get?",
     answer:
-      "Access to the members-only Liquid code library (full source, previews, copy and downloads) plus original digital products - HTML templates, PHP scripts and ebooks - all included with one payment and delivered right after checkout.",
+      "Access to the members-only Liquid code library (full source, previews, copy and downloads), six step-by-step courses (Shopify Basic to Advanced, Liquid, India & international dropshipping, Facebook ads), plus original digital products - HTML templates, PHP scripts and ebooks - all included with one payment and delivered right after checkout.",
   },
   {
     question: "Is this a subscription?",
