@@ -92,8 +92,8 @@ const devices = [
   { id: "full", icon: Monitor, label: "Full width", width: "100%" },
 ] as const;
 
-function Card({ ex, onPick }: { ex: PlaygroundExample; onPick: (id: string) => void }) {
-  const free = freeExampleIds.has(ex.id);
+function Card({ ex, onPick, freeTier }: { ex: PlaygroundExample; onPick: (id: string) => void; freeTier: boolean }) {
+  const free = freeTier && freeExampleIds.has(ex.id);
   return (
     <div
       role="button"
@@ -135,7 +135,7 @@ function Card({ ex, onPick }: { ex: PlaygroundExample; onPick: (id: string) => v
   );
 }
 
-export function Workbench({ initialId }: { initialId?: string }) {
+export function Workbench({ initialId, basePath = "/playground", freeTier = true }: { initialId?: string; basePath?: string; freeTier?: boolean }) {
   const router = useRouter();
   const [id, setId] = useState<string | null>(initialId ? getExample(initialId).id : null);
   const ex = useMemo(() => (id ? examples.find((e) => e.id === id) ?? null : null), [id]);
@@ -145,7 +145,7 @@ export function Workbench({ initialId }: { initialId?: string }) {
   const [darkCanvas, setDarkCanvas] = useState(false);
   const [view, setView] = useState<"preview" | "code">("preview");
 
-  const locked = ex ? !freeExampleIds.has(ex.id) : false;
+  const locked = ex ? !(freeTier && freeExampleIds.has(ex.id)) : false;
   const files = useMemo(() => (ex ? ex.files(values) : null), [ex, values]);
   const tabs = useMemo(() => (ex && files ? fileTabs(ex, files) : []), [ex, files]);
   const active = tabs.find((t) => t.id === tab) ?? tabs[0];
@@ -157,12 +157,12 @@ export function Workbench({ initialId }: { initialId?: string }) {
     setId(next);
     setValues(nextEx.defaults);
     setTab("liquid");
-    router.replace(`/playground?example=${encodeURIComponent(next)}`, { scroll: false });
+    router.replace(`${basePath}?example=${encodeURIComponent(next)}`, { scroll: false });
   }
 
   function back() {
     setId(null);
-    router.replace("/playground", { scroll: false });
+    router.replace(basePath, { scroll: false });
   }
 
   // Modal behaviour: Escape to close + lock body scroll while open.
@@ -184,8 +184,8 @@ export function Workbench({ initialId }: { initialId?: string }) {
   const [category, setCategory] = useState<string>("all");
   const [query, setQuery] = useState("");
 
-  const free = examples.filter((e) => freeExampleIds.has(e.id));
-  const members = examples.filter((e) => !freeExampleIds.has(e.id));
+  const free = freeTier ? examples.filter((e) => freeExampleIds.has(e.id)) : [];
+  const members = freeTier ? examples.filter((e) => !freeExampleIds.has(e.id)) : examples;
   const categoryOrder = ["Product page", "Cart & checkout", "Trust & social proof", "Headers & navigation", "Content", "Marketing", "SEO & performance", "Utility"];
   const categories = [
     ...categoryOrder.filter((c) => members.some((e) => e.category === c)),
@@ -222,9 +222,11 @@ export function Workbench({ initialId }: { initialId?: string }) {
           <button type="button" onClick={() => setCategory("all")} aria-pressed={category === "all"} className={chipCls(category === "all")}>
             All {examples.length}
           </button>
-          <button type="button" onClick={() => setCategory("free")} aria-pressed={category === "free"} className={chipCls(category === "free")}>
-            Free {free.length}
-          </button>
+          {freeTier && (
+            <button type="button" onClick={() => setCategory("free")} aria-pressed={category === "free"} className={chipCls(category === "free")}>
+              Free {free.length}
+            </button>
+          )}
           {categories.map((cat) => (
             <button key={cat} type="button" onClick={() => setCategory(cat)} aria-pressed={category === cat} className={chipCls(category === cat)}>
               {cat}
@@ -247,7 +249,7 @@ export function Workbench({ initialId }: { initialId?: string }) {
             <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {filtered.map((e) => (
                 <li key={e.id}>
-                  <Card ex={e} onPick={pick} />
+                  <Card ex={e} onPick={pick} freeTier={freeTier} />
                 </li>
               ))}
             </ul>
@@ -255,19 +257,21 @@ export function Workbench({ initialId }: { initialId?: string }) {
         )
       ) : (
         <div className="grid gap-10">
-          <section>
-            <h2 className="mb-5 flex items-baseline gap-3 font-display text-2xl font-semibold text-accent">
-              Free samples - copy the code
-              <span className="text-sm font-normal text-subtle">{free.length}</span>
-            </h2>
-            <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-              {free.map((e) => (
-                <li key={e.id}>
-                  <Card ex={e} onPick={pick} />
-                </li>
-              ))}
-            </ul>
-          </section>
+          {freeTier && free.length > 0 && (
+            <section>
+              <h2 className="mb-5 flex items-baseline gap-3 font-display text-2xl font-semibold text-accent">
+                Free samples - copy the code
+                <span className="text-sm font-normal text-subtle">{free.length}</span>
+              </h2>
+              <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                {free.map((e) => (
+                  <li key={e.id}>
+                    <Card ex={e} onPick={pick} freeTier={freeTier} />
+                  </li>
+                ))}
+              </ul>
+            </section>
+          )}
           {categories.map((cat) => {
             const items = members.filter((e) => e.category === cat);
             return (
@@ -279,7 +283,7 @@ export function Workbench({ initialId }: { initialId?: string }) {
                 <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
                   {items.map((e) => (
                     <li key={e.id}>
-                      <Card ex={e} onPick={pick} />
+                      <Card ex={e} onPick={pick} freeTier={freeTier} />
                     </li>
                   ))}
                 </ul>
@@ -354,7 +358,9 @@ export function Workbench({ initialId }: { initialId?: string }) {
         >
           Unlock all snippets
         </Link>
-        <p className="mt-3 text-xs text-subtle">{freeExampleIds.size} examples are free - this one is in the members set.</p>
+        <p className="mt-3 text-xs text-subtle">
+          {freeTier ? `${freeExampleIds.size} examples are free - this one is in the members set.` : "All snippets unlock with all-access membership."}
+        </p>
       </div>
     </div>
   );
