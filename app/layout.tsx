@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Script from "next/script";
 import { Inter, JetBrains_Mono, Roboto, Roboto_Condensed } from "next/font/google";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
@@ -57,6 +58,11 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <main id="main">{children}</main>
         <Footer />
         <Analytics />
+        <Script
+          id="jivosite-widget"
+          src="//code.jivosite.com/widget/DDqH4AQI9z"
+          strategy="afterInteractive"
+        />
       </body>
     </html>
   );

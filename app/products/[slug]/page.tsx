@@ -29,6 +29,18 @@ const categoryLabel: Record<string, string> = {
 const label = (c: string) => categoryLabel[c] ?? c;
 const resellCategories = new Set(["ebook", "spreadsheet-pack", "swipe-file", "template-pack", "planner-pack", "bundle"]);
 
+const categoryKeywords: Record<string, string[]> = {
+  ebook: ["ebook", "guide", "playbook", "pdf download", "resell rights"],
+  "skill-pack": ["ai skill", "agent skill", "claude skill", "ai agent", "ecommerce automation"],
+  "spreadsheet-pack": ["spreadsheet template", "excel template", "google sheets", "business spreadsheet", "xlsx"],
+  "swipe-file": ["swipe file", "copywriting templates", "ad copy", "marketing templates"],
+  "template-pack": ["template pack", "business templates", "document templates", "printable templates"],
+  "planner-pack": ["printable planner", "planner pdf", "digital planner", "habit tracker", "printable"],
+  bundle: ["bundle", "mega bundle", "digital product bundle", "value bundle"],
+  "html-template": ["html template", "landing page template"],
+  "php-script": ["php script", "php tool"],
+};
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const p = getProduct(slug);
@@ -36,6 +48,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${p.title} - ${label(p.category)} | GPLMart`,
     description: p.description.slice(0, 155),
+    keywords: [p.title, label(p.category), "gplmart", "digital product", "resell rights", ...(categoryKeywords[p.category] ?? [])],
     alternates: { canonical: `/products/${p.slug}` },
   };
 }

@@ -752,6 +752,53 @@
         "shopify-store-launch-doc-pack"
       ],
       "added": "2026-11-13"
+    },
+    {
+      "slug": "shopify-store-in-a-box",
+      "title": "Shopify Store-in-a-Box",
+      "description": "Everything a new Shopify store needs on day one: launch document pack, profit & pricing workbook, 30-day social content kit, ad copy swipe file and freelance proposal kit - one zip, one launch system.",
+      "category": "bundle",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "book.md",
+        "book.pdf"
+      ],
+      "includes": [
+        "shopify-store-launch-doc-pack",
+        "ecom-profit-pricing-system",
+        "social-media-content-kit-vol1",
+        "ad-copy-swipe-file-vol1",
+        "resume-freelance-proposal-kit"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "fitness-habit-tracker",
+      "title": "The Fitness Habit Tracker",
+      "description": "Printable habit system: monthly habit grids, weekly reviews, streak tracking and SMART goal setting - built to form habits that last.",
+      "category": "planner-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "Fitness-Habit-Tracker.pdf"
+      ],
+      "added": "2026-11-13"
+    },
+    {
+      "slug": "teacher-activity-pack",
+      "title": "The Teacher Activity Pack",
+      "description": "Print-and-go classroom activities for grades K-5: 3 word searches, math drill sheets, handwriting practice and a reward chart.",
+      "category": "planner-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "README.md",
+        "Teacher-Activity-Pack.pdf"
+      ],
+      "added": "2026-11-13"
     }
   ]
 }
