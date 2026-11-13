@@ -117,6 +117,46 @@
       "license": "GPL-3.0-or-later",
       "files": ["README.md", "SKILL.md", "references/checklist.md", "references/shopify-seo.md", "references/report-template.md", "references/tools.md", "references/self-check.md"],
       "added": "2026-11-12"
+    },
+    {
+      "slug": "product-listing-copy-skill",
+      "title": "Product Listing Copy Skill",
+      "description": "AI-agent skill for writing e-commerce listings that convert - titles, bullets, descriptions and keywords for Shopify, Amazon, Flipkart and Meesho. Ready-to-paste copy output.",
+      "category": "skill-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": ["README.md", "SKILL.md", "references/title-formulas.md", "references/bullet-patterns.md", "references/description-structure.md", "references/keywords.md", "references/platforms.md", "references/self-check.md"],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "email-whatsapp-copy-skill",
+      "title": "Email & WhatsApp Copy Skill",
+      "description": "AI-agent skill for customer messaging that converts - welcome series, abandoned cart, launches, win-back and review requests. Covers email rules AND WhatsApp Business API constraints.",
+      "category": "skill-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": ["README.md", "SKILL.md", "references/subject-lines.md", "references/sequence-templates.md", "references/whatsapp-messages.md", "references/timing.md", "references/compliance.md", "references/self-check.md"],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "product-listing-copy-ebook",
+      "title": "Product Listing Copy Bible",
+      "description": "The complete guide to writing product listings that convert - titles, bullets, descriptions and keywords for Shopify, Amazon, Flipkart and Meesho. 8 chapters of frameworks and checklists.",
+      "category": "ebook",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": ["README.md", "book.md"],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "whatsapp-marketing-playbook-ebook",
+      "title": "WhatsApp Marketing Playbook for Indian Ecommerce",
+      "description": "Turn WhatsApp into your highest-ROI sales channel - opt-in strategy, broadcasts that convert, automated flows, catalogue selling and retention for Indian stores. 8 chapters.",
+      "category": "ebook",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": ["README.md", "book.md"],
+      "added": "2026-11-12"
     }
   ]
 }
