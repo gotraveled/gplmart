@@ -303,6 +303,106 @@
         "references/self-check.md"
       ],
       "added": "2026-11-12"
+    },
+    {
+      "slug": "email-sequence-builder-skill",
+      "title": "Email Sequence Builder Skill",
+      "description": "AI-agent skill for lifecycle email programs - welcome, post-purchase, abandonment, win-back, VIP flows. Full copy for every email with timing, segmentation and platform setup.",
+      "category": "skill-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "USAGE.md",
+        "README.md",
+        "SKILL.md",
+        "references/sequence-templates.md",
+        "references/subject-lines.md",
+        "references/timing-frequency.md",
+        "references/segmentation.md",
+        "references/platform-setup.md",
+        "references/self-check.md"
+      ],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "social-media-calendar-skill",
+      "title": "Social Media Calendar Skill",
+      "description": "AI-agent skill for content calendars - platform strategy, content pillars, posting schedules, caption templates and campaign planning for Instagram, Facebook, TikTok, Pinterest and WhatsApp Status.",
+      "category": "skill-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "USAGE.md",
+        "README.md",
+        "SKILL.md",
+        "references/content-pillars.md",
+        "references/caption-templates.md",
+        "references/platform-strategy.md",
+        "references/batch-workflow.md",
+        "references/hashtag-guide.md",
+        "references/self-check.md"
+      ],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "pricing-optimizer-skill",
+      "title": "Pricing Optimizer Skill",
+      "description": "AI-agent skill for pricing strategy - positioning, psychological pricing, discount strategy, bundle math, dynamic triggers and price testing. Maximizes profit, not just revenue.",
+      "category": "skill-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "USAGE.md",
+        "README.md",
+        "SKILL.md",
+        "references/pricing-psychology.md",
+        "references/discount-strategy.md",
+        "references/bundle-pricing.md",
+        "references/dynamic-pricing.md",
+        "references/price-testing.md",
+        "references/self-check.md"
+      ],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "review-generation-skill",
+      "title": "Review Generation Skill",
+      "description": "AI-agent skill for review collection systems - timing triggers, request sequences, incentive strategies, platform setup (Shopify/Amazon/marketplaces) and review management.",
+      "category": "skill-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "USAGE.md",
+        "README.md",
+        "SKILL.md",
+        "references/timing-triggers.md",
+        "references/request-sequences.md",
+        "references/incentive-strategies.md",
+        "references/platform-setup.md",
+        "references/review-management.md",
+        "references/self-check.md"
+      ],
+      "added": "2026-11-12"
+    },
+    {
+      "slug": "bundle-offer-skill",
+      "title": "Bundle Offer Skill",
+      "description": "AI-agent skill for bundle offers that increase AOV - bundle types, pricing math, platform implementation, promotion tactics and performance tracking.",
+      "category": "skill-pack",
+      "version": "1.0.0",
+      "license": "GPL-3.0-or-later",
+      "files": [
+        "USAGE.md",
+        "README.md",
+        "SKILL.md",
+        "references/bundle-types.md",
+        "references/pricing-strategy.md",
+        "references/implementation.md",
+        "references/promotion-tactics.md",
+        "references/performance-tracking.md",
+        "references/self-check.md"
+      ],
+      "added": "2026-11-12"
     }
   ]
 }
