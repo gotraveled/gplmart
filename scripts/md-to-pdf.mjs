@@ -44,7 +44,7 @@ function renderParagraph(doc, text, opts = {}) {
     .text(runs, { width: doc.page.width - doc.page.margins.left - doc.page.margins.right });
 }
 
-function renderMd(doc, md, title) {
+function renderMd(doc, md) {
   const lines = md.split(/\r?\n/);
   let inCode = false, codeBuf = [], firstH1 = true;
 
@@ -68,7 +68,10 @@ function renderMd(doc, md, title) {
 
   for (const raw of lines) {
     const line = raw.trimEnd();
-    if (line.startsWith("```")) { inCode ? flushCode() : (inCode = true); continue; }
+    if (line.startsWith("```")) {
+      if (inCode) flushCode(); else inCode = true;
+      continue;
+    }
     if (inCode) { codeBuf.push(line); continue; }
 
     if (/^#{1}\s/.test(line)) {
@@ -91,10 +94,11 @@ function renderMd(doc, md, title) {
       doc.moveDown(0.3);
     } else if (/^[-*]\s+/.test(line)) {
       ensureSpace(doc, 16);
+      const listText = line.replace(/^[-*]\s+/, "");
       doc.x = doc.page.margins.left + 14;
       doc.font("Helvetica").fontSize(10.5).fillColor(MUTED);
       doc.text("\u2022 ", { continued: true });
-      renderParagraph(doc, line.replace(/^[-*]\s+/, ""));
+      renderParagraph(doc, listText);
       doc.x = doc.page.margins.left;
     } else if (/^\d+\.\s+/.test(line)) {
       ensureSpace(doc, 16);
@@ -154,7 +158,7 @@ async function build(slug) {
   doc.moveDown(1);
   doc.x = doc.page.margins.left;
 
-  renderMd(doc, md, title);
+  renderMd(doc, md);
 
   // footer page numbers
   const range = doc.bufferedPageRange();

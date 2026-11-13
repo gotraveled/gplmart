@@ -1,5 +1,5 @@
 import fs from "node:fs";
-import { zipSync, strToU8 } from "fflate";
+import { zipSync } from "fflate";
 import { hasAccess } from "@/lib/access-gate";
 import { clientIp, rateLimit } from "@/lib/rate-limit";
 import { getProduct, productFilePath } from "@/lib/products";
